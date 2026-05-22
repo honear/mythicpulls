@@ -117,7 +117,7 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
               href={cardKingdomSearchUrl(card.name)}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[var(--accent-amber)] text-[var(--color-bg)] text-sm font-semibold hover:brightness-110 transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[var(--accent-purple)] text-white text-sm font-semibold hover:brightness-110 transition-all"
             >
               <ShoppingBag className="w-3.5 h-3.5" /> Buy at Card Kingdom
             </a>

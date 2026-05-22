@@ -114,7 +114,9 @@ export async function getSets(): Promise<ScryfallSet[]> {
   return out;
 }
 
-/** Sets that have boosters, non-digital, with cards available. */
+/** Sets that have boosters, non-digital, with cards available, and have
+ *  actually been released (Scryfall lists upcoming sets with future
+ *  release dates — we filter those out so "Recent" stays current). */
 export async function getOpenableSets(): Promise<ScryfallSet[]> {
   const sets = await getSets();
   const allowed = new Set([
@@ -125,12 +127,14 @@ export async function getOpenableSets(): Promise<ScryfallSet[]> {
     "starter",
     "remastered",
   ]);
+  const today = new Date().toISOString().slice(0, 10);
   return sets
     .filter(
       (s) =>
         !s.digital &&
         s.card_count > 0 &&
-        allowed.has(s.set_type),
+        allowed.has(s.set_type) &&
+        (!s.released_at || s.released_at <= today),
     )
     .sort((a, b) =>
       (b.released_at ?? "").localeCompare(a.released_at ?? ""),
@@ -200,19 +204,29 @@ export function getCardBackImage(card: ScryfallCard): string | undefined {
  * Aggressively cached (7 days) since per-set hero art rarely changes.
  */
 export async function getSetSampleArt(code: string): Promise<string | null> {
-  const q = encodeURIComponent(`set:${code.toLowerCase()} game:paper -is:digital`);
-  const url =
-    `${BASE}/cards/search?q=${q}&unique=cards&order=usd&dir=desc&page=1`;
-  try {
-    const page = await sj<ScryfallList<ScryfallCard>>(url, 60 * 60 * 24 * 7);
-    for (const c of page.data) {
-      const art =
-        c.image_uris?.art_crop ??
-        c.card_faces?.[0]?.image_uris?.art_crop;
-      if (art) return art;
+  const set = code.toLowerCase();
+  // Try priciest first. Some new sets have no priced cards yet (Scryfall
+  // returns 404 for `order=usd` when no card has a USD value), so fall back
+  // to rarity-ordered then unordered. Tokens / promos / digital are
+  // excluded — they rarely carry a usable art_crop.
+  const base = `set:${set} game:paper -is:digital -is:promo -t:token`;
+  const attempts: string[] = [
+    `${BASE}/cards/search?q=${encodeURIComponent(base)}&unique=cards&order=usd&dir=desc&page=1`,
+    `${BASE}/cards/search?q=${encodeURIComponent(base)}&unique=cards&order=rarity&dir=desc&page=1`,
+    `${BASE}/cards/search?q=${encodeURIComponent(base)}&unique=cards&page=1`,
+  ];
+  for (const url of attempts) {
+    try {
+      const page = await sj<ScryfallList<ScryfallCard>>(url, 60 * 60 * 24 * 7);
+      for (const c of page.data) {
+        const art =
+          c.image_uris?.art_crop ??
+          c.card_faces?.[0]?.image_uris?.art_crop;
+        if (art) return art;
+      }
+    } catch {
+      // 404 / transient — try the next strategy.
     }
-  } catch {
-    // 404 (set has 0 cards) or transient — fall through.
   }
   return null;
 }

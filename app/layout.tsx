@@ -27,9 +27,15 @@ export default function RootLayout({
           href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap"
           rel="stylesheet"
         />
-        {/* Cinzel (hero brand serif) from Google Fonts */}
+        {/* Datacore-derived typography stack:
+            - Instrument Serif for the hero headline (italic for connector words)
+            - Manrope for nav / UI chrome
+            - Cabin for buttons & pill badge
+            All loaded with display=swap so they don't block first paint. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Manrope:wght@400;500;600;700&family=Cabin:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>

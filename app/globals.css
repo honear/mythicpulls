@@ -8,13 +8,15 @@
    ============================================================ */
 
 @theme {
-  /* Page palette (dark by default) */
-  --hero-bg:        hsl(260 87% 3%);
+  /* Page palette (dark by default). Mythic Pulls adopts the Datacore-style
+     deep-purple base: a near-black violet ground, with #7b39fc as the
+     interactive accent and #2b2344 as the secondary surface tone. */
+  --hero-bg:        #0d0820;
   --hero-fg:        hsl(40 6% 95%);
   --hero-sub:       hsl(40 6% 82%);
 
-  --color-bg:       hsl(260 87% 3%);
-  --color-bg-soft:  hsl(260 50% 6%);
+  --color-bg:       #0d0820;
+  --color-bg-soft:  #161028;
   --color-surface:  rgba(255, 255, 255, 0.04);  /* liquid panels */
   --color-surface-2: rgba(255, 255, 255, 0.06);
   --color-line:     rgba(255, 255, 255, 0.10);
@@ -25,23 +27,24 @@
   --color-ink-muted:hsl(40 6% 60%);
   --color-ink-dim:  hsl(40 6% 42%);
 
-  /* Accent — blue → orange duo with a warm amber midpoint. Replaces the
-     earlier indigo/purple gradient so the hero reads as fire-and-sky
-     rather than the previous mythic-purple. */
-  --accent-blue:    #2563EB;
-  --accent-sky:     #60A5FA;
-  --accent-orange:  #F36F27;
-  --accent-amber:   #FBBF24;
-  --accent-grad:    linear-gradient(to left, #2563EB, #FBBF24, #F36F27);
+  /* Accent — single-hue purple with a darker companion. #7b39fc is the
+     primary interactive (buttons, focus, glow); #2b2344 anchors secondary
+     surfaces; lighter lavender used for borders/highlights. */
+  --accent-purple:       #7b39fc;
+  --accent-purple-light: #a484d7;
+  --accent-purple-deep:  #2b2344;
+  --accent-purple-glow:  rgba(123, 57, 252, 0.55);
+  --accent-grad:         linear-gradient(135deg, #a484d7 0%, #7b39fc 55%, #4f17d4 100%);
 
-  /* Mythic — the MTG mythic-rare orange. Used as the hero brand accent
-     with a layered glow. */
-  --mythic-orange:  #F36F27;
-  --mythic-deep:    #B43E0D;
-  --mythic-glow:    rgba(243, 111, 39, 0.55);
+  /* Mythic — reframed in purple to match the new palette. */
+  --mythic-orange:  #7b39fc;
+  --mythic-deep:    #4f17d4;
+  --mythic-glow:    rgba(123, 57, 252, 0.55);
 
-  /* Cinzel: classy fantasy Roman serif used for the hero brand wordmark. */
-  --font-brand: "Cinzel", "Trajan Pro", "Adobe Caslon Pro", serif;
+  /* Display serif used for the hero headline (Instrument Serif). */
+  --font-brand: "Instrument Serif", "Cormorant Garamond", "Times New Roman", serif;
+  --font-ui:    "Manrope", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-btn:   "Cabin", "Manrope", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   /* Rarity accents — tuned for dark backgrounds */
   --color-rarity-common: hsl(40 6% 70%);
@@ -62,12 +65,14 @@
   --radius-xl: 20px;
   --radius-pill: 9999px;
 
-  /* Card physical dimensions (Magic card: 88mm × 63mm, 2.5mm radius).
-     A unit "card-base" controls width in pixels; height and radius
-     scale proportionally so every MagicCard stays true-to-life. */
+  /* Card physical dimensions (Magic card: 88mm × 63mm). The real card
+     radius is 2.5mm but reads very subtle at on-screen sizes; we bump
+     to ~4.7/63 of width (≈13.4px at the 180-base default) so the glare
+     and holo clip-paths round off with enough curve to look intentional
+     while keeping the proportion scale-independent. */
   --card-base: 180px;
   --card-ratio-h: calc(var(--card-base) * 88 / 63);
-  --card-radius: calc(var(--card-base) * 2.5 / 63);
+  --card-radius: calc(var(--card-base) * 4.7 / 63);
 }
 
 /* ============================================================
@@ -83,7 +88,7 @@ html, body {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--accent-purple) 35%, transparent);
+  background: color-mix(in srgb, var(--accent-purple) 40%, transparent);
   color: var(--color-fg);
 }
 
@@ -112,47 +117,104 @@ html, body {
   -webkit-text-fill-color: transparent;
 }
 
-/* ---------- Hero brand wordmark — Cinzel + mythic glow ---------- */
-.brand-wordmark {
+/* ---------- Hero headline — Instrument Serif ----------
+ * Datacore-derived: long serif at large sizes, with one or two italicized
+ * connector words breaking the linearity. Line-height kept tight (1.05)
+ * so the headline holds together when stacked.
+ */
+.hero-title {
   font-family: var(--font-brand);
-  font-weight: 700;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  color: var(--color-fg);
+}
+.hero-title em {
+  font-style: italic;
+  font-family: var(--font-brand);
+  color: var(--accent-purple-light);
+  padding: 0 0.08em;
+}
+
+/* Glass tagline pill — matches the Datacore "New · v3.2" element. */
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px 0 6px;
+  border-radius: 10px;
+  background: rgba(85, 80, 110, 0.40);
+  border: 1px solid rgba(164, 132, 215, 0.50);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  color: var(--color-fg);
+  font-family: var(--font-btn);
+  font-weight: 500;
+  font-size: 14px;
+}
+.hero-pill__badge {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: var(--accent-purple);
+  color: #fff;
+  font-family: var(--font-btn);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* CTA buttons — Datacore "Book a Free Demo" + "Get Started Now". */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 10px;
+  background: var(--accent-purple);
+  color: #fafafa;
+  font-family: var(--font-btn);
+  font-weight: 500;
+  font-size: 16px;
   letter-spacing: 0.005em;
-  line-height: 0.95;
+  box-shadow:
+    0 12px 30px -10px var(--accent-purple-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: background 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
-.brand-mythic {
-  font-family: var(--font-brand);
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  color: var(--mythic-orange);
-  text-shadow:
-    0 0 18px var(--mythic-glow),
-    0 0 36px rgba(243, 111, 39, 0.40),
-    0 0 72px rgba(243, 111, 39, 0.28),
-    0 1px 0 rgba(255, 255, 255, 0.08);
-  background:
-    radial-gradient(ellipse at 50% 50%,
-      #FFB37A 0%,
-      #F36F27 35%,
-      #B43E0D 100%);
-  -webkit-background-clip: text;
-          background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  /* Keep the glow visible even though background-clip: text removes the
-     paint — render the same text behind itself purely as the glow source. */
-  position: relative;
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--accent-purple) 88%, white);
+  box-shadow:
+    0 14px 36px -10px var(--accent-purple-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
-.brand-mythic::after {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  color: var(--mythic-orange);
-  -webkit-text-fill-color: var(--mythic-orange);
-  filter: blur(12px);
-  opacity: 0.55;
-  pointer-events: none;
+.btn-primary:active { transform: translateY(1px); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 10px;
+  background: var(--accent-purple-deep);
+  color: #f6f7f9;
+  font-family: var(--font-btn);
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 0.005em;
+  border: 1px solid rgba(164, 132, 215, 0.25);
+  transition: background 180ms ease, transform 180ms ease;
 }
+.btn-secondary:hover { background: color-mix(in srgb, var(--accent-purple-deep) 80%, white); }
+.btn-secondary:active { transform: translateY(1px); }
 
 .balance { text-wrap: balance; }
 
@@ -214,19 +276,14 @@ html, body {
 .lift:hover { transform: translateY(-2px); }
 
 /* ============================================================
-   Hero headline ramp
+   Hero title ramp — Instrument Serif, compact (sits in the top-right
+   corner of the landing page above the set grid, not a full hero).
    ============================================================ */
-.hero-headline {
-  font-family: var(--font-display);
-  font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.024em;
-  font-size: 220px;
-}
-@media (max-width: 1280px) { .hero-headline { font-size: 180px; } }
-@media (max-width: 1024px) { .hero-headline { font-size: 140px; } }
-@media (max-width: 768px)  { .hero-headline { font-size: 96px; } }
-@media (max-width: 480px)  { .hero-headline { font-size: 64px; } }
+.hero-title { font-size: 52px; }
+@media (max-width: 1280px) { .hero-title { font-size: 48px; } }
+@media (max-width: 1024px) { .hero-title { font-size: 44px; } }
+@media (max-width: 768px)  { .hero-title { font-size: 38px; } }
+@media (max-width: 480px)  { .hero-title { font-size: 32px; } }
 
 /* ============================================================
    Marquee
@@ -257,7 +314,7 @@ html, body {
      shadow extends outward; the inner faces handle their own clip. */
   box-shadow:
     0 18px 38px -20px rgba(0, 0, 0, 0.7),
-    0 6px 14px -10px rgba(99, 102, 241, 0.22);
+    0 6px 14px -10px rgba(123, 57, 252, 0.25);
   transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
   transform-style: preserve-3d;
   transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 220ms;
@@ -371,7 +428,7 @@ html, body {
 .deck-slot-dragging { transition: none !important; }
 
 /* Drop target placeholder during reorder */
-.card-drop-target { outline: 2px dashed rgba(252, 211, 77, 0.6); outline-offset: 4px; }
+.card-drop-target { outline: 2px dashed rgba(164, 132, 215, 0.7); outline-offset: 4px; }
 
 /* ============================================================
    Card text overlays (art-crop based card faces)
@@ -419,6 +476,50 @@ html, body {
 .card-mtg { container-type: inline-size; }
 
 /* ============================================================
+   Booster pack parallax — same JS surface as .card-mtg (useCardTilt
+   writes --tilt-x/--tilt-y + --glare-x/--glare-y) but applied to the
+   pack body. The outer button keeps the static fan rotation; the
+   inner .pack-tilt owns the cursor-driven 3D wobble. A perspective
+   on the parent makes the rotateX/Y produce visible depth.
+   ============================================================ */
+.pack-tilt {
+  /* translateZ(0) forces this element onto its own GPU compositing layer
+     so transform changes don't trigger layer recomputation each frame —
+     critical because the pack body stacks an art image, color wash,
+     border, tear-strip, label, shimmer band, and mix-blend glare. */
+  transform:
+    translateZ(0)
+    rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 240ms;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.pack-tilt.is-tilting { transition: none; }
+
+.pack-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  clip-path: inset(0 round 14px 14px 6px 6px);
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(255, 255, 255, 0.45),
+    transparent 55%
+  );
+  /* Plain alpha blending instead of mix-blend-mode: overlay. The blend
+     mode looked nicer but forces the compositor to read back the layer
+     each frame to compute the blend, which on a multi-layer pack body
+     produced visible stutter during fast cursor sweeps. */
+  opacity: var(--glare-opacity, 0);
+  transition: opacity 220ms ease;
+  will-change: opacity;
+}
+
+/* ============================================================
    Pack rip animations (kept from previous work, CSS-only)
    ============================================================ */
 @keyframes packTopRise {
@@ -457,7 +558,7 @@ html, body {
    Focus
    ============================================================ */
 :where(button, a, [role="button"]):focus-visible {
-  outline: 2px solid var(--accent-amber);
+  outline: 2px solid var(--accent-purple-light);
   outline-offset: 3px;
   border-radius: 8px;
 }

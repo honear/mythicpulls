@@ -4,10 +4,11 @@ import { useMemo, useRef, useState } from "react";
 import { Sparkles, RotateCcw, Save, Eye, GripVertical, LayoutGrid, Layers } from "lucide-react";
 import type { ScryfallCard } from "@/lib/scryfall";
 import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
-import { PACKS, PACK_ORDER, type PackType } from "@/lib/pack-rules";
+import { PACKS, PACK_ORDER, getPackCost, type PackType } from "@/lib/pack-rules";
 import { buildPool, openPack, type PulledCard } from "@/lib/pack-open";
 import { addToCollection } from "@/lib/collection";
 import { useDragReorder } from "@/lib/useDragReorder";
+import { useCardTilt } from "@/lib/useCardTilt";
 import { MagicCard } from "@/app/_components/MagicCard";
 import { CardDetailModal } from "@/app/_components/CardDetailModal";
 import { CardDeck } from "./CardDeck";
@@ -56,6 +57,7 @@ export function PackOpener({
 
   const pool = useMemo(() => buildPool(cards, tokens), [cards, tokens]);
   const def = PACKS[packType];
+  const packCost = getPackCost(packType, setMeta.code);
 
   function rip() {
     if (phase !== "idle") return;
@@ -70,7 +72,7 @@ export function PackOpener({
     // in as the user actually reveals each card.
     setStats((s) => ({
       ...s,
-      spent: s.spent + def.costUsd,
+      spent: s.spent + packCost,
       packs: s.packs + 1,
     }));
     setTimeout(() => setPhase("revealing"), 800);
@@ -190,7 +192,7 @@ export function PackOpener({
 
   return (
     <section className="mx-auto max-w-7xl w-full px-6 py-10">
-      <MoneyStrip stats={stats} packCost={def.costUsd} />
+      <MoneyStrip stats={stats} packCost={packCost} />
       <div className="relative rounded-2xl liquid-panel overflow-hidden">
         {/* Per-set art backdrop — a faded, heavily-blurred art crop from a
             top card of the set sits behind everything else, giving each
@@ -434,10 +436,15 @@ function FannedPack({
   artIndex: number;
 }) {
   const c = packHue(packType);
-  // Rotate the pack outward (not the button).
-  const tilt = offset * 7;
+  // Static fan-pose rotation (applied to the outer button so the whole pack
+  // leans outward). The inner body owns the cursor-driven 3D tilt.
+  const fanRot = offset * 7;
   const lift = isCenter ? -18 : 0;
   const scale = isCenter ? 1.04 : 1;
+  // Cursor-driven parallax: bigger tilt on the center pack since it's the
+  // hero pose, slightly subdued on the side packs so the wobble doesn't
+  // amplify the existing fan rotation.
+  const tilt = useCardTilt({ maxTilt: isCenter ? 14 : 10, glare: true });
   // Pick a different art crop per pack so each pack reads as distinct.
   const heroArt = setMeta.heroArtCrops?.[artIndex % (setMeta.heroArtCrops.length || 1)];
 
@@ -452,15 +459,21 @@ function FannedPack({
       <button
         onClick={onSelect}
         aria-label={`Open ${PACKS[packType].name}`}
-        className="relative outline-none cursor-pointer transition-transform duration-300 hover:scale-[1.06] hover:-translate-y-2"
+        className="relative outline-none cursor-pointer transition-transform duration-300"
         style={{
-          transform: `rotate(${tilt}deg) translateY(${lift}px) scale(${scale})`,
+          transform: `rotate(${fanRot}deg) translateY(${lift}px) scale(${scale})`,
           transformOrigin: "center bottom",
+          transformStyle: "preserve-3d",
+          perspective: "1100px",
           zIndex: isCenter ? 10 : 5,
         }}
       >
         <div
-          className="relative overflow-hidden"
+          ref={tilt.ref}
+          onPointerEnter={tilt.onPointerEnter}
+          onPointerMove={tilt.onPointerMove}
+          onPointerLeave={tilt.onPointerLeave}
+          className="pack-tilt relative overflow-hidden"
           style={{
             width: PACK_W,
             height: PACK_H,
@@ -540,6 +553,9 @@ function FannedPack({
               mixBlendMode: "screen",
             }}
           />
+          {/* Cursor-tracked glare — driven by --glare-x/--glare-y on the
+              tilting wrapper (see globals.css → .pack-glare). */}
+          <div className="pack-glare" />
         </div>
       </button>
 

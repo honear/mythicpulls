@@ -42,10 +42,14 @@ export function MagicCard({
   holoEnabled = true,
 }: Props) {
   const data = normalize(card);
-  const isHolographic =
-    holoEnabled &&
-    faceUp &&
-    (!!data.foil || data.rarity === "mythic" || data.rarity === "rare");
+  // Holo shimmer is reserved for traditional foils — i.e. cards that came
+  // out of a slot flagged `foil: true` in pack-rules.ts. Earlier this also
+  // fired on every rare/mythic regardless of foil state, which made Play
+  // boosters look foil-heavy (every guaranteed rare/mythic shimmered) and
+  // Collector boosters look comparatively flat by contrast. Tying the
+  // overlay strictly to `data.foil` aligns the visual with real Magic:
+  // traditional foils shimmer, non-foils don't, regardless of rarity.
+  const isHolographic = holoEnabled && faceUp && !!data.foil;
 
   // Tilt is always active for parallax — but holographic shimmer is gated
   // on faceUp so a face-down card never reveals itself via the holo overlay.

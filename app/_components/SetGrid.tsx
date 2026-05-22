@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import type { ScryfallSet } from "@/lib/scryfall";
-import { recommendedPackType, PACKS } from "@/lib/pack-rules";
 
 type Filter = "all" | "recent" | "modern" | "legacy";
 
@@ -53,17 +52,25 @@ export function SetGrid({
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between mb-6">
-        <div className="flex flex-wrap gap-1 p-1 rounded-full liquid-glass">
+      <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-4">
+        <div
+          className="flex flex-wrap gap-1 p-1 rounded-full liquid-glass"
+          style={{ fontFamily: "var(--font-ui)" }}
+        >
           {FILTERS.map((f) => (
             <button
               key={f.id}
               onClick={() => setFilter(f.id)}
               className={`text-xs px-4 py-2 rounded-full font-medium transition-colors ${
                 filter === f.id
-                  ? "bg-white text-[var(--color-bg)]"
+                  ? "text-white"
                   : "text-[var(--color-ink)] hover:text-white"
               }`}
+              style={
+                filter === f.id
+                  ? { background: "var(--accent-purple)" }
+                  : undefined
+              }
             >
               {f.label}
             </button>
@@ -76,6 +83,7 @@ export function SetGrid({
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search set by name or code…"
             className="w-full pl-11 pr-4 py-3 rounded-full liquid-glass focus:outline-none text-sm text-[var(--color-fg)] placeholder:text-[var(--color-ink-muted)]/70"
+            style={{ fontFamily: "var(--font-ui)" }}
           />
         </div>
       </div>
@@ -105,9 +113,7 @@ function SetTile({
   index: number;
   artUrl?: string;
 }) {
-  const recommended = recommendedPackType(set);
   const year = set.released_at?.slice(0, 4) ?? "—";
-  const rec = PACKS[recommended].name.replace(" Booster", "");
 
   return (
     <li
@@ -170,11 +176,21 @@ function SetTile({
           </span>
         </div>
         <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between gap-2">
-          <p className="text-[11px] font-medium text-[var(--color-fg)] truncate">
+          <p
+            className="text-[11px] font-medium text-[var(--color-fg)] truncate"
+            style={{ fontFamily: "var(--font-ui)" }}
+          >
             {set.name}
           </p>
-          <span className="text-[9px] tracking-[0.14em] uppercase font-semibold text-[var(--color-ink-muted)]/80 shrink-0">
-            {rec}
+          <span
+            className="text-[9px] tracking-[0.18em] uppercase font-semibold shrink-0 px-1.5 py-0.5 rounded-md transition-colors group-hover:bg-[var(--accent-purple)] group-hover:text-white"
+            style={{
+              fontFamily: "var(--font-btn)",
+              color: "var(--accent-purple-light)",
+              background: "rgba(123,57,252,0.18)",
+            }}
+          >
+            Open
           </span>
         </div>
       </Link>
