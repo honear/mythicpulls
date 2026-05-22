@@ -34,7 +34,10 @@ import {
 
 const DECK_MIN = 40;
 
-const POOL_COLUMNS = 7;
+// Pool grid uses auto-fill at a fixed card width so cells never go below
+// 196 px (cards overlapped on narrower viewports when columns were locked
+// at a fixed count). Wider screens just get more columns; narrower screens
+// get fewer columns, never crowded cells.
 const POOL_CARD_W = 196;
 
 // Deck builder is sized to fit six mana-cost columns + the Lands column
@@ -519,7 +522,8 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
             <div
               className="grid gap-3"
               style={{
-                gridTemplateColumns: `repeat(${POOL_COLUMNS}, minmax(0, 1fr))`,
+                gridTemplateColumns: `repeat(auto-fill, ${POOL_CARD_W}px)`,
+                justifyContent: "center",
               }}
             >
               {poolGroups.map((groupCards) => (

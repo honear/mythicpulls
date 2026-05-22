@@ -1,7 +1,8 @@
 {
   "_doc": "Named card-pool predicates used by outcome.filter in booster-contents JSON. Composition keywords: all (AND), any (OR), not (NOT). Leaves match Scryfall fields. See lib/booster-filters.ts for the full grammar.",
 
-  "basic_land": { "type_line_includes": "Basic Land" },
+  "_doc_basic_land": "Matches both 'Basic Land — X' and 'Basic Snow Land — X'. The engine also uses this filter at the candidate stage to *exclude* basic lands from non-land slots so a common slot doesn't accidentally pull a Plains.",
+  "basic_land": { "type_line_includes": "Basic" },
 
   "showcase": { "frame_effects": "showcase" },
   "extended_art": { "frame_effects": "extendedart" },
@@ -78,5 +79,39 @@
 
   "etched_foil": { "finishes": "etched" },
 
-  "gold_stamped": { "promo_types": "stamped" }
+  "gold_stamped": { "promo_types": "stamped" },
+
+  "_doc_regular_print": "Baseline 'looks like the regular printing of this card' filter. The engine applies this implicitly to any outcome whose explicit filter doesn't already declare alt-art intent — so default draft commons come out in their normal art instead of randomly grabbing extended-art / showcase variants. Excludes every Scryfall treatment that signals an alt-art printing: frame_effects (showcase, extendedart, inverted, borderless, companion, shatteredglass, etched, fullart), borderless border_color, and the common alt-art promo_types.",
+  "regular_print": {
+    "all": [
+      {
+        "not": {
+          "frame_effects": [
+            "showcase",
+            "extendedart",
+            "inverted",
+            "borderless",
+            "companion",
+            "shatteredglass",
+            "etched",
+            "fullart"
+          ]
+        }
+      },
+      { "not": { "border_color": "borderless" } },
+      {
+        "not": {
+          "promo_types": [
+            "specialguests",
+            "stamped",
+            "serialized",
+            "extendedart",
+            "boosterfun",
+            "godzillaseries",
+            "draculaseries"
+          ]
+        }
+      }
+    ]
+  }
 }

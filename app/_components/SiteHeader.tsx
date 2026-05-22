@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Swords } from "lucide-react";
+import { Swords, Users } from "lucide-react";
 
 /**
  * Single global header used across every page (including home). The earlier
@@ -17,6 +17,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const onCollection = pathname.startsWith("/collection");
   const onSealed = pathname.startsWith("/sealed");
+  const onDraft = pathname.startsWith("/draft");
 
   return (
     <header className="absolute top-0 left-0 right-0 z-30">
@@ -36,6 +37,21 @@ export function SiteHeader() {
         </Link>
 
         <div className="flex items-center gap-2.5">
+          <Link
+            href="/draft"
+            aria-current={onDraft ? "page" : undefined}
+            className="inline-flex items-center gap-2 h-[38px] pl-3 pr-4 rounded-[10px] text-[14px] font-medium transition-all"
+            style={{
+              background: "var(--accent-purple)",
+              color: "white",
+              fontFamily: "var(--font-btn)",
+              boxShadow:
+                "0 8px 20px -8px var(--accent-purple-glow), inset 0 1px 0 rgba(255,255,255,0.18)",
+            }}
+          >
+            <Users className="w-4 h-4" />
+            Play Draft
+          </Link>
           <Link
             href="/sealed"
             aria-current={onSealed ? "page" : undefined}

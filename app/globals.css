@@ -615,6 +615,64 @@ html, body {
 }
 
 /* ============================================================
+   Draft pick animations — pack-pass transition.
+   ------------------------------------------------------------
+   When the user picks a card, the remaining cards in the pack
+   stagger out in the pass direction; the picked card lifts up
+   and fades. The next pack arrives from the opposite side.
+
+   Per-card variables (set inline):
+     --exit-x       horizontal displacement at end of exit (px)
+     --exit-tilt    rotation at end of exit (deg)
+     --enter-x      starting horizontal displacement (px)
+     --enter-tilt   starting rotation (deg)
+     animation-delay  staggered per card from a uid hash
+
+   Easing curves intentionally start with motion immediately
+   (cubic-bezier(0.4, 0, …)) so the first frame already looks
+   like the card is moving — the previous ease-in started so
+   gradually that the animation read as a freeze before the swap.
+
+   will-change + transform3d nudges the browser to put each card
+   on its own GPU layer so the simultaneous animations don't
+   thrash the compositor.
+   ============================================================ */
+@keyframes draftCardExit {
+  0%   { opacity: 1; transform: translate3d(0, 0, 0)
+                               rotateZ(0deg) scale(1); }
+  60%  { opacity: 0.7; }
+  100% { opacity: 0; transform: translate3d(var(--exit-x, -420px), 12px, 0)
+                               rotateZ(var(--exit-tilt, -6deg)) scale(0.86); }
+}
+@keyframes draftCardEnter {
+  0%   { opacity: 0; transform: translate3d(var(--enter-x, 420px), 0, 0)
+                               rotateZ(var(--enter-tilt, 6deg)) scale(0.92); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: translate3d(0, 0, 0)
+                               rotateZ(0deg) scale(1); }
+}
+@keyframes draftCardPicked {
+  0%   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  40%  { opacity: 1; transform: translate3d(0, -28px, 0) scale(1.08); }
+  100% { opacity: 0; transform: translate3d(0, -70px, 0) scale(0.90); }
+}
+.draft-pick-card--exit {
+  animation: draftCardExit 380ms cubic-bezier(0.4, 0, 0.7, 0.2) forwards;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.draft-pick-card--enter {
+  animation: draftCardEnter 340ms cubic-bezier(0.2, 0.9, 0.3, 1) backwards;
+  will-change: transform, opacity;
+}
+.draft-pick-card--picked {
+  animation: draftCardPicked 380ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+  z-index: 5;
+  will-change: transform, opacity;
+}
+
+/* ============================================================
    Focus
    ============================================================ */
 :where(button, a, [role="button"]):focus-visible {

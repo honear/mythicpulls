@@ -156,3 +156,52 @@ export function predicateMentionsLang(
   if (p.not && predicateMentionsLang(p.not)) return true;
   return false;
 }
+
+/**
+ * True when the predicate references "Land" in any type_line_includes
+ * branch. The engine uses this to know whether an outcome is intentionally
+ * targeting lands (basic land slot, spellcraft land, dual land, etc.) and
+ * therefore should NOT have the implicit "exclude basic lands" filter
+ * applied. Non-basic land slots like SOS's Spellcraft Land work because
+ * their filter mentions Land in its type_line.
+ */
+export function predicateMentionsLand(
+  p: FilterPredicate | undefined,
+): boolean {
+  if (!p) return false;
+  if (p.type_line_includes && p.type_line_includes.toLowerCase().includes("land")) return true;
+  if (p.all && p.all.some(predicateMentionsLand)) return true;
+  if (p.any && p.any.some(predicateMentionsLand)) return true;
+  if (p.not && predicateMentionsLand(p.not)) return true;
+  return false;
+}
+
+/**
+ * True when the predicate declares "I'm intentionally pulling an alt-art
+ * printing." The engine uses this to decide whether to apply the implicit
+ * `regular_print` baseline. If the filter already names a treatment field
+ * (frame_effects, borderless border_color, promo_types) or asks for a
+ * non-English language printing (which on Scryfall correlates with
+ * alt-art Japanese variants), we skip the regular_print pass so the
+ * outcome's explicit intent isn't overruled.
+ */
+export function predicateIsAltArtIntent(
+  p: FilterPredicate | undefined,
+): boolean {
+  if (!p) return false;
+  if (p.frame_effects !== undefined) return true;
+  if (p.border_color !== undefined) {
+    const colors = Array.isArray(p.border_color) ? p.border_color : [p.border_color];
+    if (colors.includes("borderless")) return true;
+  }
+  if (p.promo_types !== undefined) return true;
+  if (p.lang !== undefined) {
+    const langs = Array.isArray(p.lang) ? p.lang : [p.lang];
+    if (langs.some((l) => l !== "en")) return true;
+  }
+  if (p.all && p.all.some(predicateIsAltArtIntent)) return true;
+  if (p.any && p.any.some(predicateIsAltArtIntent)) return true;
+  // `not` is intentionally not recursed — "not borderless" doesn't mean
+  // the outcome wants alt-art; treat that as not-alt-art-intent.
+  return false;
+}

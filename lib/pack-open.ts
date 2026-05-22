@@ -8,6 +8,8 @@ import type {
 import { resolveSetSentinel } from "./booster-config";
 import {
   matchesFilter,
+  predicateIsAltArtIntent,
+  predicateMentionsLand,
   predicateMentionsLang,
   resolveFilter,
   type FilterPredicate,
@@ -72,12 +74,25 @@ function pickFrom<T>(list: T[], rng: () => number): T | undefined {
  *   1. Get cards from the appropriate set (outcome.set or the pack's own).
  *   2. If outcome.rarity is set, restrict to that rarity.
  *   3. If outcome.filter is set, restrict by the named filter predicate.
+ *   4. If `excludedIds` is non-empty, drop those card ids — this is how
+ *      the engine prevents the same card from showing up twice in one
+ *      pack (e.g. a slot with count:7 commons sampling with replacement
+ *      from the same common pool would otherwise duplicate).
+ *
+ * Returns the constrained pool *after* the excludedIds filter. If the
+ * filter would zero out the candidates (e.g. you've already taken every
+ * unique card in that bucket), candidatesFor falls back to the
+ * un-excluded list so the slot still produces a card — matches Wizards'
+ * own packs which only allow within-pack duplicates when the set's pool
+ * is genuinely too small.
  */
 function candidatesFor(
   outcome: Outcome,
   pool: CardPool,
   ownSetCode: string,
   filters: Record<string, FilterPredicate>,
+  excludedIds: Set<string>,
+  isLandSlot: boolean,
 ): ScryfallCard[] {
   const target = resolveSetSentinel(outcome.set, ownSetCode) ?? ownSetCode.toLowerCase();
   const setCards = pool[target] ?? [];
@@ -92,6 +107,21 @@ function candidatesFor(
     out = out.filter((c) => matchesFilter(c, predicate));
   }
 
+  // Exclude basic lands from non-land slots. Basic lands have rarity
+  // "common" on Scryfall, so without this filter they'd show up in any
+  // common-rarity slot and a pack might contain multiple Plains. Lands
+  // belong in the dedicated land slot (slot.basicLand: true) or in
+  // outcomes that explicitly mention Land in their filter (spellcraft
+  // lands, dual lands, etc.). Non-basic lands at the appropriate rarity
+  // are still allowed in their rarity slot — real Magic packs can pull
+  // a shock land in the rare slot.
+  if (!isLandSlot && !predicateMentionsLand(predicate)) {
+    const basicLand = resolveFilter(filters, "basic_land");
+    if (basicLand) {
+      out = out.filter((c) => !matchesFilter(c, basicLand));
+    }
+  }
+
   // English-by-default: Scryfall returns all language printings now that
   // include_multilingual=true is on, but most outcomes want the English
   // version. Only when the resolved filter explicitly mentions `lang` do
@@ -101,16 +131,40 @@ function candidatesFor(
     out = out.filter((c) => !c.lang || c.lang === "en");
   }
 
+  // Basic-art by default: with unique=prints fetched from Scryfall a
+  // common card with both regular + extended-art printings shows up
+  // twice in the pool. Without this filter, an unbiased rarity-only
+  // outcome would pick the alt-art half the time. Apply the regular_print
+  // baseline unless the outcome's filter declares alt-art intent
+  // (frame_effects / borderless / promo_types / non-en lang) — those
+  // outcomes (SOS Booster Fun, Mystical Archive JP, etc.) deliberately
+  // want alt-art treatment and skip this pass. The implicit filter is
+  // also skipped if it would empty the candidate pool (rare sets where
+  // no card has a "regular" printing in our sense).
+  if (!predicateIsAltArtIntent(predicate)) {
+    const regular = resolveFilter(filters, "regular_print");
+    if (regular) {
+      const regularOnly = out.filter((c) => matchesFilter(c, regular));
+      if (regularOnly.length > 0) out = regularOnly;
+    }
+  }
+
+  // Dedup within the pack — drop already-pulled card ids. Only apply
+  // the filter if at least one card survives; otherwise the slot can't
+  // produce anything and we'd hit fallbackPull, which is worse than
+  // accepting a duplicate.
+  if (excludedIds.size > 0) {
+    const deduped = out.filter((c) => !excludedIds.has(c.id));
+    if (deduped.length > 0) out = deduped;
+  }
+
   return out;
 }
 
 /**
  * Try outcomes in weighted order. If the chosen outcome's candidate pool is
  * empty (e.g. a set we don't have cards for, or a filter that nobody in the
- * set matches), we discard it and re-roll over the remaining outcomes. That
- * keeps the pack opening robust against missing data — a recipe that
- * references SOA cards still works if SOA failed to load (we just skip the
- * SOA outcomes for that slot).
+ * set matches), we discard it and re-roll over the remaining outcomes.
  */
 function rollOutcome(
   outcomes: Outcome[],
@@ -118,14 +172,14 @@ function rollOutcome(
   ownSetCode: string,
   filters: Record<string, FilterPredicate>,
   rng: () => number,
+  excludedIds: Set<string>,
+  isLandSlot: boolean,
 ): { outcome: Outcome; card: ScryfallCard } | null {
-  // Each pass picks one outcome by weight from the pool of "still viable"
-  // outcomes — meaning outcomes whose candidate set isn't empty.
   const remaining: Outcome[] = outcomes.slice();
   while (remaining.length) {
     const chosen = pickWeighted(remaining, (o) => o.weight, rng);
     if (!chosen) return null;
-    const candidates = candidatesFor(chosen, pool, ownSetCode, filters);
+    const candidates = candidatesFor(chosen, pool, ownSetCode, filters, excludedIds, isLandSlot);
     if (candidates.length) {
       const card = pickFrom(candidates, rng);
       if (card) return { outcome: chosen, card };
@@ -137,22 +191,34 @@ function rollOutcome(
 }
 
 /**
- * Last-resort fallback when every outcome failed (e.g. the set has zero
- * cards at the chosen rarity). Walk down rarities until we find anything.
- * This preserves the old engine's behavior of never producing an "empty"
- * slot when there's at least one card in the pool somewhere.
+ * Last-resort fallback when every outcome failed. Walks down rarities
+ * looking for any card the pack hasn't already taken; only allows a
+ * duplicate if the entire set bucket is exhausted.
  */
 function fallbackPull(
   pool: CardPool,
   ownSetCode: string,
   rng: () => number,
+  excludedIds: Set<string>,
+  filters: Record<string, FilterPredicate>,
+  isLandSlot: boolean,
 ): ScryfallCard | undefined {
   const own = ownSetCode.toLowerCase();
-  const setCards = pool[own] ?? [];
+  let setCards = pool[own] ?? [];
+  // Same basic-land exclusion the outcome path applies — keeps the
+  // fallback from filling a non-land slot with a basic just because
+  // the slot's normal candidates ran out.
+  if (!isLandSlot) {
+    const basicLand = resolveFilter(filters, "basic_land");
+    if (basicLand) {
+      setCards = setCards.filter((c) => !matchesFilter(c, basicLand));
+    }
+  }
   for (const r of ["common", "uncommon", "rare", "mythic"] as Rarity[]) {
-    const tier = setCards.filter((c) => c.rarity === r);
+    const tier = setCards.filter((c) => c.rarity === r && !excludedIds.has(c.id));
     if (tier.length) return pickFrom(tier, rng);
   }
+  // Last resort — any card, including dupes if the pool's truly tiny.
   return pickFrom(setCards, rng);
 }
 
@@ -182,20 +248,26 @@ export function openPack(
 ): PulledCard[] {
   const pulled: PulledCard[] = [];
   const ownSet = setCode.toLowerCase();
+  // Tracks card ids already pulled in this pack so we don't sample the
+  // same card twice when a slot has count > 1. Tokens are kept in their
+  // own bucket so a token can't shadow a main-set card with the same id
+  // (extremely unlikely but defensive).
+  const pickedIds = new Set<string>();
+  const pickedTokenIds = new Set<string>();
 
   for (let s = 0; s < content.slots.length; s++) {
     const slot: SlotRecipe = content.slots[s];
     const count = slot.count ?? 1;
 
     for (let i = 0; i < count; i++) {
-      // Token slots roll their outcomes the same way every other slot does
-      // (so a "token OR art card" slot can mix outcomes with different
-      // weights and sets), but they silently skip the entire slot if every
-      // outcome's pool is empty — this is how a set with no tokens or
-      // art cards degrades gracefully without forcing an off-spec fallback.
+      const isLandSlot = !!slot.basicLand;
+
       if (slot.token) {
-        const rolled = rollOutcome(slot.outcomes, pool, ownSet, filters, rng);
+        // Token slots never want basic-land exclusion (token sets don't
+        // contain lands anyway, but the flag is still well-defined).
+        const rolled = rollOutcome(slot.outcomes, pool, ownSet, filters, rng, pickedTokenIds, false);
         if (!rolled) continue;
+        pickedTokenIds.add(rolled.card.id);
         pulled.push({
           uid: `${rolled.card.id}#${GLOBAL_PULL_COUNTER++}`,
           card: rolled.card,
@@ -208,7 +280,7 @@ export function openPack(
         continue;
       }
 
-      const rolled = rollOutcome(slot.outcomes, pool, ownSet, filters, rng);
+      const rolled = rollOutcome(slot.outcomes, pool, ownSet, filters, rng, pickedIds, isLandSlot);
       let card: ScryfallCard | undefined;
       let outcomeFoil = false;
       let outcomeLabel: string | undefined;
@@ -217,9 +289,10 @@ export function openPack(
         outcomeFoil = !!rolled.outcome.foil;
         outcomeLabel = rolled.outcome.label;
       } else {
-        card = fallbackPull(pool, ownSet, rng);
+        card = fallbackPull(pool, ownSet, rng, pickedIds, filters, isLandSlot);
       }
       if (!card) continue;
+      pickedIds.add(card.id);
 
       pulled.push({
         uid: `${card.id}#${GLOBAL_PULL_COUNTER++}`,

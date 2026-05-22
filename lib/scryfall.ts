@@ -114,15 +114,49 @@ interface ScryfallList<T> {
   total_cards?: number;
 }
 
-async function sj<T>(url: string, revalidate = 60 * 60 * 24): Promise<T> {
-  const res = await fetch(url, {
-    headers: HEADERS,
-    next: { revalidate },
-  });
-  if (!res.ok) {
-    throw new Error(`Scryfall ${res.status} on ${url}`);
+/**
+ * Scryfall JSON fetch with retry + backoff. Retries on 5xx (server hiccup),
+ * 429 (rate limited), and network failures, up to `maxRetries` times with
+ * exponential delay (200ms → 600ms → 1800ms). 4xx client errors throw
+ * immediately because retrying won't help (bad query, missing set, etc.).
+ *
+ * Scryfall is reliable on average but has brief outages a few times a week;
+ * pagination is the most-affected path because a single set can require 3–5
+ * sequential GETs, and any one of them blipping kills the whole route. With
+ * retries, transient failures recover automatically and the user never sees
+ * the 503 page.
+ */
+async function sj<T>(
+  url: string,
+  revalidate = 60 * 60 * 24,
+  maxRetries = 3,
+): Promise<T> {
+  let lastErr: unknown = null;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await fetch(url, {
+        headers: HEADERS,
+        next: { revalidate },
+      });
+      if (res.ok) return (await res.json()) as T;
+
+      // 4xx (except 429) — client error, don't retry.
+      if (res.status >= 400 && res.status < 500 && res.status !== 429) {
+        throw new Error(`Scryfall ${res.status} on ${url}`);
+      }
+
+      lastErr = new Error(`Scryfall ${res.status} on ${url}`);
+    } catch (e) {
+      lastErr = e;
+    }
+
+    // Either a retriable HTTP status or a network failure — back off and try again.
+    if (attempt < maxRetries) {
+      const delay = 200 * Math.pow(3, attempt);
+      await new Promise((r) => setTimeout(r, delay));
+    }
   }
-  return res.json() as Promise<T>;
+  throw lastErr instanceof Error ? lastErr : new Error(`Scryfall request failed: ${url}`);
 }
 
 /* ---------------- Sets ---------------- */
@@ -188,11 +222,26 @@ export async function getSetCards(code: string): Promise<ScryfallCard[]> {
   let url: string | undefined =
     `${BASE}/cards/search?q=${q}&unique=prints&order=set&include_extras=false&include_variations=false&include_multilingual=true`;
   while (url) {
-    const page: ScryfallList<ScryfallCard> = await sj<ScryfallList<ScryfallCard>>(url, 60 * 60 * 24 * 7);
-    out.push(...page.data);
-    url = page.has_more ? page.next_page : undefined;
-    // gentle pacing for multi-page fetches in dev
-    if (url) await new Promise((r) => setTimeout(r, 80));
+    try {
+      const page: ScryfallList<ScryfallCard> = await sj<ScryfallList<ScryfallCard>>(url, 60 * 60 * 24 * 7);
+      out.push(...page.data);
+      url = page.has_more ? page.next_page : undefined;
+      // gentle pacing for multi-page fetches in dev
+      if (url) await new Promise((r) => setTimeout(r, 80));
+    } catch (e) {
+      // sj already retried the page 3× — Scryfall is genuinely down for
+      // this URL. Rather than killing the entire route, bail out with
+      // whatever we've collected so far. The Next fetch cache will likely
+      // get a successful response on the next request (we cache 7 days
+      // at the fetch layer) so subsequent loads will be complete. The
+      // engine's fallbacks tolerate incomplete pools.
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[scryfall] getSetCards(${code}): pagination failed at ${out.length} cards, returning partial result`,
+        e,
+      );
+      break;
+    }
   }
   // Tokens / emblems / schemes are fetched through getSetTokens when a
   // recipe references them, so they're filtered out here. Art series cards
