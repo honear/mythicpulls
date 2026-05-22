@@ -214,14 +214,16 @@ export function PackOpener({
           className="relative min-h-[680px] flex flex-col items-center justify-center px-6 py-10"
           style={{
             background: `
-              radial-gradient(ellipse 90% 75% at 50% 45%, rgba(168, 85, 247, 0.35), rgba(99, 102, 241, 0.18) 35%, transparent 75%),
-              radial-gradient(ellipse 60% 50% at 50% 95%, rgba(252, 211, 77, 0.10), transparent 70%)
+              radial-gradient(ellipse 90% 75% at 50% 45%, rgba(37, 99, 235, 0.32), rgba(243, 111, 39, 0.16) 35%, transparent 75%),
+              radial-gradient(ellipse 60% 50% at 50% 95%, rgba(251, 191, 36, 0.12), transparent 70%)
             `,
           }}
         >
           {phase === "idle" && (
             <div className="flex flex-col items-center gap-8 w-full">
-              <div className="text-center">
+              {/* Headline sits above the fan via z-index — fanned packs lift
+                  on hover and would otherwise overlap the text. */}
+              <div className="text-center relative" style={{ zIndex: 20 }}>
                 <p className="label-caps text-[var(--color-ink-muted)] mb-2">{setMeta.name}</p>
                 <h2 className="font-display text-3xl md:text-4xl text-[var(--color-fg)]">
                   Open a new pack
@@ -389,9 +391,15 @@ function PackFan({
   setMeta: SetMeta;
   onSelect: (t: PackType) => void;
 }) {
-  // Order in display matters: keep PACK_ORDER's ordering, but recommended
-  // pack (Play if available, otherwise Draft) is centered.
-  const ordered = PACK_ORDER.filter((t) => available.includes(t));
+  // Play sits in the middle of the fan when available; the other packs
+  // distribute around it. Falls back to PACK_ORDER for sets without play.
+  const ordered = (() => {
+    const filtered = PACK_ORDER.filter((t) => available.includes(t));
+    if (!filtered.includes("play")) return filtered;
+    const others = filtered.filter((t) => t !== "play");
+    const mid = Math.floor(others.length / 2);
+    return [...others.slice(0, mid), "play" as PackType, ...others.slice(mid)];
+  })();
   const centerIdx = Math.floor(ordered.length / 2);
 
   return (
@@ -433,8 +441,10 @@ function FannedPack({
   // Pick a different art crop per pack so each pack reads as distinct.
   const heroArt = setMeta.heroArtCrops?.[artIndex % (setMeta.heroArtCrops.length || 1)];
 
-  // Real Magic booster aspect is roughly 1 : 1.92. We use 200 × 380 px.
-  const PACK_W = 200;
+  // Real Magic booster aspect is roughly 1 : 1.46 after widening. We use
+  // 260 × 380 px (~30% wider than the original 200 × 380 silhouette so the
+  // art crop reads at a comfortable size).
+  const PACK_W = 260;
   const PACK_H = 380;
 
   return (
@@ -462,21 +472,23 @@ function FannedPack({
               : `0 30px 70px -30px rgba(0,0,0,0.55)`,
           }}
         >
-          {/* Art-crop background, darkened for legibility */}
+          {/* Art-crop background — half a stop lighter so the artwork
+              reads through the color wash without losing legibility. */}
           {heroArt && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={heroArt}
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
-              style={{ filter: "brightness(0.35) saturate(0.85) contrast(1.15)" }}
+              style={{ filter: "brightness(0.55) saturate(0.95) contrast(1.10)" }}
             />
           )}
-          {/* Color wash to lock pack identity */}
+          {/* Color wash to lock pack identity (lighter alpha so the art
+              isn't overwhelmed). */}
           <div
             className="absolute inset-0"
             style={{
-              background: `linear-gradient(160deg, ${c.from}D0 0%, ${c.to}E5 100%)`,
+              background: `linear-gradient(160deg, ${c.from}A0 0%, ${c.to}C0 100%)`,
               mixBlendMode: "multiply",
             }}
           />

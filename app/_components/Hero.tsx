@@ -164,9 +164,9 @@ function Logomark() {
     >
       <defs>
         <linearGradient id="mp-mark" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#fcd34d" />
-          <stop offset="55%" stopColor="#a855f7" />
-          <stop offset="100%" stopColor="#6366f1" />
+          <stop offset="0%" stopColor="#F36F27" />
+          <stop offset="55%" stopColor="#FBBF24" />
+          <stop offset="100%" stopColor="#2563EB" />
         </linearGradient>
       </defs>
       <circle cx="16" cy="16" r="12" stroke="url(#mp-mark)" strokeWidth="2" />

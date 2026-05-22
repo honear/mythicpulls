@@ -25,11 +25,14 @@
   --color-ink-muted:hsl(40 6% 60%);
   --color-ink-dim:  hsl(40 6% 42%);
 
-  /* Accent — same indigo→purple→amber used on the headline */
-  --accent-indigo:  #6366f1;
-  --accent-purple:  #a855f7;
-  --accent-amber:   #fcd34d;
-  --accent-grad:    linear-gradient(to left, #6366f1, #a855f7, #fcd34d);
+  /* Accent — blue → orange duo with a warm amber midpoint. Replaces the
+     earlier indigo/purple gradient so the hero reads as fire-and-sky
+     rather than the previous mythic-purple. */
+  --accent-blue:    #2563EB;
+  --accent-sky:     #60A5FA;
+  --accent-orange:  #F36F27;
+  --accent-amber:   #FBBF24;
+  --accent-grad:    linear-gradient(to left, #2563EB, #FBBF24, #F36F27);
 
   /* Mythic — the MTG mythic-rare orange. Used as the hero brand accent
      with a layered glow. */

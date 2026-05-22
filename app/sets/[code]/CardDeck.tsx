@@ -44,6 +44,12 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
   const [seen, setSeen] = useState<Set<string>>(
     () => new Set(pulled.length ? [pulled[0].uid] : []),
   );
+  /** The uid of the last unseen card, captured the moment `seen` first
+   *  reaches `pulled.length`. While this is set, the deck is in
+   *  "awaiting-dismiss" mode — only `lastUid` is visible, the back pile
+   *  fades away, and we wait for the user to drag or tap this card
+   *  before firing onAllRevealed (which switches the view to Grid). */
+  const [lastUid, setLastUid] = useState<string | null>(null);
 
   // Keep the latest callback in a ref so the init effect only depends on
   // `pulled`. Without this, every parent rerender (e.g. a price update)
@@ -62,6 +68,9 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
     setCycleOrder(pulled.map((p) => p.uid));
     setSeen(new Set(pulled.length ? [pulled[0].uid] : []));
     if (pulled.length) onCardSeenRef.current?.(pulled[0].uid);
+    // Reset awaiting-dismiss state on a new pack. If only ONE card was
+    // pulled (edge case), that lone card IS the final card.
+    setLastUid(pulled.length === 1 ? pulled[0].uid : null);
   }, [pulled]);
 
   const byUid = useMemo(() => {
@@ -81,13 +90,23 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
         onCardSeenRef.current?.(newTop);
         const out = new Set(prevSeen);
         out.add(newTop);
+        // When the LAST unseen card has just become the top, freeze in
+        // "awaiting-dismiss" mode — don't auto-switch. The user will
+        // explicitly drag or tap this card to acknowledge it.
         if (out.size >= pulled.length) {
-          window.setTimeout(() => onAllRevealedRef.current?.(), 420);
+          setLastUid(newTop);
         }
         return out;
       });
       return next;
     });
+  }
+
+  /** Called from DeckSlot when the user explicitly dismisses the final
+   *  (last-unseen) card via drag or tap. Triggers the grid switch. */
+  function dismissFinal() {
+    setLastUid(null);
+    window.setTimeout(() => onAllRevealedRef.current?.(), 60);
   }
 
   const topUid = cycleOrder[0];
@@ -117,6 +136,10 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
           // to the back-of-stack rest slot — they overlap there but only
           // the latest in DOM order is visible. Keeping them mounted lets
           // the snap-back transition play after a release.
+          const isFinalCard = lastUid !== null && uid === lastUid;
+          // Once we're in "awaiting final dismiss" mode, fade the back-pile
+          // so the lone last card sits clean on the stage.
+          const hide = lastUid !== null && uid !== lastUid;
           return (
             <DeckSlot
               key={uid}
@@ -124,8 +147,11 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
               stackPos={Math.min(i, STACK_DEPTH - 1)}
               behindStack={i >= STACK_DEPTH}
               isTop={i === 0}
+              isFinalCard={isFinalCard}
+              hide={hide}
               onCommitCycle={() => sendToBack(uid)}
               onDragStateChange={(d) => setDraggingUid(d ? uid : null)}
+              onFinalDismiss={dismissFinal}
             />
           );
         })}
@@ -153,7 +179,8 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
 /* ---------------- Single card slot ---------------- */
 
 function DeckSlot({
-  pulled, stackPos, behindStack, isTop, onCommitCycle, onDragStateChange,
+  pulled, stackPos, behindStack, isTop, isFinalCard, hide,
+  onCommitCycle, onDragStateChange, onFinalDismiss,
 }: {
   pulled: PulledCard;
   stackPos: number;
@@ -161,8 +188,17 @@ function DeckSlot({
    *  finish its animation toward the back, then fade out. */
   behindStack: boolean;
   isTop: boolean;
+  /** True if this slot holds the last-unseen card and we're waiting for
+   *  the user to explicitly dismiss it. */
+  isFinalCard: boolean;
+  /** True if this slot should fade out — used to clear the back-pile while
+   *  the user finishes interacting with the final card. */
+  hide: boolean;
   onCommitCycle: () => void;
   onDragStateChange: (dragging: boolean) => void;
+  /** Called when the user drags or taps the final card past the threshold —
+   *  the parent uses this to switch the view to Grid. */
+  onFinalDismiss?: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -209,7 +245,9 @@ function DeckSlot({
 
     // Commit the cycle the first time we cross COMMIT_DIST so the rest of
     // the deck starts animating forward while the user is still holding.
-    if (!committedRef.current && dist2 >= COMMIT_DIST * COMMIT_DIST) {
+    // BUT skip this for the final card — we don't want to cycle the deck,
+    // we want to dismiss it (handled on pointer release).
+    if (!isFinalCard && !committedRef.current && dist2 >= COMMIT_DIST * COMMIT_DIST) {
       committedRef.current = true;
       onCommitCycle();
     }
@@ -237,14 +275,34 @@ function DeckSlot({
     if (!start) { setIsDragging(false); return; }
 
     if (!dragging) {
-      // Pure tap in Reveal mode — animate the card out as if the user
-      // had thrown it, then commit the cycle. No modal.
-      animateCycleOut(el, onCommitCycle);
+      // Pure tap. In final-card mode → dismiss + switch view. Otherwise
+      // animate the cycle as usual.
+      if (isFinalCard) {
+        animateCycleOut(el, () => onFinalDismiss?.());
+      } else {
+        animateCycleOut(el, onCommitCycle);
+      }
       return;
     }
 
-    // Real drag release: DON'T clear the inline transform here. Doing so
-    // would reset transform to identity in the previous frame (when
+    // Real drag release.
+    if (isFinalCard) {
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+      const movedFar = dx * dx + dy * dy >= COMMIT_DIST * COMMIT_DIST;
+      if (movedFar) {
+        // Acknowledge the final card — animate it out and switch to Grid.
+        animateCycleOut(el, () => onFinalDismiss?.());
+        setIsDragging(false);
+        return;
+      }
+      // Drag was too short — spring back, but don't dismiss yet.
+      setIsDragging(false);
+      return;
+    }
+
+    // Standard drag release: DON'T clear the inline transform here. Doing
+    // so would reset transform to identity in the previous frame (when
     // transition is still locked to "none" via .deck-slot-dragging), so
     // when React rerenders the next frame with transform=rest the browser
     // would have nothing to animate from. Leaving the cursor-tracked
@@ -277,7 +335,7 @@ function DeckSlot({
       className={`absolute touch-none ${
         dragging ? "deck-slot-dragging " : ""
       }${
-        isTop || dragging
+        (isTop || dragging) && !hide
           ? "cursor-grab active:cursor-grabbing"
           : "cursor-default pointer-events-none"
       }`}
@@ -293,15 +351,14 @@ function DeckSlot({
         // .deck-slot-dragging class is gone by then, the inline transition
         // below is already active, so the snap animation actually plays.
         transform: dragging ? undefined : rest,
-        transition: "transform 380ms cubic-bezier(0.22, 0.9, 0.3, 1)",
+        transition:
+          "transform 380ms cubic-bezier(0.22, 0.9, 0.3, 1), opacity 420ms ease",
         zIndex: dragging ? 999 : 100 - stackPos,
-        // Cards stay at opacity 1 always. Cycled cards land on the back-of-
-        // deck slot (clamped to stackPos = STACK_DEPTH - 1), where they
-        // visually merge with already-cycled cards — only the topmost in
-        // DOM order is ever drawn since they share transform + z-index.
-        // This is what makes "snap back behind the deck" actually look like
-        // snapping; the previous opacity:0 rule was making the card vanish.
-        willChange: "transform",
+        // Final-card mode: every slot that ISN'T the last card fades out
+        // so the lone last card sits clean. Pointer-events are also
+        // disabled via the className when hide=true.
+        opacity: hide ? 0 : 1,
+        willChange: "transform, opacity",
       }}
     >
       <MagicCard
