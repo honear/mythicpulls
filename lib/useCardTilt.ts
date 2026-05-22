@@ -17,7 +17,7 @@ import { useCallback, useRef } from "react";
  *   --holo-opacity  : 0..1 (only set when `holographic` is true)
  */
 export function useCardTilt({
-  maxTilt = 8,
+  maxTilt = 12,
   holographic = false,
   glare = true,
   enabled = true,

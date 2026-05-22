@@ -58,17 +58,17 @@ export function Hero() {
         {/* Hero copy */}
         <div className="flex-1 flex items-center justify-center px-8">
           <div className="flex flex-col items-center text-center">
-            <h1 className="hero-headline">
+            <h1 className="hero-headline brand-wordmark">
               <span style={{ color: "var(--hero-fg)" }}>Mythic </span>
-              <span className="ai-grad">Pulls</span>
+              <span className="brand-mythic" data-text="Pulls">Pulls</span>
             </h1>
             <p
               className="text-lg leading-8 max-w-md opacity-80"
               style={{ color: "var(--hero-sub)", marginTop: 9 }}
             >
-              Open Magic boosters with cinematic care.
+              Open Magic boosters without care.
               <br />
-              Drop rates honored, every rip.
+              Preview your pulls before you invest!
             </p>
             <Link
               href="#sets"
@@ -215,7 +215,7 @@ function SetMarquee() {
           >
             Drawing pulls from
             <br />
-            sets across the multiverse
+            sets across the omenpaths
           </div>
 
           {/* Right: marquee */}

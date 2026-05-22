@@ -27,6 +27,11 @@ export default function RootLayout({
           href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap"
           rel="stylesheet"
         />
+        {/* Cinzel (hero brand serif) from Google Fonts */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="min-h-full flex flex-col">
         <SiteHeader />

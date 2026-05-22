@@ -210,15 +210,8 @@ export function PackOpener({
           />
         )}
         <div className="relative">
-          <PackTypeBar
-            available={availableTypes}
-            current={packType}
-            onChange={(t) => phase === "idle" && setPackType(t)}
-            disabled={phase !== "idle"}
-          />
-
         <div
-          className="relative min-h-[600px] flex items-center justify-center px-6 py-12"
+          className="relative min-h-[680px] flex flex-col items-center justify-center px-6 py-10"
           style={{
             background: `
               radial-gradient(ellipse 90% 75% at 50% 45%, rgba(168, 85, 247, 0.35), rgba(99, 102, 241, 0.18) 35%, transparent 75%),
@@ -227,17 +220,18 @@ export function PackOpener({
           }}
         >
           {phase === "idle" && (
-            <div className="flex flex-col items-center gap-8">
-              <BoosterPack setMeta={setMeta} onClick={rip} packType={packType} />
-              <button
-                onClick={rip}
-                className="btn-hero-secondary liquid-glass rounded-full text-sm font-semibold px-7 py-3.5"
-              >
-                Rip {def.name.toLowerCase()}
-              </button>
-              <p className="text-sm text-[var(--color-ink)] max-w-md text-center">
-                {def.tagline}
-              </p>
+            <div className="flex flex-col items-center gap-8 w-full">
+              <div className="text-center">
+                <p className="label-caps text-[var(--color-ink-muted)] mb-2">{setMeta.name}</p>
+                <h2 className="font-display text-3xl md:text-4xl text-[var(--color-fg)]">
+                  Open a new pack
+                </h2>
+              </div>
+              <PackFan
+                available={availableTypes}
+                setMeta={setMeta}
+                onSelect={(t) => { setPackType(t); rip(); }}
+              />
             </div>
           )}
 
@@ -382,6 +376,170 @@ function PackTypeBar({
           );
         })}
       </div>
+    </div>
+  );
+}
+
+/* ---------------- Pack fan (idle phase) ---------------- */
+
+function PackFan({
+  available, setMeta, onSelect,
+}: {
+  available: PackType[];
+  setMeta: SetMeta;
+  onSelect: (t: PackType) => void;
+}) {
+  // Order in display matters: keep PACK_ORDER's ordering, but recommended
+  // pack (Play if available, otherwise Draft) is centered.
+  const ordered = PACK_ORDER.filter((t) => available.includes(t));
+  const centerIdx = Math.floor(ordered.length / 2);
+
+  return (
+    <div className="flex items-end justify-center gap-6 md:gap-8 w-full">
+      {ordered.map((type, i) => {
+        const offset = i - centerIdx;
+        const isCenter = offset === 0;
+        return (
+          <FannedPack
+            key={type}
+            packType={type}
+            setMeta={setMeta}
+            offset={offset}
+            isCenter={isCenter}
+            onSelect={() => onSelect(type)}
+            artIndex={i}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function FannedPack({
+  packType, setMeta, offset, isCenter, onSelect, artIndex,
+}: {
+  packType: PackType;
+  setMeta: SetMeta;
+  offset: number;
+  isCenter: boolean;
+  onSelect: () => void;
+  artIndex: number;
+}) {
+  const c = packHue(packType);
+  // Rotate the pack outward (not the button).
+  const tilt = offset * 7;
+  const lift = isCenter ? -18 : 0;
+  const scale = isCenter ? 1.04 : 1;
+  // Pick a different art crop per pack so each pack reads as distinct.
+  const heroArt = setMeta.heroArtCrops?.[artIndex % (setMeta.heroArtCrops.length || 1)];
+
+  // Real Magic booster aspect is roughly 1 : 1.92. We use 200 × 380 px.
+  const PACK_W = 200;
+  const PACK_H = 380;
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <button
+        onClick={onSelect}
+        aria-label={`Open ${PACKS[packType].name}`}
+        className="relative outline-none cursor-pointer transition-transform duration-300 hover:scale-[1.06] hover:-translate-y-2"
+        style={{
+          transform: `rotate(${tilt}deg) translateY(${lift}px) scale(${scale})`,
+          transformOrigin: "center bottom",
+          zIndex: isCenter ? 10 : 5,
+        }}
+      >
+        <div
+          className="relative overflow-hidden"
+          style={{
+            width: PACK_W,
+            height: PACK_H,
+            borderRadius: "14px 14px 6px 6px",
+            background: `linear-gradient(160deg, ${c.from} 0%, ${c.to} 100%)`,
+            border: `1px solid ${c.edge}`,
+            boxShadow: isCenter
+              ? `0 50px 90px -30px rgba(0,0,0,0.65), 0 20px 50px -20px ${c.from}80`
+              : `0 30px 70px -30px rgba(0,0,0,0.55)`,
+          }}
+        >
+          {/* Art-crop background, darkened for legibility */}
+          {heroArt && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={heroArt}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ filter: "brightness(0.35) saturate(0.85) contrast(1.15)" }}
+            />
+          )}
+          {/* Color wash to lock pack identity */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(160deg, ${c.from}D0 0%, ${c.to}E5 100%)`,
+              mixBlendMode: "multiply",
+            }}
+          />
+          {/* Inner border */}
+          <div className="absolute inset-3 rounded-md border border-white/10 pointer-events-none" />
+
+          {/* Tear strip + foil notch at top — mimics a real booster's
+              perforated top edge. */}
+          <div className="absolute top-0 inset-x-0 h-6 bg-black/40 flex items-center justify-center gap-1">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <span
+                key={i}
+                className="w-1.5 h-1 rounded-sm bg-white/30"
+              />
+            ))}
+          </div>
+
+
+
+          {/* Set icon */}
+          <div className="absolute inset-x-0 top-24 grid place-items-center">
+            {setMeta.iconUri && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={setMeta.iconUri}
+                alt=""
+                className="w-20 h-20 object-contain"
+                style={{ filter: "brightness(0) invert(1) drop-shadow(0 6px 18px rgba(0,0,0,0.5))" }}
+              />
+            )}
+          </div>
+
+          {/* Set name + pack-type label near the bottom */}
+          <div className="absolute bottom-10 inset-x-3 text-center px-2">
+            <p className="font-display text-white text-base tracking-wide leading-tight">
+              {setMeta.name}
+            </p>
+            <p className="text-[9px] tracking-[0.3em] uppercase font-medium text-white/65 mt-2">
+              {setMeta.code.toUpperCase()} · {PACKS[packType].name}
+            </p>
+          </div>
+
+          {/* Diagonal foil shimmer band */}
+          <div
+            className="absolute inset-y-0 left-0 right-0 pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.20) 50%, transparent 65%)",
+              mixBlendMode: "screen",
+            }}
+          />
+        </div>
+      </button>
+
+      {/* Rip button below — stays upright (no rotation) */}
+      <button
+        onClick={onSelect}
+        className={`btn-hero-secondary liquid-glass rounded-full text-sm font-semibold px-5 py-2.5 ${
+          isCenter ? "scale-105" : ""
+        }`}
+      >
+        Rip {PACKS[packType].name.replace(" Booster", "")}
+      </button>
     </div>
   );
 }

@@ -31,6 +31,15 @@
   --accent-amber:   #fcd34d;
   --accent-grad:    linear-gradient(to left, #6366f1, #a855f7, #fcd34d);
 
+  /* Mythic — the MTG mythic-rare orange. Used as the hero brand accent
+     with a layered glow. */
+  --mythic-orange:  #F36F27;
+  --mythic-deep:    #B43E0D;
+  --mythic-glow:    rgba(243, 111, 39, 0.55);
+
+  /* Cinzel: classy fantasy Roman serif used for the hero brand wordmark. */
+  --font-brand: "Cinzel", "Trajan Pro", "Adobe Caslon Pro", serif;
+
   /* Rarity accents — tuned for dark backgrounds */
   --color-rarity-common: hsl(40 6% 70%);
   --color-rarity-uncommon: #B7C3D8;
@@ -98,6 +107,48 @@ html, body {
           background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
+}
+
+/* ---------- Hero brand wordmark — Cinzel + mythic glow ---------- */
+.brand-wordmark {
+  font-family: var(--font-brand);
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  line-height: 0.95;
+}
+.brand-mythic {
+  font-family: var(--font-brand);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--mythic-orange);
+  text-shadow:
+    0 0 18px var(--mythic-glow),
+    0 0 36px rgba(243, 111, 39, 0.40),
+    0 0 72px rgba(243, 111, 39, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(ellipse at 50% 50%,
+      #FFB37A 0%,
+      #F36F27 35%,
+      #B43E0D 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  /* Keep the glow visible even though background-clip: text removes the
+     paint — render the same text behind itself purely as the glow source. */
+  position: relative;
+}
+.brand-mythic::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: var(--mythic-orange);
+  -webkit-text-fill-color: var(--mythic-orange);
+  filter: blur(12px);
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 .balance { text-wrap: balance; }
@@ -198,9 +249,9 @@ html, body {
   width: var(--card-base);
   border-radius: var(--card-radius);
   background: transparent;
-  /* Box-shadow respects border-radius, so the lift follows the rounded
-     corners. The shadow stays visible because there's no clipping on
-     the wrapper itself — only on the inner faces. */
+  /* Box-shadow respects border-radius so the lift hugs the rounded
+     corners. We keep overflow visible at the wrapper level so the
+     shadow extends outward; the inner faces handle their own clip. */
   box-shadow:
     0 18px 38px -20px rgba(0, 0, 0, 0.7),
     0 6px 14px -10px rgba(99, 102, 241, 0.22);
@@ -240,7 +291,9 @@ html, body {
   inset: 0;
   border-radius: inherit;
   /* Defensive: mix-blend-mode can escape the parent's overflow:hidden in
-     some browsers. Clip the gradient to the rounded corner here too. */
+     some browsers. clip-path enforces the rounded shape directly on this
+     element and isn't bypassed by blend modes. */
+  clip-path: inset(0 round var(--card-radius));
   overflow: hidden;
   pointer-events: none;
   background: radial-gradient(
@@ -262,6 +315,7 @@ html, body {
   border-radius: inherit;
   /* Force clipping to the rounded card corner — defensive against
      mix-blend-mode escaping the parent's overflow. */
+  clip-path: inset(0 round var(--card-radius));
   overflow: hidden;
   -webkit-mask-image:
     radial-gradient(ellipse at center, black 60%, rgba(0,0,0,0.6) 90%, transparent 100%);

@@ -15,7 +15,15 @@ const FILTERS: { id: Filter; label: string }[] = [
   { id: "all", label: "All" },
 ];
 
-export function SetGrid({ sets }: { sets: ScryfallSet[] }) {
+export function SetGrid({
+  sets,
+  sampleArt = {},
+}: {
+  sets: ScryfallSet[];
+  /** Per-set art-crop URLs keyed by lowercased set code. Optional — sets
+   *  without an entry fall back to icon-only. */
+  sampleArt?: Record<string, string>;
+}) {
   const [filter, setFilter] = useState<Filter>("recent");
   const [query, setQuery] = useState("");
 
@@ -77,7 +85,12 @@ export function SetGrid({ sets }: { sets: ScryfallSet[] }) {
       ) : (
         <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
           {filtered.map((s, i) => (
-            <SetTile key={s.id} set={s} index={i} />
+            <SetTile
+              key={s.id}
+              set={s}
+              index={i}
+              artUrl={sampleArt[s.code.toLowerCase()]}
+            />
           ))}
         </ul>
       )}
@@ -85,7 +98,13 @@ export function SetGrid({ sets }: { sets: ScryfallSet[] }) {
   );
 }
 
-function SetTile({ set, index }: { set: ScryfallSet; index: number }) {
+function SetTile({
+  set, index, artUrl,
+}: {
+  set: ScryfallSet;
+  index: number;
+  artUrl?: string;
+}) {
   const recommended = recommendedPackType(set);
   const year = set.released_at?.slice(0, 4) ?? "—";
   const rec = PACKS[recommended].name.replace(" Booster", "");
@@ -97,9 +116,32 @@ function SetTile({ set, index }: { set: ScryfallSet; index: number }) {
     >
       <Link
         href={`/sets/${set.code.toLowerCase()}`}
-        className="group relative block aspect-square liquid-panel hover:bg-white/8 transition-colors lift"
+        className="group relative block aspect-square liquid-panel hover:bg-white/8 transition-colors lift overflow-hidden"
         title={`${set.name} · ${year}`}
       >
+        {/* Per-set art-crop background. Darkened heavily so the icon + text
+            stay readable; brightens on hover for a subtle reveal. */}
+        {artUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={artUrl}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+            style={{
+              filter: "brightness(0.38) saturate(0.9) contrast(1.05)",
+            }}
+          />
+        )}
+        {/* Dark gradient overlay to lock contrast for the overlaid text. */}
+        {artUrl && (
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(13,8,28,0.45) 0%, rgba(13,8,28,0.0) 30%, rgba(13,8,28,0.0) 70%, rgba(13,8,28,0.65) 100%)",
+            }}
+          />
+        )}
         <div className="absolute inset-0 grid place-items-center">
           {set.icon_svg_uri ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -107,7 +149,11 @@ function SetTile({ set, index }: { set: ScryfallSet; index: number }) {
               src={set.icon_svg_uri}
               alt=""
               className="w-12 h-12 object-contain transition-transform duration-300 group-hover:scale-110"
-              style={{ filter: "brightness(0) invert(1)" }}
+              style={{
+                filter: artUrl
+                  ? "brightness(0) invert(1) drop-shadow(0 4px 12px rgba(0,0,0,0.7))"
+                  : "brightness(0) invert(1)",
+              }}
             />
           ) : (
             <span className="font-display text-3xl text-[var(--color-fg)]">

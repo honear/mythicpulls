@@ -190,6 +190,34 @@ export function getCardBackImage(card: ScryfallCard): string | undefined {
 }
 
 /**
+ * Fetch one representative card from a set and return its art_crop URL.
+ * Used to back the home-page set tiles with each set's own iconic art.
+ *
+ * Strategy: pick the priciest mythic (or rare, or anything) from the set —
+ * Scryfall's `order=usd direction=desc` returns the most-expensive first.
+ * Returns null on any failure so the caller can fall back to icon-only.
+ *
+ * Aggressively cached (7 days) since per-set hero art rarely changes.
+ */
+export async function getSetSampleArt(code: string): Promise<string | null> {
+  const q = encodeURIComponent(`set:${code.toLowerCase()} game:paper -is:digital`);
+  const url =
+    `${BASE}/cards/search?q=${q}&unique=cards&order=usd&dir=desc&page=1`;
+  try {
+    const page = await sj<ScryfallList<ScryfallCard>>(url, 60 * 60 * 24 * 7);
+    for (const c of page.data) {
+      const art =
+        c.image_uris?.art_crop ??
+        c.card_faces?.[0]?.image_uris?.art_crop;
+      if (art) return art;
+    }
+  } catch {
+    // 404 (set has 0 cards) or transient — fall through.
+  }
+  return null;
+}
+
+/**
  * Fetch the token cards associated with a given expansion set. Scryfall puts
  * each set's tokens in a sibling set whose code is conventionally `t<code>`
  * (e.g. tokens for DSK live in TDSK). If that lookup returns nothing we
