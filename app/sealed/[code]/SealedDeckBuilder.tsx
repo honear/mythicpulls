@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Download, Copy, X, Plus, Minus, ArrowDownAZ, Palette,
@@ -8,6 +8,8 @@ import {
 import type { ScryfallCard } from "@/lib/scryfall";
 import type { PulledCard } from "@/lib/pack-open";
 import { MagicCard } from "@/app/_components/MagicCard";
+import { HoverPreview } from "@/app/_components/HoverPreview";
+import { useHoverPreview } from "@/lib/useHoverPreview";
 import {
   exportDeckText,
   emptyBasicLandCounts,
@@ -48,9 +50,7 @@ const DECK_CARD_W = 196;
 const DECK_STACK_OFFSET = 44;       // px between stacked cards in a column
 const DECK_VISIBLE_COLUMNS = 7;
 
-const HOVER_DELAY_MS = 200;
 const DRAG_THRESHOLD = 6;
-const PREVIEW_W = 320;
 
 type ColumnId = number | "L";
 
@@ -159,12 +159,6 @@ interface DragState {
   y: number;
   active: boolean;
 }
-interface PreviewState {
-  card: ScryfallCard;
-  foil: boolean;
-  x: number;
-  y: number;
-}
 
 /* ============================================================
    Component
@@ -180,13 +174,8 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
   const [lands, setLands] = useState<BasicLandCounts>(() => emptyBasicLandCounts());
   const [exportOpen, setExportOpen] = useState(false);
   const [drag, setDrag] = useState<DragState | null>(null);
-  const [preview, setPreview] = useState<PreviewState | null>(null);
   const [poolSort, setPoolSort] = useState<PoolSort>("mana");
-  const hoverTimerRef = useRef<number | null>(null);
-
-  useEffect(() => () => {
-    if (hoverTimerRef.current) window.clearTimeout(hoverTimerRef.current);
-  }, []);
+  const { preview, armHover, clearHover } = useHoverPreview();
 
   /* -------- card-move primitives -------- */
 
@@ -229,29 +218,6 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
   function bumpLand(name: keyof BasicLandCounts, delta: number) {
     setLands((prev) => ({ ...prev, [name]: Math.max(0, prev[name] + delta) }));
   }
-
-  /* -------- hover preview -------- */
-
-  function clearHover() {
-    if (hoverTimerRef.current) {
-      window.clearTimeout(hoverTimerRef.current);
-      hoverTimerRef.current = null;
-    }
-    setPreview(null);
-  }
-  const armHover = useCallback(
-    (p: PulledCard, e: React.PointerEvent) => {
-      if (e.pointerType === "touch") return;
-      // Reset whatever was queued (different card or just moved cursor)
-      if (hoverTimerRef.current) window.clearTimeout(hoverTimerRef.current);
-      const x = e.clientX;
-      const y = e.clientY;
-      hoverTimerRef.current = window.setTimeout(() => {
-        setPreview({ card: p.card, foil: p.foil, x, y });
-      }, HOVER_DELAY_MS);
-    },
-    [],
-  );
 
   /* -------- drag plumbing -------- */
 
@@ -568,7 +534,7 @@ interface SharedHandlers {
   moveDrag: (e: React.PointerEvent<HTMLElement>) => void;
   endDrag: (e: React.PointerEvent<HTMLElement>) => void;
   cancelDrag: () => void;
-  armHover: (p: PulledCard, e: React.PointerEvent) => void;
+  armHover: (card: ScryfallCard, foil: boolean, e: React.PointerEvent) => void;
   clearHover: () => void;
 }
 
@@ -586,7 +552,7 @@ function PoolTile({
   return (
     <button
       onPointerDown={(e) => handlers.startDrag(head, "pool", e)}
-      onPointerMove={(e) => { handlers.moveDrag(e); handlers.armHover(head, e); }}
+      onPointerMove={(e) => { handlers.moveDrag(e); handlers.armHover(head.card, head.foil, e); }}
       onPointerUp={handlers.endDrag}
       onPointerCancel={handlers.cancelDrag}
       onPointerLeave={handlers.clearHover}
@@ -732,7 +698,7 @@ function DeckSlotCard({
   return (
     <button
       onPointerDown={(e) => handlers.startDrag(pulled, "deck", e)}
-      onPointerMove={(e) => { handlers.moveDrag(e); handlers.armHover(pulled, e); }}
+      onPointerMove={(e) => { handlers.moveDrag(e); handlers.armHover(pulled.card, pulled.foil, e); }}
       onPointerUp={handlers.endDrag}
       onPointerCancel={handlers.cancelDrag}
       onPointerLeave={handlers.clearHover}
@@ -776,45 +742,13 @@ function DeckSlotCard({
    ============================================================ */
 
 /**
- * Hover preview + drag ghost both render via React Portal directly onto
- * document.body. The deck/pool panels use `backdrop-filter`, which
- * creates a new containing block for `position: fixed` descendants — so a
- * preview rendered inside the panel would be clipped by the panel's
- * overflow even with z-index: 9999. Portaling escapes every stacking
- * context in the tree.
+ * DragGhost renders via React Portal directly onto document.body. The
+ * deck/pool panels use `backdrop-filter`, which creates a new containing
+ * block for `position: fixed` descendants — so a ghost rendered inside
+ * the panel would be clipped by the panel's overflow. Portaling escapes
+ * every stacking context in the tree. (HoverPreview is now imported from
+ * app/_components/HoverPreview — same trick for the same reason.)
  */
-function HoverPreview({
-  card, foil, x, y,
-}: { card: ScryfallCard; foil: boolean; x: number; y: number }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
-  if (!mounted || typeof document === "undefined") return null;
-
-  const cardH = (PREVIEW_W * 88) / 63;
-  const margin = 18;
-  const offsetX = 24;
-  let left = x + offsetX;
-  let top = y - cardH / 2;
-  if (left + PREVIEW_W + margin > window.innerWidth) left = x - PREVIEW_W - offsetX;
-  if (top < margin) top = margin;
-  if (top + cardH + margin > window.innerHeight) top = window.innerHeight - cardH - margin;
-
-  return createPortal(
-    <div
-      className="fixed pointer-events-none anim-detail-fade"
-      style={{ left, top, width: PREVIEW_W, zIndex: 2147483600 }}
-    >
-      <MagicCard
-        card={{ kind: "scryfall", card, foil }}
-        faceUp
-        width={PREVIEW_W}
-        holoEnabled={false}
-      />
-    </div>,
-    document.body,
-  );
-}
-
 function DragGhost({
   card, foil, x, y,
 }: { card: ScryfallCard; foil: boolean; x: number; y: number }) {

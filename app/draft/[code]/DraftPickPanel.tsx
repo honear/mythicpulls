@@ -4,6 +4,8 @@ import { useMemo } from "react";
 import { Hand } from "lucide-react";
 import type { PulledCard } from "@/lib/pack-open";
 import { MagicCard } from "@/app/_components/MagicCard";
+import { HoverPreview } from "@/app/_components/HoverPreview";
+import { useHoverPreview } from "@/lib/useHoverPreview";
 
 const CARD_W = 174;
 const CARD_H = Math.round((CARD_W * 88) / 63);
@@ -83,6 +85,7 @@ export function DraftPickPanel({
   hint: string;
 }) {
   const sorted = useMemo(() => sortPackByRarity(pack), [pack]);
+  const { preview, armHover, clearHover } = useHoverPreview();
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -107,25 +110,41 @@ export function DraftPickPanel({
           <PickableCard
             key={p.uid}
             pulled={p}
-            onPick={() => onPick(p.uid)}
+            onPick={() => { clearHover(); onPick(p.uid); }}
             mode={mode}
             exitDirection={exitDirection}
             isPicked={mode === "exit" && pickedUid === p.uid}
+            onHover={armHover}
+            onHoverEnd={clearHover}
           />
         ))}
       </div>
+      {preview && mode === "enter" && (
+        <HoverPreview
+          card={preview.card}
+          foil={preview.foil}
+          x={preview.x}
+          y={preview.y}
+        />
+      )}
     </div>
   );
 }
 
 function PickableCard({
-  pulled, onPick, mode, exitDirection, isPicked,
+  pulled, onPick, mode, exitDirection, isPicked, onHover, onHoverEnd,
 }: {
   pulled: PulledCard;
   onPick: () => void;
   mode: "enter" | "exit";
   exitDirection: "left" | "right";
   isPicked: boolean;
+  /** Called from pointerenter/pointermove to (re-)arm the 200ms preview
+   *  timer. The hook ignores touch pointers automatically. */
+  onHover: (card: import("@/lib/scryfall").ScryfallCard, foil: boolean, e: React.PointerEvent) => void;
+  /** Called from pointerleave (and at the start of a click) to cancel
+   *  any pending preview and hide an active one. */
+  onHoverEnd: () => void;
 }) {
   const rarity = pulled.card.rarity;
   const isGlowing = rarity === "rare" || rarity === "mythic";

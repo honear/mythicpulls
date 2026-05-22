@@ -129,7 +129,7 @@ interface ScryfallList<T> {
 async function sj<T>(
   url: string,
   revalidate = 60 * 60 * 24,
-  maxRetries = 3,
+  maxRetries = 2,
 ): Promise<T> {
   let lastErr: unknown = null;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -150,9 +150,13 @@ async function sj<T>(
       lastErr = e;
     }
 
-    // Either a retriable HTTP status or a network failure — back off and try again.
+    // Either a retriable HTTP status or a network failure — back off and
+    // try again. Backoff stays tight (150ms, 450ms) so when Scryfall is
+    // genuinely down for an extended window we fail fast and let
+    // getSetCards' partial-tolerance recover rather than stalling the
+    // page load for tens of seconds.
     if (attempt < maxRetries) {
-      const delay = 200 * Math.pow(3, attempt);
+      const delay = 150 * Math.pow(3, attempt);
       await new Promise((r) => setTimeout(r, delay));
     }
   }
