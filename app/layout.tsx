@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "./_components/SiteHeader";
+import { Analytics } from "@vercel/analytics/next";
 
 const geist = Geist({
   variable: "--font-sans",
@@ -43,6 +44,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="flex-1 flex flex-col">{children}</main>
         <SiteFooter />
+        <Analytics />
       </body>
     </html>
   );
