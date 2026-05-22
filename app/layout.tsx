@@ -4,6 +4,7 @@ import Link from "next/link";
 import "./globals.css";
 import { SiteHeader } from "./_components/SiteHeader";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geist = Geist({
   variable: "--font-sans",
@@ -46,6 +47,7 @@ export default function RootLayout({
         <main className="flex-1 flex flex-col">{children}</main>
         <SiteFooter />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
