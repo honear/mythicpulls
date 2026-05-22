@@ -14,6 +14,8 @@ export interface SlotRule {
    * basic lands, fallback is a common.
    */
   basicLand?: boolean;
+  /** When true, pull from the set's token pool instead of normal rarities. */
+  token?: boolean;
 }
 
 export interface PackDefinition {
@@ -23,31 +25,42 @@ export interface PackDefinition {
   cardCount: number;
   /** Slot list applied top to bottom; one card per slot. */
   slots: SlotRule[];
+  /** Approximate USD MSRP — used to compute pulled-vs-spent stats. */
+  costUsd: number;
 }
 
 /**
  * Mythic ratio in the rare slot of modern boosters is ~1 in 7.4
- * (≈13.5% mythic / 86.5% rare). We encode it as integer weights.
+ * (≈13.5% mythic / 86.5% rare). Encoded as integer weights.
  */
 const RARE_MYTHIC = { rare: 86, mythic: 14 } as const;
 
 /**
  * Wildcard slot in Play Boosters is roughly:
  *  ~70% common, ~20% uncommon, ~8% rare, ~2% mythic.
- * (Wizards has published per-set variations; this is a faithful average.)
  */
 const WILDCARD = { common: 70, uncommon: 20, rare: 8, mythic: 2 } as const;
 
 /** Foil slot rarity distribution — roughly 67/20/10/3 c/u/r/m. */
 const FOIL_WILDCARD = { common: 67, uncommon: 20, rare: 10, mythic: 3 } as const;
 
+/** Token slot — first card in every pack. Weights are irrelevant since
+ *  the pull source is the dedicated token pool. */
+const TOKEN_SLOT: SlotRule = {
+  label: "Token",
+  weights: { common: 1 },
+  token: true,
+};
+
 export const PACKS: Record<PackType, PackDefinition> = {
   play: {
     type: "play",
     name: "Play Booster",
-    tagline: "14 cards · 1 rare/mythic · 1 traditional foil · modern standard",
-    cardCount: 14,
+    tagline: "14 cards + token · 1 rare/mythic · 1 traditional foil · modern standard",
+    cardCount: 15,
+    costUsd: 5.99,
     slots: [
+      TOKEN_SLOT,
       { label: "Common", weights: { common: 1 } },
       { label: "Common", weights: { common: 1 } },
       { label: "Common", weights: { common: 1 } },
@@ -67,9 +80,11 @@ export const PACKS: Record<PackType, PackDefinition> = {
   draft: {
     type: "draft",
     name: "Draft Booster",
-    tagline: "15 cards · 1 rare/mythic · 1 basic land · the classic format",
-    cardCount: 15,
+    tagline: "15 cards + token · 1 rare/mythic · 1 basic land · the classic format",
+    cardCount: 16,
+    costUsd: 3.99,
     slots: [
+      TOKEN_SLOT,
       ...Array.from({ length: 10 }, () => ({
         label: "Common" as const,
         weights: { common: 1 },
@@ -84,9 +99,11 @@ export const PACKS: Record<PackType, PackDefinition> = {
   collector: {
     type: "collector",
     name: "Collector Booster",
-    tagline: "15 premium cards · all foil/showcase · the chase pack",
-    cardCount: 15,
+    tagline: "15 premium cards + token · all foil/showcase · the chase pack",
+    cardCount: 16,
+    costUsd: 25.99,
     slots: [
+      TOKEN_SLOT,
       { label: "Foil Common", weights: { common: 1 }, foil: true },
       { label: "Foil Common", weights: { common: 1 }, foil: true },
       { label: "Foil Common", weights: { common: 1 }, foil: true },
@@ -124,7 +141,6 @@ export function recommendedPackType(set: ScryfallSet): PackType {
  * a perfect simulation of Wizards' SKU history.
  */
 export function packsAvailableFor(set: ScryfallSet): PackType[] {
-  // Collector Boosters are a modern construct — only suggest for 2018+ sets.
   const released = set.released_at ?? "";
   const types: PackType[] = [];
   if (released >= "2024-02-01") types.push("play");

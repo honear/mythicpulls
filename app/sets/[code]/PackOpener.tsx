@@ -1,33 +1,60 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Sparkles, RotateCcw, Save, Eye, GripVertical } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { Sparkles, RotateCcw, Save, Eye, GripVertical, LayoutGrid, Layers } from "lucide-react";
 import type { ScryfallCard } from "@/lib/scryfall";
-import { getCardImage } from "@/lib/scryfall";
+import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
 import { PACKS, PACK_ORDER, type PackType } from "@/lib/pack-rules";
 import { buildPool, openPack, type PulledCard } from "@/lib/pack-open";
 import { addToCollection } from "@/lib/collection";
 import { useDragReorder } from "@/lib/useDragReorder";
 import { MagicCard } from "@/app/_components/MagicCard";
+import { CardDetailModal } from "@/app/_components/CardDetailModal";
+import { CardDeck } from "./CardDeck";
 
-interface SetMeta { code: string; name: string; iconUri?: string }
+type ViewMode = "reveal" | "grid";
+
+interface SetMeta {
+  code: string;
+  name: string;
+  iconUri?: string;
+  /** Art-crop URLs from notable rares/mythics in this set — used as the
+   *  page's branding decor. The first one drives the panel backdrop. */
+  heroArtCrops?: string[];
+}
 
 interface Props {
   setMeta: SetMeta;
   cards: ScryfallCard[];
+  tokens?: ScryfallCard[];
   availableTypes: PackType[];
   initialType: PackType;
 }
 
 type Phase = "idle" | "ripping" | "revealing";
 
-export function PackOpener({ setMeta, cards, availableTypes, initialType }: Props) {
+export function PackOpener({
+  setMeta, cards, tokens = [], availableTypes, initialType,
+}: Props) {
   const [packType, setPackType] = useState<PackType>(initialType);
   const [phase, setPhase] = useState<Phase>("idle");
   const [pulled, setPulled] = useState<PulledCard[]>([]);
   const [flipped, setFlipped] = useState<Set<string>>(new Set());
+  const [viewMode, setViewMode] = useState<ViewMode>("reveal");
+  const [detailUid, setDetailUid] = useState<string | null>(null);
+  // Session-level money tracker — resets on full page reload.
+  const [stats, setStats] = useState<{ spent: number; pulled: number; packs: number }>({
+    spent: 0,
+    pulled: 0,
+    packs: 0,
+  });
+  /** uids whose price has already been added to `stats.pulled` for the
+   *  current pack. Stored in a ref so updating it (called from CardDeck's
+   *  init effect for the first card) never schedules a React state update
+   *  during another component's render. */
+  const valuedRef = useRef<Set<string>>(new Set());
 
-  const pool = useMemo(() => buildPool(cards), [cards]);
+  const pool = useMemo(() => buildPool(cards, tokens), [cards, tokens]);
   const def = PACKS[packType];
 
   function rip() {
@@ -36,6 +63,16 @@ export function PackOpener({ setMeta, cards, availableTypes, initialType }: Prop
     const result = openPack(pool, packType);
     setPulled(result);
     setFlipped(new Set());
+    valuedRef.current = new Set();
+    setDetailUid(null);
+    setViewMode("reveal");
+    // Only spent + pack count accumulate immediately — pulled value rolls
+    // in as the user actually reveals each card.
+    setStats((s) => ({
+      ...s,
+      spent: s.spent + def.costUsd,
+      packs: s.packs + 1,
+    }));
     setTimeout(() => setPhase("revealing"), 800);
   }
 
@@ -43,17 +80,79 @@ export function PackOpener({ setMeta, cards, availableTypes, initialType }: Prop
     setPhase("idle");
     setPulled([]);
     setFlipped(new Set());
+    valuedRef.current = new Set();
+    setDetailUid(null);
   }
+
+  /** Idempotent — adds the card's market price to `stats.pulled` the first
+   *  time it's revealed. Safe to call from any phase (including from a
+   *  child component's render path) because the React state update is
+   *  deferred to a microtask. */
+  function markRevealed(uid: string) {
+    if (valuedRef.current.has(uid)) return;
+    const p = pulled.find((x) => x.uid === uid);
+    if (!p) return;
+    valuedRef.current.add(uid);
+    const price = getDisplayPrice(p.card, p.foil);
+    if (!price) return;
+    // queueMicrotask defers the setState past the current render commit so
+    // CardDeck's init effect can call us without triggering React's
+    // "Cannot update a component while rendering a different component"
+    // warning.
+    queueMicrotask(() => {
+      setStats((s) => ({ ...s, pulled: s.pulled + price.value }));
+    });
+  }
+
+  /** Fired when Reveal mode finishes — auto-flip every card in Grid with a
+   *  small stagger so the transition reads as a smooth fan-out. */
+  function autoFlipAll() {
+    pulled.forEach((p, i) => {
+      window.setTimeout(() => {
+        setFlipped((prev) => {
+          if (prev.has(p.uid)) return prev;
+          const next = new Set(prev);
+          next.add(p.uid);
+          return next;
+        });
+        // Defensive: cards have already been priced during reveal, but
+        // call markRevealed here too for the manual-switch case.
+        markRevealed(p.uid);
+      }, 120 + i * 110);
+    });
+  }
+
+  /** Click handler used by both Grid and Reveal modes.
+   *  - Grid + face-down → flip it
+   *  - Grid + face-up   → open the detail modal
+   *  - Reveal (top)     → open the detail modal */
+  function onTapCard(uid: string) {
+    if (viewMode === "reveal") {
+      setDetailUid(uid);
+      return;
+    }
+    if (flipped.has(uid)) setDetailUid(uid);
+    else flipOne(uid);
+  }
+
+  const detailPulled =
+    detailUid ? pulled.find((p) => p.uid === detailUid) ?? null : null;
 
   function flipAll() {
     setFlipped(new Set(pulled.map((p) => p.uid)));
+    pulled.forEach((p) => markRevealed(p.uid));
   }
 
   function flipOne(uid: string) {
     setFlipped((prev) => {
       const next = new Set(prev);
-      if (next.has(uid)) next.delete(uid);
-      else next.add(uid);
+      if (next.has(uid)) {
+        next.delete(uid);
+      } else {
+        next.add(uid);
+        // Count price the first time a card flips face-up.
+        markRevealed(uid);
+      }
       return next;
     });
   }
@@ -87,21 +186,44 @@ export function PackOpener({ setMeta, cards, availableTypes, initialType }: Prop
     });
   }
 
+  const heroArt = setMeta.heroArtCrops?.[0];
+
   return (
     <section className="mx-auto max-w-7xl w-full px-6 py-10">
-      <div className="rounded-2xl liquid-panel overflow-hidden">
-        <PackTypeBar
-          available={availableTypes}
-          current={packType}
-          onChange={(t) => phase === "idle" && setPackType(t)}
-          disabled={phase !== "idle"}
-        />
+      <MoneyStrip stats={stats} packCost={def.costUsd} />
+      <div className="relative rounded-2xl liquid-panel overflow-hidden">
+        {/* Per-set art backdrop — a faded, heavily-blurred art crop from a
+            top card of the set sits behind everything else, giving each
+            set its own visual identity without competing with the cards. */}
+        {heroArt && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={heroArt}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            style={{
+              opacity: 0.18,
+              filter: "blur(40px) saturate(140%)",
+              transform: "scale(1.15)",
+            }}
+          />
+        )}
+        <div className="relative">
+          <PackTypeBar
+            available={availableTypes}
+            current={packType}
+            onChange={(t) => phase === "idle" && setPackType(t)}
+            disabled={phase !== "idle"}
+          />
 
         <div
-          className="relative min-h-[560px] flex items-center justify-center px-6 py-12"
+          className="relative min-h-[600px] flex items-center justify-center px-6 py-12"
           style={{
-            background:
-              "radial-gradient(ellipse 70% 55% at 50% 35%, rgba(168, 85, 247, 0.18), transparent 65%)",
+            background: `
+              radial-gradient(ellipse 90% 75% at 50% 45%, rgba(168, 85, 247, 0.35), rgba(99, 102, 241, 0.18) 35%, transparent 75%),
+              radial-gradient(ellipse 60% 50% at 50% 95%, rgba(252, 211, 77, 0.10), transparent 70%)
+            `,
           }}
         >
           {phase === "idle" && (
@@ -123,19 +245,33 @@ export function PackOpener({ setMeta, cards, availableTypes, initialType }: Prop
             <RippingPack setMeta={setMeta} packType={packType} />
           )}
 
-          {phase === "revealing" && (
+          {phase === "revealing" && viewMode === "grid" && (
             <CardSpread
               pulled={pulled}
               flipped={flipped}
-              onFlip={flipOne}
+              onTap={onTapCard}
               onReorder={reorder}
+            />
+          )}
+
+          {phase === "revealing" && viewMode === "reveal" && (
+            <CardDeck
+              pulled={pulled}
+              onCardSeen={markRevealed}
+              onAllRevealed={() => {
+                setViewMode("grid");
+                autoFlipAll();
+              }}
             />
           )}
         </div>
 
         {phase === "revealing" && (
           <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between border-t border-[var(--color-line)] px-6 py-4">
-            <PullSummary pulled={pulled} />
+            <div className="flex flex-col md:flex-row gap-3 md:items-center">
+              <PullSummary pulled={pulled} />
+              <ViewToggle mode={viewMode} onChange={setViewMode} />
+            </div>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={flipAll}
@@ -158,8 +294,59 @@ export function PackOpener({ setMeta, cards, availableTypes, initialType }: Prop
             </div>
           </div>
         )}
+        </div>
       </div>
+
+      <CardDetailModal
+        card={detailPulled?.card ?? null}
+        foil={detailPulled?.foil}
+        slotLabel={detailPulled?.slotLabel}
+        onClose={() => setDetailUid(null)}
+      />
     </section>
+  );
+}
+
+/* ---------------- Session money strip ---------------- */
+
+function MoneyStrip({
+  stats, packCost,
+}: {
+  stats: { spent: number; pulled: number; packs: number };
+  packCost: number;
+}) {
+  const profit = stats.pulled - stats.spent;
+  const profitSign = profit >= 0 ? "+" : "-";
+  const profitColor = profit >= 0
+    ? "text-[var(--color-rarity-rare)]"
+    : "text-[var(--color-rarity-mythic)]";
+  const usd = (n: number) => `$${n.toFixed(2)}`;
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 mb-4 rounded-2xl liquid-glass">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+        <Stat label="Pulled" value={usd(stats.pulled)} accent="text-[var(--color-fg)]" />
+        <Stat label="Spent"  value={usd(stats.spent)} accent="text-[var(--color-ink-muted)]" />
+        <Stat
+          label={profit >= 0 ? "Profit" : "Loss"}
+          value={`${profitSign}${usd(Math.abs(profit))}`}
+          accent={profitColor}
+        />
+        <Stat label="Packs" value={String(stats.packs)} accent="text-[var(--color-fg)]" />
+      </div>
+      <p className="label-caps text-[var(--color-ink-muted)]">
+        next pack · {usd(packCost)}
+      </p>
+    </div>
+  );
+}
+
+function Stat({ label, value, accent }: { label: string; value: string; accent: string }) {
+  return (
+    <div className="flex flex-col">
+      <span className="label-caps text-[var(--color-ink-muted)]/80">{label}</span>
+      <span className={`font-display text-xl ${accent}`}>{value}</span>
+    </div>
   );
 }
 
@@ -318,32 +505,42 @@ function RippingPack({ setMeta, packType }: { setMeta: SetMeta; packType: PackTy
 /* ---------------- Card spread ---------------- */
 
 function CardSpread({
-  pulled, flipped, onFlip, onReorder,
+  pulled, flipped, onTap, onReorder,
 }: {
   pulled: PulledCard[];
   flipped: Set<string>;
-  onFlip: (uid: string) => void;
+  onTap: (uid: string) => void;
   onReorder: (from: number, to: number) => void;
 }) {
-  const { bind } = useDragReorder({ onReorder });
+  const { bind } = useDragReorder({
+    onReorder,
+    onTap: (i) => {
+      const p = pulled[i];
+      if (p) onTap(p.uid);
+    },
+  });
 
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-4">
         <p className="text-xs text-[var(--color-ink-muted)] inline-flex items-center gap-2">
           <GripVertical className="w-3.5 h-3.5" />
-          Click to flip · drag to rearrange · hover for parallax
+          Click face-down to flip · click face-up for details · drag to rearrange
         </p>
       </div>
       <div
-        className="grid gap-5 w-full justify-center"
+        className="grid w-full"
         style={{
-          gridTemplateColumns: "repeat(auto-fill, 180px)",
+          gridTemplateColumns: "repeat(auto-fill, minmax(180px, 180px))",
           justifyContent: "center",
+          columnGap: 28,
+          rowGap: 36,
         }}
       >
         {pulled.map((p, idx) => {
           const bound = bind(idx);
+          const isFaceUp = flipped.has(p.uid);
+          const price = isFaceUp ? getDisplayPrice(p.card, p.foil) : null;
           return (
             <div
               key={p.uid}
@@ -354,24 +551,38 @@ function CardSpread({
               onPointerCancel={bound.onPointerCancel}
               data-dragging={bound["data-dragging"]}
               data-drop-target={bound["data-drop-target"]}
-              className={`anim-card-rise touch-none ${
-                bound["data-dragging"] ? "card-dragging" : ""
-              } ${bound["data-drop-target"] ? "card-drop-target rounded-[12px]" : ""}`}
-              style={{ animationDelay: `${idx * 50}ms` }}
+              className={`anim-card-rise touch-none flex flex-col items-center ${
+                bound["data-drop-target"]
+                  ? "card-drop-target rounded-[12px]"
+                  : ""
+              }`}
+              style={{
+                animationDelay: `${idx * 50}ms`,
+                width: 180,
+                ...bound.style,
+              }}
             >
               <MagicCard
                 card={{ kind: "scryfall", card: p.card, foil: p.foil }}
-                faceUp={flipped.has(p.uid)}
-                onClick={() => onFlip(p.uid)}
-                width={undefined}
+                faceUp={isFaceUp}
+                width={180}
               />
-              <p
-                className={`mt-2 text-center text-[10px] tracking-[0.18em] uppercase font-semibold transition-opacity duration-500 ${rarityColor(
-                  p.card.rarity,
-                )} ${flipped.has(p.uid) ? "opacity-100" : "opacity-0"}`}
-              >
-                {p.slotLabel}
-              </p>
+              {/* Caption area — reserves height so the grid doesn't shift
+                  when face-up vs face-down. */}
+              <div className="mt-2 min-h-[2.5rem] w-full flex flex-col items-center justify-start">
+                <p
+                  className={`text-center text-[10px] tracking-[0.18em] uppercase font-semibold transition-opacity duration-500 ${rarityColor(
+                    p.card.rarity,
+                  )} ${isFaceUp ? "opacity-100" : "opacity-0"}`}
+                >
+                  {p.slotLabel}
+                </p>
+                {price && (
+                  <p className="text-xs font-semibold text-[var(--color-fg)] mt-1">
+                    {price.label}
+                  </p>
+                )}
+              </div>
             </div>
           );
         })}
@@ -387,6 +598,56 @@ function rarityColor(r: string) {
     case "uncommon": return "text-[var(--color-rarity-uncommon)]";
     default: return "text-[var(--color-ink-muted)]";
   }
+}
+
+/* ---------------- View toggle (Grid / Reveal) ---------------- */
+
+function ViewToggle({
+  mode, onChange,
+}: {
+  mode: ViewMode;
+  onChange: (m: ViewMode) => void;
+}) {
+  return (
+    <div className="inline-flex items-center gap-1 p-1 rounded-full liquid-glass">
+      <ToggleButton
+        active={mode === "reveal"}
+        onClick={() => onChange("reveal")}
+        icon={<Layers className="w-3.5 h-3.5" />}
+        label="Reveal"
+      />
+      <ToggleButton
+        active={mode === "grid"}
+        onClick={() => onChange("grid")}
+        icon={<LayoutGrid className="w-3.5 h-3.5" />}
+        label="Grid"
+      />
+    </div>
+  );
+}
+
+function ToggleButton({
+  active, onClick, icon, label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase px-3 py-1.5 rounded-full transition-colors ${
+        active
+          ? "bg-white text-[var(--color-bg)]"
+          : "text-[var(--color-fg)] hover:bg-white/10"
+      }`}
+      aria-pressed={active}
+    >
+      {icon}
+      {label}
+    </button>
+  );
 }
 
 /* ---------------- Pull summary ---------------- */

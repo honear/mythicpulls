@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSet, getSetCards } from "@/lib/scryfall";
+import { getSet, getSetCards, getSetTokens } from "@/lib/scryfall";
 import { packsAvailableFor, recommendedPackType } from "@/lib/pack-rules";
 import { PackOpener } from "./PackOpener";
 
@@ -27,10 +27,29 @@ export default async function SetPage({ params, searchParams }: Props) {
   const set = await getSet(code);
   if (!set) notFound();
 
-  const cards = await getSetCards(code);
+  const [cards, tokens] = await Promise.all([
+    getSetCards(code),
+    getSetTokens(code),
+  ]);
   const available = packsAvailableFor(set);
   const initial = (sp.type as "play" | "draft" | "collector") ?? recommendedPackType(set);
   const initialType = available.includes(initial) ? initial : available[0];
+
+  // Pick a handful of "hero" art crops for set branding. We prefer the
+  // priciest rare/mythics whose art_crop URL is available — that gives each
+  // set page its own visual signature without burning a separate API call.
+  const heroArtCrops = cards
+    .filter(
+      (c) =>
+        (c.rarity === "rare" || c.rarity === "mythic") &&
+        !!c.image_uris?.art_crop,
+    )
+    .sort(
+      (a, b) =>
+        Number(b.prices?.usd ?? 0) - Number(a.prices?.usd ?? 0),
+    )
+    .slice(0, 6)
+    .map((c) => c.image_uris!.art_crop!);
 
   return (
     <div className="flex flex-col">
@@ -71,8 +90,10 @@ export default async function SetPage({ params, searchParams }: Props) {
           code: set.code,
           name: set.name,
           iconUri: set.icon_svg_uri,
+          heroArtCrops,
         }}
         cards={cards}
+        tokens={tokens}
         availableTypes={available}
         initialType={initialType}
       />

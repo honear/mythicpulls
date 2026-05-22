@@ -48,6 +48,15 @@ export interface ScryfallImageUris {
   border_crop?: string;
 }
 
+export interface ScryfallPrices {
+  usd?: string | null;
+  usd_foil?: string | null;
+  usd_etched?: string | null;
+  eur?: string | null;
+  eur_foil?: string | null;
+  tix?: string | null;
+}
+
 export interface ScryfallCard {
   id: string;
   name: string;
@@ -70,6 +79,7 @@ export interface ScryfallCard {
   booster?: boolean;
   digital?: boolean;
   oversized?: boolean;
+  prices?: ScryfallPrices;
 }
 
 interface ScryfallList<T> {
@@ -177,4 +187,60 @@ export function getCardImage(
 export function getCardBackImage(card: ScryfallCard): string | undefined {
   const back = card.card_faces?.[1];
   return back?.image_uris?.normal;
+}
+
+/**
+ * Fetch the token cards associated with a given expansion set. Scryfall puts
+ * each set's tokens in a sibling set whose code is conventionally `t<code>`
+ * (e.g. tokens for DSK live in TDSK). If that lookup returns nothing we
+ * also try a broader query for tokens whose `set` field matches the original
+ * code (some sets keep their tokens in-house).
+ *
+ * Returns [] gracefully on 404 / empty so the caller can always render.
+ */
+export async function getSetTokens(code: string): Promise<ScryfallCard[]> {
+  const lower = code.toLowerCase();
+  const candidates = [`t${lower}`, lower];
+  for (const c of candidates) {
+    const q = encodeURIComponent(`set:${c} type:token`);
+    const url = `${BASE}/cards/search?q=${q}&unique=cards&include_extras=true&order=set`;
+    try {
+      const out: ScryfallCard[] = [];
+      let next: string | undefined = url;
+      while (next) {
+        const page: ScryfallList<ScryfallCard> = await sj<ScryfallList<ScryfallCard>>(
+          next,
+          60 * 60 * 24 * 7,
+        );
+        out.push(...page.data);
+        next = page.has_more ? page.next_page : undefined;
+        if (next) await new Promise((r) => setTimeout(r, 80));
+      }
+      const filtered = out.filter(
+        (t) =>
+          !t.digital &&
+          (t.layout === "token" || t.layout === "double_faced_token" || t.layout === "emblem"),
+      );
+      if (filtered.length) return filtered;
+    } catch {
+      // Try the next candidate.
+    }
+  }
+  return [];
+}
+
+/** Best price to display for a card given its foil state. */
+export function getDisplayPrice(
+  card: ScryfallCard,
+  foil = false,
+): { value: number; label: string } | null {
+  const p = card.prices;
+  if (!p) return null;
+  const raw = foil
+    ? p.usd_foil ?? p.usd_etched ?? p.usd
+    : p.usd ?? p.usd_foil ?? p.usd_etched;
+  if (!raw) return null;
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return null;
+  return { value: n, label: `$${n.toFixed(2)}` };
 }

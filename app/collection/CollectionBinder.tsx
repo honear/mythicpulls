@@ -194,7 +194,13 @@ function BinderGrid({
   onFlip: (key: string) => void;
   canReorder: boolean;
 }) {
-  const { bind } = useDragReorder({ onReorder });
+  const { bind } = useDragReorder({
+    onReorder: canReorder ? onReorder : () => {},
+    onTap: (i) => {
+      const e = entries[i];
+      if (e) onFlip(keyOf(e));
+    },
+  });
   return (
     <ul
       className="grid gap-5"
@@ -205,13 +211,11 @@ function BinderGrid({
     >
       {entries.map((e, i) => {
         const key = keyOf(e);
-        const bound = canReorder
-          ? bind(i)
-          : ({} as ReturnType<ReturnType<typeof useDragReorder>["bind"]>);
+        const bound = bind(i);
         return (
           <li
             key={key}
-            ref={bound.ref as React.Ref<HTMLLIElement> | undefined}
+            ref={bound.ref as React.Ref<HTMLLIElement>}
             onPointerDown={bound.onPointerDown}
             onPointerMove={bound.onPointerMove}
             onPointerUp={bound.onPointerUp}
@@ -220,8 +224,12 @@ function BinderGrid({
             data-drop-target={bound["data-drop-target"]}
             className={`anim-card-rise touch-none ${
               bound["data-dragging"] ? "card-dragging" : ""
-            } ${bound["data-drop-target"] ? "card-drop-target rounded-[12px]" : ""}`}
-            style={{ animationDelay: `${Math.min(i * 15, 300)}ms` }}
+            } ${
+              canReorder && bound["data-drop-target"]
+                ? "card-drop-target rounded-[12px]"
+                : ""
+            }`}
+            style={{ animationDelay: `${Math.min(i * 15, 300)}ms`, ...bound.style }}
           >
             <MagicCard
               card={{
@@ -234,7 +242,6 @@ function BinderGrid({
                 foil: e.foil,
               }}
               faceUp={revealed.has(key)}
-              onClick={() => onFlip(key)}
             />
             <p className="mt-2 text-[10px] tracking-wider uppercase font-medium text-[var(--color-ink-muted)] truncate">
               {e.setCode.toUpperCase()} · #{e.collectorNumber}

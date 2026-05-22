@@ -1,0 +1,172 @@
+"use client";
+
+import { useEffect } from "react";
+import { ExternalLink, ShoppingBag, X } from "lucide-react";
+import type { ScryfallCard } from "@/lib/scryfall";
+import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
+import { MagicCard } from "./MagicCard";
+
+/**
+ * Card Kingdom doesn't publish a free price API, so we can't display CK
+ * prices alongside the Scryfall (TCGplayer-market) numbers. The closest we
+ * can do is link to their search by card name — that lands the user on the
+ * right product page with the current CK price.
+ */
+function cardKingdomSearchUrl(name: string): string {
+  return `https://www.cardkingdom.com/catalog/search?search=header&filter%5Bname%5D=${encodeURIComponent(name)}`;
+}
+
+interface Props {
+  card: ScryfallCard | null;
+  foil?: boolean;
+  /** Optional slot label (e.g., "Rare / Mythic") shown alongside the card. */
+  slotLabel?: string;
+  onClose: () => void;
+}
+
+export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
+  // Close on Escape.
+  useEffect(() => {
+    if (!card) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [card, onClose]);
+
+  // Lock body scroll while modal is open.
+  useEffect(() => {
+    if (!card) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [card]);
+
+  if (!card) return null;
+
+  const price = getDisplayPrice(card, foil);
+  const eur = card.prices?.eur ? `€${Number(card.prices.eur).toFixed(2)}` : null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[1200] flex items-center justify-center px-4 py-8 anim-detail-fade"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${card.name} details`}
+    >
+      {/* Backdrop */}
+      <button
+        className="absolute inset-0 bg-black/70 backdrop-blur-md"
+        onClick={onClose}
+        aria-label="Close details"
+      />
+
+      <div className="relative grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 max-w-3xl w-full anim-detail-rise">
+        {/* Card */}
+        <div className="flex justify-center md:block">
+          <MagicCard
+            card={{ kind: "scryfall", card, foil }}
+            faceUp
+            width={320}
+          />
+        </div>
+
+        {/* Info */}
+        <div className="liquid-panel rounded-2xl p-6 md:p-7 flex flex-col gap-5 max-w-md self-center">
+          <div>
+            {slotLabel && (
+              <p className="label-caps text-[var(--color-ink-muted)] mb-1">{slotLabel}</p>
+            )}
+            <h2 className="font-display text-3xl md:text-4xl text-[var(--color-fg)] leading-tight">
+              {card.name}
+            </h2>
+            {card.type_line && (
+              <p className="text-sm text-[var(--color-ink)] mt-1">{card.type_line}</p>
+            )}
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <RarityChip rarity={card.rarity} />
+            {foil && <span className="label-caps px-2.5 py-1 rounded-full bg-[var(--color-rarity-bonus)] text-white">Foil</span>}
+            <span className="label-caps px-2.5 py-1 rounded-full liquid-glass text-[var(--color-fg)]">
+              {card.set.toUpperCase()} · #{card.collector_number}
+            </span>
+          </div>
+
+          {(price || eur) && (
+            <div className="flex flex-col gap-1">
+              <p className="label-caps text-[var(--color-ink-muted)]">
+                Market price · TCGplayer
+              </p>
+              <div className="flex items-baseline gap-3">
+                {price && (
+                  <p className="font-display text-3xl text-[var(--color-fg)]">{price.label}</p>
+                )}
+                {eur && (
+                  <p className="text-sm text-[var(--color-ink-muted)]">{eur}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-2 mt-2">
+            <a
+              href={cardKingdomSearchUrl(card.name)}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[var(--accent-amber)] text-[var(--color-bg)] text-sm font-semibold hover:brightness-110 transition-all"
+            >
+              <ShoppingBag className="w-3.5 h-3.5" /> Buy at Card Kingdom
+            </a>
+            <a
+              href={card.scryfall_uri}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white text-[var(--color-bg)] text-sm font-semibold hover:bg-white/90 transition-colors"
+            >
+              <ExternalLink className="w-3.5 h-3.5" /> View on Scryfall
+            </a>
+            <button
+              onClick={onClose}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full btn-hero-secondary liquid-glass text-sm font-semibold"
+            >
+              <X className="w-3.5 h-3.5" /> Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RarityChip({ rarity }: { rarity: string }) {
+  const colors: Record<string, string> = {
+    common:   "var(--color-rarity-common)",
+    uncommon: "var(--color-rarity-uncommon)",
+    rare:     "var(--color-rarity-rare)",
+    mythic:   "var(--color-rarity-mythic)",
+    special:  "var(--color-rarity-bonus)",
+    bonus:    "var(--color-rarity-bonus)",
+  };
+  const c = colors[rarity] ?? "var(--color-rarity-common)";
+  const isLight = rarity === "uncommon" || rarity === "common";
+  return (
+    <span
+      className="label-caps px-2.5 py-1 rounded-full"
+      style={{
+        background: c,
+        color: isLight ? "var(--color-bg)" : "white",
+      }}
+    >
+      {rarity}
+    </span>
+  );
+}
+
+// Tail-piece used to size and exit gracefully — even if image hasn't loaded.
+export function getArtFallback(card: ScryfallCard): string | undefined {
+  return getCardImage(card, "art_crop") ?? getCardImage(card, "normal");
+}

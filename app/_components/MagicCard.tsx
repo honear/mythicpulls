@@ -5,9 +5,10 @@ import type { ScryfallCard } from "@/lib/scryfall";
 import { getCardImage } from "@/lib/scryfall";
 import { useCardTilt } from "@/lib/useCardTilt";
 
-/** Default Magic card back, hosted by Scryfall. */
+/** Scryfall's PNG back has transparent corners so the card's natural
+ *  rounded corners show through against any background. */
 export const CARD_BACK_URL =
-  "https://backs.scryfall.io/large/0/a/0aeebaf5-8c7d-4636-9e82-8c27447861f7.jpg";
+  "https://backs.scryfall.io/png/0/a/0aeebaf5-8c7d-4636-9e82-8c27447861f7.png";
 
 export type CardLike =
   | { kind: "scryfall"; card: ScryfallCard; foil?: boolean }
@@ -15,7 +16,6 @@ export type CardLike =
       kind: "lite";
       name: string;
       typeLine?: string;
-      /** Image URL — any Scryfall size. Will be normalized to /normal/. */
       art: string;
       setCode: string;
       collectorNumber?: string;
@@ -27,21 +27,40 @@ interface Props {
   card: CardLike;
   faceUp?: boolean;
   onClick?: () => void;
-  /** Override the card width in px. Falls back to --card-base from CSS. */
   width?: number;
   className?: string;
+  /** Disable the holo shimmer entirely (useful when the card is in a deck). */
+  holoEnabled?: boolean;
 }
 
-export function MagicCard({ card, faceUp = true, onClick, width, className }: Props) {
+export function MagicCard({
+  card,
+  faceUp = true,
+  onClick,
+  width,
+  className,
+  holoEnabled = true,
+}: Props) {
   const data = normalize(card);
   const isHolographic =
-    !!data.foil || data.rarity === "mythic" || data.rarity === "rare";
+    holoEnabled &&
+    faceUp &&
+    (!!data.foil || data.rarity === "mythic" || data.rarity === "rare");
+
+  // Tilt is always active for parallax — but holographic shimmer is gated
+  // on faceUp so a face-down card never reveals itself via the holo overlay.
   const tilt = useCardTilt({ holographic: isHolographic });
+
+  // When `width` is set, push it into --card-base so the proportional
+  // radius (--card-radius = 2.5/63 of width) recomputes at every size.
+  const sizeStyle = width
+    ? ({ width, ["--card-base" as string]: `${width}px` } as React.CSSProperties)
+    : undefined;
 
   return (
     <div
       className={`card-mtg ${className ?? ""}`}
-      style={width ? { width } : undefined}
+      style={sizeStyle}
       ref={tilt.ref}
       onPointerEnter={tilt.onPointerEnter}
       onPointerMove={tilt.onPointerMove}
@@ -51,7 +70,6 @@ export function MagicCard({ card, faceUp = true, onClick, width, className }: Pr
       aria-label={faceUp ? data.name : "Magic card, face down"}
     >
       <div className={`card-flip ${faceUp ? "" : "is-flipped"}`}>
-        {/* Front — full card image (frame, oracle text, P/T, etc.) */}
         <div className="card-mtg__face">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -61,10 +79,10 @@ export function MagicCard({ card, faceUp = true, onClick, width, className }: Pr
             draggable={false}
             loading="lazy"
           />
-          <span className="card-mtg__glare" />
+          {/* Glare + holo only on the front face, and only when revealed. */}
+          {faceUp && <span className="card-mtg__glare" />}
           {isHolographic && <span className="card-mtg__holo" />}
         </div>
-        {/* Back — real Magic card back */}
         <div className="card-mtg__face card-mtg__face--back">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -74,7 +92,8 @@ export function MagicCard({ card, faceUp = true, onClick, width, className }: Pr
             draggable={false}
             loading="lazy"
           />
-          <span className="card-mtg__glare" />
+          {/* Glare on the back too — parallax still feels alive while face-down. */}
+          {!faceUp && <span className="card-mtg__glare" />}
         </div>
       </div>
     </div>
@@ -91,9 +110,12 @@ function normalize(card: CardLike): {
 } {
   if (card.kind === "scryfall") {
     const c = card.card;
+    // Prefer PNG so transparent corners reveal the card's natural radius.
     const front =
+      getCardImage(c, "png") ??
       getCardImage(c, "large") ??
       getCardImage(c, "normal") ??
+      c.card_faces?.[0]?.image_uris?.png ??
       c.card_faces?.[0]?.image_uris?.large ??
       c.card_faces?.[0]?.image_uris?.normal ??
       "";
@@ -116,23 +138,24 @@ function normalize(card: CardLike): {
   };
 }
 
-/** Rewrite Scryfall image URLs to the /normal/ full-card size so older
- *  art_crop saves render with frame, text box, and P/T like real cards. */
+/** Rewrite Scryfall image URLs to the PNG variant (transparent corners). */
 function toFullCard(url: string): string {
   if (!url) return url;
-  return url.replace(
-    /\/(art_crop|small|large|png|border_crop)\//,
-    "/normal/",
-  );
+  // Switch the size segment to /png/ AND the extension to .png if present.
+  return url
+    .replace(/\/(art_crop|small|normal|large|border_crop)\//, "/png/")
+    .replace(/\.jpg(\?|$)/, ".png$1");
 }
 
-/** Quick face-down standalone card. */
 export function MagicCardBack({ width }: { width?: number }) {
   const tilt = useCardTilt();
+  const sizeStyle = width
+    ? ({ width, ["--card-base" as string]: `${width}px` } as React.CSSProperties)
+    : undefined;
   return (
     <div
       className="card-mtg"
-      style={width ? { width } : undefined}
+      style={sizeStyle}
       ref={tilt.ref}
       onPointerEnter={tilt.onPointerEnter}
       onPointerMove={tilt.onPointerMove}
@@ -170,10 +193,6 @@ export function MagicCardFlippable({
   );
 }
 
-/**
- * Helper for using art-crop URLs elsewhere (backgrounds, hero accents).
- * Accepts any Scryfall image URL or a card and returns the art_crop variant.
- */
 export function toArtCrop(url: string | undefined): string | undefined {
   if (!url) return url;
   return url.replace(
