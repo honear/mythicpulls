@@ -1,188 +1,106 @@
+/**
+ * Thin compatibility layer over the new data-driven booster config.
+ *
+ * Historically PACKS held the entire slot recipe in TypeScript. After the
+ * refactor it's loaded from data/booster-contents/default.json at module
+ * load and exposed in the legacy shape so existing imports (PACKS,
+ * getPackCost, recommendedPackType, packsAvailableFor) keep working.
+ *
+ * Per-set tweaks now live in:
+ *   - data/sets/<code>.json — pointer + MSRP overrides per pack type
+ *   - data/booster-contents/<name>.json — actual slot recipes
+ * Look at lib/booster-config.ts for the loader API used by route code.
+ */
+
 import type { ScryfallSet } from "./scryfall";
+import type { PackType } from "./booster-config";
+// Hot path: synchronously bundle the default content so PACKS can be a
+// plain object available at module evaluation time. Per-set recipes are
+// still loaded asynchronously via resolveRecipe in the route layer.
+import defaultContentJson from "../data/booster-contents/default.json";
 
-export type PackType = "play" | "draft" | "collector";
+export type { PackType } from "./booster-config";
 
-export interface SlotRule {
-  /** Display label for the slot — used in pull breakdown UI. */
-  label: string;
-  /** Rarity weights for this slot. Numbers are relative weights. */
-  weights: Partial<Record<"common" | "uncommon" | "rare" | "mythic", number>>;
-  /** Whether this card should be visually treated as foil. */
-  foil?: boolean;
-  /**
-   * Optional constraint: prefer basic lands for this slot. If the set has no
-   * basic lands, fallback is a common.
-   */
-  basicLand?: boolean;
-  /** When true, pull from the set's token pool instead of normal rarities. */
-  token?: boolean;
+interface DefaultContentShape {
+  costUsd?: Partial<Record<PackType, number>>;
+  play?: { cardCount: number; tagline?: string };
+  draft?: { cardCount: number; tagline?: string };
+  collector?: { cardCount: number; tagline?: string };
 }
 
+const defaultContent = defaultContentJson as unknown as DefaultContentShape;
+
+/** Legacy-shape pack metadata exposed for UI affordances (pack name,
+ *  tagline, default MSRP). Slot recipes themselves are loaded
+ *  asynchronously via resolveRecipe and are NOT exposed here. */
 export interface PackDefinition {
   type: PackType;
   name: string;
   tagline: string;
   cardCount: number;
-  /** Slot list applied top to bottom; one card per slot. */
-  slots: SlotRule[];
-  /** Default USD MSRP — overridable per-set via PACK_MSRP_OVERRIDES below. */
+  /** Default USD MSRP — overridable per-set via data/sets/<code>.json. */
   costUsd: number;
 }
 
-/* ---------- Distribution constants (publicly-documented rates) ----------
- *
- * These weights model what's printed on the back of the box, summarized in
- * Wizards' own product-page tables and corroborated on the MTG Fandom wiki:
- *
- *   • Modern boosters (Play/Draft) hit a mythic rare roughly once every
- *     7.4 packs — about 13.5% mythic, 86.5% rare in the rare slot.
- *
- *   • The Play Booster "wildcard" slot (introduced with MKM in Feb 2024)
- *     skews heavily common: roughly 70% common / 20% uncommon / 8% rare /
- *     2% mythic.
- *
- *   • The traditional-foil slot follows a similar curve but slightly more
- *     generous to the higher rarities — roughly 67/20/10/3 c/u/r/m.
- *
- * These are integer-weighted so a weighted-random pull is exact (no
- * floating-point bias).
- */
-const RARE_MYTHIC = { rare: 86, mythic: 14 } as const;
-const WILDCARD = { common: 70, uncommon: 20, rare: 8, mythic: 2 } as const;
-const FOIL_WILDCARD = { common: 67, uncommon: 20, rare: 10, mythic: 3 } as const;
-
-/** Token slot — first card in every pack. Weights are irrelevant since
- *  the pull source is the dedicated token pool. */
-const TOKEN_SLOT: SlotRule = {
-  label: "Token",
-  weights: { common: 1 },
-  token: true,
-};
+function buildDefinition(t: PackType, displayName: string): PackDefinition {
+  const block = defaultContent[t];
+  return {
+    type: t,
+    name: displayName,
+    tagline: block?.tagline ?? "",
+    cardCount: block?.cardCount ?? 15,
+    costUsd: defaultContent.costUsd?.[t] ?? 0,
+  };
+}
 
 export const PACKS: Record<PackType, PackDefinition> = {
-  play: {
-    type: "play",
-    name: "Play Booster",
-    tagline: "14 cards + token · 1 rare/mythic · 1 traditional foil · modern standard",
-    cardCount: 15,
-    costUsd: 5.99,
-    /* Real Play Booster, per Wizards' product page (post-MKM, Feb 2024):
-     *   7 commons · 3 uncommons · 1 wildcard · 1 rare/mythic ·
-     *   1 traditional foil (any rarity) · 1 basic land · 1 token
-     *
-     * Earlier we added a tail "Bonus rare/mythic" slot which gave Play two
-     * guaranteed rare/mythics — that overlapped Collector's premium feel.
-     * Restored to the published distribution so Play sits cleanly between
-     * Draft (1 R/M) and Collector (5 R/M).
-     */
-    slots: [
-      TOKEN_SLOT,
-      { label: "Common", weights: { common: 1 } },
-      { label: "Common", weights: { common: 1 } },
-      { label: "Common", weights: { common: 1 } },
-      { label: "Common", weights: { common: 1 } },
-      { label: "Common", weights: { common: 1 } },
-      { label: "Common", weights: { common: 1 } },
-      { label: "Common", weights: { common: 1 } },
-      { label: "Uncommon", weights: { uncommon: 1 } },
-      { label: "Uncommon", weights: { uncommon: 1 } },
-      { label: "Uncommon", weights: { uncommon: 1 } },
-      { label: "Wildcard", weights: { ...WILDCARD } },
-      { label: "Rare / Mythic", weights: { ...RARE_MYTHIC } },
-      { label: "Land", weights: { common: 1 }, basicLand: true },
-      { label: "Foil", weights: { ...FOIL_WILDCARD }, foil: true },
-    ],
-  },
-  draft: {
-    type: "draft",
-    name: "Draft Booster",
-    tagline: "15 cards + token · 1 rare/mythic · 1 basic land · the classic format",
-    cardCount: 16,
-    costUsd: 3.99,
-    slots: [
-      TOKEN_SLOT,
-      ...Array.from({ length: 10 }, () => ({
-        label: "Common" as const,
-        weights: { common: 1 },
-      })),
-      { label: "Uncommon", weights: { uncommon: 1 } },
-      { label: "Uncommon", weights: { uncommon: 1 } },
-      { label: "Uncommon", weights: { uncommon: 1 } },
-      { label: "Rare / Mythic", weights: { ...RARE_MYTHIC } },
-      { label: "Land", weights: { common: 1 }, basicLand: true },
-    ],
-  },
-  collector: {
-    type: "collector",
-    name: "Collector Booster",
-    tagline: "15 premium cards + token · all foil/showcase · the chase pack",
-    cardCount: 16,
-    costUsd: 25.99,
-    slots: [
-      TOKEN_SLOT,
-      { label: "Foil Common", weights: { common: 1 }, foil: true },
-      { label: "Foil Common", weights: { common: 1 }, foil: true },
-      { label: "Foil Common", weights: { common: 1 }, foil: true },
-      { label: "Foil Common", weights: { common: 1 }, foil: true },
-      { label: "Foil Common", weights: { common: 1 }, foil: true },
-      { label: "Foil Uncommon", weights: { uncommon: 1 }, foil: true },
-      { label: "Foil Uncommon", weights: { uncommon: 1 }, foil: true },
-      { label: "Foil Uncommon", weights: { uncommon: 1 }, foil: true },
-      { label: "Foil Uncommon", weights: { uncommon: 1 }, foil: true },
-      { label: "Showcase Rare", weights: { rare: 90, mythic: 10 }, foil: true },
-      { label: "Showcase Rare", weights: { rare: 80, mythic: 20 }, foil: true },
-      { label: "Foil Rare", weights: { rare: 80, mythic: 20 }, foil: true },
-      { label: "Foil Rare", weights: { rare: 70, mythic: 30 }, foil: true },
-      { label: "Foil Land", weights: { common: 1 }, basicLand: true, foil: true },
-      { label: "Foil Rare / Mythic", weights: { rare: 60, mythic: 40 }, foil: true },
-    ],
-  },
+  play: buildDefinition("play", "Play Booster"),
+  draft: buildDefinition("draft", "Draft Booster"),
+  collector: buildDefinition("collector", "Collector Booster"),
 };
 
 export const PACK_ORDER: PackType[] = ["play", "draft", "collector"];
 
-/* ---------- Per-set MSRP overrides ----------
+/**
+ * MSRP lookup. Priority: per-set override (data/sets/<code>.json cost.<type>)
+ * > default content's costUsd.<type> > PackDefinition.costUsd.
  *
- * Wizards prices Collector Boosters differently from one set to the next.
- * Numbers here are the published MSRPs at print time — secondary-market
- * prices (e.g. MTGGoldfish, TCGplayer) drift constantly and are not
- * exposed through a free public API, so we anchor on MSRPs and let the
- * user reason about the gap themselves.
- *
- * Anything missing falls back to the PackDefinition.costUsd default.
+ * Sync version that consults a small bundled map of well-known overrides for
+ * sets we want priced correctly without a per-set JSON file. New per-set
+ * overrides should be added by creating data/sets/<code>.json + cost block.
  */
-const PACK_MSRP_OVERRIDES: Record<string, Partial<Record<PackType, number>>> = {
-  // Collector premiums — Wizards has priced LotR-tier and Universes Beyond
-  // sets noticeably above standard releases.
-  ltr: { collector: 34.99 },
-  fin: { collector: 34.99 },     // Final Fantasy
-  ltc: { collector: 34.99 },
-  fdn: { collector: 39.99 },     // Foundations
-  // Recent expansions hovering around the $25-30 line:
-  dsk: { collector: 24.99 },
-  blb: { collector: 24.99 },
-  otj: { collector: 27.99 },
-  mh3: { collector: 31.99 },     // Modern Horizons 3 is premium
-  lci: { collector: 23.99 },
-  woe: { collector: 23.99 },
-  ltc_: { collector: 34.99 },
-};
-
-/** Look up a pack's USD MSRP for a specific set. Falls back to the
- *  pack-type default when there's no per-set override. */
 export function getPackCost(packType: PackType, setCode?: string): number {
   if (setCode) {
     const code = setCode.toLowerCase();
-    const override = PACK_MSRP_OVERRIDES[code]?.[packType];
+    const override = LEGACY_MSRP_OVERRIDES[code]?.[packType];
     if (typeof override === "number") return override;
   }
   return PACKS[packType].costUsd;
 }
 
 /**
- * Recommend a pack type based on the set's release date.
- * Play Booster format rolled out fully with MKM (February 2024).
+ * Sync per-set MSRP overrides retained for compatibility with the
+ * synchronous PackOpener path. The async path lives at the route layer:
+ * it calls resolveRecipe (lib/booster-loader.ts) which reads
+ * data/sets/<code>.json + data/booster-contents/* and passes the resolved
+ * cost down to PackOpener as a prop. New overrides should land as
+ * data/sets/<code>.json instead.
  */
+const LEGACY_MSRP_OVERRIDES: Record<string, Partial<Record<PackType, number>>> = {
+  ltr: { collector: 34.99 },
+  fin: { collector: 34.99 },
+  ltc: { collector: 34.99 },
+  fdn: { collector: 39.99 },
+  dsk: { collector: 24.99 },
+  blb: { collector: 24.99 },
+  otj: { collector: 27.99 },
+  mh3: { collector: 31.99 },
+  lci: { collector: 23.99 },
+  woe: { collector: 23.99 },
+  sos: { collector: 34.99 },
+};
+
+/** Recommend a default pack type based on release date. */
 export function recommendedPackType(set: ScryfallSet): PackType {
   const released = set.released_at ?? "";
   if (released >= "2024-02-01") return "play";
@@ -190,16 +108,9 @@ export function recommendedPackType(set: ScryfallSet): PackType {
 }
 
 /**
- * Which pack types we surface for a given set. We're generous: we let users
- * try any pack type on any set, but mark a default. This is a fan project,
- * not a perfect simulation of Wizards' SKU history.
- *
- * Note: real Collector Boosters for some sets include set-specific "variant"
- * slots — e.g. Strixhaven (STX) packs include cards from Mystical Archive
- * (STA); March of the Machine (MOM) includes Multiverse Legends (MUL);
- * Outlaws of Thunder Junction (OTJ) includes Breaking News (OTP). We don't
- * inject these yet; the variant pool would need a second Scryfall fetch
- * per set. See notes/DEVELOPMENT_LOG.md → "Open follow-ups".
+ * Sync legacy heuristic. The new code path is `packsAvailableForSet` in
+ * lib/booster-config.ts which can read per-set overrides; this stays as
+ * a fallback for any callers that haven't been updated yet.
  */
 export function packsAvailableFor(set: ScryfallSet): PackType[] {
   const released = set.released_at ?? "";

@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSet, getSetCards, getSetTokens } from "@/lib/scryfall";
-import { packsAvailableFor, recommendedPackType } from "@/lib/pack-rules";
+import type { ScryfallCard } from "@/lib/scryfall";
+import { recommendedPackType, type PackType } from "@/lib/pack-rules";
+import { collectReferencedSets, type PackContent } from "@/lib/booster-config";
+import {
+  loadFilters,
+  packsAvailableForSet,
+  resolveRecipe,
+} from "@/lib/booster-loader";
 import { PackOpener } from "./PackOpener";
-
-// Caching is handled at the fetch layer inside lib/scryfall.ts. A page-level
-// `revalidate` export is incompatible with this route because we await
-// `searchParams`, which forces dynamic rendering — Next.js 16 rejects the
-// combination as an invalid segment config.
 
 interface Props {
   params: Promise<{ code: string }>;
@@ -24,33 +26,96 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
+/**
+ * Fetch a sub-set's cards, including tokens. The set may legitimately not
+ * exist (e.g. an old override pointing at a code Scryfall doesn't list),
+ * in which case we return an empty array and let the engine's fallback
+ * logic re-roll past that outcome.
+ */
+async function getReferencedSetCards(code: string): Promise<ScryfallCard[]> {
+  try {
+    if (code.startsWith("t")) {
+      // Token sets — getSetTokens already handles the t<code> convention,
+      // but if the recipe spelled out an explicit token-set code we still
+      // want to honor it.
+      const tokens = await getSetTokens(code.slice(1));
+      if (tokens.length) return tokens;
+      // Fall through to a normal fetch in case the set is actually a
+      // first-class set whose code happens to start with t.
+    }
+    return await getSetCards(code);
+  } catch {
+    return [];
+  }
+}
+
 export default async function SetPage({ params, searchParams }: Props) {
   const { code } = await params;
   const sp = await searchParams;
   const set = await getSet(code);
   if (!set) notFound();
 
-  const [cards, tokens] = await Promise.all([
-    getSetCards(code),
-    getSetTokens(code),
-  ]);
-  const available = packsAvailableFor(set);
-  const initial = (sp.type as "play" | "draft" | "collector") ?? recommendedPackType(set);
+  // What pack types are valid for this set + which is the recommended
+  // landing one. packsAvailableForSet reads data/sets/<code>.json first
+  // and falls back to the legacy date heuristic.
+  const available = await packsAvailableForSet(set.code, set.released_at);
+  const initial = (sp.type as PackType) ?? recommendedPackType(set);
   const initialType = available.includes(initial) ? initial : available[0];
 
-  // Pick a handful of "hero" art crops for set branding. We prefer the
-  // priciest rare/mythics whose art_crop URL is available — that gives each
-  // set page its own visual signature without burning a separate API call.
-  const heroArtCrops = cards
-    .filter(
-      (c) =>
-        (c.rarity === "rare" || c.rarity === "mythic") &&
-        !!c.image_uris?.art_crop,
-    )
-    .sort(
-      (a, b) =>
-        Number(b.prices?.usd ?? 0) - Number(a.prices?.usd ?? 0),
-    )
+  // Resolve recipes for every pack type up front. We need to know every
+  // referenced set across every recipe so we can pre-fetch their pools
+  // in parallel before handing to the client opener.
+  const resolved = await Promise.all(
+    available.map(async (t) => ({ type: t, recipe: await resolveRecipe(set.code, t) })),
+  );
+
+  // Collect every Scryfall set code mentioned by any outcome across any
+  // pack type. The set's own code is always included.
+  const referenced = new Set<string>([set.code.toLowerCase()]);
+  for (const { recipe } of resolved) {
+    if (!recipe) continue;
+    for (const refCode of collectReferencedSets(recipe.content, set.code)) {
+      referenced.add(refCode);
+    }
+  }
+
+  // Fetch every referenced set's cards + the conventional tokens set. We
+  // always include t<code> tokens since the default content uses
+  // $tokens-sentinels.
+  const setCodes = Array.from(referenced);
+  const tokenCode = `t${set.code.toLowerCase()}`;
+  if (!referenced.has(tokenCode)) setCodes.push(tokenCode);
+
+  const [mainCards, ...subsetCards] = await Promise.all([
+    getSetCards(set.code),
+    ...setCodes
+      .filter((c) => c.toLowerCase() !== set.code.toLowerCase())
+      .map((c) => getReferencedSetCards(c)),
+  ]);
+
+  const pool: Record<string, ScryfallCard[]> = {
+    [set.code.toLowerCase()]: mainCards,
+  };
+  const otherCodes = setCodes.filter((c) => c.toLowerCase() !== set.code.toLowerCase());
+  otherCodes.forEach((c, i) => {
+    pool[c.toLowerCase()] = subsetCards[i] ?? [];
+  });
+
+  const filters = await loadFilters();
+  const recipesByType: Partial<Record<PackType, PackContent>> = {};
+  const costsByType: Partial<Record<PackType, number>> = {};
+  for (const { type, recipe } of resolved) {
+    if (recipe) {
+      recipesByType[type] = recipe.content;
+      if (recipe.costUsd != null) costsByType[type] = recipe.costUsd;
+    }
+  }
+
+  // Hero art (still from the main set's rare/mythics) for backdrops + the
+  // pack fan.
+  const heroArtCrops = mainCards
+    .filter((c) => (c.rarity === "rare" || c.rarity === "mythic") && !!c.image_uris?.art_crop)
+    .sort((a, b) => Number(b.prices?.usd ?? 0) - Number(a.prices?.usd ?? 0))
     .slice(0, 6)
     .map((c) => c.image_uris!.art_crop!);
 
@@ -83,7 +148,7 @@ export default async function SetPage({ params, searchParams }: Props) {
               {set.name}
             </h1>
             <p className="text-[var(--color-ink)] mt-2">
-              {cards.length} cards in pool · {set.set_type.replace(/_/g, " ")}
+              {mainCards.length} cards in pool · {set.set_type.replace(/_/g, " ")}
             </p>
           </div>
         </div>
@@ -95,8 +160,10 @@ export default async function SetPage({ params, searchParams }: Props) {
           iconUri: set.icon_svg_uri,
           heroArtCrops,
         }}
-        cards={cards}
-        tokens={tokens}
+        pool={pool}
+        recipes={recipesByType}
+        costs={costsByType}
+        filters={filters}
         availableTypes={available}
         initialType={initialType}
       />

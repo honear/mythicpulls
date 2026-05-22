@@ -80,6 +80,26 @@ export interface ScryfallCard {
   digital?: boolean;
   oversized?: boolean;
   prices?: ScryfallPrices;
+  /* ---- Fields used by booster-config filters (set-specific recipes). ---- */
+  /** e.g. ["showcase"], ["extendedart"], ["inverted"]. Scryfall populates
+   *  this for treatment variants — borderless, showcase, extended-art,
+   *  inverted, etalon-frame, etc. */
+  frame_effects?: string[];
+  /** "black" | "white" | "borderless" | "gold" | "silver". */
+  border_color?: string;
+  /** Promo variant tags, e.g. ["special-guests"], ["serialized"]. */
+  promo_types?: string[];
+  /** Mana symbols this card can produce — used by basic-land filters that
+   *  want to differentiate dual lands from single-mana basics. */
+  produced_mana?: string[];
+  /** Two-letter language code: "en" (English), "ja" (Japanese), "de", "ru",
+   *  "ko", etc. Source of truth for "this is the Japanese printing"
+   *  regardless of how the set's collector numbers are arranged. */
+  lang?: string;
+  /** Available finishes on this printing — any of "nonfoil", "foil",
+   *  "etched", "glossy". Lets a filter narrow to "only available in foil"
+   *  separate from the slot's foil flag. */
+  finishes?: string[];
 }
 
 interface ScryfallList<T> {
@@ -150,14 +170,19 @@ export async function getSet(code: string): Promise<ScryfallSet | undefined> {
 
 /**
  * Fetch every card in a set that's actually eligible for boosters.
- * Uses `unique=cards` to dedupe printings and `booster:true` to filter
- * promo/variant noise.
+ * Uses `unique=prints` to keep alt-art / language variants as distinct
+ * entries (Scryfall would collapse them under `unique=cards`), and
+ * `include_multilingual=true` so Japanese-alt-art cards in sets like
+ * Strixhaven Mystical Archive (lang: "ja") appear in the pool. Without
+ * the multilingual flag those alt-art Japanese cards never come back from
+ * the API — and any recipe outcome filtered by `lang: "ja"` finds no
+ * matches and silently falls through to its next outcome.
  */
 export async function getSetCards(code: string): Promise<ScryfallCard[]> {
   const q = encodeURIComponent(`set:${code} game:paper`);
   const out: ScryfallCard[] = [];
   let url: string | undefined =
-    `${BASE}/cards/search?q=${q}&unique=cards&order=set&include_extras=false&include_variations=false`;
+    `${BASE}/cards/search?q=${q}&unique=prints&order=set&include_extras=false&include_variations=false&include_multilingual=true`;
   while (url) {
     const page: ScryfallList<ScryfallCard> = await sj<ScryfallList<ScryfallCard>>(url, 60 * 60 * 24 * 7);
     out.push(...page.data);
@@ -165,11 +190,16 @@ export async function getSetCards(code: string): Promise<ScryfallCard[]> {
     // gentle pacing for multi-page fetches in dev
     if (url) await new Promise((r) => setTimeout(r, 80));
   }
+  // Tokens / emblems / schemes are fetched through getSetTokens when a
+  // recipe references them, so they're filtered out here. Art series cards
+  // (layout: "art_series") are NOT excluded any more — they live in their
+  // own dedicated sets (e.g. ASOS for SOS) and Collector Booster recipes
+  // explicitly reference those sets for the art-card slot. Excluding them
+  // here would empty the ASOS pool and silently break those outcomes.
   return out.filter(
     (c) =>
       !c.digital &&
       !c.oversized &&
-      c.layout !== "art_series" &&
       c.layout !== "token" &&
       c.layout !== "double_faced_token" &&
       c.layout !== "emblem" &&

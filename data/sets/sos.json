@@ -1,0 +1,15 @@
+{
+  "_doc": "Per-set override pointer. boosters[type] names a file in data/booster-contents/. cost[type] overrides MSRP regardless of which content file is used. Sets without a file fall back to default for every pack type.",
+  "code": "SOS",
+  "name": "Secrets of Strixhaven",
+  "boosters": {
+    "play": "secrets_of_strixhaven",
+    "draft": "default",
+    "collector": "secrets_of_strixhaven"
+  },
+  "cost": {
+    "play": 5.99,
+    "draft": 3.99,
+    "collector": 34.99
+  }
+}

@@ -103,10 +103,16 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
   }
 
   /** Called from DeckSlot when the user explicitly dismisses the final
-   *  (last-unseen) card via drag or tap. Triggers the grid switch. */
+   *  (last-unseen) card via drag or tap.
+   *
+   *  We deliberately do NOT setLastUid(null) here: the parent's
+   *  onAllRevealed callback flips viewMode to "grid", which unmounts the
+   *  entire CardDeck on the next commit. If we cleared lastUid first the
+   *  previously-hidden back-pile would flash visible for a frame before
+   *  the view actually switched. By going straight to onAllRevealed,
+   *  the unmount happens before any intermediate state can paint. */
   function dismissFinal() {
-    setLastUid(null);
-    window.setTimeout(() => onAllRevealedRef.current?.(), 60);
+    onAllRevealedRef.current?.();
   }
 
   const topUid = cycleOrder[0];
@@ -138,8 +144,13 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
           // the snap-back transition play after a release.
           const isFinalCard = lastUid !== null && uid === lastUid;
           // Once we're in "awaiting final dismiss" mode, fade the back-pile
-          // so the lone last card sits clean on the stage.
-          const hide = lastUid !== null && uid !== lastUid;
+          // so the lone last card sits clean on the stage. Exemption: if the
+          // user is mid-drag when we enter this mode (because the drag that
+          // committed the cycle just made the final card the new top), keep
+          // the dragged card visible until they release. Otherwise it would
+          // vanish under the cursor on the same frame the final card lifts.
+          const hide =
+            lastUid !== null && uid !== lastUid && uid !== draggingUid;
           return (
             <DeckSlot
               key={uid}
@@ -276,9 +287,12 @@ function DeckSlot({
 
     if (!dragging) {
       // Pure tap. In final-card mode → dismiss + switch view. Otherwise
-      // animate the cycle as usual.
+      // animate the cycle as usual. The final-card branch passes
+      // keepFinalState=true so the dismissed card stays off-stage until
+      // the parent unmounts us during the view switch — otherwise it
+      // flashes back centered for a frame.
       if (isFinalCard) {
-        animateCycleOut(el, () => onFinalDismiss?.());
+        animateCycleOut(el, () => onFinalDismiss?.(), true);
       } else {
         animateCycleOut(el, onCommitCycle);
       }
@@ -292,7 +306,7 @@ function DeckSlot({
       const movedFar = dx * dx + dy * dy >= COMMIT_DIST * COMMIT_DIST;
       if (movedFar) {
         // Acknowledge the final card — animate it out and switch to Grid.
-        animateCycleOut(el, () => onFinalDismiss?.());
+        animateCycleOut(el, () => onFinalDismiss?.(), true);
         setIsDragging(false);
         return;
       }
@@ -377,8 +391,21 @@ function DeckSlot({
  * the slot because it's now `behindStack`.
  *
  * No modal is opened — Reveal mode treats taps as "cycle one card".
+ *
+ * `keepFinalState`: when true, we leave the off-stage transform + opacity:0
+ * inline after the animation completes. The normal (non-final) path needs
+ * the cleanup so the card can spring back into its new stack position; the
+ * final-dismiss path skips the cleanup because the parent's view switch
+ * unmounts this element on the next React commit. Without this flag, the
+ * window between the cleanup running and React unmounting CardDeck shows
+ * the dismissed card flashing back at the centered default-transform
+ * position for a single frame.
  */
-function animateCycleOut(el: HTMLDivElement, commitCycle: () => void) {
+function animateCycleOut(
+  el: HTMLDivElement,
+  commitCycle: () => void,
+  keepFinalState = false,
+) {
   const dir = Math.random() < 0.5 ? 1 : -1;
   el.style.transition =
     "transform 360ms cubic-bezier(0.4, 0, 0.2, 1), opacity 360ms ease";
@@ -387,7 +414,7 @@ function animateCycleOut(el: HTMLDivElement, commitCycle: () => void) {
   el.style.opacity = "0";
   window.setTimeout(() => {
     commitCycle();
-    if (el) {
+    if (el && !keepFinalState) {
       el.style.transition = "";
       el.style.transform = "";
       el.style.opacity = "";

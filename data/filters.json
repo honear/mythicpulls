@@ -1,0 +1,82 @@
+{
+  "_doc": "Named card-pool predicates used by outcome.filter in booster-contents JSON. Composition keywords: all (AND), any (OR), not (NOT). Leaves match Scryfall fields. See lib/booster-filters.ts for the full grammar.",
+
+  "basic_land": { "type_line_includes": "Basic Land" },
+
+  "showcase": { "frame_effects": "showcase" },
+  "extended_art": { "frame_effects": "extendedart" },
+  "borderless": { "border_color": "borderless" },
+
+  "_doc_borderless_edp_dual": "Borderless Elder Dragon, Planeswalker, or non-basic Land — the SOS Collector's chase 'Booster Fun' subtype. Match conditions: border_color is borderless AND the type_line contains (Elder + Dragon) OR Planeswalker OR (Land but not Basic). Subtypes are matched individually so 'Legendary Creature — Dragon Elder' and 'Legendary Creature — Elder Dragon' both qualify.",
+  "borderless_edp_dual": {
+    "all": [
+      { "border_color": "borderless" },
+      {
+        "any": [
+          { "all": [
+            { "type_line_includes": "Elder" },
+            { "type_line_includes": "Dragon" }
+          ]},
+          { "type_line_includes": "Planeswalker" },
+          { "all": [
+            { "type_line_includes": "Land" },
+            { "type_line_excludes": "Basic" }
+          ]}
+        ]
+      }
+    ]
+  },
+
+  "elder_dragon": {
+    "all": [
+      { "type_line_includes": "Elder" },
+      { "type_line_includes": "Dragon" }
+    ]
+  },
+  "planeswalker": { "type_line_includes": "Planeswalker" },
+  "non_basic_land": {
+    "all": [
+      { "type_line_includes": "Land" },
+      { "type_line_excludes": "Basic" }
+    ]
+  },
+
+  "field_notes": { "frame_effects": "fieldnotes" },
+
+  "special_guest": { "promo_types": "specialguests" },
+
+  "spellcraft_land": {
+    "all": [
+      { "type_line_includes": "Land" },
+      { "frame_effects": "spellcraft" }
+    ]
+  },
+
+  "dual_land_common": {
+    "all": [
+      { "type_line_includes": "Land" },
+      { "type_line_excludes": "Basic" },
+      { "rarity": "common" }
+    ]
+  },
+
+  "serialized": { "promo_types": "serialized" },
+
+  "japanese": { "lang": "ja" },
+
+  "japanese_alt_art": {
+    "all": [
+      { "lang": "ja" },
+      { "any": [
+        { "frame_effects": "showcase" },
+        { "frame_effects": "extendedart" }
+      ]}
+    ]
+  },
+
+  "available_in_foil": { "finishes": "foil" },
+
+  "etched_foil": { "finishes": "etched" },
+
+  "gold_stamped": { "promo_types": "stamped" }
+}

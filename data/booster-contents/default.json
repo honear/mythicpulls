@@ -1,0 +1,115 @@
+{
+  "_doc": "Generic booster content used by any set without a per-set override (data/sets/<code>.json missing or its boosters[type] = 'default'). Mirrors the previously-hardcoded slot list in lib/pack-rules.ts so existing sets keep behaving identically.",
+
+  "costUsd": {
+    "play": 5.99,
+    "draft": 3.99,
+    "collector": 25.99
+  },
+
+  "play": {
+    "cardCount": 15,
+    "tagline": "14 cards + token · 1 rare/mythic · 1 traditional foil · modern standard",
+    "slots": [
+      { "label": "Token", "token": true, "outcomes": [{ "weight": 1, "set": "$tokens" }] },
+      { "label": "Common", "count": 7, "outcomes": [{ "weight": 1, "rarity": "common" }] },
+      { "label": "Uncommon", "count": 3, "outcomes": [{ "weight": 1, "rarity": "uncommon" }] },
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          { "weight": 70, "rarity": "common" },
+          { "weight": 20, "rarity": "uncommon" },
+          { "weight": 8,  "rarity": "rare" },
+          { "weight": 2,  "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 86, "rarity": "rare" },
+          { "weight": 14, "rarity": "mythic" }
+        ]
+      },
+      { "label": "Land", "basicLand": true, "outcomes": [{ "weight": 1, "filter": "basic_land" }] },
+      {
+        "label": "Foil",
+        "foil": true,
+        "outcomes": [
+          { "weight": 67, "rarity": "common" },
+          { "weight": 20, "rarity": "uncommon" },
+          { "weight": 10, "rarity": "rare" },
+          { "weight": 3,  "rarity": "mythic" }
+        ]
+      }
+    ]
+  },
+
+  "draft": {
+    "cardCount": 16,
+    "tagline": "15 cards + token · 1 rare/mythic · 1 basic land · the classic format",
+    "slots": [
+      { "label": "Token", "token": true, "outcomes": [{ "weight": 1, "set": "$tokens" }] },
+      { "label": "Common", "count": 10, "outcomes": [{ "weight": 1, "rarity": "common" }] },
+      { "label": "Uncommon", "count": 3, "outcomes": [{ "weight": 1, "rarity": "uncommon" }] },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 86, "rarity": "rare" },
+          { "weight": 14, "rarity": "mythic" }
+        ]
+      },
+      { "label": "Land", "basicLand": true, "outcomes": [{ "weight": 1, "filter": "basic_land" }] }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards + token · all foil/showcase · the chase pack",
+    "slots": [
+      { "label": "Token", "token": true, "outcomes": [{ "weight": 1, "set": "$tokens" }] },
+      { "label": "Foil Common", "count": 5, "foil": true, "outcomes": [{ "weight": 1, "rarity": "common" }] },
+      { "label": "Foil Uncommon", "count": 4, "foil": true, "outcomes": [{ "weight": 1, "rarity": "uncommon" }] },
+      {
+        "label": "Showcase Rare",
+        "foil": true,
+        "outcomes": [
+          { "weight": 90, "rarity": "rare" },
+          { "weight": 10, "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Showcase Rare",
+        "foil": true,
+        "outcomes": [
+          { "weight": 80, "rarity": "rare" },
+          { "weight": 20, "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Foil Rare",
+        "foil": true,
+        "outcomes": [
+          { "weight": 80, "rarity": "rare" },
+          { "weight": 20, "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Foil Rare",
+        "foil": true,
+        "outcomes": [
+          { "weight": 70, "rarity": "rare" },
+          { "weight": 30, "rarity": "mythic" }
+        ]
+      },
+      { "label": "Foil Land", "basicLand": true, "foil": true, "outcomes": [{ "weight": 1, "filter": "basic_land" }] },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 60, "rarity": "rare" },
+          { "weight": 40, "rarity": "mythic" }
+        ]
+      }
+    ]
+  }
+}

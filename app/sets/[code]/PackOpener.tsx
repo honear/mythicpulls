@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Sparkles, RotateCcw, Save, Eye, GripVertical, LayoutGrid, Layers } from "lucide-react";
-import type { ScryfallCard } from "@/lib/scryfall";
 import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
 import { PACKS, PACK_ORDER, getPackCost, type PackType } from "@/lib/pack-rules";
-import { buildPool, openPack, type PulledCard } from "@/lib/pack-open";
+import type { PackContent } from "@/lib/booster-config";
+import type { FilterPredicate } from "@/lib/booster-filters";
+import { openPack, type CardPool, type PulledCard } from "@/lib/pack-open";
 import { addToCollection } from "@/lib/collection";
 import { useDragReorder } from "@/lib/useDragReorder";
 import { useCardTilt } from "@/lib/useCardTilt";
@@ -26,8 +27,17 @@ interface SetMeta {
 
 interface Props {
   setMeta: SetMeta;
-  cards: ScryfallCard[];
-  tokens?: ScryfallCard[];
+  /** Multi-set card pool keyed by lowercased Scryfall code. Includes the
+   *  main set, any subset referenced by a recipe (e.g. SOA for SOS), plus
+   *  the conventional t<code> tokens set. */
+  pool: CardPool;
+  /** Resolved pack contents per type. Provided by the route layer after
+   *  consulting data/sets/<code>.json + data/booster-contents/*. */
+  recipes: Partial<Record<PackType, PackContent>>;
+  /** Per-pack-type MSRP override resolved at the route layer. Falls back
+   *  to getPackCost when missing. */
+  costs: Partial<Record<PackType, number>>;
+  filters: Record<string, FilterPredicate>;
   availableTypes: PackType[];
   initialType: PackType;
 }
@@ -35,7 +45,7 @@ interface Props {
 type Phase = "idle" | "ripping" | "revealing";
 
 export function PackOpener({
-  setMeta, cards, tokens = [], availableTypes, initialType,
+  setMeta, pool, recipes, costs, filters, availableTypes, initialType,
 }: Props) {
   const [packType, setPackType] = useState<PackType>(initialType);
   const [phase, setPhase] = useState<Phase>("idle");
@@ -55,31 +65,36 @@ export function PackOpener({
    *  during another component's render. */
   const valuedRef = useRef<Set<string>>(new Set());
 
-  const pool = useMemo(() => buildPool(cards, tokens), [cards, tokens]);
-  const def = PACKS[packType];
-  const packCost = getPackCost(packType, setMeta.code);
+  // The currently-selected pack type's MSRP. The route layer resolves per-set
+  // overrides (data/sets/<code>.json cost field) up front; we fall back to the
+  // legacy synchronous override map only if the route layer didn't supply one.
+  const packCost = costs[packType] ?? getPackCost(packType, setMeta.code);
 
   /**
-   * Open a pack. `typeOverride` lets callers (notably the fan click handler)
-   * pass the clicked pack type directly — necessary because `setPackType` is
-   * async and the previous `packType` state would otherwise be read here,
-   * which made every fan click after the first one open the previously
-   * selected pack instead of the clicked one.
+   * Open a pack. `typeOverride` lets callers (notably the fan click handler
+   * and the MoneyStrip's "Open next" button) pass the clicked pack type
+   * directly — necessary because `setPackType` is async and the previous
+   * `packType` state would otherwise be read here.
+   *
+   * Phase guard: only blocks during the 800ms "ripping" animation. Mid-
+   * reveal rips are allowed — the MoneyStrip button uses this path to
+   * chain-open more of the same type without going back to the fan.
    */
   function rip(typeOverride?: PackType) {
-    if (phase !== "idle") return;
+    if (phase === "ripping") return;
     const t = typeOverride ?? packType;
+    const recipe = recipes[t];
+    if (!recipe) return; // shouldn't happen — route layer filtered availableTypes
     setPhase("ripping");
-    const result = openPack(pool, t);
+    const result = openPack(recipe, pool, setMeta.code, filters);
     setPulled(result);
     setFlipped(new Set());
     valuedRef.current = new Set();
     setDetailUid(null);
     setViewMode("reveal");
-    // Only spent + pack count accumulate immediately — pulled value rolls
-    // in as the user actually reveals each card. Use the just-clicked type
-    // for the cost so it doesn't lag a pack behind in the MoneyStrip.
-    const costForThisPack = getPackCost(t, setMeta.code);
+    // Use the just-clicked type for the cost so the MoneyStrip doesn't
+    // lag a pack behind.
+    const costForThisPack = costs[t] ?? getPackCost(t, setMeta.code);
     setStats((s) => ({
       ...s,
       spent: s.spent + costForThisPack,
@@ -202,7 +217,13 @@ export function PackOpener({
 
   return (
     <section className="mx-auto max-w-7xl w-full px-6 py-10">
-      <MoneyStrip stats={stats} packCost={packCost} />
+      <MoneyStrip
+        stats={stats}
+        packCost={packCost}
+        packTypeName={PACKS[packType].name.replace(" Booster", "")}
+        canRip={phase !== "ripping" && !!recipes[packType]}
+        onRip={() => rip(packType)}
+      />
       <div className="relative rounded-2xl liquid-panel overflow-hidden">
         {/* Per-set art backdrop — a faded, heavily-blurred art crop from a
             top card of the set sits behind everything else, giving each
@@ -318,10 +339,15 @@ export function PackOpener({
 /* ---------------- Session money strip ---------------- */
 
 function MoneyStrip({
-  stats, packCost,
+  stats, packCost, packTypeName, canRip, onRip,
 }: {
   stats: { spent: number; pulled: number; packs: number };
   packCost: number;
+  /** Short type label shown on the rip button (e.g. "Play", "Collector"). */
+  packTypeName: string;
+  /** Disables the button during the 800ms ripping animation. */
+  canRip: boolean;
+  onRip: () => void;
 }) {
   const profit = stats.pulled - stats.spent;
   const profitSign = profit >= 0 ? "+" : "-";
@@ -342,9 +368,35 @@ function MoneyStrip({
         />
         <Stat label="Packs" value={String(stats.packs)} accent="text-[var(--color-fg)]" />
       </div>
-      <p className="label-caps text-[var(--color-ink-muted)]">
-        next pack · {usd(packCost)}
-      </p>
+      {/* "Open next" — rips another pack of the currently-selected type
+          without going back to the fan. Active in idle + revealing phases;
+          disabled only during the 800ms ripping animation to prevent
+          double-fires. Replaces the static "next pack · $X" label. */}
+      <button
+        onClick={onRip}
+        disabled={!canRip}
+        className="group inline-flex items-center gap-2 pl-3 pr-4 py-2 rounded-full transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+        style={{
+          background: "var(--accent-purple)",
+          color: "white",
+          fontFamily: "var(--font-btn)",
+          boxShadow: "0 8px 20px -8px var(--accent-purple-glow), inset 0 1px 0 rgba(255,255,255,0.18)",
+        }}
+        aria-label={`Open another ${packTypeName} Booster for ${usd(packCost)}`}
+      >
+        <span
+          className="grid place-items-center w-6 h-6 rounded-full text-[10px] font-bold tracking-wider uppercase"
+          style={{ background: "rgba(255,255,255,0.18)" }}
+        >
+          +1
+        </span>
+        <span className="text-[13px] font-medium tracking-wide">
+          Open next {packTypeName}
+        </span>
+        <span className="text-[13px] font-semibold tabular-nums opacity-90">
+          {usd(packCost)}
+        </span>
+      </button>
     </div>
   );
 }
