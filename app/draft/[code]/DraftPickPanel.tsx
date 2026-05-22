@@ -187,6 +187,10 @@ function PickableCard({
     <button
       onClick={onPick}
       disabled={mode === "exit"}
+      onPointerEnter={(e) => onHover(pulled.card, pulled.foil, e)}
+      onPointerMove={(e) => onHover(pulled.card, pulled.foil, e)}
+      onPointerLeave={onHoverEnd}
+      onPointerDown={onHoverEnd}
       className={className}
       style={cssVars}
       aria-label={`Pick ${pulled.card.name}`}
