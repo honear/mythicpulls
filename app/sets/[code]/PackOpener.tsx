@@ -244,6 +244,7 @@ export function PackOpener({
         )}
         <div className="relative">
         <div
+          data-deck-canvas
           className="relative min-h-[680px] flex flex-col items-center justify-center px-6 py-10"
           style={{
             background: `

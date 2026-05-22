@@ -17,11 +17,19 @@ const FILTERS: { id: Filter; label: string }[] = [
 export function SetGrid({
   sets,
   sampleArt = {},
+  linkBase = "/sets",
+  tileLabel = "Open",
 }: {
   sets: ScryfallSet[];
   /** Per-set art-crop URLs keyed by lowercased set code. Optional — sets
    *  without an entry fall back to icon-only. */
   sampleArt?: Record<string, string>;
+  /** Path prefix for each tile link. `/sets` (default) drops you in the
+   *  single-pack opener; `/sealed` drops you in the 6-pack sealed flow. */
+  linkBase?: string;
+  /** Short label shown in the bottom-right pill on each tile (e.g.
+   *  "Open" for /sets, "Play" for /sealed). */
+  tileLabel?: string;
 }) {
   const [filter, setFilter] = useState<Filter>("recent");
   const [query, setQuery] = useState("");
@@ -98,6 +106,8 @@ export function SetGrid({
               set={s}
               index={i}
               artUrl={sampleArt[s.code.toLowerCase()]}
+              linkBase={linkBase}
+              tileLabel={tileLabel}
             />
           ))}
         </ul>
@@ -107,11 +117,13 @@ export function SetGrid({
 }
 
 function SetTile({
-  set, index, artUrl,
+  set, index, artUrl, linkBase, tileLabel,
 }: {
   set: ScryfallSet;
   index: number;
   artUrl?: string;
+  linkBase: string;
+  tileLabel: string;
 }) {
   const year = set.released_at?.slice(0, 4) ?? "—";
 
@@ -121,7 +133,7 @@ function SetTile({
       style={{ animationDelay: `${Math.min(index * 14, 200)}ms` }}
     >
       <Link
-        href={`/sets/${set.code.toLowerCase()}`}
+        href={`${linkBase}/${set.code.toLowerCase()}`}
         className="group relative block aspect-square liquid-panel hover:bg-white/8 transition-colors lift overflow-hidden"
         title={`${set.name} · ${year}`}
       >
@@ -190,7 +202,7 @@ function SetTile({
               background: "rgba(123,57,252,0.18)",
             }}
           >
-            Open
+            {tileLabel}
           </span>
         </div>
       </Link>

@@ -22,6 +22,21 @@ const COMMIT_DIST = 40;          // px before the deck cycles
 const STAGE_PAD = 80;
 
 /**
+ * Find the bounding rect of the nearest ancestor flagged as the reveal
+ * canvas. PackOpener / SealedRun mark their main panel with
+ * `data-deck-canvas`, and DeckSlot uses that rect to decide when a drag
+ * has been thrown out — replacing the older fixed-radius THROW_DIST.
+ *
+ * If no canvas ancestor is found (shouldn't happen in practice) the auto-
+ * throw is disabled and the user has to release normally — safer than
+ * guessing.
+ */
+function findCanvasRect(el: HTMLElement): DOMRect | null {
+  const canvas = el.closest("[data-deck-canvas]") as HTMLElement | null;
+  return canvas ? canvas.getBoundingClientRect() : null;
+}
+
+/**
  * Reveal mode — a cycling deck rendered face-up.
  *
  *  • Cards underneath the top sit at small randomized angles (±2°, seeded
@@ -215,6 +230,11 @@ function DeckSlot({
   const [dragging, setDragging] = useState(false);
   const committedRef = useRef(false);
   const startRef = useRef<{ x: number; y: number; lastX: number; lastT: number } | null>(null);
+  /** Bounding rect of the reveal canvas (the ancestor with
+   *  data-deck-canvas). Captured once on pointerDown so a cursor crossing
+   *  any edge of it can trigger the auto-throw — replaces the older
+   *  fixed-radius THROW_DIST behaviour which felt too eager. */
+  const canvasRectRef = useRef<DOMRect | null>(null);
 
   const rest = useMemo(() => stackTransform(stackPos, pulled.uid), [stackPos, pulled.uid]);
 
@@ -235,6 +255,10 @@ function DeckSlot({
       lastT: performance.now(),
     };
     committedRef.current = false;
+    // Snapshot the canvas rect once. The auto-throw fires the moment the
+    // cursor crosses any edge of this rect; reading it per-move would be
+    // wasted work since the canvas doesn't move during a drag.
+    canvasRectRef.current = findCanvasRect(el);
     // Note: transition is suppressed via the .deck-slot-dragging class
     // toggled by `dragging` state — not via inline style here. Setting it
     // inline would leak past pointerUp and break the snap-back transition.
@@ -263,6 +287,42 @@ function DeckSlot({
       onCommitCycle();
     }
 
+    // Auto-throw on canvas exit. The instant the cursor leaves the reveal
+    // panel (the ancestor flagged with data-deck-canvas) we treat the drag
+    // as a deliberate fling:
+    //  • Final card → dismiss (animate out + onFinalDismiss → view switch).
+    //  • Non-final  → the cycle is already committed (it crossed
+    //    COMMIT_DIST inside the canvas); play the throw-out trajectory so
+    //    the card doesn't sit invisible-past-the-edge under the cursor
+    //    waiting for a release.
+    // Pointer capture is released so any further motion is ignored. The
+    // throw direction follows whichever edge the cursor exited through
+    // (left/right horizontal, top/bottom vertical) so the card visually
+    // flies off the side the user dragged it toward.
+    const canvas = canvasRectRef.current;
+    if (canvas) {
+      const outsideX = e.clientX < canvas.left || e.clientX > canvas.right;
+      const outsideY = e.clientY < canvas.top || e.clientY > canvas.bottom;
+      if (outsideX || outsideY) {
+        const el2 = ref.current;
+        startRef.current = null;
+        setIsDragging(false);
+        if (el2) {
+          try { el2.releasePointerCapture(e.pointerId); } catch {}
+          const dirX =
+            e.clientX > canvas.right ? 1
+              : e.clientX < canvas.left ? -1
+                : Math.sign(e.clientX - start.x) || 1;
+          if (isFinalCard) {
+            animateCycleOut(el2, () => onFinalDismiss?.(), true, dirX as 1 | -1);
+          } else {
+            animateCycleOut(el2, () => {}, false, dirX as 1 | -1);
+          }
+        }
+        return;
+      }
+    }
+
     const now = performance.now();
     const dt = Math.max(1, now - start.lastT);
     const vx = (e.clientX - start.lastX) / dt;
@@ -279,6 +339,7 @@ function DeckSlot({
   function onPointerUp(e: React.PointerEvent<HTMLDivElement>) {
     const start = startRef.current;
     startRef.current = null;
+    canvasRectRef.current = null;
     const el = ref.current;
     if (!el) { setIsDragging(false); return; }
     try { el.releasePointerCapture(e.pointerId); } catch {}
@@ -405,8 +466,12 @@ function animateCycleOut(
   el: HTMLDivElement,
   commitCycle: () => void,
   keepFinalState = false,
+  direction?: 1 | -1,
 ) {
-  const dir = Math.random() < 0.5 ? 1 : -1;
+  // Caller may pass an explicit direction (e.g. the side of the canvas the
+  // cursor exited through); fall back to random for tap-out paths where
+  // there is no meaningful direction.
+  const dir = direction ?? (Math.random() < 0.5 ? 1 : -1);
   el.style.transition =
     "transform 360ms cubic-bezier(0.4, 0, 0.2, 1), opacity 360ms ease";
   el.style.transform =

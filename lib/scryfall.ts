@@ -66,6 +66,10 @@ export interface ScryfallCard {
   rarity: Rarity;
   type_line?: string;
   mana_cost?: string;
+  /** Converted mana cost / mana value. Scryfall returns 0 for lands and
+   *  anything without a printed cost. Used by the sealed deck builder to
+   *  bucket cards into mana-cost columns. */
+  cmc?: number;
   colors?: string[];
   color_identity?: string[];
   image_uris?: ScryfallImageUris;
