@@ -48,7 +48,7 @@ export default function LegalPage() {
                 href="https://scryfall.com/docs/api"
                 className="underline decoration-dotted underline-offset-4 text-[var(--color-fg)]"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 Scryfall&rsquo;s public API
               </a>
@@ -108,7 +108,7 @@ export default function LegalPage() {
                 href="https://scryfall.com"
                 className="underline decoration-dotted underline-offset-4 text-[var(--color-fg)]"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 Scryfall
               </a>
@@ -117,7 +117,7 @@ export default function LegalPage() {
                 href="https://scryfall.com/docs/api"
                 className="underline decoration-dotted underline-offset-4 text-[var(--color-fg)]"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 API terms
               </a>

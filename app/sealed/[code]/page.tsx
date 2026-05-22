@@ -9,6 +9,7 @@ import {
   packsAvailableForSet,
   resolveRecipe,
 } from "@/lib/booster-loader";
+import { validateSetCode } from "@/lib/safe-url";
 import { SealedRun } from "./SealedRun";
 
 interface Props {
@@ -16,7 +17,9 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { code } = await params;
+  const { code: raw } = await params;
+  const code = validateSetCode(raw);
+  if (!code) return { title: "Set not found" };
   const set = await getSet(code);
   if (!set) return { title: "Set not found" };
   return {
@@ -45,7 +48,9 @@ async function getReferencedSetCards(code: string): Promise<ScryfallCard[]> {
  * feeds into the deckbuilder.
  */
 export default async function SealedSetPage({ params }: Props) {
-  const { code } = await params;
+  const { code: raw } = await params;
+  const code = validateSetCode(raw);
+  if (!code) notFound();
   const set = await getSet(code);
   if (!set) notFound();
 

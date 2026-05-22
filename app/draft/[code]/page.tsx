@@ -9,6 +9,7 @@ import {
   packsAvailableForSet,
   resolveRecipe,
 } from "@/lib/booster-loader";
+import { validateSetCode } from "@/lib/safe-url";
 import { DraftRun } from "./DraftRun";
 
 interface Props {
@@ -16,7 +17,9 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { code } = await params;
+  const { code: raw } = await params;
+  const code = validateSetCode(raw);
+  if (!code) return { title: "Set not found" };
   const set = await getSet(code);
   if (!set) return { title: "Set not found" };
   return {
@@ -44,7 +47,9 @@ async function getReferencedSetCards(code: string): Promise<ScryfallCard[]> {
  * whole bundle to a client DraftRun.
  */
 export default async function DraftSetPage({ params }: Props) {
-  const { code } = await params;
+  const { code: raw } = await params;
+  const code = validateSetCode(raw);
+  if (!code) notFound();
   const set = await getSet(code);
   if (!set) notFound();
 

@@ -58,7 +58,7 @@ function SiteFooter() {
           <a
             href="https://scryfall.com/docs/api"
             className="text-[var(--color-fg)] underline decoration-dotted underline-offset-4"
-            target="_blank" rel="noreferrer"
+            target="_blank" rel="noopener noreferrer"
           >
             Scryfall
           </a>

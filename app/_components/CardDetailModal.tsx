@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { ExternalLink, ShoppingBag, X } from "lucide-react";
 import type { ScryfallCard } from "@/lib/scryfall";
 import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
+import { safeExternalUrl } from "@/lib/safe-url";
 import { MagicCard } from "./MagicCard";
 
 /**
@@ -112,30 +113,44 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
             </div>
           )}
 
-          <div className="flex flex-wrap gap-2 mt-2">
-            <a
-              href={cardKingdomSearchUrl(card.name)}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[var(--accent-purple)] text-white text-sm font-semibold hover:brightness-110 transition-all"
-            >
-              <ShoppingBag className="w-3.5 h-3.5" /> Buy at Card Kingdom
-            </a>
-            <a
-              href={card.scryfall_uri}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white text-[var(--color-bg)] text-sm font-semibold hover:bg-white/90 transition-colors"
-            >
-              <ExternalLink className="w-3.5 h-3.5" /> View on Scryfall
-            </a>
-            <button
-              onClick={onClose}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full btn-hero-secondary liquid-glass text-sm font-semibold"
-            >
-              <X className="w-3.5 h-3.5" /> Close
-            </button>
-          </div>
+          {/* Validate Scryfall's returned URI before rendering — defends
+              against an upstream compromise injecting a `javascript:` URL
+              or pointing at an unrelated host. Falls back to a disabled
+              state if validation fails so we never paint a hostile href. */}
+          {(() => {
+            const scryfallHref = safeExternalUrl(card.scryfall_uri);
+            const ckHref = safeExternalUrl(cardKingdomSearchUrl(card.name));
+            return (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {ckHref && (
+                  <a
+                    href={ckHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[var(--accent-purple)] text-white text-sm font-semibold hover:brightness-110 transition-all"
+                  >
+                    <ShoppingBag className="w-3.5 h-3.5" /> Buy at Card Kingdom
+                  </a>
+                )}
+                {scryfallHref && (
+                  <a
+                    href={scryfallHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white text-[var(--color-bg)] text-sm font-semibold hover:bg-white/90 transition-colors"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" /> View on Scryfall
+                  </a>
+                )}
+                <button
+                  onClick={onClose}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full btn-hero-secondary liquid-glass text-sm font-semibold"
+                >
+                  <X className="w-3.5 h-3.5" /> Close
+                </button>
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>
