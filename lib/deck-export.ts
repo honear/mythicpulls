@@ -28,7 +28,6 @@ export interface BasicLandCounts {
   Swamp: number;
   Mountain: number;
   Forest: number;
-  Wastes: number;
 }
 
 /** Sample basic lands provided by the route layer when available — used to
@@ -42,7 +41,6 @@ const BASIC_LAND_ORDER: (keyof BasicLandCounts)[] = [
   "Swamp",
   "Mountain",
   "Forest",
-  "Wastes",
 ];
 
 /**
@@ -122,5 +120,5 @@ export function totalDeckSize(
 }
 
 export function emptyBasicLandCounts(): BasicLandCounts {
-  return { Plains: 0, Island: 0, Swamp: 0, Mountain: 0, Forest: 0, Wastes: 0 };
+  return { Plains: 0, Island: 0, Swamp: 0, Mountain: 0, Forest: 0 };
 }

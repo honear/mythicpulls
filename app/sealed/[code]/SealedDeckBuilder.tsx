@@ -35,10 +35,14 @@ import {
 const DECK_MIN = 40;
 
 const POOL_COLUMNS = 7;
-const POOL_CARD_W = 168;
+const POOL_CARD_W = 196;
 
-const DECK_CARD_W = 168;
-const DECK_STACK_OFFSET = 38;       // px between stacked cards in a column
+// Deck builder is sized to fit six mana-cost columns + the Lands column
+// visible by default (7 total). Anything past that — e.g. cards at CMC 6
+// or 7+ — triggers the horizontal scrollbar. Cards land at ~196px so the
+// names + mana costs are legible without the user having to hover.
+const DECK_CARD_W = 196;
+const DECK_STACK_OFFSET = 44;       // px between stacked cards in a column
 const DECK_VISIBLE_COLUMNS = 7;
 
 const HOVER_DELAY_MS = 200;
@@ -113,7 +117,6 @@ const BASIC_LANDS: { name: keyof BasicLandCounts; symbol: string; color: string 
   { name: "Swamp",    symbol: "B", color: "#7d6d6d" },
   { name: "Mountain", symbol: "R", color: "#e09a89" },
   { name: "Forest",   symbol: "G", color: "#9bc795" },
-  { name: "Wastes",   symbol: "C", color: "#cbcbcb" },
 ];
 
 /** uids for basic land "instances" rendered inside the deck Lands column.

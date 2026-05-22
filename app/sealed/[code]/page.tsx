@@ -96,7 +96,7 @@ export default async function SealedSetPage({ params }: Props) {
   // adds. Falls back to whatever Scryfall returns; if a basic isn't in
   // this set the export will just emit "<n> Plains" (Arena handles that).
   const basicLandSamples: Partial<Record<string, ScryfallCard>> = {};
-  const BASIC_NAMES = ["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"];
+  const BASIC_NAMES = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
   for (const c of mainCards) {
     const tl = (c.type_line ?? "").toLowerCase();
     if (!tl.includes("basic land")) continue;
