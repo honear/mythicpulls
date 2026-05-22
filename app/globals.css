@@ -1,26 +1,376 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   Mythic Pulls — Hero-derived dark theme (global)
+   --------------------------------------------------------------
+   The hero's deep-purple + liquid-glass aesthetic now governs the
+   entire site. All tokens default to the dark mode.
+   ============================================================ */
+
+@theme {
+  /* Page palette (dark by default) */
+  --hero-bg:        hsl(260 87% 3%);
+  --hero-fg:        hsl(40 6% 95%);
+  --hero-sub:       hsl(40 6% 82%);
+
+  --color-bg:       hsl(260 87% 3%);
+  --color-bg-soft:  hsl(260 50% 6%);
+  --color-surface:  rgba(255, 255, 255, 0.04);  /* liquid panels */
+  --color-surface-2: rgba(255, 255, 255, 0.06);
+  --color-line:     rgba(255, 255, 255, 0.10);
+  --color-line-strong: rgba(255, 255, 255, 0.18);
+
+  --color-fg:       hsl(40 6% 95%);
+  --color-ink:      hsl(40 6% 82%);
+  --color-ink-muted:hsl(40 6% 60%);
+  --color-ink-dim:  hsl(40 6% 42%);
+
+  /* Accent — same indigo→purple→amber used on the headline */
+  --accent-indigo:  #6366f1;
+  --accent-purple:  #a855f7;
+  --accent-amber:   #fcd34d;
+  --accent-grad:    linear-gradient(to left, #6366f1, #a855f7, #fcd34d);
+
+  /* Rarity accents — tuned for dark backgrounds */
+  --color-rarity-common: hsl(40 6% 70%);
+  --color-rarity-uncommon: #B7C3D8;
+  --color-rarity-rare: #E8C46B;
+  --color-rarity-mythic: #F0762B;
+  --color-rarity-bonus: #B7A0E4;
+
+  /* Typography */
+  --font-display: "General Sans", "Geist", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: "Geist", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "Geist", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 9999px;
+
+  /* Card physical dimensions (Magic card: 88mm × 63mm, 2.5mm radius).
+     A unit "card-base" controls width in pixels; height and radius
+     scale proportionally so every MagicCard stays true-to-life. */
+  --card-base: 180px;
+  --card-ratio-h: calc(var(--card-base) * 88 / 63);
+  --card-radius: calc(var(--card-base) * 2.5 / 63);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ============================================================
+   Base
+   ============================================================ */
+html, body {
+  min-height: 100%;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+::selection {
+  background: color-mix(in srgb, var(--accent-purple) 35%, transparent);
+  color: var(--color-fg);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================================
+   Type utilities
+   ============================================================ */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  font-weight: 400;
 }
+.label-caps {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Indigo → purple → amber accent gradient (text) */
+.ai-grad {
+  background-image: var(--accent-grad);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.balance { text-wrap: balance; }
+
+/* ============================================================
+   Liquid glass primitives
+   ============================================================ */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.01);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
+  position: relative;
+  overflow: hidden;
+}
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.45) 0%,
+    rgba(255,255,255,0.15) 20%,
+    rgba(255,255,255,0)    40%,
+    rgba(255,255,255,0)    60%,
+    rgba(255,255,255,0.15) 80%,
+    rgba(255,255,255,0.45) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Liquid panel — used for cards/sections (slightly stronger than the
+   ultra-faint hero pill, so content reads cleanly on dark). */
+.liquid-panel {
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+}
+
+.btn-hero-secondary {
+  color: var(--color-fg);
+  background: rgba(255, 255, 255, 0.04);
+  transition: background 200ms ease, transform 200ms ease;
+}
+.btn-hero-secondary:hover { background: rgba(255, 255, 255, 0.08); }
+.btn-hero-secondary:active { transform: translateY(1px); }
+
+/* Lift on hover */
+.lift { transition: transform 280ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 280ms; }
+.lift:hover { transform: translateY(-2px); }
+
+/* ============================================================
+   Hero headline ramp
+   ============================================================ */
+.hero-headline {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.024em;
+  font-size: 220px;
+}
+@media (max-width: 1280px) { .hero-headline { font-size: 180px; } }
+@media (max-width: 1024px) { .hero-headline { font-size: 140px; } }
+@media (max-width: 768px)  { .hero-headline { font-size: 96px; } }
+@media (max-width: 480px)  { .hero-headline { font-size: 64px; } }
+
+/* ============================================================
+   Marquee
+   ============================================================ */
+@keyframes marqueeSlide {
+  from { transform: translateX(0%); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track { animation: marqueeSlide 20s linear infinite; width: max-content; }
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+
+/* ============================================================
+   MagicCard primitive — 63 × 88 ratio, 2.5/63 radius
+   3D tilt is driven by CSS custom properties set in JS:
+       --tilt-x, --tilt-y (degrees), --glare-x, --glare-y (0..100%)
+   ============================================================ */
+.card-mtg {
+  position: relative;
+  aspect-ratio: 63 / 88;
+  width: var(--card-base);
+  border-radius: var(--card-radius);
+  background: #0a0612;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.06) inset,
+    0 22px 50px -28px rgba(0, 0, 0, 0.8),
+    0 8px 20px -12px rgba(99, 102, 241, 0.25);
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 220ms;
+  will-change: transform;
+}
+.card-mtg.is-tilting { transition: none; }
+
+.card-mtg__face {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+.card-mtg__face--back { transform: rotateY(180deg); }
+
+.card-mtg__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Glare layer — moves with cursor, multiplied with art. */
+.card-mtg__glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(255, 255, 255, 0.35),
+    transparent 45%
+  );
+  mix-blend-mode: overlay;
+  opacity: var(--glare-opacity, 0);
+  transition: opacity 200ms ease;
+}
+
+/* Holographic foil — conic gradient that rotates with tilt. */
+.card-mtg__holo {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    conic-gradient(
+      from calc(var(--tilt-y, 0deg) * 4),
+      rgba(99, 102, 241, 0.45),
+      rgba(168, 85, 247, 0.45),
+      rgba(252, 211, 77, 0.45),
+      rgba(99, 102, 241, 0.45)
+    ),
+    repeating-linear-gradient(
+      125deg,
+      rgba(255, 255, 255, 0.10) 0 2%,
+      transparent 2% 5%
+    );
+  mix-blend-mode: color-dodge;
+  opacity: var(--holo-opacity, 0);
+}
+
+/* Flip wrapper */
+.card-flip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.card-flip.is-flipped { transform: rotateY(180deg); }
+
+/* While dragging a card */
+.card-dragging {
+  z-index: 50;
+  cursor: grabbing;
+  transform: scale(1.05) rotateZ(2deg);
+  transition: transform 80ms ease;
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, 0.7),
+    0 12px 30px -8px rgba(168, 85, 247, 0.4);
+}
+
+/* Drop target placeholder during reorder */
+.card-drop-target { outline: 2px dashed rgba(252, 211, 77, 0.6); outline-offset: 4px; }
+
+/* ============================================================
+   Card text overlays (art-crop based card faces)
+   ============================================================ */
+.card-mtg__caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6%;
+  pointer-events: none;
+}
+.card-mtg__title {
+  font-family: var(--font-display);
+  font-size: clamp(0.7rem, 4.2cqw, 1.05rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  line-height: 1.05;
+}
+.card-mtg__type {
+  font-size: clamp(0.55rem, 3cqw, 0.78rem);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  letter-spacing: 0.02em;
+}
+.card-mtg__corner {
+  position: absolute;
+  top: 6%;
+  right: 6%;
+  font-size: clamp(0.5rem, 2.6cqw, 0.65rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: white;
+  padding: 0.3em 0.6em;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+/* Container queries: text inside the card scales with the card width */
+.card-mtg { container-type: inline-size; }
+
+/* ============================================================
+   Pack rip animations (kept from previous work, CSS-only)
+   ============================================================ */
+@keyframes packTopRise {
+  0%   { transform: translateY(0) rotateX(0deg); opacity: 1; }
+  100% { transform: translateY(-160px) rotateX(-65deg); opacity: 0; }
+}
+@keyframes packBottomSink {
+  0%   { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(28px); opacity: 0; }
+}
+@keyframes packFlash {
+  0%   { opacity: 0; transform: scale(0.7); }
+  40%  { opacity: 1; transform: scale(1.25); }
+  100% { opacity: 0; transform: scale(1.7); }
+}
+@keyframes cardRiseIn {
+  0%   { opacity: 0; transform: translateY(28px) scale(0.92); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.anim-pack-top { animation: packTopRise 700ms cubic-bezier(0.4, 0, 0.2, 1) both; transform-origin: bottom center; }
+.anim-pack-bottom { animation: packBottomSink 700ms ease-in 100ms both; }
+.anim-pack-flash { animation: packFlash 900ms ease-out both; }
+.anim-card-rise { animation: cardRiseIn 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+/* ============================================================
+   Focus
+   ============================================================ */
+:where(button, a, [role="button"]):focus-visible {
+  outline: 2px solid var(--accent-amber);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.20); }
