@@ -106,12 +106,9 @@ function CardSlot({
   const rarity = pulled.card.rarity;
   // Only rare and mythic get the glow. Token / common / uncommon stay
   // visually quiet so the chase pulls actually feel chase-y.
-  const glowClass =
-    rarity === "mythic"
-      ? "card-glow-mythic"
-      : rarity === "rare"
-        ? "card-glow-rare"
-        : null;
+  const isGlowing = faceUp && (rarity === "rare" || rarity === "mythic");
+  const glowBehind = rarity === "mythic" ? "card-glow-mythic" : "card-glow-rare";
+  const glowFilter = rarity === "mythic" ? "has-glow-mythic" : "has-glow-rare";
 
   return (
     <div
@@ -121,10 +118,12 @@ function CardSlot({
         animationDelay: `${mountDelayMs}ms`,
       }}
     >
-      {/* Glow only blooms after the card flips face-up — keeps the reveal
-          itself as the moment of recognition, not a pre-flip spoiler. */}
-      {glowClass && faceUp && <div className={glowClass} />}
-      <div className="relative" style={{ zIndex: 1 }}>
+      {/* Two-layer glow: a soft animated radial behind, plus a drop-shadow
+          on the card wrapper that hugs the rounded card silhouette. The
+          drop-shadow guarantees a visible colored aura even if the radial
+          gradient gets washed out by the dark backdrop. */}
+      {isGlowing && <div className={glowBehind} />}
+      <div className={`relative ${isGlowing ? glowFilter : ""}`} style={{ zIndex: 1 }}>
         <MagicCard
           card={{ kind: "scryfall", card: pulled.card, foil: pulled.foil }}
           faceUp={faceUp}

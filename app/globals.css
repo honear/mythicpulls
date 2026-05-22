@@ -555,26 +555,26 @@ html, body {
 .anim-card-rise { animation: cardRiseIn 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 
 /* ============================================================
-   Rarity glow — placed behind a face-up card, pulses gently to
-   draw the eye to the chase pulls in a sealed reveal. Both classes
-   share the same animation; only the gradient colors differ:
-     • rare   → soft gold halo
-     • mythic → bright orange-fire halo
-   Negative inset blooms the gradient past the card edges; blur(20px)
-   softens the falloff; pointer-events:none keeps clicks reaching
-   the card underneath.
+   Rarity glow — placed behind a face-up card, pulses to draw the
+   eye to the chase pulls. Two layers per card:
+     1. A radial gradient (soft halo, animated opacity + scale)
+     2. A drop-shadow filter on the wrapper (crisp colored ring
+        that hugs the card's rounded silhouette)
+   The drop-shadow gives an unambiguous colored aura even in the
+   first frame, before the radial pulse has built up. pointer-
+   events:none keeps clicks reaching the card underneath.
    ============================================================ */
 @keyframes rarityGlowPulse {
-  0%, 100% { opacity: 0.50; transform: scale(0.94); }
-  50%      { opacity: 1.00; transform: scale(1.08); }
+  0%, 100% { opacity: 0.70; transform: scale(0.96); }
+  50%      { opacity: 1.00; transform: scale(1.12); }
 }
 .card-glow-rare,
 .card-glow-mythic {
   position: absolute;
-  inset: -22px;
+  inset: -28px;
   pointer-events: none;
-  border-radius: 100%;
-  filter: blur(22px);
+  border-radius: 50%;
+  filter: blur(26px);
   z-index: 0;
   will-change: opacity, transform;
   animation: rarityGlowPulse 2.6s ease-in-out infinite;
@@ -582,20 +582,36 @@ html, body {
 .card-glow-rare {
   background: radial-gradient(
     ellipse at center,
-    rgba(247, 180, 75, 0.55) 0%,
-    rgba(247, 180, 75, 0.30) 35%,
-    transparent 70%
+    rgba(255, 200, 95, 0.90) 0%,
+    rgba(247, 180, 75, 0.65) 30%,
+    rgba(247, 180, 75, 0.30) 55%,
+    transparent 78%
   );
 }
 .card-glow-mythic {
   background: radial-gradient(
     ellipse at center,
-    rgba(255, 140, 60, 0.75) 0%,
-    rgba(243, 111, 39, 0.55) 30%,
-    rgba(247, 180, 75, 0.30) 55%,
-    transparent 75%
+    rgba(255, 140, 50, 1.0) 0%,
+    rgba(243, 111, 39, 0.85) 25%,
+    rgba(255, 180, 60, 0.45) 50%,
+    transparent 78%
   );
   animation-duration: 2.2s; /* slightly faster pulse than rare */
+}
+
+/* Wrapper class for the card itself — pairs with .card-glow-* on a
+   sibling element. drop-shadow paints a colored aura that follows
+   the card's rounded corners precisely (whereas the radial behind
+   blooms past the edges as a soft halo). */
+.has-glow-rare {
+  filter:
+    drop-shadow(0 0 10px rgba(247, 180, 75, 0.70))
+    drop-shadow(0 0 22px rgba(247, 180, 75, 0.40));
+}
+.has-glow-mythic {
+  filter:
+    drop-shadow(0 0 12px rgba(255, 130, 50, 0.85))
+    drop-shadow(0 0 28px rgba(243, 111, 39, 0.55));
 }
 
 /* ============================================================

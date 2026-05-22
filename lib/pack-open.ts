@@ -157,6 +157,17 @@ function fallbackPull(
 }
 
 /**
+ * Module-level monotonic counter for PulledCard uids. Previously the
+ * counter was scoped to each openPack call, restarting at 0 — fine for the
+ * single-pack opener, but the sealed flow calls openPack 6× and the same
+ * card pulled at the same slot index across packs ended up with identical
+ * uids ("<id>#N"), causing React duplicate-key warnings and the deck
+ * builder treating two different physical pulls as the same card.
+ * A module-level counter makes uids unique across every call in a session.
+ */
+let GLOBAL_PULL_COUNTER = 0;
+
+/**
  * Open one pack. Walks the slot recipes, expanding each by its `count`
  * (default 1), rolling an outcome per slot pull, and emitting a PulledCard
  * per result. Token slots fall back to the conventional `t<set>` pool;
@@ -170,7 +181,6 @@ export function openPack(
   rng: () => number = Math.random,
 ): PulledCard[] {
   const pulled: PulledCard[] = [];
-  let counter = 0;
   const ownSet = setCode.toLowerCase();
 
   for (let s = 0; s < content.slots.length; s++) {
@@ -187,7 +197,7 @@ export function openPack(
         const rolled = rollOutcome(slot.outcomes, pool, ownSet, filters, rng);
         if (!rolled) continue;
         pulled.push({
-          uid: `${rolled.card.id}#${counter++}`,
+          uid: `${rolled.card.id}#${GLOBAL_PULL_COUNTER++}`,
           card: rolled.card,
           slotIndex: s,
           slotLabel: slot.label,
@@ -212,7 +222,7 @@ export function openPack(
       if (!card) continue;
 
       pulled.push({
-        uid: `${card.id}#${counter++}`,
+        uid: `${card.id}#${GLOBAL_PULL_COUNTER++}`,
         card,
         slotIndex: s,
         slotLabel: slot.label,

@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
-  Download, Copy, X, Plus, Minus, ArrowDownAZ,
+  Download, Copy, X, Plus, Minus, ArrowDownAZ, Palette,
 } from "lucide-react";
 import type { ScryfallCard } from "@/lib/scryfall";
 import type { PulledCard } from "@/lib/pack-open";
@@ -40,7 +41,7 @@ const DECK_CARD_W = 168;
 const DECK_STACK_OFFSET = 38;       // px between stacked cards in a column
 const DECK_VISIBLE_COLUMNS = 7;
 
-const HOVER_DELAY_MS = 1000;
+const HOVER_DELAY_MS = 200;
 const DRAG_THRESHOLD = 6;
 const PREVIEW_W = 320;
 
@@ -72,6 +73,40 @@ function bucketCompare(a: ColumnId, b: ColumnId): number {
   return ai - bi;
 }
 
+/* -------- Pool sorting --------
+ * "mana" — lands last, then mana value, then name.
+ * "color" — group by primary color (W/U/B/R/G), then multicolor,
+ *           then colorless, then lands; within each band sort by
+ *           mana value, then name. Matches the rough conventions
+ *           draft-deck-builders tend to use. */
+const COLOR_BANDS = ["W", "U", "B", "R", "G"] as const;
+function colorBand(card: ScryfallCard): number {
+  if (isLand(card)) return 100;
+  const colors = card.colors ?? [];
+  if (colors.length === 0) return 60;       // colorless
+  if (colors.length > 1) return 50;         // multicolor
+  const idx = (COLOR_BANDS as readonly string[]).indexOf(colors[0]);
+  return idx >= 0 ? idx : 99;
+}
+function compareByMana(a: PulledCard[], b: PulledCard[]): number {
+  const al = isLand(a[0].card) ? 1 : 0;
+  const bl = isLand(b[0].card) ? 1 : 0;
+  if (al !== bl) return al - bl;
+  const ac = a[0].card.cmc ?? 0;
+  const bc = b[0].card.cmc ?? 0;
+  if (ac !== bc) return ac - bc;
+  return a[0].card.name.localeCompare(b[0].card.name);
+}
+function compareByColor(a: PulledCard[], b: PulledCard[]): number {
+  const ak = colorBand(a[0].card);
+  const bk = colorBand(b[0].card);
+  if (ak !== bk) return ak - bk;
+  const ac = a[0].card.cmc ?? 0;
+  const bc = b[0].card.cmc ?? 0;
+  if (ac !== bc) return ac - bc;
+  return a[0].card.name.localeCompare(b[0].card.name);
+}
+
 const BASIC_LANDS: { name: keyof BasicLandCounts; symbol: string; color: string }[] = [
   { name: "Plains",   symbol: "W", color: "#f5efce" },
   { name: "Island",   symbol: "U", color: "#a3c9ec" },
@@ -80,6 +115,24 @@ const BASIC_LANDS: { name: keyof BasicLandCounts; symbol: string; color: string 
   { name: "Forest",   symbol: "G", color: "#9bc795" },
   { name: "Wastes",   symbol: "C", color: "#cbcbcb" },
 ];
+
+/** uids for basic land "instances" rendered inside the deck Lands column.
+ *  They're synthetic — basic lands live in the `lands` counter state, not
+ *  the `inDeck` Set — but we forge PulledCard-shaped entries so they slot
+ *  into the same render path as real pulls. */
+function basicLandUid(name: keyof BasicLandCounts, index: number): string {
+  return `basic:${name}#${index}`;
+}
+function isBasicLandUid(uid: string): boolean {
+  return uid.startsWith("basic:");
+}
+function parseBasicLandName(uid: string): keyof BasicLandCounts | null {
+  if (!isBasicLandUid(uid)) return null;
+  const after = uid.slice("basic:".length);   // "Plains#3"
+  const name = after.split("#")[0];
+  if (BASIC_LANDS.some((b) => b.name === name)) return name as keyof BasicLandCounts;
+  return null;
+}
 
 interface SetMeta { code: string; name: string; iconUri?: string }
 interface Props {
@@ -111,6 +164,8 @@ interface PreviewState {
    Component
    ============================================================ */
 
+type PoolSort = "mana" | "color";
+
 export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
   const [inDeck, setInDeck] = useState<Set<string>>(() => new Set());
   /** Per-uid column override. Empty by default → cards bucket by CMC.
@@ -120,6 +175,7 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
   const [exportOpen, setExportOpen] = useState(false);
   const [drag, setDrag] = useState<DragState | null>(null);
   const [preview, setPreview] = useState<PreviewState | null>(null);
+  const [poolSort, setPoolSort] = useState<PoolSort>("mana");
   const hoverTimerRef = useRef<number | null>(null);
 
   useEffect(() => () => {
@@ -228,22 +284,40 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
         : null;
     try { e.currentTarget.releasePointerCapture(e.pointerId); } catch {}
 
+    // Basic-land uids are synthetic — they bypass the inDeck/overrides
+    // system and modify the `lands` counter instead. Removing one from
+    // the deck (via tap or drag-to-pool) just decrements its counter;
+    // they always live in the Lands column so column moves are no-ops.
+    const isBasic = isBasicLandUid(drag.uid);
+    const basicName = isBasic ? parseBasicLandName(drag.uid) : null;
+
     if (!wasActive) {
       // Treat as a tap — pool→deck (default bucket) or deck→pool.
       if (drag.source === "pool") {
         addToDeck(drag.uid, defaultBucket(drag.card));
+      } else if (isBasic && basicName) {
+        bumpLand(basicName, -1);
       } else {
         removeFromDeck(drag.uid);
       }
     } else if (dropTarget) {
       const zone = dropTarget.getAttribute("data-drop-zone");
       if (zone === "pool") {
-        if (drag.source === "deck") removeFromDeck(drag.uid);
+        if (drag.source === "deck") {
+          if (isBasic && basicName) bumpLand(basicName, -1);
+          else removeFromDeck(drag.uid);
+        }
       } else if (zone === "deck-column") {
-        const colAttr = dropTarget.getAttribute("data-column");
-        const column: ColumnId = colAttr === "L" ? "L" : parseInt(colAttr ?? "0", 10);
-        if (drag.source === "pool") addToDeck(drag.uid, column);
-        else moveToColumn(drag.uid, column);
+        // Basic lands always live in the Lands column — ignore column
+        // overrides for them. Real cards get the normal move/add semantics.
+        if (isBasic) {
+          // no-op
+        } else {
+          const colAttr = dropTarget.getAttribute("data-column");
+          const column: ColumnId = colAttr === "L" ? "L" : parseInt(colAttr ?? "0", 10);
+          if (drag.source === "pool") addToDeck(drag.uid, column);
+          else moveToColumn(drag.uid, column);
+        }
       } else if (zone === "deck") {
         // Dropped on the deck panel but not a specific column — use the
         // default bucket for the card.
@@ -264,7 +338,11 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
   const poolCards = useMemo(() => pool.filter((p) => !inDeck.has(p.uid)), [pool, inDeck]);
 
   /** Group deck cards into columns based on overrides + defaults, then by
-   *  card id within each column so duplicates stack tightly together. */
+   *  card id within each column so duplicates stack tightly together.
+   *  Also synthesizes PulledCard-shaped entries for basic land counts and
+   *  drops them into the Lands ("L") column so the player can see them
+   *  alongside their non-basic lands. Basic lands carry uids of the form
+   *  `basic:<Name>#<i>` which the drag/click handlers recognize. */
   const deckColumns = useMemo(() => {
     const byCol = new Map<ColumnId, Map<string, PulledCard[]>>();
     for (const p of deckCards) {
@@ -278,6 +356,31 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
       list.push(p);
       colMap.set(p.card.id, list);
     }
+
+    // Synthesize basic-land entries into the Lands column.
+    let landsColMap = byCol.get("L");
+    for (const ld of BASIC_LANDS) {
+      const count = lands[ld.name];
+      if (count <= 0) continue;
+      const sample = basicLandSamples[ld.name];
+      if (!sample) continue;  // No sample card to render — skip gracefully.
+      if (!landsColMap) {
+        landsColMap = new Map();
+        byCol.set("L", landsColMap);
+      }
+      const arr: PulledCard[] = [];
+      for (let i = 0; i < count; i++) {
+        arr.push({
+          uid: basicLandUid(ld.name, i),
+          card: sample,
+          slotIndex: 0,
+          slotLabel: "Basic Land",
+          foil: false,
+        });
+      }
+      landsColMap.set(`basic:${ld.name}`, arr);
+    }
+
     return ALL_BUCKETS
       .filter((b) => byCol.has(b))
       .sort(bucketCompare)
@@ -290,9 +393,10 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
           return a[0].card.name.localeCompare(c[0].card.name);
         }),
       }));
-  }, [deckCards, overrides]);
+  }, [deckCards, overrides, lands, basicLandSamples]);
 
-  /** Pool view — collapse duplicates by card id and sort by cmc → name. */
+  /** Pool view — collapse duplicates by card id, then sort by either mana
+   *  value or primary color depending on the toggle. Lands always go last. */
   const poolGroups = useMemo(() => {
     const m = new Map<string, PulledCard[]>();
     for (const p of poolCards) {
@@ -300,16 +404,10 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
       list.push(p);
       m.set(p.card.id, list);
     }
-    return Array.from(m.values()).sort((a, b) => {
-      const al = isLand(a[0].card) ? 1 : 0;
-      const bl = isLand(b[0].card) ? 1 : 0;
-      if (al !== bl) return al - bl;
-      const ac = a[0].card.cmc ?? 0;
-      const bc = b[0].card.cmc ?? 0;
-      if (ac !== bc) return ac - bc;
-      return a[0].card.name.localeCompare(b[0].card.name);
-    });
-  }, [poolCards]);
+    const arr = Array.from(m.values());
+    if (poolSort === "color") return arr.sort(compareByColor);
+    return arr.sort(compareByMana);
+  }, [poolCards, poolSort]);
 
   const deckSize = totalDeckSize(deckCards.map((p) => p.card), lands);
   const remaining = Math.max(0, DECK_MIN - deckSize);
@@ -356,14 +454,24 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
           countLabel={`${deckCards.length} from pool`}
         />
         <div className="px-4 py-3 overflow-x-auto">
-          {deckColumns.length === 0 ? (
+          {deckColumns.length === 0 && !drag?.active ? (
             <EmptyDeckTarget />
           ) : (
             <div
               className="flex items-start gap-2"
               style={{ minWidth: DECK_VISIBLE_COLUMNS * (DECK_CARD_W + 14) }}
             >
-              {deckColumns.map(({ bucket, groups }) => (
+              {/* While a drag is active we render every possible bucket
+                  (0..7+ and Lands), even empty ones. That gives the user a
+                  drop target for any mana value, so a pool card can land in
+                  a column the deck doesn't have any cards in yet. Empty
+                  columns show a dashed placeholder. */}
+              {(drag?.active
+                ? ALL_BUCKETS.map((b) =>
+                    deckColumns.find((c) => c.bucket === b) ?? { bucket: b, groups: [] },
+                  )
+                : deckColumns
+              ).map(({ bucket, groups }) => (
                 <DeckColumn
                   key={String(bucket)}
                   bucket={bucket}
@@ -399,6 +507,7 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
               : "Click to add · drag onto a deck column to place"
           }
           countLabel={`${poolCards.length} card${poolCards.length === 1 ? "" : "s"}`}
+          right={<PoolSortToggle value={poolSort} onChange={setPoolSort} />}
         />
         <div className="px-4 py-3">
           {poolGroups.length === 0 ? (
@@ -505,6 +614,30 @@ function PoolTile({
   );
 }
 
+/**
+ * Render slot — one visual tile in a deck column. We flatten the column's
+ * groups into a sequence of slots:
+ *   • Basic land groups collapse into a single slot with a count badge
+ *     (so "Forest × 7" is one tile, not seven stacked copies).
+ *   • Every other group expands one slot per pull, so duplicates stack
+ *     with the Y-offset reveal that lets the user read each card's name.
+ */
+type RenderSlot =
+  | { kind: "stacked"; pulled: PulledCard }
+  | { kind: "collapsed"; pulled: PulledCard; count: number };
+
+function buildColumnSlots(groups: PulledCard[][]): RenderSlot[] {
+  const slots: RenderSlot[] = [];
+  for (const g of groups) {
+    if (g.length > 0 && isBasicLandUid(g[0].uid)) {
+      slots.push({ kind: "collapsed", pulled: g[0], count: g.length });
+    } else {
+      for (const p of g) slots.push({ kind: "stacked", pulled: p });
+    }
+  }
+  return slots;
+}
+
 function DeckColumn({
   bucket, groups, drag, handlers,
 }: {
@@ -513,11 +646,14 @@ function DeckColumn({
   drag: DragState | null;
   handlers: SharedHandlers;
 }) {
-  // Flatten groups into render slots so duplicates literally stack on top.
-  const flat = groups.flat();
+  const slots = buildColumnSlots(groups);
   const cardH = (DECK_CARD_W * 88) / 63;
-  const stackH = cardH + Math.max(0, flat.length - 1) * DECK_STACK_OFFSET;
+  const stackH = cardH + Math.max(0, slots.length - 1) * DECK_STACK_OFFSET;
   const isPotentialTarget = drag?.active != null;
+  // True card count includes the basic land multiples — slots may collapse
+  // them but the header should still show the real total.
+  const realCount = groups.reduce((s, g) => s + g.length, 0);
+  const isEmpty = slots.length === 0;
 
   return (
     <div
@@ -537,17 +673,28 @@ function DeckColumn({
           {bucketLabel(bucket)}
         </span>
         <span className="text-[10px] text-[var(--color-ink-muted)] tabular-nums">
-          {flat.length}
+          {realCount}
         </span>
       </div>
       <div
         className="relative"
         style={{ width: DECK_CARD_W, height: stackH || cardH }}
       >
-        {flat.map((p, i) => (
-          <DeckStackCard
-            key={p.uid}
-            pulled={p}
+        {isEmpty && drag?.active && (
+          // Empty placeholder shown only while a drag is in progress. Lets
+          // the column read as a valid drop target even though there's no
+          // card in it yet — drop creates the column for real.
+          <div
+            className="absolute inset-0 rounded-xl border-2 border-dashed grid place-items-center text-[11px] text-[var(--color-ink-dim)]"
+            style={{ borderColor: "rgba(164,132,215,0.30)" }}
+          >
+            Drop here
+          </div>
+        )}
+        {slots.map((slot, i) => (
+          <DeckSlotCard
+            key={slot.pulled.uid}
+            slot={slot}
             stackIndex={i}
             drag={drag}
             handlers={handlers}
@@ -558,15 +705,23 @@ function DeckColumn({
   );
 }
 
-function DeckStackCard({
-  pulled, stackIndex, drag, handlers,
+function DeckSlotCard({
+  slot, stackIndex, drag, handlers,
 }: {
-  pulled: PulledCard;
+  slot: RenderSlot;
   stackIndex: number;
   drag: DragState | null;
   handlers: SharedHandlers;
 }) {
+  const { pulled } = slot;
   const beingDragged = drag?.active && drag.uid === pulled.uid;
+  const isCollapsed = slot.kind === "collapsed";
+  const count = isCollapsed ? slot.count : 1;
+  const isBasic = isBasicLandUid(pulled.uid);
+  const aria = isBasic
+    ? `${pulled.card.name} ×${count} — click to remove one`
+    : `${pulled.card.name} — click to remove · drag to another column`;
+
   return (
     <button
       onPointerDown={(e) => handlers.startDrag(pulled, "deck", e)}
@@ -582,7 +737,7 @@ function DeckStackCard({
         zIndex: 50 + stackIndex,
         opacity: beingDragged ? 0.35 : 1,
       }}
-      aria-label={`${pulled.card.name} — click to remove · drag to another column`}
+      aria-label={aria}
     >
       <MagicCard
         card={{ kind: "scryfall", card: pulled.card, foil: false }}
@@ -590,6 +745,21 @@ function DeckStackCard({
         width={DECK_CARD_W}
         holoEnabled={false}
       />
+      {isCollapsed && count > 1 && (
+        <span
+          className="absolute top-1 right-1 grid place-items-center rounded-full text-[12px] font-bold leading-none px-2 py-1 z-10"
+          style={{
+            background: "var(--accent-purple)",
+            color: "white",
+            boxShadow:
+              "0 4px 12px -2px var(--accent-purple-glow), inset 0 1px 0 rgba(255,255,255,0.25)",
+            fontFamily: "var(--font-btn)",
+            minWidth: 32,
+          }}
+        >
+          ×{count}
+        </span>
+      )}
     </button>
   );
 }
@@ -598,23 +768,34 @@ function DeckStackCard({
    Hover preview + drag ghost (both fixed-position overlays)
    ============================================================ */
 
+/**
+ * Hover preview + drag ghost both render via React Portal directly onto
+ * document.body. The deck/pool panels use `backdrop-filter`, which
+ * creates a new containing block for `position: fixed` descendants — so a
+ * preview rendered inside the panel would be clipped by the panel's
+ * overflow even with z-index: 9999. Portaling escapes every stacking
+ * context in the tree.
+ */
 function HoverPreview({
   card, foil, x, y,
 }: { card: ScryfallCard; foil: boolean; x: number; y: number }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted || typeof document === "undefined") return null;
+
   const cardH = (PREVIEW_W * 88) / 63;
   const margin = 18;
   const offsetX = 24;
   let left = x + offsetX;
   let top = y - cardH / 2;
-  if (typeof window !== "undefined") {
-    if (left + PREVIEW_W + margin > window.innerWidth) left = x - PREVIEW_W - offsetX;
-    if (top < margin) top = margin;
-    if (top + cardH + margin > window.innerHeight) top = window.innerHeight - cardH - margin;
-  }
-  return (
+  if (left + PREVIEW_W + margin > window.innerWidth) left = x - PREVIEW_W - offsetX;
+  if (top < margin) top = margin;
+  if (top + cardH + margin > window.innerHeight) top = window.innerHeight - cardH - margin;
+
+  return createPortal(
     <div
-      className="fixed z-50 pointer-events-none anim-detail-fade"
-      style={{ left, top, width: PREVIEW_W }}
+      className="fixed pointer-events-none anim-detail-fade"
+      style={{ left, top, width: PREVIEW_W, zIndex: 2147483600 }}
     >
       <MagicCard
         card={{ kind: "scryfall", card, foil }}
@@ -622,24 +803,30 @@ function HoverPreview({
         width={PREVIEW_W}
         holoEnabled={false}
       />
-    </div>
+    </div>,
+    document.body,
   );
 }
 
 function DragGhost({
   card, foil, x, y,
 }: { card: ScryfallCard; foil: boolean; x: number; y: number }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted || typeof document === "undefined") return null;
+
   const W = 175;
   const cardH = (W * 88) / 63;
-  return (
+  return createPortal(
     <div
-      className="fixed z-[100] pointer-events-none"
+      className="fixed pointer-events-none"
       style={{
         left: x - W / 2,
         top: y - cardH / 2,
         width: W,
         transform: "rotateZ(-3deg)",
         filter: "drop-shadow(0 18px 30px rgba(0,0,0,0.55))",
+        zIndex: 2147483647,
       }}
     >
       <MagicCard
@@ -648,7 +835,8 @@ function DragGhost({
         width={W}
         holoEnabled={false}
       />
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -726,8 +914,15 @@ function DeckHeader({
 }
 
 function PanelHeader({
-  title, subtitle, countLabel,
-}: { title: string; subtitle: string; countLabel: string }) {
+  title, subtitle, countLabel, right,
+}: {
+  title: string;
+  subtitle: string;
+  countLabel: string;
+  /** Optional slot rendered before the count label — used by the Pool
+   *  panel to drop in its Sort by Mana / Sort by Color toggle. */
+  right?: React.ReactNode;
+}) {
   return (
     <div className="flex items-end justify-between gap-3 px-5 py-3 border-b border-[var(--color-line)]">
       <div>
@@ -739,13 +934,65 @@ function PanelHeader({
         </p>
         <p className="text-[12px] text-[var(--color-ink-muted)] mt-0.5">{subtitle}</p>
       </div>
-      <p
-        className="text-[12px] text-[var(--color-ink)] tabular-nums"
-        style={{ fontFamily: "var(--font-ui)" }}
-      >
-        {countLabel}
-      </p>
+      <div className="flex items-center gap-3">
+        {right}
+        <p
+          className="text-[12px] text-[var(--color-ink)] tabular-nums"
+          style={{ fontFamily: "var(--font-ui)" }}
+        >
+          {countLabel}
+        </p>
+      </div>
     </div>
+  );
+}
+
+function PoolSortToggle({
+  value, onChange,
+}: { value: PoolSort; onChange: (v: PoolSort) => void }) {
+  return (
+    <div
+      className="inline-flex items-center gap-0.5 p-0.5 rounded-full border border-[var(--color-line)]"
+      style={{ fontFamily: "var(--font-ui)" }}
+    >
+      <SortPill
+        active={value === "mana"}
+        onClick={() => onChange("mana")}
+        icon={<ArrowDownAZ className="w-3.5 h-3.5" />}
+        label="Mana"
+      />
+      <SortPill
+        active={value === "color"}
+        onClick={() => onChange("color")}
+        icon={<Palette className="w-3.5 h-3.5" />}
+        label="Color"
+      />
+    </div>
+  );
+}
+
+function SortPill({
+  active, onClick, icon, label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      aria-pressed={active}
+      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-medium tracking-wide transition-colors"
+      style={{
+        background: active ? "var(--accent-purple)" : "transparent",
+        color: active ? "white" : "var(--color-ink)",
+      }}
+      title={`Sort the pool by ${label.toLowerCase()}`}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }
 

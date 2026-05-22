@@ -790,6 +790,9 @@ function CardSpread({
           const bound = bind(idx);
           const isFaceUp = flipped.has(p.uid);
           const price = isFaceUp ? getDisplayPrice(p.card, p.foil) : null;
+          const isGlowing = isFaceUp && (p.card.rarity === "rare" || p.card.rarity === "mythic");
+          const glowBehind = p.card.rarity === "mythic" ? "card-glow-mythic" : "card-glow-rare";
+          const glowFilter = p.card.rarity === "mythic" ? "has-glow-mythic" : "has-glow-rare";
           return (
             <div
               key={p.uid}
@@ -811,11 +814,17 @@ function CardSpread({
                 ...bound.style,
               }}
             >
-              <MagicCard
-                card={{ kind: "scryfall", card: p.card, foil: p.foil }}
-                faceUp={isFaceUp}
-                width={180}
-              />
+              {/* Card + rarity glow (rares/mythics only, only when face-up). */}
+              <div className="relative" style={{ width: 180 }}>
+                {isGlowing && <div className={glowBehind} />}
+                <div className={`relative ${isGlowing ? glowFilter : ""}`} style={{ zIndex: 1 }}>
+                  <MagicCard
+                    card={{ kind: "scryfall", card: p.card, foil: p.foil }}
+                    faceUp={isFaceUp}
+                    width={180}
+                  />
+                </div>
+              </div>
               {/* Caption area — reserves height so the grid doesn't shift
                   when face-up vs face-down. */}
               <div className="mt-2 min-h-[2.5rem] w-full flex flex-col items-center justify-start">
