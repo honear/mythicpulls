@@ -59,20 +59,30 @@ export function PackOpener({
   const def = PACKS[packType];
   const packCost = getPackCost(packType, setMeta.code);
 
-  function rip() {
+  /**
+   * Open a pack. `typeOverride` lets callers (notably the fan click handler)
+   * pass the clicked pack type directly — necessary because `setPackType` is
+   * async and the previous `packType` state would otherwise be read here,
+   * which made every fan click after the first one open the previously
+   * selected pack instead of the clicked one.
+   */
+  function rip(typeOverride?: PackType) {
     if (phase !== "idle") return;
+    const t = typeOverride ?? packType;
     setPhase("ripping");
-    const result = openPack(pool, packType);
+    const result = openPack(pool, t);
     setPulled(result);
     setFlipped(new Set());
     valuedRef.current = new Set();
     setDetailUid(null);
     setViewMode("reveal");
     // Only spent + pack count accumulate immediately — pulled value rolls
-    // in as the user actually reveals each card.
+    // in as the user actually reveals each card. Use the just-clicked type
+    // for the cost so it doesn't lag a pack behind in the MoneyStrip.
+    const costForThisPack = getPackCost(t, setMeta.code);
     setStats((s) => ({
       ...s,
-      spent: s.spent + packCost,
+      spent: s.spent + costForThisPack,
       packs: s.packs + 1,
     }));
     setTimeout(() => setPhase("revealing"), 800);
@@ -234,7 +244,7 @@ export function PackOpener({
               <PackFan
                 available={availableTypes}
                 setMeta={setMeta}
-                onSelect={(t) => { setPackType(t); rip(); }}
+                onSelect={(t) => { setPackType(t); rip(t); }}
               />
             </div>
           )}
