@@ -113,10 +113,10 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
         {cycleOrder.map((uid, i) => {
           const p = byUid.get(uid);
           if (!p) return null;
-          // Render only the top N + the actively-dragging card (even if it
-          // has cycled past the visible window).
-          const isVisible = i < STACK_DEPTH || uid === draggingUid;
-          if (!isVisible) return null;
+          // Render every card always. Cards past the visible window clamp
+          // to the back-of-stack rest slot — they overlap there but only
+          // the latest in DOM order is visible. Keeping them mounted lets
+          // the snap-back transition play after a release.
           return (
             <DeckSlot
               key={uid}
@@ -293,13 +293,15 @@ function DeckSlot({
         // .deck-slot-dragging class is gone by then, the inline transition
         // below is already active, so the snap animation actually plays.
         transform: dragging ? undefined : rest,
-        transition:
-          "transform 380ms cubic-bezier(0.22, 0.9, 0.3, 1), opacity 380ms ease",
+        transition: "transform 380ms cubic-bezier(0.22, 0.9, 0.3, 1)",
         zIndex: dragging ? 999 : 100 - stackPos,
-        // Stay visible while the user is still holding the card, even if it
-        // has cycled past the visible window.
-        opacity: behindStack && !dragging ? 0 : 1,
-        willChange: "transform, opacity",
+        // Cards stay at opacity 1 always. Cycled cards land on the back-of-
+        // deck slot (clamped to stackPos = STACK_DEPTH - 1), where they
+        // visually merge with already-cycled cards — only the topmost in
+        // DOM order is ever drawn since they share transform + z-index.
+        // This is what makes "snap back behind the deck" actually look like
+        // snapping; the previous opacity:0 rule was making the card vanish.
+        willChange: "transform",
       }}
     >
       <MagicCard
