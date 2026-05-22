@@ -182,7 +182,11 @@ export function CollectionBinder() {
 }
 
 function keyOf(e: CollectionEntry) {
-  return `${e.cardId}-${e.pulledAt}`;
+  // Use the entry's stable id rather than (cardId, pulledAt) — saving an
+  // entire pack at once gave every card the same Date.now() value, and if
+  // two of those cards happened to share a Scryfall id the composite key
+  // collided. entryId is generated per-entry at save (or read) time.
+  return e.entryId;
 }
 
 function BinderGrid({

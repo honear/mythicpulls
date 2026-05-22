@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { FastForward } from "lucide-react";
+import { FastForward, Sparkles } from "lucide-react";
 import type { ScryfallCard } from "@/lib/scryfall";
 import type { PackContent } from "@/lib/booster-config";
 import type { FilterPredicate } from "@/lib/booster-filters";
@@ -288,20 +288,38 @@ export function DraftRun({
             totalRounds={TOTAL_ROUNDS}
           />
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p
-              className="text-[13px] text-[var(--color-ink-muted)]"
-              style={{ fontFamily: "var(--font-ui)" }}
-            >
-              {phase === "idle"
-                ? `Ready to draft · ${draftTypeName(draftType)} Booster format`
-                : `Pick ${totalPickInRound} · ${userPack.length} card${userPack.length === 1 ? "" : "s"} in your pack · ${userPool.length} drafted total`}
-            </p>
+          {/* Status + skip-to-deck bar. Matches the sealed run's header
+              bar so the affordances feel parallel: a liquid-glass surface
+              frames pick progress on the left and the auto-finish escape
+              hatch on the right. Previously this row had no surface and
+              the skip button was easy to miss — moving both into the
+              liquid-glass pill draws the eye to it. */}
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 rounded-2xl liquid-glass">
+            <div className="flex items-center gap-3">
+              <Sparkles className="w-4 h-4 text-[var(--accent-purple-light)]" />
+              <p
+                className="text-[14px] font-semibold tracking-wide text-[var(--color-fg)]"
+                style={{ fontFamily: "var(--font-ui)" }}
+              >
+                {phase === "idle"
+                  ? `Ready to draft · ${draftTypeName(draftType)} Booster`
+                  : (
+                      <>
+                        Pick {totalPickInRound}
+                        <span className="text-[var(--color-ink-muted)]">
+                          {" · "}
+                          {userPack.length} card{userPack.length === 1 ? "" : "s"} in pack · {userPool.length} drafted
+                        </span>
+                      </>
+                    )}
+              </p>
+            </div>
             {phase === "picking" && (
               <button
                 onClick={skipDraft}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium tracking-wide transition-colors hover:bg-white/10 border border-[var(--color-line)]"
                 style={{ color: "var(--color-ink)", fontFamily: "var(--font-ui)" }}
+                aria-label="Skip remaining picks and go to deck builder"
                 title="Let the bots finish the draft for you and jump to the deck builder"
               >
                 <FastForward className="w-3.5 h-3.5" />

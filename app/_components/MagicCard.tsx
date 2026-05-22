@@ -57,9 +57,20 @@ export function MagicCard({
 
   // When `width` is set, push it into --card-base so the proportional
   // radius (--card-radius = 2.5/63 of width) recomputes at every size.
-  const sizeStyle = width
-    ? ({ width, ["--card-base" as string]: `${width}px` } as React.CSSProperties)
-    : undefined;
+  // We also write --card-art-url whenever the front face is showing —
+  // the "masked" holo style uses it as a CSS mask source.
+  const styleVars: Record<string, string | number> = {};
+  if (width) {
+    styleVars.width = width;
+    styleVars["--card-base"] = `${width}px`;
+  }
+  if (faceUp && data.front) {
+    styleVars["--card-art-url"] = `url("${data.front}")`;
+  }
+  const sizeStyle =
+    Object.keys(styleVars).length > 0
+      ? (styleVars as React.CSSProperties)
+      : undefined;
 
   return (
     <div
@@ -83,7 +94,10 @@ export function MagicCard({
             draggable={false}
             loading="lazy"
           />
-          {/* Glare + holo only on the front face, and only when revealed. */}
+          {/* Glare + holo only on the front face, and only when revealed.
+              The holo's visual treatment (default shimmer, masked, or
+              off) is selected by the global <HoloToggle> which writes
+              body[data-holo] — see globals.css. */}
           {faceUp && <span className="card-mtg__glare" />}
           {isHolographic && <span className="card-mtg__holo" />}
         </div>

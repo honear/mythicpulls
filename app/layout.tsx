@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 import { SiteHeader } from "./_components/SiteHeader";
 
@@ -51,7 +52,7 @@ export default function RootLayout({
 function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-[var(--color-line)] bg-[var(--color-bg-soft)]">
-      <div className="mx-auto max-w-7xl w-full px-6 py-6 flex flex-col md:flex-row gap-2 md:items-center md:justify-between text-sm text-[var(--color-ink)]">
+      <div className="mx-auto max-w-7xl w-full px-6 py-6 flex flex-col md:flex-row gap-3 md:items-center md:justify-between text-sm text-[var(--color-ink)]">
         <p>
           Card data &amp; imagery courtesy of{" "}
           <a
@@ -63,7 +64,17 @@ function SiteFooter() {
           </a>
           . Mythic Pulls is an unofficial fan project.
         </p>
-        <p className="label-caps text-[var(--color-ink-muted)]">For entertainment only · No purchase</p>
+        <div className="flex flex-wrap items-center gap-3 md:gap-4">
+          <Link
+            href="/legal"
+            className="text-[var(--color-fg)] underline decoration-dotted underline-offset-4 hover:text-white"
+          >
+            Legal &amp; disclosures
+          </Link>
+          <span className="label-caps text-[var(--color-ink-muted)]">
+            For entertainment only · No purchase
+          </span>
+        </div>
       </div>
     </footer>
   );

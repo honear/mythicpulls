@@ -127,8 +127,15 @@ function candidatesFor(
   // version. Only when the resolved filter explicitly mentions `lang` do
   // we let foreign-language printings through (e.g. the SOS Collector's
   // Japanese Mystical Archive outcomes opt in via `filter: "japanese"`).
+  // Guarded the same way regular_print is — if filtering to English would
+  // empty the candidate pool, keep the multilingual list so the outcome
+  // can still produce a card (otherwise we fall into fallbackPull, which
+  // is worse than yielding a foreign printing).
   if (!predicateMentionsLang(predicate)) {
-    out = out.filter((c) => !c.lang || c.lang === "en");
+    const englishOnly = out.filter(
+      (c) => !c.lang || c.lang.toLowerCase() === "en",
+    );
+    if (englishOnly.length > 0) out = englishOnly;
   }
 
   // Basic-art by default: with unique=prints fetched from Scryfall a
@@ -205,13 +212,22 @@ function fallbackPull(
 ): ScryfallCard | undefined {
   const own = ownSetCode.toLowerCase();
   let setCards = pool[own] ?? [];
-  // Same basic-land exclusion the outcome path applies — keeps the
-  // fallback from filling a non-land slot with a basic just because
-  // the slot's normal candidates ran out.
+
+  // English-by-default — match what candidatesFor does so a fall-through
+  // doesn't suddenly produce a Spanish/German/etc. printing the primary
+  // path would never have allowed. Only applies when at least one English
+  // card exists for the set; otherwise the multilingual pool is kept so
+  // we can still produce *some* card.
+  const english = setCards.filter((c) => !c.lang || c.lang.toLowerCase() === "en");
+  if (english.length > 0) setCards = english;
+
+  // Basic-land exclusion — keeps the fallback from filling a non-land
+  // slot with a basic just because the slot's normal candidates ran out.
   if (!isLandSlot) {
     const basicLand = resolveFilter(filters, "basic_land");
     if (basicLand) {
-      setCards = setCards.filter((c) => !matchesFilter(c, basicLand));
+      const filtered = setCards.filter((c) => !matchesFilter(c, basicLand));
+      if (filtered.length > 0) setCards = filtered;
     }
   }
   for (const r of ["common", "uncommon", "rare", "mythic"] as Rarity[]) {

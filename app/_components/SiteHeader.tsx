@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Swords, Users } from "lucide-react";
+import { HoloToggle } from "./HoloToggle";
 
 /**
  * Single global header used across every page (including home). The earlier
@@ -37,6 +38,7 @@ export function SiteHeader() {
         </Link>
 
         <div className="flex items-center gap-2.5">
+          <HoloToggle />
           <Link
             href="/draft"
             aria-current={onDraft ? "page" : undefined}

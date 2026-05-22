@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import type { ScryfallSet } from "@/lib/scryfall";
@@ -205,8 +205,31 @@ function SetTile({
             {tileLabel}
           </span>
         </div>
+        <TileLoadingOverlay />
       </Link>
     </li>
+  );
+}
+
+/**
+ * Spinner overlay shown while a set tile's destination is fetching.
+ * Uses Next 16's `useLinkStatus` (must be a descendant of <Link>).
+ *
+ * The overlay is always mounted so the CSS `animation-delay: 120ms`
+ * trick can suppress flashes on fast (prefetched) navigations —
+ * only routes that actually take >120ms to resolve get a visible
+ * spinner. That's the same pattern Next recommends for inline link
+ * hints in their useLinkStatus docs.
+ */
+function TileLoadingOverlay() {
+  const { pending } = useLinkStatus();
+  return (
+    <div
+      aria-hidden={!pending}
+      className={`tile-loading ${pending ? "is-pending" : ""}`}
+    >
+      <span className="tile-loading__spinner" />
+    </div>
   );
 }
 

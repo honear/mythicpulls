@@ -236,23 +236,46 @@ export function PackOpener({
             aria-hidden
             className="absolute inset-0 w-full h-full object-cover pointer-events-none"
             style={{
-              opacity: 0.18,
-              filter: "blur(40px) saturate(140%)",
-              transform: "scale(1.15)",
+              opacity: 0.008,
+              filter: "blur(40px) saturate(80%)",
+              transform: "scale(1)",
             }}
           />
         )}
         <div className="relative">
         <div
           data-deck-canvas
-          className="relative min-h-[680px] flex flex-col items-center justify-center px-6 py-10"
-          style={{
-            background: `
-              radial-gradient(ellipse 90% 75% at 50% 45%, rgba(37, 99, 235, 0.32), rgba(243, 111, 39, 0.16) 35%, transparent 75%),
-              radial-gradient(ellipse 60% 50% at 50% 95%, rgba(251, 191, 36, 0.12), transparent 70%)
-            `,
-          }}
+          className="relative min-h-[680px] flex flex-col items-center justify-center px-6 py-10 overflow-hidden"
+          style={{ isolation: "isolate" }}
         >
+          {/* Card-shaped backdrop glow. A heavily-blurred rectangle in
+              the same 63:88 portrait ratio as a card sits centered behind
+              the content, in a brighter desaturated purple that reads as
+              an extension of the site's purple palette rather than a
+              second accent color. The dark purple base shows through from
+              the liquid-panel + page bg behind.
+
+              `isolation: isolate` on the canvas establishes a stacking
+              context so the glow's `z-index: -1` keeps it behind the
+              flex-children content but still inside the canvas — without
+              the isolation it would escape behind the liquid-panel's
+              own background and disappear. */}
+          <div
+            aria-hidden
+            className="absolute pointer-events-none"
+            style={{
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "clamp(280px, 42%, 460px)",
+              aspectRatio: "63 / 88",
+              borderRadius: "28px",
+              background: "#f5f5f5",
+              filter: "blur(90px)",
+              opacity: 0.05,
+              zIndex: -1,
+            }}
+          />
           {phase === "idle" && (
             <div className="flex flex-col items-center gap-8 w-full">
               {/* Headline sits above the fan via z-index — fanned packs lift

@@ -318,12 +318,19 @@ html, body {
   transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
   transform-style: preserve-3d;
   transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 220ms;
-  will-change: transform;
-  /* Crisper image edges, avoid sub-pixel blur on rotated layers. */
-  image-rendering: -webkit-optimize-contrast;
+  /* GPU promotion is scoped to the active tilt — when `will-change:
+     transform` is set permanently, Chromium rasterizes the card into a
+     fixed texture and the GPU samples that texture every frame, which
+     shows up as a faint softness at rest (and worse during tilt as the
+     rotated sampling compounds). Only paying that cost while .is-tilting
+     means the static card is drawn fresh per frame and stays sharp. */
+  backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
-.card-mtg.is-tilting { transition: none; }
+.card-mtg.is-tilting {
+  transition: none;
+  will-change: transform;
+}
 
 .card-mtg__face {
   position: absolute;
@@ -397,6 +404,69 @@ html, body {
     );
   mix-blend-mode: color-dodge;
   opacity: var(--holo-opacity, 0.55);
+}
+
+/* ============================================================
+   Holo variants — selected by <HoloToggle> via body[data-holo]
+   ------------------------------------------------------------
+   "shimmer" (default): the conic-gradient rainbow defined on
+   `.card-mtg__holo` above. Unchanged from the base rule.
+
+   "masked": the same shimmer, pushed through a luminance mask
+   of the card art. We stack a full-white layer over the art
+   layer (URL set via --card-art-url by MagicCard.tsx) and use
+   `mask-composite: intersect` (= webkit `source-in`) so the
+   resulting mask alpha is `1 × luminance` = the art's
+   luminance. That means foil appears in the LIGHT regions of
+   the card (art body, frame highlights) and is absent from the
+   black border, mana box, and text — the "no foil on the black
+   parts" intent.
+
+   (An earlier attempt used `mask-composite: subtract`, which
+   gives `1 - luminance` and put foil in the dark areas — that
+   was the inversion this CSS now reverses.)
+
+   "off": no holo overlay at all. Foil status is preserved
+   everywhere else (binder counts, etc.) — only the visual
+   shimmer is suppressed.
+
+   Effect strength: the conic stops are bumped (0.45 → 0.70
+   alpha, sheen 0.10 → 0.18) so the surviving regions still read
+   strongly through the mask, and the layer opacity is set to
+   1.2× the unmasked default (1.5× initial boost, then −20%).
+   ============================================================ */
+body[data-holo="masked"] .card-mtg__holo {
+  -webkit-mask-image: linear-gradient(white, white), var(--card-art-url, none);
+          mask-image: linear-gradient(white, white), var(--card-art-url, none);
+  -webkit-mask-composite: source-in;
+          mask-composite: intersect;
+  -webkit-mask-mode: alpha, luminance;
+          mask-mode: alpha, luminance;
+  -webkit-mask-size: cover, cover;
+          mask-size: cover, cover;
+  -webkit-mask-position: center, center;
+          mask-position: center, center;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+          mask-repeat: no-repeat, no-repeat;
+  background:
+    conic-gradient(
+      from calc(var(--tilt-y, 0deg) * 6),
+      rgba(99, 102, 241, 0.70),
+      rgba(168, 85, 247, 0.70),
+      rgba(252, 211, 77, 0.70),
+      rgba(99, 102, 241, 0.70)
+    ),
+    repeating-linear-gradient(
+      125deg,
+      rgba(255, 255, 255, 0.18) 0 2%,
+      transparent 2% 5%
+    );
+  /* 1.5× initial boost, then −20% on the latest tuning pass = 1.2×. */
+  opacity: calc(var(--holo-opacity, 0.55) * 1.2);
+}
+
+body[data-holo="off"] .card-mtg__holo {
+  opacity: 0;
 }
 
 /* Flip wrapper */
@@ -670,6 +740,49 @@ html, body {
   pointer-events: none;
   z-index: 5;
   will-change: transform, opacity;
+}
+
+/* ============================================================
+   Set-tile loading overlay
+   --------------------------------------------------------------
+   Rendered by `<TileLoadingOverlay>` (uses Next's useLinkStatus)
+   inside each set tile's <Link>. The element is always mounted so
+   we can drive an animation-delay; it only becomes visible if the
+   pending state survives the 120ms delay (i.e. the navigation is
+   actually slow — usually a Scryfall card fetch). Fast prefetched
+   navigations don't flash a spinner.
+   ============================================================ */
+.tile-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 4;
+  background: rgba(13, 8, 32, 0.62);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: inherit;
+}
+.tile-loading.is-pending {
+  visibility: visible;
+  animation: tileLoadingFade 180ms ease 120ms forwards;
+}
+@keyframes tileLoadingFade {
+  to { opacity: 1; }
+}
+.tile-loading__spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-top-color: var(--accent-purple-light);
+  animation: tileSpin 720ms linear infinite;
+}
+@keyframes tileSpin {
+  to { transform: rotate(360deg); }
 }
 
 /* ============================================================
