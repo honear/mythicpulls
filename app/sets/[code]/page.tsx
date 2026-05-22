@@ -4,7 +4,10 @@ import { getSet, getSetCards, getSetTokens } from "@/lib/scryfall";
 import { packsAvailableFor, recommendedPackType } from "@/lib/pack-rules";
 import { PackOpener } from "./PackOpener";
 
-export const revalidate = 60 * 60 * 24 * 7;
+// Caching is handled at the fetch layer inside lib/scryfall.ts. A page-level
+// `revalidate` export is incompatible with this route because we await
+// `searchParams`, which forces dynamic rendering — Next.js 16 rejects the
+// combination as an invalid segment config.
 
 interface Props {
   params: Promise<{ code: string }>;

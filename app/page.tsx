@@ -3,7 +3,9 @@ import { getOpenableSets } from "@/lib/scryfall";
 import { SetGrid } from "./_components/SetGrid";
 import { Hero } from "./_components/Hero";
 
-export const revalidate = 60 * 60 * 24;
+// Cache lifetime is configured at the fetch layer in lib/scryfall.ts via
+// `next: { revalidate }`. A page-level `revalidate` export combined with
+// async data fetches is rejected by Next.js 16 as an invalid segment config.
 
 export default async function HomePage() {
   const sets = await getOpenableSets();
