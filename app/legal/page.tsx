@@ -28,10 +28,12 @@ export default function LegalPage() {
           Legal &amp; the nature of Mythic Pulls
         </h1>
         <p className="mt-4 text-[var(--color-ink)] text-[15px] leading-relaxed">
-          Mythic Pulls is a non-commercial fan project. It exists to scratch a
-          very specific itch — the dopamine of cracking a booster — without
-          touching a wallet or a sleeve. This page is a plain-language tour of
-          what that means legally, who owns what, and how to reach us.
+          Mythic Pulls is a browser-based simulator that lets you experiment
+          with{" "}
+          <em>Magic: the Gathering</em>
+          {" "}booster formats — opening individual packs, running a six-pack
+          sealed pool into a deck builder, and drafting a full eight-seat pod
+          against AI bots — without spending money or shuffling sleeves.
         </p>
       </header>
 
@@ -73,20 +75,58 @@ export default function LegalPage() {
             <p>
               Mythic Pulls is <strong>not</strong> affiliated with, endorsed by,
               sponsored by, or specifically approved by Wizards of the Coast
-              LLC or its parent companies. We are not part of, connected to, or
-              representing Wizards of the Coast in any way.
+              LLC or its parent companies. It is intended as fan-made content
+              under{" "}
+              <a
+                href="https://company.wizards.com/en/legal/fancontentpolicy"
+                className="underline decoration-dotted underline-offset-4 text-[var(--color-fg)]"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Wizards&rsquo; Fan Content Policy
+              </a>
+              , which permits non-commercial fan websites that incorporate
+              Wizards&rsquo; intellectual property provided certain conditions
+              are met. Mythic Pulls aims to comply with those conditions:
             </p>
+            <ul className="list-disc list-outside pl-5 space-y-1.5">
+              <li>
+                The site is clearly marked as unofficial and is not styled to
+                resemble an official Wizards of the Coast product. Wizards&rsquo;
+                logos and registered marks are not reproduced on the site.
+              </li>
+              <li>
+                No payments, subscriptions, downloads, surveys, or email
+                registrations are required to access any feature. The site is
+                free to use and there is no paywall, donation prompt, or
+                advertising.
+              </li>
+              <li>
+                The site, its source, and any future builds are not sold or
+                licensed to third parties, and no compensation is solicited or
+                accepted in exchange for access to it.
+              </li>
+              <li>
+                Mythic Pulls is a visual simulator that displays randomized
+                booster contents using publicly-documented pack-composition
+                rules. It does not implement Magic&rsquo;s gameplay rules and
+                is not a substitute for, replacement for, or alternative
+                client to the actual game.
+              </li>
+            </ul>
             <p>
               <em>Magic: the Gathering</em>, the Magic logo, the mana symbols,
-              the card frame, the names of sets, characters, planeswalkers, and
-              individual cards, and the rules of the game are trademarks
-              and/or copyrighted works of Wizards of the Coast LLC. All such
-              elements are used here under the spirit of Wizards&rsquo; Fan
-              Content Policy for non-commercial fan creations.
+              the card frame, the names of sets, characters, planeswalkers,
+              and individual cards, and the rules of the game are trademarks
+              and/or copyrighted works of Wizards of the Coast LLC. Any
+              Wizards-owned trademarks that appear in incorporated card text
+              or imagery are retained without alteration.
             </p>
             <p className="text-[var(--color-ink-muted)] italic">
-              Portions of the materials used are property of Wizards of the
-              Coast. &copy;Wizards of the Coast LLC.
+              Mythic Pulls is unofficial Fan Content permitted under the Fan
+              Content Policy. Not approved/endorsed by Wizards. Portions of
+              the materials used are property of Wizards of the Coast.
+              &copy;Wizards of the Coast LLC.
             </p>
             <p>
               If you are at Wizards of the Coast and would like something here
@@ -169,8 +209,25 @@ export default function LegalPage() {
             <p>
               The site fetches card data from Scryfall as you browse, which
               means Scryfall&rsquo;s servers see the same HTTP requests any
-              other Scryfall-powered tool would generate. We do not run our own
-              analytics, advertising, or tracking pixels.
+              other Scryfall-powered tool would generate.
+            </p>
+            <p>
+              The site uses Vercel&rsquo;s built-in analytics to count
+              anonymous pageviews and basic performance metrics (Web Vitals)
+              so the maintainers know which pages are slow or broken. Vercel
+              Analytics does not set cookies, does not collect personal
+              identifiers, and does not build a profile that can identify
+              you — see{" "}
+              <a
+                href="https://vercel.com/docs/analytics/privacy-policy"
+                className="underline decoration-dotted underline-offset-4 text-[var(--color-fg)]"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Vercel&rsquo;s analytics privacy notice
+              </a>
+              {" "}for the full description. There is no advertising, no
+              third-party tracking pixels, and no cross-site retargeting.
             </p>
             <p>
               Clearing your browser&rsquo;s storage for this site will erase
