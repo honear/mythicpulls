@@ -5,7 +5,10 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Menu, PackageOpen, Swords, Users, X } from "lucide-react";
-import { HoloToggle } from "./HoloToggle";
+import { SupportButton } from "./SupportButton";
+// HoloToggle moved out of the site nav into the PackOpener's MoneyStrip.
+// Reasoning: the holo style only affects revealed cards, so it lives best
+// alongside the rip control instead of crowding the top-level nav.
 
 /**
  * Single global header used across every page (including home).
@@ -82,11 +85,15 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        {/* Desktop / tablet nav — hidden on phones. Four primary
-            destinations: Open packs (the home set-picker for /sets/<code>),
-            Practice Draft, Practice Sealed, and the binder. */}
+        {/* Desktop / tablet nav — hidden on phones. Order is:
+              Support · Open packs · Practice Draft · Practice Sealed · My binder
+            The "Support" pill sits FIRST (leftmost) as a small,
+            visually-distinct ask that doesn't compete with the purple
+            play CTAs. Ko-fi accepts guest tips without requiring the
+            donor to have an account. Donations are explicitly allowed
+            by the Wizards Fan Content Policy. */}
         <div className="hidden sm:flex items-center gap-2.5">
-          <HoloToggle />
+          <SupportButton variant="desktop" />
           <Link
             href="/"
             aria-current={onOpenPacks ? "page" : undefined}
@@ -270,15 +277,7 @@ export function SiteHeader() {
             >
               My binder
             </Link>
-            <div className="flex items-center justify-between gap-3 px-1 pt-1">
-              <span
-                className="label-caps text-[var(--color-ink-muted)]"
-                style={{ fontFamily: "var(--font-ui)" }}
-              >
-                Holo style
-              </span>
-              <HoloToggle />
-            </div>
+            <SupportButton variant="mobile" />
           </div>
         </>,
         document.body,

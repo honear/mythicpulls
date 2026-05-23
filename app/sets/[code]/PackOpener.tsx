@@ -13,6 +13,7 @@ import { useDragReorder } from "@/lib/useDragReorder";
 import { useCardTilt } from "@/lib/useCardTilt";
 import { MagicCard } from "@/app/_components/MagicCard";
 import { CardDetailModal } from "@/app/_components/CardDetailModal";
+import { HoloToggle } from "@/app/_components/HoloToggle";
 import { CardDeck } from "./CardDeck";
 
 type ViewMode = "reveal" | "grid";
@@ -426,35 +427,38 @@ function MoneyStrip({
         />
         <Stat label="Packs" value={String(stats.packs)} accent="text-[var(--color-fg)]" />
       </div>
-      {/* "Open next" — rips another pack of the currently-selected type
-          without going back to the fan. Active in idle + revealing phases;
-          disabled only during the 800ms ripping animation to prevent
-          double-fires. Replaces the static "next pack · $X" label. */}
-      <button
-        onClick={onRip}
-        disabled={!canRip}
-        className="group inline-flex items-center gap-2 pl-3 pr-4 py-2 rounded-full transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-        style={{
-          background: "var(--accent-purple)",
-          color: "white",
-          fontFamily: "var(--font-btn)",
-          boxShadow: "0 8px 20px -8px var(--accent-purple-glow), inset 0 1px 0 rgba(255,255,255,0.18)",
-        }}
-        aria-label={`Open another ${packTypeName} Booster for ${usd(packCost)}`}
-      >
-        <span
-          className="grid place-items-center w-6 h-6 rounded-full text-[10px] font-bold tracking-wider uppercase"
-          style={{ background: "rgba(255,255,255,0.18)" }}
+      {/* Right-side controls: HoloToggle (foil shimmer style switcher)
+          and the "Open next <type> Booster" rip button. HoloToggle lives
+          here rather than in the site nav so it sits next to the cards
+          its setting actually affects. */}
+      <div className="flex flex-wrap items-center gap-2">
+        <HoloToggle />
+        <button
+          onClick={onRip}
+          disabled={!canRip}
+          className="group inline-flex items-center gap-2 pl-3 pr-4 py-2 rounded-full transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          style={{
+            background: "var(--accent-purple)",
+            color: "white",
+            fontFamily: "var(--font-btn)",
+            boxShadow: "0 8px 20px -8px var(--accent-purple-glow), inset 0 1px 0 rgba(255,255,255,0.18)",
+          }}
+          aria-label={`Open another ${packTypeName} Booster for ${usd(packCost)}`}
         >
-          +1
-        </span>
-        <span className="text-[13px] font-medium tracking-wide">
-          Open next {packTypeName}
-        </span>
-        <span className="text-[13px] font-semibold tabular-nums opacity-90">
-          {usd(packCost)}
-        </span>
-      </button>
+          <span
+            className="grid place-items-center w-6 h-6 rounded-full text-[10px] font-bold tracking-wider uppercase"
+            style={{ background: "rgba(255,255,255,0.18)" }}
+          >
+            +1
+          </span>
+          <span className="text-[13px] font-medium tracking-wide">
+            Open next {packTypeName} Booster
+          </span>
+          <span className="text-[13px] font-semibold tabular-nums opacity-90">
+            {usd(packCost)}
+          </span>
+        </button>
+      </div>
     </div>
   );
 }

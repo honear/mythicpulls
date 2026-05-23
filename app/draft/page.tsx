@@ -1,8 +1,11 @@
 import { Users } from "lucide-react";
 import { getOpenableSets, getSetSampleArt } from "@/lib/scryfall";
+import { mapWithConcurrency } from "@/lib/concurrency";
+import { getSetArtMap } from "@/lib/set-art";
 import { SetGrid } from "../_components/SetGrid";
 
-const SETS_WITH_ART = 48;
+/** See app/page.tsx for the static-map + concurrency-fallback rationale. */
+const FALLBACK_CONCURRENCY = 4;
 
 /**
  * Draft format landing page. Same shape as the sealed picker — tiles route
@@ -13,15 +16,20 @@ const SETS_WITH_ART = 48;
 export default async function DraftSetPickerPage() {
   const sets = await getOpenableSets();
 
-  const artLookups = await Promise.all(
-    sets.slice(0, SETS_WITH_ART).map(async (s) => {
-      const art = await getSetSampleArt(s.code);
-      return [s.code.toLowerCase(), art] as const;
-    }),
-  );
-  const sampleArt: Record<string, string> = {};
-  for (const [code, art] of artLookups) {
-    if (art) sampleArt[code] = art;
+  const sampleArt: Record<string, string> = { ...getSetArtMap() };
+  const missing = sets.filter((s) => !sampleArt[s.code.toLowerCase()]);
+  if (missing.length > 0) {
+    const fetched = await mapWithConcurrency(
+      missing,
+      FALLBACK_CONCURRENCY,
+      async (s) => {
+        const art = await getSetSampleArt(s.code);
+        return [s.code.toLowerCase(), art] as const;
+      },
+    );
+    for (const [code, art] of fetched) {
+      if (art) sampleArt[code] = art;
+    }
   }
 
   return (
@@ -93,6 +101,7 @@ export default async function DraftSetPickerPage() {
           sampleArt={sampleArt}
           linkBase="/draft"
           tileLabel="Draft"
+          showDraftStatsBadge
         />
       </section>
     </div>

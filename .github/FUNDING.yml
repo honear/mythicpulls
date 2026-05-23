@@ -1,0 +1,8 @@
+# GitHub-recognized funding links. Adds a "Sponsor" button at the top of
+# the repository page on github.com — donors get a dropdown listing the
+# platforms configured below. The website's own "Support" link in the
+# nav points at Ko-fi (no donor account required); GitHub Sponsors is
+# kept here for visitors browsing the repo who already have an account.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+github: [honear]
+ko_fi: honear

@@ -166,7 +166,7 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
     <div className="w-full flex flex-col items-center gap-5">
       <p className="text-xs text-[var(--color-ink-muted)] inline-flex items-center gap-2">
         <Hand className="w-3.5 h-3.5" />
-        Drag the top card to send it to the back · click for details
+        Drag (or click) the top card to send it to the back
       </p>
 
       {/* Fixed-size stage so the page height never shifts as cards cycle. */}
@@ -375,10 +375,8 @@ function DeckSlot({
 
     if (!dragging) {
       // Pure tap. In final-card mode → dismiss + switch view. Otherwise
-      // animate the cycle as usual. The final-card branch passes
-      // keepFinalState=true so the dismissed card stays off-stage until
-      // the parent unmounts us during the view switch — otherwise it
-      // flashes back centered for a frame.
+      // animate the cycle out — same path the drag-release takes, so
+      // tap and drag end with the same fly-off motion.
       if (isFinalCard) {
         animateCycleOut(el, () => onFinalDismiss?.(), true);
       } else {
@@ -489,6 +487,7 @@ function DeckSlot({
  * the dismissed card flashing back at the centered default-transform
  * position for a single frame.
  */
+
 function animateCycleOut(
   el: HTMLDivElement,
   commitCycle: () => void,
@@ -507,9 +506,24 @@ function animateCycleOut(
   window.setTimeout(() => {
     commitCycle();
     if (el && !keepFinalState) {
-      el.style.transition = "";
+      // Clearing inline transform + opacity used to FLICKER: the JSX
+      // transition (380ms snap) was still active when these reverted,
+      // so the browser animated the outgoing card back in from
+      // off-screen to its new back-of-stack rest, opacity fading from
+      // 0→1. To kill that, disable transitions for the duration of the
+      // cleanup. A forced reflow between the property reset and the
+      // transition restore commits the property changes synchronously
+      // so the subsequent transition: "" doesn't catch them.
+      el.style.transition = "none";
       el.style.transform = "";
       el.style.opacity = "";
+      // Force layout/style flush so the cleared values are applied
+      // with `transition: none` still in effect.
+      void el.offsetHeight;
+      // Re-enable the JSX-defined transition for any future property
+      // changes (e.g. the next time this slot becomes the top and
+      // animates back up the stack).
+      el.style.transition = "";
     }
   }, 340);
 }

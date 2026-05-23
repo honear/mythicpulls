@@ -176,9 +176,22 @@ export async function getSets(): Promise<ScryfallSet[]> {
   return out;
 }
 
-/** Sets that have boosters, non-digital, with cards available, and have
- *  actually been released (Scryfall lists upcoming sets with future
- *  release dates — we filter those out so "Recent" stays current). */
+/** Minimum card count for a set to be considered drafrt-/sealed-/pack-
+ *  worthy. Below this you get nonsense: foreign reprint products like
+ *  FBB or RIN, tiny specialty boxes, and the like — opening a "pack"
+ *  from them produces near-empty results since our slot machine can't
+ *  meaningfully roll commons / uncommons / rares from a 20-card pool.
+ *
+ *  100 is the threshold below which a single 14-card booster would
+ *  burn through ~14% of the available pool — duplicates dominate and
+ *  the experience falls apart. Real Standard / supplemental sets clear
+ *  this floor easily (typical: 250+ cards). */
+const MIN_CARDS_FOR_PACK = 100;
+
+/** Sets that have boosters, non-digital, with enough cards to feel
+ *  like a real booster pool, and have actually been released
+ *  (Scryfall lists upcoming sets with future release dates — we
+ *  filter those out so "Recent" stays current). */
 export async function getOpenableSets(): Promise<ScryfallSet[]> {
   const sets = await getSets();
   const allowed = new Set([
@@ -194,7 +207,7 @@ export async function getOpenableSets(): Promise<ScryfallSet[]> {
     .filter(
       (s) =>
         !s.digital &&
-        s.card_count > 0 &&
+        s.card_count >= MIN_CARDS_FOR_PACK &&
         allowed.has(s.set_type) &&
         (!s.released_at || s.released_at <= today),
     )

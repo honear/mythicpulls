@@ -97,14 +97,26 @@ export default function LegalPage() {
               </li>
               <li>
                 No payments, subscriptions, downloads, surveys, or email
-                registrations are required to access any feature. The site is
-                free to use and there is no paywall, donation prompt, or
-                advertising.
+                registrations are required to access any feature. The site
+                is free to use and there is no paywall or advertising. A
+                small optional &ldquo;Support&rdquo; button in the
+                navigation opens an in-page Ko-fi tip panel (the panel
+                is hosted by Ko-fi in an embedded frame; card-payment
+                details are handled by Ko-fi and their payment processor,
+                never by Mythic Grounds). The Fan Content Policy
+                explicitly permits subsidizing fan content through
+                donations &ldquo;so long as it doesn&rsquo;t interfere
+                with the Community&rsquo;s access to your Fan Content,&rdquo;
+                which it does not here: tipping is voluntary, never
+                gated, and unlocks nothing additional on this site.
               </li>
               <li>
                 The site, its source, and any future builds are not sold or
-                licensed to third parties, and no compensation is solicited or
-                accepted in exchange for access to it.
+                licensed to third parties. The only money that may change
+                hands flows through Ko-fi (and, for visitors browsing the
+                source repository, GitHub Sponsors), voluntarily, to the
+                individual developer — not in exchange for access to
+                Mythic Grounds, which remains free.
               </li>
               <li>
                 Mythic Grounds is a visual simulator that displays randomized
@@ -223,12 +235,16 @@ export default function LegalPage() {
               >
                 17L
               </span>
-              badge on the set picker, and the citation
+              badge on the Booster Draft set picker — the only flow on
+              this site that consumes the data — and the citation
               <em>&ldquo;Card pick data retrieved from 17Lands&rdquo;</em>{" "}
               is shown at the top of the Booster Draft landing page and on
-              the per-set draft page whenever 17Lands data is in use. Sets
-              without the badge fall back to a rarity-based heuristic
-              that doesn&rsquo;t reference any external data.
+              the per-set draft page whenever 17Lands data is in use. The
+              pack-opening and Sealed flows do not consume 17Lands data,
+              so the badge is omitted on those pickers to avoid implying
+              attribution where none is warranted. Sets without the badge
+              fall back to a rarity-based heuristic that doesn&rsquo;t
+              reference any external data.
             </p>
             <p>
               17Lands is independent of Wizards of the Coast and of this

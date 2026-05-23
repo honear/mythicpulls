@@ -1,4 +1,6 @@
 import { getOpenableSets, getSetSampleArt } from "@/lib/scryfall";
+import { mapWithConcurrency } from "@/lib/concurrency";
+import { getSetArtMap } from "@/lib/set-art";
 import { SetGrid } from "./_components/SetGrid";
 import { Hero } from "./_components/Hero";
 
@@ -6,24 +8,36 @@ import { Hero } from "./_components/Hero";
 // `next: { revalidate }`. A page-level `revalidate` export combined with
 // async data fetches is rejected by Next.js 16 as an invalid segment config.
 
-/** How many recent sets get a per-set art-crop background tile. Bumped to
- *  48 because the new layout shows the grid above the fold — we want the
- *  full first-page worth of tiles to land with their own art, not just the
- *  top 24. Each call is cached for 7 days, so subsequent loads hit cache. */
-const SETS_WITH_ART = 48;
+/** Concurrency cap on the live-fallback art fetches. The static map in
+ *  data/set-art.json covers the catalog at SSR time with zero live
+ *  Scryfall calls; only sets added after the last `node scripts/build-set-art.mjs`
+ *  run go through this fallback. Concurrency=4 stays well under
+ *  Scryfall's 10 req/sec ceiling while keeping the fallback path quick. */
+const FALLBACK_CONCURRENCY = 4;
 
 export default async function HomePage() {
   const sets = await getOpenableSets();
 
-  const artLookups = await Promise.all(
-    sets.slice(0, SETS_WITH_ART).map(async (s) => {
-      const art = await getSetSampleArt(s.code);
-      return [s.code.toLowerCase(), art] as const;
-    }),
-  );
-  const sampleArt: Record<string, string> = {};
-  for (const [code, art] of artLookups) {
-    if (art) sampleArt[code] = art;
+  // Step 1 — pull every set's art from the bundled static map.
+  // Instant; no network.
+  const sampleArt: Record<string, string> = { ...getSetArtMap() };
+
+  // Step 2 — for any set not in the static map (a new release between
+  // script runs), fetch live with a small concurrency budget. Sets
+  // already in the map skip this entirely.
+  const missing = sets.filter((s) => !sampleArt[s.code.toLowerCase()]);
+  if (missing.length > 0) {
+    const fetched = await mapWithConcurrency(
+      missing,
+      FALLBACK_CONCURRENCY,
+      async (s) => {
+        const art = await getSetSampleArt(s.code);
+        return [s.code.toLowerCase(), art] as const;
+      },
+    );
+    for (const [code, art] of fetched) {
+      if (art) sampleArt[code] = art;
+    }
   }
 
   return (

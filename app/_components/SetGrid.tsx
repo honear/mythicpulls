@@ -20,6 +20,7 @@ export function SetGrid({
   sampleArt = {},
   linkBase = "/sets",
   tileLabel = "Open",
+  showDraftStatsBadge = false,
 }: {
   sets: ScryfallSet[];
   /** Per-set art-crop URLs keyed by lowercased set code. Optional — sets
@@ -31,6 +32,12 @@ export function SetGrid({
   /** Short label shown in the bottom-right pill on each tile (e.g.
    *  "Open" for /sets, "Play" for /sealed). */
   tileLabel?: string;
+  /** Whether to show the small "17L" badge on tiles with 17Lands data.
+   *  Only meaningful on the Booster Draft set picker — the bots are the
+   *  only feature that consumes the aggregates. Sealed and the
+   *  pack-opening flow ignore 17Lands data, so we hide the badge there
+   *  to avoid implying the data is influencing those experiences. */
+  showDraftStatsBadge?: boolean;
 }) {
   const [filter, setFilter] = useState<Filter>("recent");
   const [query, setQuery] = useState("");
@@ -109,6 +116,7 @@ export function SetGrid({
               artUrl={sampleArt[s.code.toLowerCase()]}
               linkBase={linkBase}
               tileLabel={tileLabel}
+              showDraftStatsBadge={showDraftStatsBadge}
             />
           ))}
         </ul>
@@ -118,20 +126,23 @@ export function SetGrid({
 }
 
 function SetTile({
-  set, index, artUrl, linkBase, tileLabel,
+  set, index, artUrl, linkBase, tileLabel, showDraftStatsBadge,
 }: {
   set: ScryfallSet;
   index: number;
   artUrl?: string;
   linkBase: string;
   tileLabel: string;
+  showDraftStatsBadge: boolean;
 }) {
   const year = set.released_at?.slice(0, 4) ?? "—";
   // Show a small "17L" badge on tiles whose set has a corresponding
-  // aggregate in data/draft-stats/<code>.json. Tells the user the bots
-  // in /draft and the pick weighting in /sealed are tuned by real
+  // aggregate in data/draft-stats/<code>.json AND we're on the Draft
+  // picker. The bots are the only feature that consumes the data, so
+  // the badge would mislead users into thinking sealed / pack-opening
+  // are also tuned by 17Lands when they aren't.
   // Premier Draft data for this set.
-  const hasStats = setHasDraftStats(set.code);
+  const hasStats = showDraftStatsBadge && setHasDraftStats(set.code);
 
   return (
     <li
