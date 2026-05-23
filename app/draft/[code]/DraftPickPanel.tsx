@@ -1,22 +1,41 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Hand } from "lucide-react";
 import type { PulledCard } from "@/lib/pack-open";
 import { MagicCard } from "@/app/_components/MagicCard";
 import { HoverPreview } from "@/app/_components/HoverPreview";
 import { useHoverPreview } from "@/lib/useHoverPreview";
 
-const CARD_W = 174;
-const CARD_H = Math.round((CARD_W * 88) / 63);
+// Card width + column count adapt to viewport. Desktop keeps the planned
+// 5 × 3 layout; tablets drop to 4 columns; phones use 3 narrower columns
+// (3 × 5 = same 15 cells but stacked taller, fits inside a 375px viewport
+// with the side padding the canvas applies).
+const LAYOUT_DESKTOP = { cols: 5, w: 174, gap: 16 };
+const LAYOUT_TABLET  = { cols: 4, w: 158, gap: 14 };
+const LAYOUT_MOBILE  = { cols: 3, w: 100, gap: 10 };
 
-// 5 × 3 grid = 15 cells, the max-size Draft Booster pack (minus token).
-// Keeps the canvas dimensions constant regardless of how many cards
-// remain — empty rows at the bottom just sit blank while picks deplete
-// the pack.
-const GRID_COLS = 5;
-const GRID_ROWS = 3;
-const GRID_GAP = 16;
+function useDraftLayout() {
+  const [layout, setLayout] = useState(LAYOUT_DESKTOP);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mobile = window.matchMedia("(max-width: 639px)");
+    const tablet = window.matchMedia("(min-width: 640px) and (max-width: 1023px)");
+    const resolve = () => {
+      if (mobile.matches) setLayout(LAYOUT_MOBILE);
+      else if (tablet.matches) setLayout(LAYOUT_TABLET);
+      else setLayout(LAYOUT_DESKTOP);
+    };
+    resolve();
+    mobile.addEventListener("change", resolve);
+    tablet.addEventListener("change", resolve);
+    return () => {
+      mobile.removeEventListener("change", resolve);
+      tablet.removeEventListener("change", resolve);
+    };
+  }, []);
+  return layout;
+}
 
 const RARITY_ORDER: Record<string, number> = {
   mythic: 0,
@@ -86,30 +105,36 @@ export function DraftPickPanel({
 }) {
   const sorted = useMemo(() => sortPackByRarity(pack), [pack]);
   const { preview, armHover, clearHover } = useHoverPreview();
+  const layout = useDraftLayout();
+  // Rows = total grid slots / cols. Draft Boosters max 15 (5×3); mobile
+  // collapses to 3×5; tablet to 4×4. The minHeight reserves the full grid
+  // so the canvas doesn't visibly shrink as picks drain the pack.
+  const totalSlots = 15;
+  const rows = Math.ceil(totalSlots / layout.cols);
+  const cardH = Math.round((layout.w * 88) / 63);
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <p className="text-xs text-[var(--color-ink-muted)] inline-flex items-center gap-2">
-        <Hand className="w-3.5 h-3.5" />
+    <div className="flex flex-col items-center gap-4 w-full">
+      <p className="text-[11px] sm:text-xs text-[var(--color-ink-muted)] inline-flex items-center gap-2 text-center px-2">
+        <Hand className="w-3.5 h-3.5 shrink-0" />
         {hint}
       </p>
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${GRID_COLS}, ${CARD_W}px)`,
-          gridAutoRows: `${CARD_H}px`,
-          gap: GRID_GAP,
+          gridTemplateColumns: `repeat(${layout.cols}, ${layout.w}px)`,
+          gridAutoRows: `${cardH}px`,
+          gap: layout.gap,
           justifyContent: "center",
           alignContent: "start",
-          // Reserve the full 3-row height so the canvas size stays constant
-          // even when only a couple of cards remain in the pack.
-          minHeight: GRID_ROWS * CARD_H + (GRID_ROWS - 1) * GRID_GAP,
+          minHeight: rows * cardH + (rows - 1) * layout.gap,
         }}
       >
         {sorted.map((p) => (
           <PickableCard
             key={p.uid}
             pulled={p}
+            cardW={layout.w}
             onPick={() => { clearHover(); onPick(p.uid); }}
             mode={mode}
             exitDirection={exitDirection}
@@ -132,9 +157,10 @@ export function DraftPickPanel({
 }
 
 function PickableCard({
-  pulled, onPick, mode, exitDirection, isPicked, onHover, onHoverEnd,
+  pulled, cardW, onPick, mode, exitDirection, isPicked, onHover, onHoverEnd,
 }: {
   pulled: PulledCard;
+  cardW: number;
   onPick: () => void;
   mode: "enter" | "exit";
   exitDirection: "left" | "right";
@@ -155,7 +181,7 @@ function PickableCard({
   // Exit goes in the pass direction; enter starts from the opposite side
   // (the new pack came from the opposite neighbor).
   let className = "block transition-transform hover:-translate-y-1 focus:outline-none";
-  const cssVars: React.CSSProperties = { width: CARD_W };
+  const cssVars: React.CSSProperties = { width: cardW };
 
   if (mode === "exit") {
     if (isPicked) {
@@ -195,13 +221,13 @@ function PickableCard({
       style={cssVars}
       aria-label={`Pick ${pulled.card.name}`}
     >
-      <div className="relative" style={{ width: CARD_W }}>
+      <div className="relative" style={{ width: cardW }}>
         {isGlowing && <div className={glowBehind} />}
         <div className={`relative ${isGlowing ? glowFilter : ""}`} style={{ zIndex: 1 }}>
           <MagicCard
             card={{ kind: "scryfall", card: pulled.card, foil: pulled.foil }}
             faceUp
-            width={CARD_W}
+            width={cardW}
             holoEnabled
           />
         </div>

@@ -26,7 +26,7 @@ export default async function DraftSetPickerPage() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative mx-auto max-w-7xl w-full px-6 md:px-10 pt-28 pb-6">
+      <section className="relative mx-auto max-w-7xl w-full px-4 sm:px-6 md:px-10 pt-24 sm:pt-28 pb-6">
         <div className="flex flex-col items-center text-center gap-3">
           <span className="hero-pill">
             <span className="hero-pill__badge">
@@ -49,7 +49,7 @@ export default async function DraftSetPickerPage() {
       </section>
 
       <section
-        className="relative mx-auto max-w-7xl w-full px-6 md:px-10 pb-24"
+        className="relative mx-auto max-w-7xl w-full px-4 sm:px-6 md:px-10 pb-16 sm:pb-24"
         id="sets"
       >
         <div className="flex items-end justify-between mb-4 gap-6 flex-wrap">

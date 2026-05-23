@@ -115,7 +115,7 @@ export function SealedRun({
   }
 
   return (
-    <section className="mx-auto max-w-7xl w-full px-6 py-8">
+    <section className="mx-auto max-w-7xl w-full px-3 sm:px-6 py-6 sm:py-8">
       {/* Progress header */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 mb-6 rounded-2xl liquid-glass">
         <div className="flex items-center gap-3">
@@ -154,11 +154,11 @@ export function SealedRun({
 
       <div
         className="relative rounded-2xl liquid-panel overflow-hidden"
-        style={{ minHeight: 680 }}
+        style={{ minHeight: 560 }}
       >
         <div
           data-deck-canvas
-          className="relative min-h-[680px] flex flex-col items-center justify-center px-6 py-10"
+          className="relative min-h-[560px] sm:min-h-[680px] flex flex-col items-center justify-center px-3 sm:px-6 py-6 sm:py-10"
           style={{
             background: `
               radial-gradient(ellipse 90% 75% at 50% 45%, rgba(123, 57, 252, 0.28), rgba(123, 57, 252, 0.10) 35%, transparent 75%)

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ExternalLink, ShoppingBag, X } from "lucide-react";
 import type { ScryfallCard } from "@/lib/scryfall";
 import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
@@ -53,35 +53,31 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[1200] flex items-center justify-center px-4 py-8 anim-detail-fade"
+      className="fixed inset-0 z-[1200] flex items-start sm:items-center justify-center px-3 sm:px-4 py-4 sm:py-8 overflow-y-auto anim-detail-fade"
       role="dialog"
       aria-modal="true"
       aria-label={`${card.name} details`}
     >
       {/* Backdrop */}
       <button
-        className="absolute inset-0 bg-black/70 backdrop-blur-md"
+        className="fixed inset-0 bg-black/70 backdrop-blur-md"
         onClick={onClose}
         aria-label="Close details"
       />
 
-      <div className="relative grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 max-w-3xl w-full anim-detail-rise">
-        {/* Card */}
+      <div className="relative grid md:grid-cols-[auto_1fr] gap-4 md:gap-10 max-w-3xl w-full anim-detail-rise my-auto">
+        {/* Card — shrinks on phones so the info panel still fits in view. */}
         <div className="flex justify-center md:block">
-          <MagicCard
-            card={{ kind: "scryfall", card, foil }}
-            faceUp
-            width={320}
-          />
+          <ResponsiveDetailCard card={card} foil={foil} />
         </div>
 
         {/* Info */}
-        <div className="liquid-panel rounded-2xl p-6 md:p-7 flex flex-col gap-5 max-w-md self-center">
+        <div className="liquid-panel rounded-2xl p-4 sm:p-6 md:p-7 flex flex-col gap-4 sm:gap-5 max-w-md self-center w-full">
           <div>
             {slotLabel && (
               <p className="label-caps text-[var(--color-ink-muted)] mb-1">{slotLabel}</p>
             )}
-            <h2 className="font-display text-3xl md:text-4xl text-[var(--color-fg)] leading-tight">
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-[var(--color-fg)] leading-tight">
               {card.name}
             </h2>
             {card.type_line && (
@@ -154,6 +150,41 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * Render the modal's hero card at a width that fits the current viewport
+ * minus the modal's outer padding. On phones (under 360px content space)
+ * the card scales to ~240px so the info panel below has room to breathe;
+ * tablets and above keep the 320px desktop default.
+ */
+function ResponsiveDetailCard({
+  card, foil,
+}: {
+  card: import("@/lib/scryfall").ScryfallCard;
+  foil?: boolean;
+}) {
+  const [w, setW] = useState(320);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const compute = () => {
+      const avail = window.innerWidth - 32; // px-3 each side + buffer
+      // Clamp between 220 and 320 — the smallest readable card width and
+      // the design's max width on desktop.
+      const next = Math.max(220, Math.min(320, avail));
+      setW(next);
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, []);
+  return (
+    <MagicCard
+      card={{ kind: "scryfall", card, foil }}
+      faceUp
+      width={w}
+    />
   );
 }
 

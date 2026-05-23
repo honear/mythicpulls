@@ -1,14 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import type { ScryfallCard } from "@/lib/scryfall";
+import type { ScryfallCard, ScryfallImageUris } from "@/lib/scryfall";
 import { getCardImage } from "@/lib/scryfall";
 import { useCardTilt } from "@/lib/useCardTilt";
 
-/** Scryfall's PNG back has transparent corners so the card's natural
- *  rounded corners show through against any background. */
+/** Card back URL. Kept on the PNG variant: it's a single asset served
+ *  once and cached by the browser for the rest of the session, so the
+ *  per-card payload cost is paid once across the whole app — not worth
+ *  the risk of guessing at a JPEG path that may not exist on
+ *  backs.scryfall.io. The rounded corners are applied via CSS at the
+ *  face level (overflow:hidden + border-radius) so transparency in the
+ *  PNG doesn't add any visual information here either. */
 export const CARD_BACK_URL =
   "https://backs.scryfall.io/png/0/a/0aeebaf5-8c7d-4636-9e82-8c27447861f7.png";
+
+/**
+ * Pick the smallest Scryfall image variant that still renders crisply
+ * at the given on-screen width. Scryfall variants:
+ *   • normal — 488 × 680, ~60–90 KB
+ *   • large  — 672 × 936, ~110–160 KB
+ * The rounded corner is applied by CSS on `.card-mtg__face`, so JPEG
+ * sources clip exactly like the legacy PNG did — without the 500 KB–
+ * 1 MB PNG payload per card. Threshold at 175 px keeps mobile cards
+ * on `normal` (so a 15-card pack rip drops from ~10 MB to ~1 MB on
+ * phones) while desktop renders ≥176 px get the sharper `large`.
+ */
+function preferredImageSize(width?: number): keyof ScryfallImageUris {
+  return width && width <= 175 ? "normal" : "large";
+}
 
 export type CardLike =
   | { kind: "scryfall"; card: ScryfallCard; foil?: boolean }
@@ -41,7 +61,7 @@ export function MagicCard({
   className,
   holoEnabled = true,
 }: Props) {
-  const data = normalize(card);
+  const data = normalize(card, width);
   // Holo shimmer is reserved for traditional foils — i.e. cards that came
   // out of a slot flagged `foil: true` in pack-rules.ts. Earlier this also
   // fired on every rare/mythic regardless of foil state, which made Play
@@ -118,7 +138,7 @@ export function MagicCard({
   );
 }
 
-function normalize(card: CardLike): {
+function normalize(card: CardLike, width?: number): {
   name: string;
   front: string;
   setCode: string;
@@ -126,16 +146,18 @@ function normalize(card: CardLike): {
   rarity?: string;
   foil?: boolean;
 } {
+  // Pick the smallest Scryfall variant that still looks crisp at the
+  // requested render width; fall back to the other variant if Scryfall
+  // didn't provide the preferred one (rare).
+  const preferred = preferredImageSize(width);
+  const fallback: keyof ScryfallImageUris = preferred === "large" ? "normal" : "large";
   if (card.kind === "scryfall") {
     const c = card.card;
-    // Prefer PNG so transparent corners reveal the card's natural radius.
     const front =
-      getCardImage(c, "png") ??
-      getCardImage(c, "large") ??
-      getCardImage(c, "normal") ??
-      c.card_faces?.[0]?.image_uris?.png ??
-      c.card_faces?.[0]?.image_uris?.large ??
-      c.card_faces?.[0]?.image_uris?.normal ??
+      getCardImage(c, preferred) ??
+      getCardImage(c, fallback) ??
+      c.card_faces?.[0]?.image_uris?.[preferred] ??
+      c.card_faces?.[0]?.image_uris?.[fallback] ??
       "";
     return {
       name: c.name,
@@ -148,7 +170,7 @@ function normalize(card: CardLike): {
   }
   return {
     name: card.name,
-    front: toFullCard(card.art),
+    front: toFullCard(card.art, preferred),
     setCode: card.setCode,
     collectorNumber: card.collectorNumber,
     rarity: card.rarity,
@@ -156,13 +178,22 @@ function normalize(card: CardLike): {
   };
 }
 
-/** Rewrite Scryfall image URLs to the PNG variant (transparent corners). */
-function toFullCard(url: string): string {
+/**
+ * Rewrite a saved Scryfall image URL to a chosen JPEG variant. Binder
+ * entries store whatever URL the card had at pull time (typically the
+ * `art_crop` or `normal` URL) — this swaps the size segment so the
+ * binder renders the full card art at a sensible resolution. The CSS
+ * radius on `.card-mtg__face` handles the rounded corners, so any of
+ * Scryfall's JPEG variants works.
+ */
+function toFullCard(url: string, size: keyof ScryfallImageUris): string {
   if (!url) return url;
-  // Switch the size segment to /png/ AND the extension to .png if present.
+  // Switch the size segment, and unwind any `.png` extension a previous
+  // build may have written to the binder (legacy entries pointed at the
+  // PNG variant).
   return url
-    .replace(/\/(art_crop|small|normal|large|border_crop)\//, "/png/")
-    .replace(/\.jpg(\?|$)/, ".png$1");
+    .replace(/\/(art_crop|small|normal|large|png|border_crop)\//, `/${size}/`)
+    .replace(/\.png(\?|$)/, ".jpg$1");
 }
 
 export function MagicCardBack({ width }: { width?: number }) {

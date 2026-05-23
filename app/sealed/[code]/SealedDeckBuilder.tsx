@@ -5,6 +5,22 @@ import { createPortal } from "react-dom";
 import {
   Download, Copy, X, Plus, Minus, ArrowDownAZ, Palette,
 } from "lucide-react";
+
+/** Mobile breakpoint matcher — narrower than Tailwind's `sm` (640px).
+ *  Used by the deck builder to shrink card widths so the deck + pool fit
+ *  inside a phone viewport. SSR-safe (defaults to desktop, syncs on mount). */
+function useIsMobile(): boolean {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 639px)");
+    const on = () => setM(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return m;
+}
 import type { ScryfallCard } from "@/lib/scryfall";
 import type { PulledCard } from "@/lib/pack-open";
 import { MagicCard } from "@/app/_components/MagicCard";
@@ -37,17 +53,22 @@ import {
 const DECK_MIN = 40;
 
 // Pool grid uses auto-fill at a fixed card width so cells never go below
-// 196 px (cards overlapped on narrower viewports when columns were locked
-// at a fixed count). Wider screens just get more columns; narrower screens
-// get fewer columns, never crowded cells.
-const POOL_CARD_W = 196;
+// the configured threshold. Wider screens just get more columns; narrower
+// screens get fewer columns, never crowded cells. Mobile drops to ~110px
+// so we get three columns inside a phone viewport instead of one.
+const POOL_CARD_W_DESKTOP = 196;
+const POOL_CARD_W_MOBILE  = 110;
 
 // Deck builder is sized to fit six mana-cost columns + the Lands column
 // visible by default (7 total). Anything past that — e.g. cards at CMC 6
 // or 7+ — triggers the horizontal scrollbar. Cards land at ~196px so the
-// names + mana costs are legible without the user having to hover.
-const DECK_CARD_W = 196;
-const DECK_STACK_OFFSET = 44;       // px between stacked cards in a column
+// names + mana costs are legible without the user having to hover. Mobile
+// uses ~138px so a single column fits without scrolling sideways past 2-3
+// cells just to read your first column.
+const DECK_CARD_W_DESKTOP = 196;
+const DECK_CARD_W_MOBILE  = 138;
+const DECK_STACK_OFFSET_DESKTOP = 44;       // px between stacked cards in a column
+const DECK_STACK_OFFSET_MOBILE  = 30;
 const DECK_VISIBLE_COLUMNS = 7;
 
 const DRAG_THRESHOLD = 6;
@@ -167,6 +188,39 @@ interface DragState {
 type PoolSort = "mana" | "color";
 
 export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
+  const isMobile = useIsMobile();
+  const POOL_CARD_W = isMobile ? POOL_CARD_W_MOBILE : POOL_CARD_W_DESKTOP;
+  const DECK_CARD_W = isMobile ? DECK_CARD_W_MOBILE : DECK_CARD_W_DESKTOP;
+  const DECK_STACK_OFFSET = isMobile ? DECK_STACK_OFFSET_MOBILE : DECK_STACK_OFFSET_DESKTOP;
+
+  // Trap the iOS/Android edge-swipe-back gesture (and the hardware back
+  // button) for as long as the deck builder is mounted. Without this,
+  // a user dragging cards horizontally near the left edge can trigger
+  // a "swipe back" by accident and lose their in-progress deck.
+  //
+  // Mechanism: push a sentinel history entry on mount. Any back action
+  // pops it and fires `popstate`; we re-push the sentinel synchronously
+  // so the user stays on the page. The explicit "← Pick a different set"
+  // link still works because it's a forward navigation (router.push), not
+  // a `history.back()`.
+  //
+  // Cleanup deliberately does NOT pop the sentinel: if the user navigated
+  // forward (legitimate exit) the sentinel is now a back-history entry,
+  // and popping it would teleport them back through that forward nav. We
+  // leave the extra entry in place — at worst pressing back once after
+  // leaving lands them on the deck builder URL again with fresh state,
+  // which is recoverable.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.history.pushState({ deckGuard: Date.now() }, "");
+    const onPop = () => {
+      window.history.pushState({ deckGuard: Date.now() }, "");
+    };
+    window.addEventListener("popstate", onPop);
+    return () => {
+      window.removeEventListener("popstate", onPop);
+    };
+  }, []);
   const [inDeck, setInDeck] = useState<Set<string>>(() => new Set());
   /** Per-uid column override. Empty by default → cards bucket by CMC.
    *  "Sort by mana" button clears the map. */
@@ -395,7 +449,7 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
   };
 
   return (
-    <section className="mx-auto max-w-[1600px] w-full px-6 pb-24">
+    <section className="mx-auto max-w-[1600px] w-full px-3 sm:px-6 pb-24">
       <DeckHeader
         deckSize={deckSize}
         deckMin={DECK_MIN}
@@ -425,7 +479,7 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
           }
           countLabel={`${deckCards.length} from pool`}
         />
-        <div className="px-4 py-3 overflow-x-auto">
+        <div className="px-3 sm:px-4 py-3 overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
           {deckColumns.length === 0 && !drag?.active ? (
             <EmptyDeckTarget />
           ) : (
@@ -450,6 +504,8 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
                   groups={groups}
                   drag={drag}
                   handlers={sharedHandlers}
+                  cardW={DECK_CARD_W}
+                  stackOffset={DECK_STACK_OFFSET}
                 />
               ))}
             </div>
@@ -481,12 +537,12 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
           countLabel={`${poolCards.length} card${poolCards.length === 1 ? "" : "s"}`}
           right={<PoolSortToggle value={poolSort} onChange={setPoolSort} />}
         />
-        <div className="px-4 py-3">
+        <div className="px-3 sm:px-4 py-3">
           {poolGroups.length === 0 ? (
             <EmptyState message="No pool cards. Everything is currently in the deck." />
           ) : (
             <div
-              className="grid gap-3"
+              className="grid gap-2 sm:gap-3"
               style={{
                 gridTemplateColumns: `repeat(auto-fill, ${POOL_CARD_W}px)`,
                 justifyContent: "center",
@@ -498,6 +554,7 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
                   groupCards={groupCards}
                   drag={drag}
                   handlers={sharedHandlers}
+                  cardW={POOL_CARD_W}
                 />
               ))}
             </div>
@@ -539,11 +596,12 @@ interface SharedHandlers {
 }
 
 function PoolTile({
-  groupCards, drag, handlers,
+  groupCards, drag, handlers, cardW,
 }: {
   groupCards: PulledCard[];
   drag: DragState | null;
   handlers: SharedHandlers;
+  cardW: number;
 }) {
   const head = groupCards[0];
   const count = groupCards.length;
@@ -566,7 +624,7 @@ function PoolTile({
       <MagicCard
         card={{ kind: "scryfall", card: head.card, foil: false }}
         faceUp
-        width={POOL_CARD_W}
+        width={cardW}
         holoEnabled={false}
       />
       {count > 1 && (
@@ -612,16 +670,18 @@ function buildColumnSlots(groups: PulledCard[][]): RenderSlot[] {
 }
 
 function DeckColumn({
-  bucket, groups, drag, handlers,
+  bucket, groups, drag, handlers, cardW, stackOffset,
 }: {
   bucket: ColumnId;
   groups: PulledCard[][];
   drag: DragState | null;
   handlers: SharedHandlers;
+  cardW: number;
+  stackOffset: number;
 }) {
   const slots = buildColumnSlots(groups);
-  const cardH = (DECK_CARD_W * 88) / 63;
-  const stackH = cardH + Math.max(0, slots.length - 1) * DECK_STACK_OFFSET;
+  const cardH = (cardW * 88) / 63;
+  const stackH = cardH + Math.max(0, slots.length - 1) * stackOffset;
   const isPotentialTarget = drag?.active != null;
   // True card count includes the basic land multiples — slots may collapse
   // them but the header should still show the real total.
@@ -634,7 +694,7 @@ function DeckColumn({
       data-column={String(bucket)}
       className="flex flex-col items-center shrink-0 rounded-lg transition-colors"
       style={{
-        width: DECK_CARD_W + 10,
+        width: cardW + 10,
         background: isPotentialTarget ? "rgba(123, 57, 252, 0.04)" : undefined,
       }}
     >
@@ -651,7 +711,7 @@ function DeckColumn({
       </div>
       <div
         className="relative"
-        style={{ width: DECK_CARD_W, height: stackH || cardH }}
+        style={{ width: cardW, height: stackH || cardH }}
       >
         {isEmpty && drag?.active && (
           // Empty placeholder shown only while a drag is in progress. Lets
@@ -671,6 +731,8 @@ function DeckColumn({
             stackIndex={i}
             drag={drag}
             handlers={handlers}
+            cardW={cardW}
+            stackOffset={stackOffset}
           />
         ))}
       </div>
@@ -679,12 +741,14 @@ function DeckColumn({
 }
 
 function DeckSlotCard({
-  slot, stackIndex, drag, handlers,
+  slot, stackIndex, drag, handlers, cardW, stackOffset,
 }: {
   slot: RenderSlot;
   stackIndex: number;
   drag: DragState | null;
   handlers: SharedHandlers;
+  cardW: number;
+  stackOffset: number;
 }) {
   const { pulled } = slot;
   const beingDragged = drag?.active && drag.uid === pulled.uid;
@@ -704,9 +768,9 @@ function DeckSlotCard({
       onPointerLeave={handlers.clearHover}
       className="absolute block focus:outline-none transition-transform hover:-translate-y-1 touch-none"
       style={{
-        top: stackIndex * DECK_STACK_OFFSET,
+        top: stackIndex * stackOffset,
         left: 0,
-        width: DECK_CARD_W,
+        width: cardW,
         zIndex: 50 + stackIndex,
         opacity: beingDragged ? 0.35 : 1,
       }}
@@ -715,7 +779,7 @@ function DeckSlotCard({
       <MagicCard
         card={{ kind: "scryfall", card: pulled.card, foil: false }}
         faceUp
-        width={DECK_CARD_W}
+        width={cardW}
         holoEnabled={false}
       />
       {isCollapsed && count > 1 && (
@@ -976,20 +1040,19 @@ function BasicLandRow({
         subtitle="Add as many of each as you need — they don't come from your packs."
         countLabel={`${(Object.values(lands) as number[]).reduce((s, n) => s + n, 0)} lands`}
       />
-      <div className="p-4 flex flex-wrap gap-2.5">
+      <div className="p-3 sm:p-4 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-2.5">
         {BASIC_LANDS.map((land) => {
           const count = lands[land.name];
           return (
             <div
               key={land.name}
-              className="flex items-center gap-2 rounded-xl px-2.5 py-2 border"
+              className="flex items-center gap-2 rounded-xl px-2.5 py-2 border sm:min-w-[178px]"
               style={{
                 borderColor: count > 0 ? land.color : "var(--color-line)",
                 background:
                   count > 0
                     ? `linear-gradient(135deg, ${land.color}22, transparent)`
                     : "transparent",
-                minWidth: 178,
               }}
             >
               <div

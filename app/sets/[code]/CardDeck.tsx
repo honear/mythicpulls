@@ -15,11 +15,32 @@ interface Props {
   onCardSeen?: (uid: string) => void;
 }
 
-const CARD_W = 320;
+const CARD_W_DESKTOP = 320;
+const CARD_W_MOBILE = 240;
 const STACK_DEPTH = 5;           // visible cards at any time
 const THRESHOLD = 6;             // px before press becomes a drag
 const COMMIT_DIST = 40;          // px before the deck cycles
-const STAGE_PAD = 80;
+const STAGE_PAD_DESKTOP = 80;
+const STAGE_PAD_MOBILE = 24;
+
+/**
+ * Media-query hook — true when viewport is narrower than the Tailwind
+ * `sm` breakpoint (640px). The reveal deck rerenders at the new size and
+ * the drag math (THRESHOLD / COMMIT_DIST stay in px) keeps working since
+ * those are device-relative, not card-relative.
+ */
+function useIsMobile(): boolean {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 639px)");
+    const onChange = () => setM(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return m;
+}
 
 /**
  * Find the bounding rect of the nearest ancestor flagged as the reveal
@@ -50,6 +71,9 @@ function findCanvasRect(el: HTMLElement): DOMRect | null {
  *    animates it sliding behind the deck.
  */
 export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
+  const isMobile = useIsMobile();
+  const CARD_W = isMobile ? CARD_W_MOBILE : CARD_W_DESKTOP;
+  const STAGE_PAD = isMobile ? STAGE_PAD_MOBILE : STAGE_PAD_DESKTOP;
   const [cycleOrder, setCycleOrder] = useState<string[]>(() =>
     pulled.map((p) => p.uid),
   );
@@ -170,6 +194,7 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
             <DeckSlot
               key={uid}
               pulled={p}
+              cardW={CARD_W}
               stackPos={Math.min(i, STACK_DEPTH - 1)}
               behindStack={i >= STACK_DEPTH}
               isTop={i === 0}
@@ -205,10 +230,12 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
 /* ---------------- Single card slot ---------------- */
 
 function DeckSlot({
-  pulled, stackPos, behindStack, isTop, isFinalCard, hide,
+  pulled, cardW, stackPos, behindStack, isTop, isFinalCard, hide,
   onCommitCycle, onDragStateChange, onFinalDismiss,
 }: {
   pulled: PulledCard;
+  /** Card render width, scaled per viewport by the parent. */
+  cardW: number;
   stackPos: number;
   /** When true, the card has cycled past the visible window; it should
    *  finish its animation toward the back, then fade out. */
@@ -417,10 +444,10 @@ function DeckSlot({
       style={{
         left: "50%",
         top: "50%",
-        marginLeft: -CARD_W / 2,
-        marginTop: -(CARD_W * 88 / 63) / 2,
-        width: CARD_W,
-        height: CARD_W * 88 / 63,
+        marginLeft: -cardW / 2,
+        marginTop: -(cardW * 88 / 63) / 2,
+        width: cardW,
+        height: cardW * 88 / 63,
         // When dragging, JS sets el.style.transform directly. When not
         // dragging, React applies the rest transform — and because the
         // .deck-slot-dragging class is gone by then, the inline transition
@@ -439,7 +466,7 @@ function DeckSlot({
       <MagicCard
         card={{ kind: "scryfall", card: pulled.card, foil: pulled.foil }}
         faceUp
-        width={CARD_W}
+        width={cardW}
       />
     </div>
   );

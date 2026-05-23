@@ -15,10 +15,26 @@ import { MagicCard } from "@/app/_components/MagicCard";
    No clicks needed *within* a pack.
    =========================================================================== */
 
-const CARD_W = 158;
+const CARD_W_DESKTOP = 158;
+// Sized so three columns fit inside the SealedRun canvas at a 375px
+// viewport: (canvas inner width ~325px) − 2 × 10px gap = 305px, ÷ 3 ≈ 96px.
+const CARD_W_MOBILE = 96;
 const FLIP_STAGGER_MS = 110;     // delay between successive card flips
 const FLIP_INITIAL_DELAY = 220;  // brief beat before card 0 flips
 const CONTINUE_HOLD_MS = 700;    // pause after the last flip before the CTA appears
+
+function useIsMobile(): boolean {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 639px)");
+    const on = () => setM(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return m;
+}
 
 interface Props {
   pulled: PulledCard[];
@@ -30,6 +46,8 @@ interface Props {
 }
 
 export function SealedPackGrid({ pulled, onContinue, continueLabel }: Props) {
+  const isMobile = useIsMobile();
+  const cardW = isMobile ? CARD_W_MOBILE : CARD_W_DESKTOP;
   const [flipped, setFlipped] = useState<Set<string>>(() => new Set());
   const [ctaReady, setCtaReady] = useState(false);
 
@@ -59,11 +77,11 @@ export function SealedPackGrid({ pulled, onContinue, continueLabel }: Props) {
   }, [pulled]);
 
   return (
-    <div className="w-full flex flex-col items-center gap-7">
+    <div className="w-full flex flex-col items-center gap-5 sm:gap-7">
       <div
-        className="grid gap-4 justify-center"
+        className="grid gap-2.5 sm:gap-4 justify-center w-full"
         style={{
-          gridTemplateColumns: `repeat(auto-fit, minmax(${CARD_W}px, ${CARD_W}px))`,
+          gridTemplateColumns: `repeat(auto-fit, minmax(${cardW}px, ${cardW}px))`,
           maxWidth: 1180,
         }}
       >
@@ -71,6 +89,7 @@ export function SealedPackGrid({ pulled, onContinue, continueLabel }: Props) {
           <CardSlot
             key={p.uid}
             pulled={p}
+            cardW={cardW}
             faceUp={flipped.has(p.uid)}
             mountDelayMs={i * FLIP_STAGGER_MS}
           />
@@ -97,9 +116,10 @@ export function SealedPackGrid({ pulled, onContinue, continueLabel }: Props) {
 }
 
 function CardSlot({
-  pulled, faceUp, mountDelayMs,
+  pulled, cardW, faceUp, mountDelayMs,
 }: {
   pulled: PulledCard;
+  cardW: number;
   faceUp: boolean;
   mountDelayMs: number;
 }) {
@@ -114,7 +134,7 @@ function CardSlot({
     <div
       className="relative anim-card-rise"
       style={{
-        width: CARD_W,
+        width: cardW,
         animationDelay: `${mountDelayMs}ms`,
       }}
     >
@@ -127,7 +147,7 @@ function CardSlot({
         <MagicCard
           card={{ kind: "scryfall", card: pulled.card, foil: pulled.foil }}
           faceUp={faceUp}
-          width={CARD_W}
+          width={cardW}
           holoEnabled
         />
       </div>

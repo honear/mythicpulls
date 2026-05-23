@@ -3,6 +3,21 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Search, Trash2, Sparkles, GripVertical } from "lucide-react";
+
+/** Mobile breakpoint matcher used to scale binder card width.
+ *  SSR-safe (defaults desktop). */
+function useIsMobile(): boolean {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 639px)");
+    const on = () => setM(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return m;
+}
 import {
   clearCollection,
   readCollection,
@@ -113,7 +128,7 @@ export function CollectionBinder() {
 
   return (
     <div>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2 sm:gap-3 mb-6 sm:mb-8">
         <Stat label="Total" value={stats.total} accent />
         <Stat label="Mythics" value={stats.mythic} color="var(--color-rarity-mythic)" />
         <Stat label="Rares" value={stats.rare} color="var(--color-rarity-rare)" />
@@ -127,7 +142,7 @@ export function CollectionBinder() {
             <button
               key={m}
               onClick={() => setSort(m)}
-              className={`text-xs font-medium px-4 py-2 rounded-full transition-colors ${
+              className={`text-xs font-medium px-3 sm:px-4 py-2 rounded-full transition-colors ${
                 sort === m
                   ? "bg-white text-[var(--color-bg)]"
                   : "text-[var(--color-ink)] hover:text-white"
@@ -138,7 +153,7 @@ export function CollectionBinder() {
           ))}
         </div>
         <div className="flex gap-2">
-          <div className="relative">
+          <div className="relative flex-1 md:flex-initial">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-ink-muted)]" />
             <input
               value={query}
@@ -198,6 +213,9 @@ function BinderGrid({
   onFlip: (key: string) => void;
   canReorder: boolean;
 }) {
+  const isMobile = useIsMobile();
+  // Two cards per row on phones (~150px each); desktop keeps the 180px tile.
+  const cardW = isMobile ? 150 : 180;
   const { bind } = useDragReorder({
     onReorder: canReorder ? onReorder : () => {},
     onTap: (i) => {
@@ -207,9 +225,9 @@ function BinderGrid({
   });
   return (
     <ul
-      className="grid gap-5"
+      className="grid gap-3 sm:gap-5"
       style={{
-        gridTemplateColumns: "repeat(auto-fill, 180px)",
+        gridTemplateColumns: `repeat(auto-fill, ${cardW}px)`,
         justifyContent: "center",
       }}
     >
@@ -246,6 +264,7 @@ function BinderGrid({
                 foil: e.foil,
               }}
               faceUp={revealed.has(key)}
+              width={cardW}
             />
             <p className="mt-2 text-[10px] tracking-wider uppercase font-medium text-[var(--color-ink-muted)] truncate">
               {e.setCode.toUpperCase()} · #{e.collectorNumber}
@@ -267,14 +286,14 @@ function Stat({
 }) {
   return (
     <div
-      className={`rounded-2xl p-5 ${
+      className={`rounded-2xl p-3 sm:p-5 ${
         accent ? "liquid-panel" : "liquid-glass"
       }`}
       style={accent ? { background: "linear-gradient(160deg, rgba(168,85,247,0.18), rgba(99,102,241,0.10))" } : undefined}
     >
       <p className="label-caps text-[var(--color-ink-muted)]">{label}</p>
       <p
-        className="font-display text-4xl mt-1 leading-none text-[var(--color-fg)]"
+        className="font-display text-3xl sm:text-4xl mt-1 leading-none text-[var(--color-fg)]"
         style={color ? { color } : undefined}
       >
         {value}

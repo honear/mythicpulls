@@ -65,14 +65,17 @@
   --radius-xl: 20px;
   --radius-pill: 9999px;
 
-  /* Card physical dimensions (Magic card: 88mm × 63mm). The real card
-     radius is 2.5mm but reads very subtle at on-screen sizes; we bump
-     to ~4.7/63 of width (≈13.4px at the 180-base default) so the glare
-     and holo clip-paths round off with enough curve to look intentional
-     while keeping the proportion scale-independent. */
+  /* Card physical dimensions (Magic card: 88mm × 63mm, 2.5mm corner
+     radius). Now that we serve JPEG card images, the CSS-applied radius
+     is what produces the rounded corner — so we match the printed card
+     exactly: 2.5/63 of the rendered width (~7.14px at the 180-base
+     default). Earlier we bumped this to 4.7/63 because the PNGs already
+     had their own transparent rounded corners, and the bigger clip kept
+     the glare/holo overlays from poking past the printed corner. With
+     JPEG sources, the proportional clip *is* the corner. */
   --card-base: 180px;
   --card-ratio-h: calc(var(--card-base) * 88 / 63);
-  --card-radius: calc(var(--card-base) * 4.7 / 63);
+  --card-radius: calc(var(--card-base) * 2.5 / 63);
 }
 
 /* ============================================================

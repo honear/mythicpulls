@@ -30,7 +30,7 @@ export default async function HomePage() {
     <div className="flex flex-col">
       <Hero />
       <section
-        className="relative mx-auto max-w-7xl w-full px-6 md:px-10 pb-24"
+        className="relative mx-auto max-w-7xl w-full px-4 sm:px-6 md:px-10 pb-16 sm:pb-24"
         id="sets"
       >
         <div className="flex items-end justify-between mb-4 gap-6 flex-wrap">

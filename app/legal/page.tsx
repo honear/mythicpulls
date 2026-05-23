@@ -17,7 +17,7 @@ export const metadata: Metadata = {
  */
 export default function LegalPage() {
   return (
-    <section className="mx-auto max-w-3xl w-full px-6 py-14 md:py-20">
+    <section className="mx-auto max-w-3xl w-full px-4 sm:px-6 pt-24 sm:pt-28 pb-14 md:pb-20">
       <header className="mb-10">
         <p className="label-caps text-[var(--color-ink-muted)] mb-3">
           Disclosures · last updated 2026-05

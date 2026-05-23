@@ -7,10 +7,10 @@ export const metadata = {
 
 export default function CollectionPage() {
   return (
-    <div className="mx-auto max-w-7xl w-full px-6 pt-28 md:pt-32 pb-16">
-      <header className="mb-10">
+    <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16">
+      <header className="mb-8 sm:mb-10">
         <p className="label-caps text-[var(--color-ink-muted)]">Your binder</p>
-        <h1 className="font-display text-[2.2rem] md:text-6xl text-[var(--color-fg)] mt-2 leading-[0.95] balance">
+        <h1 className="font-display text-[1.9rem] sm:text-[2.2rem] md:text-6xl text-[var(--color-fg)] mt-2 leading-[0.95] balance">
           Every pull, kept{" "}
           <span className="ai-grad">in one place.</span>
         </h1>

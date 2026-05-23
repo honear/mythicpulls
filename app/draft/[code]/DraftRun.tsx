@@ -278,7 +278,7 @@ export function DraftRun({
   const showDeckBuilder = phase !== "idle";
 
   return (
-    <section className="mx-auto max-w-7xl w-full px-6 py-8 flex flex-col gap-5">
+    <section className="mx-auto max-w-7xl w-full px-3 sm:px-6 py-6 sm:py-8 flex flex-col gap-5">
       {phase !== "done" && (
         <>
           <DraftTable
@@ -333,7 +333,7 @@ export function DraftRun({
             style={{ minHeight: 540 }}
           >
             <div
-              className="relative min-h-[540px] flex flex-col items-center justify-center px-6 py-8"
+              className="relative min-h-[540px] flex flex-col items-center justify-center px-3 sm:px-6 py-6 sm:py-8"
               style={{
                 background: `
                   radial-gradient(ellipse 90% 75% at 50% 45%, rgba(123, 57, 252, 0.22), rgba(123, 57, 252, 0.08) 40%, transparent 75%)

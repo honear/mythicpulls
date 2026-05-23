@@ -126,30 +126,30 @@ export default async function SetPage({ params, searchParams }: Props) {
 
   return (
     <div className="flex flex-col">
-      <div className="mx-auto max-w-7xl w-full px-6 pt-28 md:pt-32">
+      <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 pt-24 sm:pt-28 md:pt-32">
         <Link
           href="/"
           className="label-caps text-[var(--color-ink-muted)] hover:text-[var(--color-fg)] transition-colors"
         >
           ← All sets
         </Link>
-        <div className="flex items-start gap-5 mt-4">
+        <div className="flex items-start gap-3 sm:gap-5 mt-3 sm:mt-4">
           {set.icon_svg_uri && (
-            <div className="w-16 h-16 rounded-xl grid place-items-center shrink-0 liquid-panel">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl grid place-items-center shrink-0 liquid-panel">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={set.icon_svg_uri}
                 alt=""
-                className="w-9 h-9 object-contain"
+                className="w-7 h-7 sm:w-9 sm:h-9 object-contain"
                 style={{ filter: "brightness(0) invert(1)" }}
               />
             </div>
           )}
-          <div>
+          <div className="min-w-0">
             <p className="label-caps text-[var(--color-ink-muted)]">
               {set.code.toUpperCase()} · {set.released_at?.slice(0, 4) ?? ""}
             </p>
-            <h1 className="font-display text-[2.2rem] md:text-6xl text-[var(--color-fg)] mt-2 leading-[0.95] balance">
+            <h1 className="font-display text-[1.7rem] sm:text-[2.2rem] md:text-6xl text-[var(--color-fg)] mt-1 sm:mt-2 leading-[0.95] balance">
               {set.name}
             </h1>
             <p className="text-[var(--color-ink)] mt-2">

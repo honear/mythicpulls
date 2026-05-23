@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Sparkles, RotateCcw, Save, Eye, GripVertical, LayoutGrid, Layers } from "lucide-react";
 import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
 import { PACKS, PACK_ORDER, getPackCost, type PackType } from "@/lib/pack-rules";
@@ -216,7 +216,7 @@ export function PackOpener({
   const heroArt = setMeta.heroArtCrops?.[0];
 
   return (
-    <section className="mx-auto max-w-7xl w-full px-6 py-10">
+    <section className="mx-auto max-w-7xl w-full px-3 sm:px-6 py-6 sm:py-10">
       <MoneyStrip
         stats={stats}
         packCost={packCost}
@@ -245,7 +245,7 @@ export function PackOpener({
         <div className="relative">
         <div
           data-deck-canvas
-          className="relative min-h-[680px] flex flex-col items-center justify-center px-6 py-10 overflow-hidden"
+          className="relative min-h-[560px] sm:min-h-[680px] flex flex-col items-center justify-center px-3 sm:px-6 py-6 sm:py-10 overflow-hidden"
           style={{ isolation: "isolate" }}
         >
           {/* Card-shaped backdrop glow. A heavily-blurred rectangle in
@@ -320,7 +320,7 @@ export function PackOpener({
         </div>
 
         {phase === "revealing" && (
-          <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between border-t border-[var(--color-line)] px-6 py-4">
+          <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between border-t border-[var(--color-line)] px-4 sm:px-6 py-3 sm:py-4">
             <div className="flex flex-col md:flex-row gap-3 md:items-center">
               <PullSummary pulled={pulled} />
               <ViewToggle mode={viewMode} onChange={setViewMode} />
@@ -472,6 +472,25 @@ function PackTypeBar({
 
 /* ---------------- Pack fan (idle phase) ---------------- */
 
+/**
+ * `matchMedia` listener that returns true when the viewport is narrower
+ * than the Tailwind `sm` breakpoint (640px). Used by PackFan to switch
+ * from the static fan layout (desktop) to a swipeable carousel (mobile).
+ * Initialises to `false` for SSR safety; the first browser frame syncs it.
+ */
+function useIsMobile(): boolean {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 639px)");
+    const onChange = () => setIsMobile(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return isMobile;
+}
+
 function PackFan({
   available, setMeta, onSelect,
 }: {
@@ -489,6 +508,66 @@ function PackFan({
     return [...others.slice(0, mid), "play" as PackType, ...others.slice(mid)];
   })();
   const centerIdx = Math.floor(ordered.length / 2);
+  const isMobile = useIsMobile();
+  // Selected pack type for the mobile single-pack view. Defaults to
+  // whichever pack the fan would put at center (Play if available).
+  const [mobilePick, setMobilePick] = useState<PackType>(ordered[centerIdx] ?? ordered[0]);
+  // If `available` changes (e.g. set page swap), make sure the selection
+  // still points at a valid type.
+  useEffect(() => {
+    if (!ordered.includes(mobilePick)) {
+      setMobilePick(ordered[centerIdx] ?? ordered[0]);
+    }
+  }, [ordered, mobilePick, centerIdx]);
+
+  // Mobile: a single centered pack with a pack-type chip selector above
+  // it. Replaces the earlier horizontal scroll-snap carousel — that
+  // pattern put the side packs off-screen and made tap-vs-swipe
+  // detection unreliable, since a slight finger drift on tap was being
+  // interpreted as a scroll attempt. With one centered pack the whole
+  // tap target is in view and unambiguous.
+  if (isMobile) {
+    return (
+      <div className="w-full flex flex-col items-center gap-5">
+        {ordered.length > 1 && (
+          <div
+            className="flex flex-wrap gap-1 p-1 rounded-full liquid-glass"
+            style={{ fontFamily: "var(--font-ui)" }}
+          >
+            {ordered.map((type) => {
+              const active = type === mobilePick;
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setMobilePick(type)}
+                  aria-pressed={active}
+                  className={`text-xs px-3.5 py-1.5 rounded-full font-medium transition-colors ${
+                    active
+                      ? "text-white"
+                      : "text-[var(--color-ink)] hover:text-white"
+                  }`}
+                  style={active ? { background: "var(--accent-purple)" } : undefined}
+                >
+                  {PACKS[type].name.replace(" Booster", "")}
+                </button>
+              );
+            })}
+          </div>
+        )}
+        <FannedPack
+          key={mobilePick}
+          packType={mobilePick}
+          setMeta={setMeta}
+          offset={0}
+          isCenter
+          onSelect={() => onSelect(mobilePick)}
+          artIndex={ordered.indexOf(mobilePick)}
+          compact
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-end justify-center gap-6 md:gap-8 w-full">
@@ -512,7 +591,7 @@ function PackFan({
 }
 
 function FannedPack({
-  packType, setMeta, offset, isCenter, onSelect, artIndex,
+  packType, setMeta, offset, isCenter, onSelect, artIndex, compact = false,
 }: {
   packType: PackType;
   setMeta: SetMeta;
@@ -520,13 +599,18 @@ function FannedPack({
   isCenter: boolean;
   onSelect: () => void;
   artIndex: number;
+  /** Mobile layout — drops the fan rotation and shrinks the pack so it
+   *  fits inside a phone viewport with room for swipe gestures. */
+  compact?: boolean;
 }) {
   const c = packHue(packType);
   // Static fan-pose rotation (applied to the outer button so the whole pack
   // leans outward). The inner body owns the cursor-driven 3D tilt.
-  const fanRot = offset * 7;
-  const lift = isCenter ? -18 : 0;
-  const scale = isCenter ? 1.04 : 1;
+  // Compact (mobile) layout: pack sits upright, no offset lift, no scale
+  // bump — the swipe carousel needs every pack to share the same baseline.
+  const fanRot = compact ? 0 : offset * 7;
+  const lift = compact ? 0 : isCenter ? -18 : 0;
+  const scale = compact ? 1 : isCenter ? 1.04 : 1;
   // Cursor-driven parallax: bigger tilt on the center pack since it's the
   // hero pose, slightly subdued on the side packs so the wobble doesn't
   // amplify the existing fan rotation.
@@ -536,9 +620,11 @@ function FannedPack({
 
   // Real Magic booster aspect is roughly 1 : 1.46 after widening. We use
   // 260 × 380 px (~30% wider than the original 200 × 380 silhouette so the
-  // art crop reads at a comfortable size).
-  const PACK_W = 260;
-  const PACK_H = 380;
+  // art crop reads at a comfortable size). Compact mode (mobile) drops to
+  // ~210 × 308 so the carousel snaps comfortably inside a 375px viewport
+  // while keeping the same 1:1.46 silhouette.
+  const PACK_W = compact ? 210 : 260;
+  const PACK_H = compact ? 308 : 380;
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -732,8 +818,11 @@ function BoosterPack({
 
 function RippingPack({ setMeta, packType }: { setMeta: SetMeta; packType: PackType }) {
   const c = packHue(packType);
+  const isMobile = useIsMobile();
+  const W = isMobile ? 210 : 260;
+  const H = isMobile ? 308 : 380;
   return (
-    <div className="relative" style={{ width: 260, height: 380, perspective: 1400 }}>
+    <div className="relative" style={{ width: W, height: H, perspective: 1400 }}>
       <div
         className="anim-pack-top absolute inset-x-0 top-0 h-1/2 rounded-t-xl overflow-hidden"
         style={{
@@ -784,6 +873,8 @@ function CardSpread({
   onTap: (uid: string) => void;
   onReorder: (from: number, to: number) => void;
 }) {
+  const isMobile = useIsMobile();
+  const cardW = isMobile ? 144 : 180;
   const { bind } = useDragReorder({
     onReorder,
     onTap: (i) => {
@@ -795,18 +886,20 @@ function CardSpread({
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-xs text-[var(--color-ink-muted)] inline-flex items-center gap-2">
+        <p className="text-[11px] sm:text-xs text-[var(--color-ink-muted)] inline-flex items-center gap-2">
           <GripVertical className="w-3.5 h-3.5" />
-          Click face-down to flip · click face-up for details · drag to rearrange
+          {isMobile
+            ? "Tap face-down to flip · long-press to drag"
+            : "Click face-down to flip · click face-up for details · drag to rearrange"}
         </p>
       </div>
       <div
         className="grid w-full"
         style={{
-          gridTemplateColumns: "repeat(auto-fill, minmax(180px, 180px))",
+          gridTemplateColumns: `repeat(auto-fill, minmax(${cardW}px, ${cardW}px))`,
           justifyContent: "center",
-          columnGap: 28,
-          rowGap: 36,
+          columnGap: isMobile ? 14 : 28,
+          rowGap: isMobile ? 22 : 36,
         }}
       >
         {pulled.map((p, idx) => {
@@ -833,18 +926,18 @@ function CardSpread({
               }`}
               style={{
                 animationDelay: `${idx * 50}ms`,
-                width: 180,
+                width: cardW,
                 ...bound.style,
               }}
             >
               {/* Card + rarity glow (rares/mythics only, only when face-up). */}
-              <div className="relative" style={{ width: 180 }}>
+              <div className="relative" style={{ width: cardW }}>
                 {isGlowing && <div className={glowBehind} />}
                 <div className={`relative ${isGlowing ? glowFilter : ""}`} style={{ zIndex: 1 }}>
                   <MagicCard
                     card={{ kind: "scryfall", card: p.card, foil: p.foil }}
                     faceUp={isFaceUp}
-                    width={180}
+                    width={cardW}
                   />
                 </div>
               </div>
