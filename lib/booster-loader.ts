@@ -12,6 +12,15 @@ import type {
   PackType,
   SetConfig,
 } from "./booster-config";
+// User-editable per-set price map. Bundled at module-eval time so
+// resolveRecipe can apply the override synchronously without a second
+// fs read. Edit data/booster-prices.json to change prices.
+import boosterPricesJson from "../data/booster-prices.json";
+
+const BOOSTER_PRICES = boosterPricesJson as unknown as Record<
+  string,
+  Partial<Record<PackType, number>>
+>;
 
 /**
  * Server-only fs-based loader. Importing this from a client component
@@ -99,7 +108,15 @@ export async function resolveRecipe(
   const defaultCostMap = (defaultContent as unknown as { costUsd?: Partial<Record<PackType, number>> })?.costUsd;
   const namedCostMap = (named as unknown as { costUsd?: Partial<Record<PackType, number>> })?.costUsd;
 
+  // Resolution order — data/booster-prices.json wins over everything so
+  // the user has one file to edit. Then per-set JSON cost block, then the
+  // recipe's costUsd, then the bundled default content's costUsd.
+  const code = setCode.toLowerCase();
+  const priceOverride =
+    BOOSTER_PRICES[code]?.[packType] ?? BOOSTER_PRICES.default?.[packType];
+
   const costUsd =
+    priceOverride ??
     setConfig?.cost?.[packType] ??
     namedCostMap?.[packType] ??
     defaultCostMap?.[packType] ??

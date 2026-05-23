@@ -1,0 +1,21 @@
+{
+  "_doc": "Single source of truth for per-set booster MSRP. Edit freely — keys are lowercase Scryfall set codes, values are USD prices for any of 'play', 'draft', 'collector'. Sets not listed here fall back to the default MSRP from data/booster-contents/default.json (play: 5.99, draft: 3.99, collector: 25.99). This file beats data/sets/<code>.json cost blocks and data/booster-contents/*.json costUsd blocks — use it for quick price tweaks without touching the rest of the booster config.",
+
+  "default": {
+    "play": 5.99,
+    "draft": 3.99,
+    "collector": 25.99
+  },
+
+  "sos": { "play": 5.99, "draft": 3.99, "collector": 34.99 },
+  "ltr": { "collector": 34.99 },
+  "fin": { "collector": 34.99 },
+  "ltc": { "collector": 34.99 },
+  "fdn": { "collector": 39.99 },
+  "dsk": { "collector": 24.99 },
+  "blb": { "collector": 24.99 },
+  "otj": { "collector": 27.99 },
+  "mh3": { "collector": 31.99 },
+  "lci": { "collector": 23.99 },
+  "woe": { "collector": 23.99 }
+}

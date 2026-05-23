@@ -18,8 +18,24 @@ import type { PackType } from "./booster-config";
 // plain object available at module evaluation time. Per-set recipes are
 // still loaded asynchronously via resolveRecipe in the route layer.
 import defaultContentJson from "../data/booster-contents/default.json";
+// Per-set MSRP map. Single user-editable file at data/booster-prices.json.
+// Bundled here so the sync code path (PackOpener's MoneyStrip math) can
+// read it without going through node:fs.
+import boosterPricesJson from "../data/booster-prices.json";
 
 export type { PackType } from "./booster-config";
+
+/**
+ * User-editable per-set price overrides. Keys are lowercase Scryfall set
+ * codes (plus a "default" entry as a baseline). The `getPackCost` lookup
+ * consults this map FIRST, before falling back to bundled defaults.
+ *
+ * Edit data/booster-prices.json to tweak prices without touching any TS.
+ */
+const BOOSTER_PRICES = boosterPricesJson as unknown as Record<
+  string,
+  Partial<Record<PackType, number>>
+>;
 
 interface DefaultContentShape {
   costUsd?: Partial<Record<PackType, number>>;
@@ -62,43 +78,22 @@ export const PACKS: Record<PackType, PackDefinition> = {
 export const PACK_ORDER: PackType[] = ["play", "draft", "collector"];
 
 /**
- * MSRP lookup. Priority: per-set override (data/sets/<code>.json cost.<type>)
- * > default content's costUsd.<type> > PackDefinition.costUsd.
+ * MSRP lookup. Resolution order:
+ *   1. data/booster-prices.json — per-set entry for this packType
+ *   2. data/booster-prices.json — "default" entry for this packType
+ *   3. data/booster-contents/default.json — bundled fallback
  *
- * Sync version that consults a small bundled map of well-known overrides for
- * sets we want priced correctly without a per-set JSON file. New per-set
- * overrides should be added by creating data/sets/<code>.json + cost block.
+ * Edit data/booster-prices.json to tweak any price; no code changes needed.
  */
 export function getPackCost(packType: PackType, setCode?: string): number {
   if (setCode) {
-    const code = setCode.toLowerCase();
-    const override = LEGACY_MSRP_OVERRIDES[code]?.[packType];
+    const override = BOOSTER_PRICES[setCode.toLowerCase()]?.[packType];
     if (typeof override === "number") return override;
   }
+  const baseline = BOOSTER_PRICES.default?.[packType];
+  if (typeof baseline === "number") return baseline;
   return PACKS[packType].costUsd;
 }
-
-/**
- * Sync per-set MSRP overrides retained for compatibility with the
- * synchronous PackOpener path. The async path lives at the route layer:
- * it calls resolveRecipe (lib/booster-loader.ts) which reads
- * data/sets/<code>.json + data/booster-contents/* and passes the resolved
- * cost down to PackOpener as a prop. New overrides should land as
- * data/sets/<code>.json instead.
- */
-const LEGACY_MSRP_OVERRIDES: Record<string, Partial<Record<PackType, number>>> = {
-  ltr: { collector: 34.99 },
-  fin: { collector: 34.99 },
-  ltc: { collector: 34.99 },
-  fdn: { collector: 39.99 },
-  dsk: { collector: 24.99 },
-  blb: { collector: 24.99 },
-  otj: { collector: 27.99 },
-  mh3: { collector: 31.99 },
-  lci: { collector: 23.99 },
-  woe: { collector: 23.99 },
-  sos: { collector: 34.99 },
-};
 
 /** Recommend a default pack type based on release date. */
 export function recommendedPackType(set: ScryfallSet): PackType {
