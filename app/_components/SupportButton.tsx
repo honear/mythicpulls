@@ -11,7 +11,7 @@ import { Coffee, X } from "lucide-react";
  * over the current page containing Ko-fi's widget iframe (with
  * `hidefeed=true` so the public feed / follow buttons / social cruft
  * are stripped, leaving just the tip form). The user never navigates
- * away from Mythic Grounds. The modal portals to `document.body` to
+ * away from Three Tree City. The modal portals to `document.body` to
  * escape any `backdrop-filter` stacking context in the header — same
  * fix we applied to CardDetailModal and ExportModal.
  *

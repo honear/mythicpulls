@@ -4,7 +4,7 @@ import type { Rarity } from "./scryfall";
 
 // NOTE: this localStorage key is deliberately kept on the legacy
 // `mythicpulls:` prefix even though the project is now branded
-// "Mythic Grounds". Existing users' binders live under this key —
+// "Three Tree City". Existing users' binders live under this key —
 // renaming would silently empty everyone's collection. Treat it as
 // a stable identifier, like an immutable database column name.
 const KEY = "mythicpulls:collection:v1";

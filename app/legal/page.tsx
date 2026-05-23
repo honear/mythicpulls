@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Legal & disclosures — Mythic Grounds",
+  title: "Legal & disclosures — Three Tree City",
   description:
-    "Terms of use, trademark acknowledgments, and the nature of Mythic Grounds as an unofficial fan project.",
+    "Terms of use, trademark acknowledgments, and the nature of Three Tree City as an unofficial fan project.",
 };
 
 /**
@@ -25,10 +25,10 @@ export default function LegalPage() {
         <h1
           className="font-display text-4xl md:text-5xl text-[var(--color-fg)] leading-tight"
         >
-          Legal &amp; the nature of Mythic Grounds
+          Legal &amp; the nature of Three Tree City
         </h1>
         <p className="mt-4 text-[var(--color-ink)] text-[15px] leading-relaxed">
-          Mythic Grounds is a browser-based simulator that lets you experiment
+          Three Tree City is a browser-based simulator that lets you experiment
           with{" "}
           <em>Magic: the Gathering</em>
           {" "}booster formats — opening individual packs, running a six-pack
@@ -42,7 +42,7 @@ export default function LegalPage() {
         body={
           <>
             <p>
-              Mythic Grounds is a browser-based pack-opening simulator for{" "}
+              Three Tree City is a browser-based pack-opening simulator for{" "}
               <em>Magic: the Gathering</em>. It generates randomized booster
               contents using publicly-documented pack composition rules, draws
               card data and artwork from{" "}
@@ -73,7 +73,7 @@ export default function LegalPage() {
         body={
           <>
             <p>
-              Mythic Grounds is <strong>not</strong> affiliated with, endorsed by,
+              Three Tree City is <strong>not</strong> affiliated with, endorsed by,
               sponsored by, or specifically approved by Wizards of the Coast
               LLC or its parent companies. It is intended as fan-made content
               under{" "}
@@ -87,7 +87,7 @@ export default function LegalPage() {
               </a>
               , which permits non-commercial fan websites that incorporate
               Wizards&rsquo; intellectual property provided certain conditions
-              are met. Mythic Grounds aims to comply with those conditions:
+              are met. Three Tree City aims to comply with those conditions:
             </p>
             <ul className="list-disc list-outside pl-5 space-y-1.5">
               <li>
@@ -103,7 +103,7 @@ export default function LegalPage() {
                 navigation opens an in-page Ko-fi tip panel (the panel
                 is hosted by Ko-fi in an embedded frame; card-payment
                 details are handled by Ko-fi and their payment processor,
-                never by Mythic Grounds). The Fan Content Policy
+                never by Three Tree City). The Fan Content Policy
                 explicitly permits subsidizing fan content through
                 donations &ldquo;so long as it doesn&rsquo;t interfere
                 with the Community&rsquo;s access to your Fan Content,&rdquo;
@@ -116,10 +116,10 @@ export default function LegalPage() {
                 hands flows through Ko-fi (and, for visitors browsing the
                 source repository, GitHub Sponsors), voluntarily, to the
                 individual developer — not in exchange for access to
-                Mythic Grounds, which remains free.
+                Three Tree City, which remains free.
               </li>
               <li>
-                Mythic Grounds is a visual simulator that displays randomized
+                Three Tree City is a visual simulator that displays randomized
                 booster contents using publicly-documented pack-composition
                 rules. It does not implement Magic&rsquo;s gameplay rules and
                 is not a substitute for, replacement for, or alternative
@@ -134,8 +134,16 @@ export default function LegalPage() {
               Wizards-owned trademarks that appear in incorporated card text
               or imagery are retained without alteration.
             </p>
+            <p>
+              The site&rsquo;s name, <em>Three Tree City</em>, is borrowed
+              from a Wizards-printed Magic card (originally from{" "}
+              <em>The Lord of the Rings: Tales of Middle-earth</em>, reprinted
+              in <em>Bloomburrow</em>). It is used here as an affectionate
+              nod by a fan and is not intended to suggest sponsorship,
+              endorsement, or affiliation with Wizards of the Coast.
+            </p>
             <p className="text-[var(--color-ink-muted)] italic">
-              Mythic Grounds is unofficial Fan Content permitted under the Fan
+              Three Tree City is unofficial Fan Content permitted under the Fan
               Content Policy. Not approved/endorsed by Wizards. Portions of
               the materials used are property of Wizards of the Coast.
               &copy;Wizards of the Coast LLC.
@@ -249,7 +257,7 @@ export default function LegalPage() {
             <p>
               17Lands is independent of Wizards of the Coast and of this
               project. The citation above is not an endorsement —{" "}
-              <em>17Lands does not endorse Mythic Grounds or its findings</em>.
+              <em>17Lands does not endorse Three Tree City or its findings</em>.
               We use their data in good faith for the non-commercial
               purposes described on this page, following the
               <a
@@ -273,7 +281,7 @@ export default function LegalPage() {
         body={
           <>
             <p>
-              Mythic Grounds accepts no payments, sells no products, offers no
+              Three Tree City accepts no payments, sells no products, offers no
               subscriptions, and grants no in-game items or codes. Prices shown
               alongside opened cards are market estimates surfaced from Scryfall
               for entertainment and curiosity only — they are not offers, not
@@ -295,7 +303,7 @@ export default function LegalPage() {
         body={
           <>
             <p>
-              Mythic Grounds runs entirely in your browser. Your saved cards,
+              Three Tree City runs entirely in your browser. Your saved cards,
               holographic-style preference, and any other settings live in
               your browser&rsquo;s <code>localStorage</code> on this device.
               They are not transmitted to a server, not associated with any
@@ -338,7 +346,7 @@ export default function LegalPage() {
         body={
           <>
             <p>
-              Mythic Grounds is provided as-is, without warranty of any kind,
+              Three Tree City is provided as-is, without warranty of any kind,
               express or implied, including but not limited to the warranties
               of merchantability, fitness for a particular purpose, and
               non-infringement. The maintainers are not liable for any claim,
@@ -374,7 +382,7 @@ export default function LegalPage() {
           href="/"
           className="underline decoration-dotted underline-offset-4 text-[var(--color-ink)] hover:text-[var(--color-fg)]"
         >
-          ← Back to Mythic Grounds
+          ← Back to Three Tree City
         </Link>
       </footer>
     </section>

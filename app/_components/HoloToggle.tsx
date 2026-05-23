@@ -6,7 +6,7 @@ import { Sparkles } from "lucide-react";
 type HoloStyle = "shimmer" | "off";
 
 // Kept on the legacy `mythicpulls:` prefix — see lib/collection.ts for
-// rationale. The project is now branded "Mythic Grounds" but
+// rationale. The project is now branded "Three Tree City" but
 // localStorage keys stay stable so existing users' preferences survive.
 const STORAGE_KEY = "mythicpulls:holo-style";
 

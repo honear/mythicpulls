@@ -39,7 +39,7 @@ const CONCURRENCY = 2;
 const PER_WORKER_THROTTLE_MS = 250;
 
 const UA =
-  "MythicGrounds-set-art-script/0.1 (https://github.com/honear/mythicpulls fan project)";
+  "ThreeTreeCity-set-art-script/0.1 (https://github.com/honear/mythicpulls fan project)";
 
 async function fetchJson(url) {
   const res = await fetch(url, {

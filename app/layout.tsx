@@ -12,7 +12,7 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Mythic Grounds — open Magic packs",
+  title: "Three Tree City — open Magic packs",
   description:
     "An elegant Magic: the Gathering booster-opening experience powered by Scryfall.",
 };
@@ -64,7 +64,7 @@ function SiteFooter() {
           >
             Scryfall
           </a>
-          . Mythic Grounds is an unofficial fan project.
+          . Three Tree City is an unofficial fan project.
         </p>
         <div className="flex flex-wrap items-center gap-3 md:gap-4">
           <Link

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props) {
   const set = await getSet(code);
   if (!set) return { title: "Set not found" };
   return {
-    title: `Sealed · ${set.name} · Mythic Grounds`,
+    title: `Sealed · ${set.name} · Three Tree City`,
     description: `Open six ${set.name} boosters and build a 40-card sealed deck.`,
   };
 }

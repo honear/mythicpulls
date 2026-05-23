@@ -73,7 +73,7 @@ export function SiteHeader() {
       <nav className="w-full flex flex-row items-center justify-between py-4 sm:py-5 px-4 sm:px-6 md:px-10">
         <Link
           href="/"
-          aria-label="Mythic Grounds home"
+          aria-label="Three Tree City home"
           className="flex items-center gap-2.5 group"
         >
           <Logomark />
@@ -81,7 +81,7 @@ export function SiteHeader() {
             className="text-[15px] sm:text-[16px] font-semibold tracking-tight text-[var(--color-fg)]"
             style={{ fontFamily: "var(--font-ui)" }}
           >
-            Mythic Grounds
+            Three Tree City
           </span>
         </Link>
 

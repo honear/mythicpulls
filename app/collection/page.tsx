@@ -1,7 +1,7 @@
 import { CollectionBinder } from "./CollectionBinder";
 
 export const metadata = {
-  title: "Binder · Mythic Grounds",
+  title: "Binder · Three Tree City",
   description: "Every card you've pulled, kept in your local binder.",
 };
 

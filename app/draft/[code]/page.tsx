@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props) {
   const set = await getSet(code);
   if (!set) return { title: "Set not found" };
   return {
-    title: `Draft · ${set.name} · Mythic Grounds`,
+    title: `Draft · ${set.name} · Three Tree City`,
     description: `Draft ${set.name} against seven AI bots and build a 40-card deck.`,
   };
 }
