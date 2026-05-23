@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Swords, Users } from "lucide-react";
+import { Menu, Swords, Users, X } from "lucide-react";
 import { HoloToggle } from "./HoloToggle";
 
 /**
@@ -119,12 +119,10 @@ export function SiteHeader() {
           </Link>
         </div>
 
-        {/* Mobile chrome — only the Binder pill is exposed for now. The
-            hamburger + popover drawer are deliberately deactivated until
-            we land on a more refined mobile nav: the drawer wasn't
-            reading well over the set grid, and the user explicitly asked
-            for it to be off in the meantime. Sealed / Draft / Holo style
-            are still reachable on desktop ≥ sm. */}
+        {/* Mobile chrome — Binder pill + hamburger drawer for everything
+            else (Play Draft, Play Sealed, Holo Style). The drawer is
+            portalled to document.body so the header's backdrop-filter
+            doesn't trap its fixed-position children. */}
         <div className="flex sm:hidden items-center gap-2">
           <Link
             href="/collection"
@@ -138,6 +136,17 @@ export function SiteHeader() {
           >
             Binder
           </Link>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-expanded={menuOpen}
+            aria-controls="site-mobile-menu"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            className="grid place-items-center w-[38px] h-[38px] rounded-[10px] border border-[var(--color-line)] transition-colors hover:bg-white/10"
+            style={{ color: "var(--color-fg)" }}
+          >
+            {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </button>
         </div>
       </nav>
 

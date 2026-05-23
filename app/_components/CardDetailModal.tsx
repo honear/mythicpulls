@@ -26,27 +26,48 @@ interface Props {
 }
 
 export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
+  // Suppress the modal entirely on phones (≤639px). The full-screen
+  // overlay is heavy mid-rip on a small viewport; tapping a card on
+  // mobile now does nothing for the moment. Re-enable when we redesign
+  // a mobile-friendly card-details surface.
+  const [suppress, setSuppress] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 639px)");
+    const on = () => setSuppress(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+
+  // If the parent passed a card while we're in suppress mode, close it
+  // back out immediately so the caller's state doesn't get stuck thinking
+  // a modal is open.
+  useEffect(() => {
+    if (card && suppress) onClose();
+  }, [card, suppress, onClose]);
+
   // Close on Escape.
   useEffect(() => {
-    if (!card) return;
+    if (!card || suppress) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [card, onClose]);
+  }, [card, onClose, suppress]);
 
   // Lock body scroll while modal is open.
   useEffect(() => {
-    if (!card) return;
+    if (!card || suppress) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
     };
-  }, [card]);
+  }, [card, suppress]);
 
-  if (!card) return null;
+  if (!card || suppress) return null;
 
   const price = getDisplayPrice(card, foil);
   const eur = card.prices?.eur ? `€${Number(card.prices.eur).toFixed(2)}` : null;

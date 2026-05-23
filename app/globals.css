@@ -310,6 +310,14 @@ html, body {
   position: relative;
   aspect-ratio: 63 / 88;
   width: var(--card-base);
+  /* Re-declare --card-radius on the element so it recomputes against the
+   * LOCAL --card-base override. The @theme declaration substitutes
+   * var(--card-base) at :root (against the 180px default), so descendants
+   * that override --card-base wouldn't otherwise see a fresh radius —
+   * every card would render at the 180-base-derived 7.14px regardless of
+   * its actual rendered width. Redeclaring here makes the radius scale
+   * proportionally for 96px (sealed reveal) through 320px (detail modal). */
+  --card-radius: calc(var(--card-base) * 2.5 / 63);
   border-radius: var(--card-radius);
   background: transparent;
   /* Box-shadow respects border-radius so the lift hugs the rounded
@@ -338,7 +346,14 @@ html, body {
 .card-mtg__face {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
+  /* `border-radius: inherit` would inherit from the immediate parent
+   * `.card-flip` (which has no radius), not `.card-mtg`. Pull the value
+   * directly from the custom property instead — `--card-radius` is
+   * inherited as a custom property through `.card-flip` and resolves
+   * correctly here against the local card width. With this set, the
+   * face's `overflow: hidden` clips the JPEG art to the proportional
+   * rounded corner; the PNG era's transparent corners hid this bug. */
+  border-radius: var(--card-radius);
   overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
