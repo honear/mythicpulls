@@ -2,15 +2,33 @@
 
 import { useMemo, useState } from "react";
 import { FastForward, Sparkles } from "lucide-react";
-import type { ScryfallCard } from "@/lib/scryfall";
+import { getCardImage, type ScryfallCard } from "@/lib/scryfall";
 import type { PackContent } from "@/lib/booster-config";
 import type { FilterPredicate } from "@/lib/booster-filters";
 import { openPack, type CardPool, type PulledCard } from "@/lib/pack-open";
 import type { PackType } from "@/lib/pack-rules";
 import { botPick } from "@/lib/draft-bot";
+import { preloadImages } from "@/lib/preload";
 import { SealedDeckBuilder } from "@/app/sealed/[code]/SealedDeckBuilder";
 import { DraftTable, type SeatInfo } from "./DraftTable";
 import { DraftPickPanel } from "./DraftPickPanel";
+
+/** Front-face URLs for the cards the USER is about to see in DraftPickPanel.
+ *  Only the user's pack (seat 0) is rendered, so preloading the other seats'
+ *  packs would waste bandwidth — bot picks are computed without ever showing
+ *  their packs to the user. We preload at "normal" (488×680) since the draft
+ *  layout caps at 174px on desktop / 100px on mobile (both ≤ 175 → normal). */
+function userPackUrls(pack: ReadonlyArray<PulledCard>): string[] {
+  return pack
+    .map(
+      (p) =>
+        getCardImage(p.card, "normal") ??
+        getCardImage(p.card, "large") ??
+        p.card.card_faces?.[0]?.image_uris?.normal ??
+        p.card.card_faces?.[0]?.image_uris?.large,
+    )
+    .filter((u): u is string => !!u);
+}
 
 const TOTAL_SEATS = 8;
 const TOTAL_ROUNDS = 3;
@@ -107,10 +125,15 @@ export function DraftRun({
 
   function startDrafting() {
     const r1 = openRoundPacks();
-    setPacks(r1);
-    setRound(1);
-    setPickNumber(1);
-    setPhase("picking");
+    // Preload only the user's seat-0 pack — the only one rendered as
+    // <MagicCard>s. Bot seats' packs never paint, so warming their
+    // image cache would be wasted bandwidth.
+    preloadImages(userPackUrls(r1[USER_SEAT])).then(() => {
+      setPacks(r1);
+      setRound(1);
+      setPickNumber(1);
+      setPhase("picking");
+    });
   }
 
   function rotatePacks(list: PulledCard[][], dir: "left" | "right"): PulledCard[][] {

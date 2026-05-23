@@ -2,13 +2,29 @@
 
 import { useState } from "react";
 import { Sparkles, ArrowRight, FastForward } from "lucide-react";
-import type { ScryfallCard } from "@/lib/scryfall";
+import { getCardImage, type ScryfallCard } from "@/lib/scryfall";
 import type { PackContent } from "@/lib/booster-config";
 import type { FilterPredicate } from "@/lib/booster-filters";
 import { openPack, type CardPool, type PulledCard } from "@/lib/pack-open";
 import type { PackType } from "@/lib/pack-rules";
+import { preloadImages } from "@/lib/preload";
 import { SealedPackGrid } from "./SealedPackGrid";
 import { SealedDeckBuilder } from "./SealedDeckBuilder";
+
+/** Collect front-face JPEG URLs for a freshly opened pack so we can
+ *  warm the image cache before the reveal grid mounts. Sealed reveal
+ *  renders cards at 96–158px which maps to the "normal" variant. */
+function frontUrlsFor(pulled: ReadonlyArray<PulledCard>): string[] {
+  return pulled
+    .map(
+      (p) =>
+        getCardImage(p.card, "normal") ??
+        getCardImage(p.card, "large") ??
+        p.card.card_faces?.[0]?.image_uris?.normal ??
+        p.card.card_faces?.[0]?.image_uris?.large,
+    )
+    .filter((u): u is string => !!u);
+}
 
 const TOTAL_PACKS = 6;
 
@@ -61,8 +77,15 @@ export function SealedRun({
   function ripNextPack() {
     if (packsOpened >= TOTAL_PACKS) return;
     const pulls = openPack(recipe, pool, setMeta.code, filters);
-    setCurrentPack(pulls);
-    setPhase("revealing");
+    // Warm the image cache before the grid mounts — otherwise a slow
+    // image can flash into a card mid-flip and spoil the reveal cadence.
+    // We don't block the React tree behind any UI affordance; the user
+    // sees the "between packs" panel for a beat longer until the
+    // network catches up (typically <300ms on a warm cache).
+    preloadImages(frontUrlsFor(pulls)).then(() => {
+      setCurrentPack(pulls);
+      setPhase("revealing");
+    });
   }
 
   function onPackComplete() {
@@ -75,9 +98,13 @@ export function SealedRun({
     } else {
       // Rip the next pack inline so the Continue click advances the user in
       // one motion (no extra "Open Pack N+1" landing between every reveal).
-      // SealedPackGrid sees `pulled` change and resets its stagger state.
+      // Same preload guard as ripNextPack — wait for the new pack's images
+      // before swapping the grid's `pulled` prop, so SealedPackGrid's
+      // stagger state resets onto an already-loaded set.
       const nextPulls = openPack(recipe, pool, setMeta.code, filters);
-      setCurrentPack(nextPulls);
+      preloadImages(frontUrlsFor(nextPulls)).then(() => {
+        setCurrentPack(nextPulls);
+      });
     }
   }
 

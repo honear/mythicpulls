@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Sparkles, RotateCcw, Save, Eye, GripVertical, LayoutGrid, Layers } from "lucide-react";
 import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
 import { PACKS, PACK_ORDER, getPackCost, type PackType } from "@/lib/pack-rules";
+import { preloadImages } from "@/lib/preload";
 import type { PackContent } from "@/lib/booster-config";
 import type { FilterPredicate } from "@/lib/booster-filters";
 import { openPack, type CardPool, type PulledCard } from "@/lib/pack-open";
@@ -100,7 +101,31 @@ export function PackOpener({
       spent: s.spent + costForThisPack,
       packs: s.packs + 1,
     }));
-    setTimeout(() => setPhase("revealing"), 800);
+    // Cinematic rip choreography runs ~1300ms (see RippingPack +
+    // .anim-pack-* keyframes in globals.css). In parallel, kick off
+    // image preloads for every pulled card's front face so the reveal
+    // can't be spoiled by a lower-stack card painting before the
+    // top — the new <img> elements rendered by MagicCard hit the
+    // browser cache instead of triggering a fresh network fetch.
+    //
+    // Default reveal is the CardDeck (faceUp at width 240 mobile / 320
+    // desktop, both of which map to the "large" JPEG variant). We
+    // preload `large`; if a card later uses `normal` (smaller render in
+    // grid view) it'll fetch on demand — fine since the reveal is
+    // already underway by then.
+    const ripTimer = new Promise<void>((resolve) => {
+      window.setTimeout(resolve, 1300);
+    });
+    const urls = result.map(
+      (p) =>
+        getCardImage(p.card, "large") ??
+        getCardImage(p.card, "normal") ??
+        p.card.card_faces?.[0]?.image_uris?.large ??
+        p.card.card_faces?.[0]?.image_uris?.normal,
+    );
+    Promise.all([ripTimer, preloadImages(urls)]).then(() => {
+      setPhase("revealing");
+    });
   }
 
   function reset() {
@@ -816,49 +841,233 @@ function BoosterPack({
   );
 }
 
+/**
+ * Cinematic pack rip — anticipation wobble → top tear strip flies off →
+ * seam splits open with a flash → light shaft erupts vertically while
+ * five card silhouettes burst out in a fan with sparkles → pack body
+ * fades to give way to the reveal. Total duration ~1300ms.
+ *
+ * The static pack visual mirrors `FannedPack` (set art crop, color wash,
+ * tear-strip perforation, set icon, name + booster label) so the rip
+ * looks like the same pack the user just tapped, not a swapped-in flat
+ * rectangle.
+ */
 function RippingPack({ setMeta, packType }: { setMeta: SetMeta; packType: PackType }) {
   const c = packHue(packType);
   const isMobile = useIsMobile();
   const W = isMobile ? 210 : 260;
   const H = isMobile ? 308 : 380;
+  // Reuse the same hero art crop the FannedPack used so the rip feels
+  // continuous with the tap.
+  const heroArt = setMeta.heroArtCrops?.[0];
+
+  // Five card silhouettes fanning out of the pack. Pre-computed offsets:
+  // outermost cards travel further horizontally and rotate more.
+  const silhouettes = [
+    { x: -200, rot: -32, delay: 380 },
+    { x: -100, rot: -18, delay: 420 },
+    { x:    0, rot:   0, delay: 460 },
+    { x:  100, rot:  18, delay: 500 },
+    { x:  200, rot:  32, delay: 540 },
+  ];
+
+  // Scatter of sparkle particles around the top opening. Travel distances
+  // capped so sparkles stay inside the reveal canvas's overflow-hidden box
+  // (~130px headroom above the pack on mobile, more on desktop).
+  const sparkles = [
+    { x: -100, y: -110, delay: 360, size: 5 },
+    { x:  -60, y: -135, delay: 400, size: 4 },
+    { x:  -25, y: -150, delay: 460, size: 6 },
+    { x:   25, y: -145, delay: 500, size: 4 },
+    { x:   70, y: -125, delay: 380, size: 5 },
+    { x:  115, y: -100, delay: 440, size: 4 },
+    { x: -125, y:  -70, delay: 520, size: 3 },
+    { x:  130, y:  -65, delay: 560, size: 3 },
+  ];
+
   return (
-    <div className="relative" style={{ width: W, height: H, perspective: 1400 }}>
-      <div
-        className="anim-pack-top absolute inset-x-0 top-0 h-1/2 rounded-t-xl overflow-hidden"
-        style={{
-          background: `linear-gradient(160deg, ${c.from} 0%, ${c.to} 100%)`,
-          border: `1px solid ${c.edge}`,
-          borderBottom: "none",
-        }}
-      >
-        <div className="absolute inset-3 rounded-lg border border-white/15" />
-        <div className="absolute inset-x-0 top-10 text-center font-display text-white text-3xl tracking-[0.3em] opacity-95">
-          MAGIC
+    <div
+      className="relative"
+      style={{
+        width: W,
+        height: H,
+        perspective: 1400,
+        // Headroom for sparkles + silhouettes to fly out the top without
+        // being clipped by the parent canvas's overflow-hidden — we lean
+        // on the canvas being relatively tall.
+      }}
+    >
+      {/* Outer wobble wrapper — provides the 200ms anticipation shake. */}
+      <div className="anim-pack-wobble absolute inset-0">
+        {/* Inner fade wrapper — the actual pack body that fades out to
+            cede to the card reveal at the end of the rip. */}
+        <div
+          className="anim-pack-body-fade absolute inset-0 overflow-hidden"
+          style={{
+            borderRadius: "14px 14px 6px 6px",
+            background: `linear-gradient(160deg, ${c.from} 0%, ${c.to} 100%)`,
+            border: `1px solid ${c.edge}`,
+            boxShadow: `0 50px 90px -30px rgba(0,0,0,0.65), 0 20px 50px -20px ${c.from}80`,
+          }}
+        >
+          {/* Art-crop background — same as FannedPack. */}
+          {heroArt && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={heroArt}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ filter: "brightness(0.55) saturate(0.95) contrast(1.10)" }}
+            />
+          )}
+          {/* Color wash to lock pack identity. */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(160deg, ${c.from}A0 0%, ${c.to}C0 100%)`,
+              mixBlendMode: "multiply",
+            }}
+          />
+          {/* Inner border */}
+          <div className="absolute inset-3 rounded-md border border-white/10 pointer-events-none" />
+
+          {/* Set icon (matches FannedPack position). */}
+          <div className="absolute inset-x-0 top-24 grid place-items-center">
+            {setMeta.iconUri && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={setMeta.iconUri}
+                alt=""
+                className="w-20 h-20 object-contain"
+                style={{ filter: "brightness(0) invert(1) drop-shadow(0 6px 18px rgba(0,0,0,0.5))" }}
+              />
+            )}
+          </div>
+
+          {/* Set name + pack-type label near the bottom. */}
+          <div className="absolute bottom-10 inset-x-3 text-center px-2">
+            <p className="font-display text-white text-base tracking-wide leading-tight">
+              {setMeta.name}
+            </p>
+            <p className="text-[9px] tracking-[0.3em] uppercase font-medium text-white/65 mt-2">
+              {setMeta.code.toUpperCase()} · {PACKS[packType].name}
+            </p>
+          </div>
+
+          {/* Bright seam revealed when the tear strip flies off. Sits
+              right under where the strip was. Stays in place while the
+              strip animates away above it. */}
+          <div
+            className="anim-pack-seam absolute left-0 right-0"
+            style={{
+              top: 18,
+              height: 6,
+              background:
+                "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 20%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.95) 80%, rgba(255,255,255,0) 100%)",
+              filter: "blur(2px)",
+              transformOrigin: "left center",
+            }}
+          />
         </div>
       </div>
+
+      {/* Tear strip — sits at the top of the pack initially, then flies
+          off to the upper right. Drawn OUTSIDE the body-fade wrapper so
+          it doesn't share the body's fade timing; it animates entirely
+          via its own keyframe. */}
       <div
-        className="anim-pack-bottom absolute inset-x-0 bottom-0 h-1/2 rounded-b-xl overflow-hidden"
+        className="anim-tear-strip absolute top-0 left-0 right-0 h-6 overflow-hidden"
         style={{
-          background: `linear-gradient(160deg, ${c.from} 0%, ${c.to} 100%)`,
-          border: `1px solid ${c.edge}`,
-          borderTop: "none",
+          background: "rgba(0,0,0,0.5)",
+          borderRadius: "14px 14px 0 0",
         }}
       >
-        <div className="absolute inset-3 rounded-lg border border-white/15" />
-        <div className="absolute inset-x-0 bottom-10 text-center px-4">
-          <p className="font-display text-white text-2xl tracking-wider">
-            {setMeta.name}
-          </p>
+        {/* Perforation dots that gave the FannedPack its booster look. */}
+        <div className="absolute inset-0 flex items-center justify-center gap-1">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <span key={i} className="w-1.5 h-1 rounded-sm bg-white/30" />
+          ))}
         </div>
       </div>
+
+      {/* Vertical light shaft erupting from the open top. Anchored
+          bottom-center so scaleY grows upward. Slightly wider than the
+          tear gap so it reads as escaping light, not a laser. */}
       <div
-        className="anim-pack-flash absolute inset-0 rounded-xl pointer-events-none"
+        className="anim-light-shaft pointer-events-none absolute"
         style={{
+          left: "50%",
+          bottom: "100%",
+          width: W * 0.55,
+          height: H * 1.4,
+          marginBottom: 6,
           background:
-            "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.95) 0%, rgba(168,85,247,0.7) 30%, transparent 70%)",
-          filter: "blur(2px)",
+            "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,240,200,0.85) 30%, rgba(255,255,255,0.95) 60%, rgba(168,132,255,0.8) 90%, transparent 100%)",
+          filter: "blur(8px)",
+          mixBlendMode: "screen",
         }}
       />
+
+      {/* Burst flash — radial glow from the top of the pack right as
+          the seam splits. */}
+      <div
+        className="anim-burst-flash pointer-events-none absolute"
+        style={{
+          left: "50%",
+          top: 0,
+          transform: "translate(-50%, -20%)",
+          width: W * 1.4,
+          height: W * 1.4,
+          background:
+            "radial-gradient(circle at 50% 50%, rgba(255,255,255,1) 0%, rgba(255,220,150,0.85) 25%, rgba(168,132,255,0.6) 50%, transparent 75%)",
+          filter: "blur(4px)",
+          mixBlendMode: "screen",
+          transformOrigin: "center",
+        }}
+      />
+
+      {/* Card silhouettes flying out of the pack in a fan. */}
+      {silhouettes.map((s, i) => (
+        <div
+          key={i}
+          className="anim-card-silhouette pointer-events-none absolute"
+          style={{
+            left: "50%",
+            top: 0,
+            width: 70,
+            height: Math.round(70 * 88 / 63),
+            borderRadius: 4,
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(220,210,255,0.85) 60%, rgba(180,160,235,0.75) 100%)",
+            boxShadow:
+              "0 0 24px rgba(255,255,255,0.7), 0 0 40px rgba(168,132,255,0.55)",
+            ["--silhouette-x" as string]: `${s.x}px`,
+            ["--silhouette-rot" as string]: `${s.rot}deg`,
+            animationDelay: `${s.delay}ms`,
+            transformOrigin: "center bottom",
+          }}
+        />
+      ))}
+
+      {/* Sparkle particles. */}
+      {sparkles.map((s, i) => (
+        <div
+          key={`sp-${i}`}
+          className="anim-pack-sparkle pointer-events-none absolute"
+          style={{
+            left: "50%",
+            top: 0,
+            width: s.size,
+            height: s.size,
+            borderRadius: "50%",
+            background: "white",
+            boxShadow: "0 0 8px rgba(255,255,255,0.95), 0 0 14px rgba(255,220,140,0.8)",
+            ["--sparkle-x" as string]: `${s.x}px`,
+            ["--sparkle-y" as string]: `${s.y}px`,
+            animationDelay: `${s.delay}ms`,
+          }}
+        />
+      ))}
     </div>
   );
 }

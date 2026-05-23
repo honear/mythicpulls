@@ -8,46 +8,58 @@ import type { PulledCard } from "./pack-open";
 
      • Rarity   — dominant in the opening picks (chase mythics/rares).
      • Color    — zero until the bot has enough cards to read a signal,
-                  then ramps aggressively so once a bot commits, it
-                  refuses off-color cards even if they're mythic.
+                  then ramps so once a bot commits, it prefers in-color
+                  but still wakes up for big off-color rarity bumps.
      • Curve    — soft brake on stacking 5+ cards at the same mana value;
                   only matters once the deck shape exists.
 
    Curve we apply (poolSize → weights):
 
-     t = max(0, min(1, (poolSize - 4) / 14))
+     t = max(0, min(1, (poolSize - 6) / 16))
                        ^^^                  ^^^
-            zero until pick 5,    full lock from pick 18 onward
-     rarity = 1.0 - 0.6 * t   →  pick 0..4: 1.00,  pick 18+: 0.40
-     color  = 0.0 + 3.0 * t   →  pick 0..4: 0.00,  pick 18+: 3.00
-     curve  = 0.0 + 0.7 * t   →  pick 0..4: 0.00,  pick 18+: 0.70
+            zero until pick 7,    full lock from pick 22 onward
+     rarity = 1.0 - 0.5 * t   →  pick 0..6: 1.00,  pick 22+: 0.50
+     color  = 0.0 + 2.5 * t   →  pick 0..6: 0.00,  pick 22+: 2.50
+     curve  = 0.0 + 0.7 * t   →  pick 0..6: 0.00,  pick 22+: 0.70
 
-   Crossover map (mythic off-color vs in-color rare vs in-color common):
+   Earlier tuning had the bot committing to colors hard by pick 14
+   (in-color common beat off-color mythic). That played too tight —
+   real drafters happily take a rare off-color and figure out the
+   splash. The new ramp delays color-lock (start at pick 7, top out at
+   pick 22) and lowers the color cap from 3.0 → 2.5, so rarity keeps
+   meaningful weight throughout.
 
-     pick 4   · mythic off-color → 1.00*6 - 0.00*1.5 = 6.00 ← takes mythic
+   Multi-color cards now get partial credit when ONE of their colors
+   matches the bot's pair (gold-card splash). A W/R card in front of a
+   W/U bot used to score as full off-color; now it lands between
+   in-color (+1.0 * color) and off-color (-1.0 * color) at about
+   +0.4 * color — drafters splash these.
+
+   Crossover map (with new tuning):
+
+     pick 6   · mythic off-color → 1.00*6 - 0.00*1.0 = 6.00 ← takes mythic
               · rare in-color    → 1.00*4 + 0.00*1.0 = 4.00
               (rarity dominates absolutely; mythic ALWAYS wins early)
 
-     pick 8   · mythic off-color → 0.83*6 - 0.86*1.5 = 3.70
-              · rare in-color    → 0.83*4 + 0.86*1.0 = 4.18  ← takes rare
-              (color preference starts mattering; in-color rares now beat
-               off-color mythics)
+     pick 14  · mythic off-color → 0.75*6 - 1.25*1.0 = 3.25
+              · rare in-color    → 0.75*4 + 1.25*1.0 = 4.25  ← takes rare
+              · common in-color  → 0.75*1 + 1.25*1.0 = 2.00
+              · mythic splash    → 0.75*6 + 1.25*0.4 = 5.00  ← splash wins
+              (a one-color-shared mythic beats an in-color rare — the
+               bot grabs it and adapts. An out-of-colors mythic still
+               loses to an in-color rare.)
 
-     pick 14  · mythic off-color → 0.57*6 - 2.14*1.5 = 0.21
-              · common in-color  → 0.57*1 + 2.14*1.0 = 2.71  ← takes common
-              (bot committed; even a common in its colors beats an
-               off-color mythic — your "14 white cards, red mythic" case)
-
-     pick 18+ · mythic off-color → 0.40*6 - 3.00*1.5 = -2.10
-              · common in-color  → 0.40*1 + 3.00*1.0 =  3.40
-              · mythic in-color  → 0.40*6 + 3.00*1.0 =  5.40 ← takes mythic
-              (in-color mythics still chased eagerly; off-color
-               picks are below zero — won't happen)
+     pick 22+ · mythic off-color → 0.50*6 - 2.50*1.0 = 0.50
+              · common in-color  → 0.50*1 + 2.50*1.0 = 3.00
+              · mythic in-color  → 0.50*6 + 2.50*1.0 = 5.50 ← takes mythic
+              (late draft: in-color commons clearly beat off-color
+               mythics. The bot's deck is built.)
 
    dominantColors weights occurrences by rarity, so a bot's "colors"
    reflect where its best cards live, not just where it took the most
    picks — one rare in a color carries 4× the signaling weight of one
-   common in that color.
+   common in that color. A multi-color card adds to ALL of its colors,
+   so a Boros rare contributes 4 to both W and R.
    =========================================================================== */
 
 const RARITY_BASE: Record<string, number> = {
@@ -69,14 +81,17 @@ interface BotWeights {
 }
 
 function botWeights(poolSize: number): BotWeights {
-  // t stays at 0 through pick 4 (rarity-only chase, no color preference
+  // t stays at 0 through pick 6 (rarity-only chase, no color preference
   // even though dominantColors may have started returning values), then
-  // ramps to 1 over the next 14 picks (saturates at pick 18). After that,
-  // weights are pinned at the color-lock end of the curve.
-  const t = Math.max(0, Math.min(1, (poolSize - 4) / 14));
+  // ramps to 1 over the next 16 picks (saturates at pick 22). After that,
+  // weights are pinned at the color-lock end of the curve. Tuned softer
+  // than the previous (pick-4 → pick-18) ramp so bots are still willing
+  // to grab a power-level off-color rare/mythic mid-draft instead of
+  // locking onto an in-color common.
+  const t = Math.max(0, Math.min(1, (poolSize - 6) / 16));
   return {
-    rarity: 1.0 - 0.6 * t,
-    color: 0.0 + 3.0 * t,
+    rarity: 1.0 - 0.5 * t,
+    color: 0.0 + 2.5 * t,
     curve: 0.0 + 0.7 * t,
   };
 }
@@ -147,13 +162,22 @@ function scoreCard(
     // Colorless artifacts work in any deck — small bonus, scaled by color weight.
     score += 0.4 * w.color;
   } else {
-    const inColor = cardColors.every((c) => myColors.includes(c));
-    if (inColor) {
+    // Three-tier color match for multi-color cards:
+    //   - inAll: every color of the card is in the bot's pair → full in-color bonus
+    //   - inAny (but not inAll): card shares ONE color with the bot's pair, i.e.
+    //                             it's a splashable gold card → ~half the in-color
+    //                             bonus. Used to be treated as full off-color, which
+    //                             made bots ignore obviously-good multi-color cards.
+    //   - none: no shared colors → off-color penalty (softened from -1.5 → -1.0
+    //                              so a chase mythic still has a shot)
+    const inAll = cardColors.every((c) => myColors.includes(c));
+    const inAny = !inAll && cardColors.some((c) => myColors.includes(c));
+    if (inAll) {
       score += 1.0 * w.color;
+    } else if (inAny) {
+      score += 0.4 * w.color;
     } else {
-      // Off-color penalty — also scaled by color weight, so early it's a
-      // tap and late it's a wrecking ball.
-      score -= 1.5 * w.color;
+      score -= 1.0 * w.color;
     }
   }
 
