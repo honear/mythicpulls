@@ -1205,20 +1205,41 @@ function CardSpread({
                   />
                 </div>
               </div>
-              {/* Caption area — reserves height so the grid doesn't shift
-                  when face-up vs face-down. */}
-              <div className="mt-2 min-h-[2.5rem] w-full flex flex-col items-center justify-start">
-                {/* Reconcile the slot's nominal label against the
-                    card's actual rarity — see lib/pack-open.ts. The
-                    glow color already uses p.card.rarity so the text
-                    here should match (otherwise "Showcase Rare" reads
-                    in mythic-orange when a mythic landed in that slot). */}
+              {/* Caption area — reserves height so the grid doesn't
+                  shift when face-up vs face-down. Three lines max:
+                  card name (primary), rarity + optional foil, and the
+                  TCGplayer market price. */}
+              <div className="mt-2 min-h-[4rem] w-full flex flex-col items-center justify-start">
+                {/* Card name — primary line. Larger and brighter than
+                    the rarity caption beneath it. Truncates to a
+                    single line so long names like "Tamiyo, Inquisitive
+                    Student" don't push the grid out of alignment;
+                    `title` exposes the full name on hover. */}
                 <p
-                  className={`text-center text-[10px] tracking-[0.18em] uppercase font-semibold transition-opacity duration-500 ${rarityColor(
+                  className={`text-center text-[13px] leading-tight font-medium text-[var(--color-fg)] transition-opacity duration-500 line-clamp-1 max-w-full px-1 ${
+                    isFaceUp ? "opacity-100" : "opacity-0"
+                  }`}
+                  title={p.card.name}
+                >
+                  {p.card.name}
+                </p>
+                {/* Rarity + optional "Foil" suffix. Reconcile against
+                    the card's actual rolled rarity (see
+                    lib/pack-open.ts) so the chip matches the glow
+                    colour. Foil is rendered in the dedicated bonus
+                    accent so it stands out as the "special" tag. */}
+                <p
+                  className={`text-center text-[10px] tracking-[0.18em] uppercase font-semibold transition-opacity duration-500 mt-0.5 ${rarityColor(
                     p.card.rarity,
                   )} ${isFaceUp ? "opacity-100" : "opacity-0"}`}
                 >
                   {reconcileSlotLabel(p.slotLabel, p.card.rarity)}
+                  {p.foil && (
+                    <>
+                      <span className="text-[var(--color-ink-muted)] mx-1.5">·</span>
+                      <span className="text-[var(--color-rarity-bonus)]">Foil</span>
+                    </>
+                  )}
                 </p>
                 {price && (
                   <p className="text-xs font-semibold text-[var(--color-fg)] mt-1">

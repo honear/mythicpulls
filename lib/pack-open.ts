@@ -30,45 +30,44 @@ export interface PulledCard {
 
 /**
  * Slot labels in the recipe JSON are nominal — e.g. a slot that can roll
- * either rare OR mythic is often labeled "Showcase Rare" or "Foil Rare"
- * for brevity. When the engine actually rolls a mythic into one of those
- * slots, displaying the unmodified label misleads the user (the rarity
- * chip in the modal correctly reads "Mythic", but the label above it
- * still says "Rare"). Conversely, a "Mythic" slot can roll a rare via
- * the rolled card's actual rarity, and we want the label to reflect that.
+ * either rare OR mythic is often labeled "Showcase Rare", "Foil Rare",
+ * "Rare / Mythic", or "Booster Fun Rare / Mythic" for brevity. The user
+ * doesn't care about the slot's *possibilities* — they care about what
+ * actually came out — and the surrounding UI already conveys the slot
+ * flavour:
  *
- * Rules:
- *   - If the label already names both rarities ("Rare / Mythic",
- *     "Booster Fun Rare / Mythic"), leave it alone — it already covers
- *     both outcomes truthfully.
- *   - Otherwise swap the first rarity word (Common/Uncommon/Rare/Mythic)
- *     for the card's actual rarity, preserving any prefix like "Showcase"
- *     or "Foil".
- *   - Labels with no rarity word ("Foil", "Land", "Token") are unchanged.
+ *   - Foil status: the purple "Foil" chip rendered next to the rarity.
+ *   - Showcase / borderless / etc.: visible from the card art itself.
+ *   - Set: the set·collector-number chip next to the rarity.
  *
- * Used by CardDetailModal and PullSummary so the chip the user sees
- * always reconciles with the card itself.
+ * So when a label includes a rarity word, collapse the whole thing to
+ * just the card's actual rarity. Non-rarity slot labels (e.g.
+ * "Mystical Archive", "Special Guest", "Art Card", "Token", "Land",
+ * "Wildcard") are semantically meaningful on their own and stay
+ * untouched.
+ *
+ * Used by CardDetailModal and PullSummary so the rarity word the user
+ * sees always reconciles with the card itself.
  */
 export function reconcileSlotLabel(
   slotLabel: string | undefined,
   actualRarity: string,
 ): string | undefined {
   if (!slotLabel) return slotLabel;
-  // Already enumerates both rarities — no swap needed.
-  if (
-    /\brare\s*\/\s*mythic\b/i.test(slotLabel) ||
-    /\bmythic\s*\/\s*rare\b/i.test(slotLabel)
-  ) {
-    return slotLabel;
+  // If the nominal label mentions any rarity, replace the whole thing
+  // with the card's actual rarity. We don't try to preserve prefixes
+  // like "Showcase" or "Foil" — the chips beside the label already
+  // convey those, and dropping them keeps the chip short + accurate.
+  if (/\b(common|uncommon|rare|mythic)\b/i.test(slotLabel)) {
+    return (
+      actualRarity.charAt(0).toUpperCase() +
+      actualRarity.slice(1).toLowerCase()
+    );
   }
-  // Title-case the actual rarity ("mythic" → "Mythic") so it matches the
-  // existing label's capitalization scheme.
-  const titleCased =
-    actualRarity.charAt(0).toUpperCase() + actualRarity.slice(1).toLowerCase();
-  // Replace the FIRST rarity word found; .replace with a non-global regex
-  // does exactly that. Case-insensitive so we catch lowercase recipe
-  // labels too.
-  return slotLabel.replace(/\b(Common|Uncommon|Rare|Mythic)\b/i, titleCased);
+  // No rarity word — keep the label intact (Mystical Archive, Special
+  // Guest, Art Card, Token, Land, Foil, etc. all carry their own
+  // meaning independent of the rolled card's rarity).
+  return slotLabel;
 }
 
 /**

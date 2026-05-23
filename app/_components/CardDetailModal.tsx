@@ -6,6 +6,7 @@ import type { ScryfallCard } from "@/lib/scryfall";
 import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
 import { safeExternalUrl } from "@/lib/safe-url";
 import { getManaPoolCardUrl } from "@/lib/manapool";
+import { useManaPoolSingle } from "@/lib/useManaPoolSingle";
 import { reconcileSlotLabel } from "@/lib/pack-open";
 import { MagicCard } from "./MagicCard";
 
@@ -69,10 +70,19 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
     };
   }, [card, suppress]);
 
+  // Mana Pool live price for the inline "Buy on Mana Pool · $X.XX" pill.
+  // Hook is called every render but only fires a network request on the
+  // first open per (cardId, foil) — subsequent opens hit its in-memory
+  // cache. Safe to call unconditionally with card?.id (the hook no-ops
+  // when scryfallId is undefined).
+  const { data: mpPrice } = useManaPoolSingle(card?.id, foil);
+
   if (!card || suppress) return null;
 
   const price = getDisplayPrice(card, foil);
   const eur = card.prices?.eur ? `€${Number(card.prices.eur).toFixed(2)}` : null;
+  const mpUsd =
+    mpPrice?.bestUsd != null ? `$${mpPrice.bestUsd.toFixed(2)}` : null;
 
   return (
     <div
@@ -161,6 +171,15 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[var(--accent-purple)] text-white text-sm font-semibold hover:brightness-110 transition-all"
                   >
                     <ShoppingBag className="w-3.5 h-3.5" /> Buy on Mana Pool
+                    {/* Live price pill — only renders once the hook
+                        resolves AND Mana Pool has stock. While loading,
+                        we don't show a placeholder to avoid layout
+                        shift between the loading state and the result. */}
+                    {mpUsd && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-white/20 text-[12px] font-semibold tabular-nums">
+                        {mpUsd}
+                      </span>
+                    )}
                   </a>
                 )}
                 {ckHref && (
@@ -171,6 +190,9 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full liquid-glass text-[var(--color-fg)] text-sm font-semibold hover:brightness-110 transition-all"
                   >
                     <ShoppingBag className="w-3.5 h-3.5" /> Buy at Card Kingdom
+                    {/* Card Kingdom doesn't publish a free price feed
+                        — no inline pill here. The button is a search
+                        link that lands on the live CK product page. */}
                   </a>
                 )}
                 {scryfallHref && (

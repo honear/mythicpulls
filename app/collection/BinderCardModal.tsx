@@ -6,6 +6,7 @@ import { ExternalLink, ShoppingBag, X } from "lucide-react";
 import type { CollectionEntry } from "@/lib/collection";
 import { safeExternalUrl } from "@/lib/safe-url";
 import { getManaPoolCardUrl } from "@/lib/manapool";
+import { useManaPoolSingle } from "@/lib/useManaPoolSingle";
 import { MagicCard } from "@/app/_components/MagicCard";
 
 /**
@@ -91,6 +92,11 @@ export function BinderCardModal({ entry, onClose }: Props) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // Live Mana Pool price for the inline pill on the Buy button. The
+  // hook handles undefined gracefully so it's safe to call before we
+  // bail on a closed modal.
+  const { data: mpPrice } = useManaPoolSingle(entry?.cardId, entry?.foil);
+
   if (!entry || suppress || !mounted) return null;
 
   const scryfallHref = safeExternalUrl(
@@ -105,6 +111,8 @@ export function BinderCardModal({ entry, onClose }: Props) {
       collector_number: entry.collectorNumber,
     }),
   );
+  const mpUsd =
+    mpPrice?.bestUsd != null ? `$${mpPrice.bestUsd.toFixed(2)}` : null;
 
   const node = (
     <div
@@ -157,6 +165,11 @@ export function BinderCardModal({ entry, onClose }: Props) {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[var(--accent-purple)] text-white text-sm font-semibold hover:brightness-110 transition-all"
               >
                 <ShoppingBag className="w-3.5 h-3.5" /> Buy on Mana Pool
+                {mpUsd && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-white/20 text-[12px] font-semibold tabular-nums">
+                    {mpUsd}
+                  </span>
+                )}
               </a>
             )}
             {ckHref && (
@@ -167,6 +180,8 @@ export function BinderCardModal({ entry, onClose }: Props) {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full liquid-glass text-[var(--color-fg)] text-sm font-semibold hover:brightness-110 transition-all"
               >
                 <ShoppingBag className="w-3.5 h-3.5" /> Buy at Card Kingdom
+                {/* Card Kingdom has no public price API — no inline
+                    pill here; the button is a search link. */}
               </a>
             )}
             {scryfallHref && (
