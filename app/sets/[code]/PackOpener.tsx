@@ -8,7 +8,7 @@ import { getManaPoolPackUrl } from "@/lib/manapool";
 import { preloadImages } from "@/lib/preload";
 import type { PackContent } from "@/lib/booster-config";
 import type { FilterPredicate } from "@/lib/booster-filters";
-import { openPack, type CardPool, type PulledCard } from "@/lib/pack-open";
+import { openPack, reconcileSlotLabel, type CardPool, type PulledCard } from "@/lib/pack-open";
 import { addToCollection } from "@/lib/collection";
 import { useDragReorder } from "@/lib/useDragReorder";
 import { useCardTilt } from "@/lib/useCardTilt";
@@ -1208,12 +1208,17 @@ function CardSpread({
               {/* Caption area — reserves height so the grid doesn't shift
                   when face-up vs face-down. */}
               <div className="mt-2 min-h-[2.5rem] w-full flex flex-col items-center justify-start">
+                {/* Reconcile the slot's nominal label against the
+                    card's actual rarity — see lib/pack-open.ts. The
+                    glow color already uses p.card.rarity so the text
+                    here should match (otherwise "Showcase Rare" reads
+                    in mythic-orange when a mythic landed in that slot). */}
                 <p
                   className={`text-center text-[10px] tracking-[0.18em] uppercase font-semibold transition-opacity duration-500 ${rarityColor(
                     p.card.rarity,
                   )} ${isFaceUp ? "opacity-100" : "opacity-0"}`}
                 >
-                  {p.slotLabel}
+                  {reconcileSlotLabel(p.slotLabel, p.card.rarity)}
                 </p>
                 {price && (
                   <p className="text-xs font-semibold text-[var(--color-fg)] mt-1">

@@ -29,6 +29,49 @@ export interface PulledCard {
 }
 
 /**
+ * Slot labels in the recipe JSON are nominal — e.g. a slot that can roll
+ * either rare OR mythic is often labeled "Showcase Rare" or "Foil Rare"
+ * for brevity. When the engine actually rolls a mythic into one of those
+ * slots, displaying the unmodified label misleads the user (the rarity
+ * chip in the modal correctly reads "Mythic", but the label above it
+ * still says "Rare"). Conversely, a "Mythic" slot can roll a rare via
+ * the rolled card's actual rarity, and we want the label to reflect that.
+ *
+ * Rules:
+ *   - If the label already names both rarities ("Rare / Mythic",
+ *     "Booster Fun Rare / Mythic"), leave it alone — it already covers
+ *     both outcomes truthfully.
+ *   - Otherwise swap the first rarity word (Common/Uncommon/Rare/Mythic)
+ *     for the card's actual rarity, preserving any prefix like "Showcase"
+ *     or "Foil".
+ *   - Labels with no rarity word ("Foil", "Land", "Token") are unchanged.
+ *
+ * Used by CardDetailModal and PullSummary so the chip the user sees
+ * always reconciles with the card itself.
+ */
+export function reconcileSlotLabel(
+  slotLabel: string | undefined,
+  actualRarity: string,
+): string | undefined {
+  if (!slotLabel) return slotLabel;
+  // Already enumerates both rarities — no swap needed.
+  if (
+    /\brare\s*\/\s*mythic\b/i.test(slotLabel) ||
+    /\bmythic\s*\/\s*rare\b/i.test(slotLabel)
+  ) {
+    return slotLabel;
+  }
+  // Title-case the actual rarity ("mythic" → "Mythic") so it matches the
+  // existing label's capitalization scheme.
+  const titleCased =
+    actualRarity.charAt(0).toUpperCase() + actualRarity.slice(1).toLowerCase();
+  // Replace the FIRST rarity word found; .replace with a non-global regex
+  // does exactly that. Case-insensitive so we catch lowercase recipe
+  // labels too.
+  return slotLabel.replace(/\b(Common|Uncommon|Rare|Mythic)\b/i, titleCased);
+}
+
+/**
  * Multi-set card pool. Keys are lowercased Scryfall set codes; values are
  * the cards from that set already filtered for booster eligibility (no
  * digital, no oversized, no art_series — same hygiene as getSetCards).

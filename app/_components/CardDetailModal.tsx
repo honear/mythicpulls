@@ -6,6 +6,7 @@ import type { ScryfallCard } from "@/lib/scryfall";
 import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
 import { safeExternalUrl } from "@/lib/safe-url";
 import { getManaPoolCardUrl } from "@/lib/manapool";
+import { reconcileSlotLabel } from "@/lib/pack-open";
 import { MagicCard } from "./MagicCard";
 
 /**
@@ -96,9 +97,16 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
         {/* Info */}
         <div className="liquid-panel rounded-2xl p-4 sm:p-6 md:p-7 flex flex-col gap-4 sm:gap-5 max-w-md self-center w-full">
           <div>
-            {slotLabel && (
-              <p className="label-caps text-[var(--color-ink-muted)] mb-1">{slotLabel}</p>
-            )}
+            {/* Reconcile the slot's nominal label against the card's
+                actual rarity — a "Showcase Rare" slot that rolled a
+                mythic should read "Showcase Mythic" so the label and
+                the rarity chip below tell the same story. */}
+            {(() => {
+              const displayLabel = reconcileSlotLabel(slotLabel, card.rarity);
+              return displayLabel ? (
+                <p className="label-caps text-[var(--color-ink-muted)] mb-1">{displayLabel}</p>
+              ) : null;
+            })()}
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-[var(--color-fg)] leading-tight">
               {card.name}
             </h2>

@@ -26,6 +26,7 @@ import {
 } from "@/lib/collection";
 import { MagicCard } from "@/app/_components/MagicCard";
 import { useDragReorder } from "@/lib/useDragReorder";
+import { BinderCardModal } from "./BinderCardModal";
 
 type SortMode = "manual" | "newest" | "rarity" | "set";
 
@@ -35,6 +36,9 @@ export function CollectionBinder() {
   const [sort, setSort] = useState<SortMode>("manual");
   const [query, setQuery] = useState("");
   const [revealed, setRevealed] = useState<Set<string>>(new Set());
+  // entryId of the card whose detail modal is currently open. Cleared
+  // when the modal closes. Mirrors PackOpener's `detailUid` pattern.
+  const [detailKey, setDetailKey] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -99,6 +103,17 @@ export function CollectionBinder() {
       return next;
     });
   }
+
+  /** Tap router for binder cards — mirrors PackOpener.onTapCard so the
+   *  binder feels consistent with the pack-reveal grid: face-down tap
+   *  flips, face-up tap opens the detail modal (with the buy buttons). */
+  function onTapCard(key: string) {
+    if (revealed.has(key)) setDetailKey(key);
+    else toggleFlip(key);
+  }
+
+  const detailEntry =
+    detailKey != null ? entries.find((e) => keyOf(e) === detailKey) ?? null : null;
 
   if (!mounted) {
     return <div className="label-caps text-[var(--color-ink-muted)]">Loading…</div>;
@@ -177,7 +192,7 @@ export function CollectionBinder() {
 
       <p className="text-xs text-[var(--color-ink-muted)] mb-4 inline-flex items-center gap-2">
         <GripVertical className="w-3.5 h-3.5" />
-        Click a card to flip · drag to reorder ·{" "}
+        Click face-down to flip · click face-up to open · drag to reorder ·{" "}
         {sort !== "manual" && (
           <span className="text-[var(--color-rarity-rare)]">
             switch to “custom” sort to enable drag
@@ -189,9 +204,11 @@ export function CollectionBinder() {
         entries={view}
         revealed={revealed}
         onReorder={onReorder}
-        onFlip={toggleFlip}
+        onTap={onTapCard}
         canReorder={sort === "manual" && !query}
       />
+
+      <BinderCardModal entry={detailEntry} onClose={() => setDetailKey(null)} />
     </div>
   );
 }
@@ -205,12 +222,13 @@ function keyOf(e: CollectionEntry) {
 }
 
 function BinderGrid({
-  entries, revealed, onReorder, onFlip, canReorder,
+  entries, revealed, onReorder, onTap, canReorder,
 }: {
   entries: CollectionEntry[];
   revealed: Set<string>;
   onReorder: (from: number, to: number) => void;
-  onFlip: (key: string) => void;
+  /** Routed by the parent: face-down → flip, face-up → open detail modal. */
+  onTap: (key: string) => void;
   canReorder: boolean;
 }) {
   const isMobile = useIsMobile();
@@ -220,7 +238,7 @@ function BinderGrid({
     onReorder: canReorder ? onReorder : () => {},
     onTap: (i) => {
       const e = entries[i];
-      if (e) onFlip(keyOf(e));
+      if (e) onTap(keyOf(e));
     },
   });
   return (

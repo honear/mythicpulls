@@ -30,6 +30,11 @@ const ALLOWED_EXTERNAL_HOSTS: ReadonlySet<string> = new Set([
   "api.scryfall.com",
   "cardkingdom.com",
   "www.cardkingdom.com",
+  // Mana Pool sealed-product + singles deep links (see lib/manapool.ts).
+  // Without these the safe-url guard silently returns null for every
+  // Mana Pool href, hiding the "Buy on Mana Pool" buttons.
+  "manapool.com",
+  "www.manapool.com",
 ]);
 
 export function safeExternalUrl(url: string | undefined | null): string | null {
