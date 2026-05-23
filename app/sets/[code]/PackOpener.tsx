@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Sparkles, RotateCcw, Save, Eye, GripVertical, LayoutGrid, Layers } from "lucide-react";
+import { Sparkles, RotateCcw, Save, Eye, GripVertical, LayoutGrid, Layers, ShoppingBag } from "lucide-react";
 import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
 import { PACKS, PACK_ORDER, getPackCost, type PackType } from "@/lib/pack-rules";
+import { getManaPoolPackUrl } from "@/lib/manapool";
 import { preloadImages } from "@/lib/preload";
 import type { PackContent } from "@/lib/booster-config";
 import type { FilterPredicate } from "@/lib/booster-filters";
@@ -254,6 +255,11 @@ export function PackOpener({
         packTypeName={PACKS[packType].name.replace(" Booster", "")}
         canRip={phase !== "ripping" && !!recipes[packType]}
         onRip={() => rip(packType)}
+        // Deep-link to Mana Pool's product page for this exact pack so
+        // the user can actually buy the real thing if they're enjoying
+        // the simulator. Returns null when Mana Pool has no current
+        // stock for this (set, packType); the button hides in that case.
+        buyUrl={getManaPoolPackUrl(setMeta.code, packType)}
       />
       <div className="relative rounded-2xl liquid-panel overflow-hidden">
         {/* Per-set art backdrop — a faded, heavily-blurred art crop from a
@@ -398,7 +404,7 @@ export function PackOpener({
 /* ---------------- Session money strip ---------------- */
 
 function MoneyStrip({
-  stats, packCost, packTypeName, canRip, onRip,
+  stats, packCost, packTypeName, canRip, onRip, buyUrl,
 }: {
   stats: { spent: number; pulled: number; packs: number };
   packCost: number;
@@ -407,6 +413,10 @@ function MoneyStrip({
   /** Disables the button during the 800ms ripping animation. */
   canRip: boolean;
   onRip: () => void;
+  /** Mana Pool deep link for the currently-selected pack, or null when
+   *  Mana Pool has no stock for this (set, packType). Hides the CTA
+   *  rather than showing a dead "Buy" link with no destination. */
+  buyUrl: string | null;
 }) {
   const profit = stats.pulled - stats.spent;
   const profitSign = profit >= 0 ? "+" : "-";
@@ -427,12 +437,28 @@ function MoneyStrip({
         />
         <Stat label="Packs" value={String(stats.packs)} accent="text-[var(--color-fg)]" />
       </div>
-      {/* Right-side controls: HoloToggle (foil shimmer style switcher)
-          and the "Open next <type> Booster" rip button. HoloToggle lives
-          here rather than in the site nav so it sits next to the cards
-          its setting actually affects. */}
+      {/* Right-side controls: HoloToggle (foil shimmer style switcher),
+          optional "Buy on Mana Pool" pill, and the "Open next <type>
+          Booster" rip button. HoloToggle lives here rather than in the
+          site nav so it sits next to the cards its setting actually
+          affects. The Mana Pool button only renders when there's
+          current stock for this exact (set, packType) — see
+          `getManaPoolPackUrl`. */}
       <div className="flex flex-wrap items-center gap-2">
         <HoloToggle />
+        {buyUrl && (
+          <a
+            href={buyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-full liquid-glass text-[13px] font-medium tracking-wide text-[var(--color-fg)] hover:brightness-110 transition-all"
+            aria-label={`Buy this ${packTypeName} Booster on Mana Pool`}
+            title="Open product page on Mana Pool"
+          >
+            <ShoppingBag className="w-3.5 h-3.5" />
+            <span>Buy on Mana Pool</span>
+          </a>
+        )}
         <button
           onClick={onRip}
           disabled={!canRip}

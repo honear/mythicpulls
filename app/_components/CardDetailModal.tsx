@@ -5,6 +5,7 @@ import { ExternalLink, ShoppingBag, X } from "lucide-react";
 import type { ScryfallCard } from "@/lib/scryfall";
 import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
 import { safeExternalUrl } from "@/lib/safe-url";
+import { getManaPoolCardUrl } from "@/lib/manapool";
 import { MagicCard } from "./MagicCard";
 
 /**
@@ -133,18 +134,33 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
           {/* Validate Scryfall's returned URI before rendering — defends
               against an upstream compromise injecting a `javascript:` URL
               or pointing at an unrelated host. Falls back to a disabled
-              state if validation fails so we never paint a hostile href. */}
+              state if validation fails so we never paint a hostile href.
+              Mana Pool's URL is deterministic from set + collector_number
+              (their /card/<set>/<num> path 301s to the canonical slug),
+              so it doesn't need the same Scryfall-supplied safeguarding —
+              we still funnel it through safeExternalUrl for consistency. */}
           {(() => {
             const scryfallHref = safeExternalUrl(card.scryfall_uri);
             const ckHref = safeExternalUrl(cardKingdomSearchUrl(card.name));
+            const mpHref = safeExternalUrl(getManaPoolCardUrl(card));
             return (
               <div className="flex flex-wrap gap-2 mt-2">
+                {mpHref && (
+                  <a
+                    href={mpHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[var(--accent-purple)] text-white text-sm font-semibold hover:brightness-110 transition-all"
+                  >
+                    <ShoppingBag className="w-3.5 h-3.5" /> Buy on Mana Pool
+                  </a>
+                )}
                 {ckHref && (
                   <a
                     href={ckHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[var(--accent-purple)] text-white text-sm font-semibold hover:brightness-110 transition-all"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full liquid-glass text-[var(--color-fg)] text-sm font-semibold hover:brightness-110 transition-all"
                   >
                     <ShoppingBag className="w-3.5 h-3.5" /> Buy at Card Kingdom
                   </a>

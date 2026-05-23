@@ -22,6 +22,11 @@ import defaultContentJson from "../data/booster-contents/default.json";
 // Bundled here so the sync code path (PackOpener's MoneyStrip math) can
 // read it without going through node:fs.
 import boosterPricesJson from "../data/booster-prices.json";
+// Live marketplace prices from Mana Pool, refreshed by
+// `scripts/fetch-manapool-prices.mjs`. Takes precedence over the MSRP
+// map for any (set, packType) Mana Pool currently has stock for — the
+// MSRP file remains the fallback for out-of-stock products.
+import { getManaPoolSpendPrice } from "./manapool";
 
 export type { PackType } from "./booster-config";
 
@@ -78,15 +83,23 @@ export const PACKS: Record<PackType, PackDefinition> = {
 export const PACK_ORDER: PackType[] = ["play", "draft", "collector"];
 
 /**
- * MSRP lookup. Resolution order:
- *   1. data/booster-prices.json — per-set entry for this packType
- *   2. data/booster-prices.json — "default" entry for this packType
- *   3. data/booster-contents/default.json — bundled fallback
+ * Pack-cost lookup. Resolution order:
+ *   1. Mana Pool live marketplace price (market > low) for this
+ *      (set, packType) — sourced from data/manapool-prices.json,
+ *      refreshed by `scripts/fetch-manapool-prices.mjs`.
+ *   2. data/booster-prices.json — per-set MSRP override.
+ *   3. data/booster-prices.json — "default" MSRP for this packType.
+ *   4. data/booster-contents/default.json — bundled fallback.
  *
- * Edit data/booster-prices.json to tweak any price; no code changes needed.
+ * Step 1 only fires when a setCode is provided AND Mana Pool has stock;
+ * otherwise the legacy MSRP map takes over. Edit data/booster-prices.json
+ * to tweak any fallback price; re-run the fetch script to refresh live
+ * prices.
  */
 export function getPackCost(packType: PackType, setCode?: string): number {
   if (setCode) {
+    const live = getManaPoolSpendPrice(setCode, packType);
+    if (typeof live === "number") return live;
     const override = BOOSTER_PRICES[setCode.toLowerCase()]?.[packType];
     if (typeof override === "number") return override;
   }

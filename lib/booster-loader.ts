@@ -16,6 +16,9 @@ import type {
 // resolveRecipe can apply the override synchronously without a second
 // fs read. Edit data/booster-prices.json to change prices.
 import boosterPricesJson from "../data/booster-prices.json";
+// Live marketplace prices from Mana Pool — wins over the MSRP map when
+// a (set, packType) has current stock. Refresh via the fetch script.
+import { getManaPoolSpendPrice } from "./manapool";
 
 const BOOSTER_PRICES = boosterPricesJson as unknown as Record<
   string,
@@ -108,14 +111,18 @@ export async function resolveRecipe(
   const defaultCostMap = (defaultContent as unknown as { costUsd?: Partial<Record<PackType, number>> })?.costUsd;
   const namedCostMap = (named as unknown as { costUsd?: Partial<Record<PackType, number>> })?.costUsd;
 
-  // Resolution order — data/booster-prices.json wins over everything so
-  // the user has one file to edit. Then per-set JSON cost block, then the
-  // recipe's costUsd, then the bundled default content's costUsd.
+  // Resolution order — Mana Pool live price first (when in stock), then
+  // data/booster-prices.json (per-set, then default), then per-set JSON
+  // cost block, then the recipe's costUsd, then the bundled default
+  // content's costUsd. Mana Pool data refreshes via the fetch script;
+  // booster-prices.json is the user-editable MSRP fallback.
   const code = setCode.toLowerCase();
+  const livePrice = getManaPoolSpendPrice(code, packType);
   const priceOverride =
     BOOSTER_PRICES[code]?.[packType] ?? BOOSTER_PRICES.default?.[packType];
 
   const costUsd =
+    livePrice ??
     priceOverride ??
     setConfig?.cost?.[packType] ??
     namedCostMap?.[packType] ??

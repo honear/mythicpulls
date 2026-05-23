@@ -11,10 +11,60 @@ const geist = Geist({
   weight: ["300", "400", "500", "600", "700"],
 });
 
+/**
+ * Resolve the absolute site URL used to make relative image references
+ * (notably the auto-discovered `opengraph-image`) into shareable URLs.
+ * Resolution order:
+ *   1. NEXT_PUBLIC_SITE_URL — set in `.env.local` to pin to a custom
+ *      domain when one is configured.
+ *   2. VERCEL_PROJECT_PRODUCTION_URL — automatically populated by Vercel
+ *      on production builds; matches the canonical `*.vercel.app` host.
+ *   3. Localhost fallback so `npm run dev` doesn't crash.
+ */
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL &&
+    `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`) ||
+  "http://localhost:3000";
+
+const SHARE_DESCRIPTION =
+  "Open Magic: the Gathering booster packs, run sealed builds, and practice drafts in your browser. A free fan project powered by Scryfall and 17Lands.";
+
 export const metadata: Metadata = {
-  title: "Three Tree City — open Magic packs",
-  description:
-    "An elegant Magic: the Gathering booster-opening experience powered by Scryfall.",
+  // metadataBase turns the auto-discovered opengraph-image (and any
+  // other relative URL we hand to the metadata config) into an absolute
+  // URL that Slack, iMessage, Discord, Twitter, etc. can fetch. Without
+  // it Next.js falls back to localhost and the social preview breaks in
+  // production.
+  metadataBase: new URL(siteUrl),
+  title: {
+    // Default title used on pages that don't override metadata.title.
+    default: "Three Tree City — open Magic packs, draft & sealed",
+    // Pages that set their own title get this template appended so the
+    // tab/Google result still carries the brand.
+    template: "%s · Three Tree City",
+  },
+  description: SHARE_DESCRIPTION,
+  applicationName: "Three Tree City",
+  // Open Graph tags drive previews on Facebook, LinkedIn, Slack,
+  // iMessage, Discord, and most chat clients. The actual image is
+  // picked up automatically from `app/opengraph-image.tsx`; we don't
+  // list it here so Next can manage the width/height/type tags too.
+  openGraph: {
+    type: "website",
+    siteName: "Three Tree City",
+    title: "Three Tree City — open Magic packs, draft & sealed",
+    description: SHARE_DESCRIPTION,
+    locale: "en_US",
+    url: "/",
+  },
+  // Twitter / X uses its own card flavour; `summary_large_image` is the
+  // wide banner format that matches the 1200×630 OG image dimensions.
+  twitter: {
+    card: "summary_large_image",
+    title: "Three Tree City — open Magic packs, draft & sealed",
+    description: SHARE_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({

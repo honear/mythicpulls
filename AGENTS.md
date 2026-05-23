@@ -35,6 +35,7 @@ calling the API at SSR/runtime. Established examples:
 |---|---|---|
 | `scripts/build-set-art.mjs` | `data/set-art.json` | `lib/set-art.ts` |
 | `scripts/fetch-17lands.mjs` | `data/draft-stats/<code>.json` | `lib/draft-stats.ts` |
+| `scripts/fetch-manapool-prices.mjs` | `data/manapool-prices.json` | `lib/manapool.ts` |
 
 Why: cold renders were ~20s when calling Scryfall live for 175 sets.
 Static JSON imports drop that to ~200ms.
@@ -78,13 +79,43 @@ produces nonsense (foreign reprints, tiny specialty boxes, etc.).
 `scripts/build-set-art.mjs` mirrors the same constant — keep them in
 sync.
 
-## Booster MSRP
+## Booster pricing
 
-Single user-editable file: **`data/booster-prices.json`**. Keys are
-lowercase set codes; `"default"` is the universal fallback. Beats both
-`data/sets/<code>.json` cost blocks and `data/booster-contents/*.json`
-costUsd. Wired through `getPackCost` (sync, used by client MoneyStrip)
-and `resolveRecipe` (async, server route).
+Resolution priority (high → low):
+
+1. **Mana Pool live marketplace price** (market > low ask) — sourced
+   from `data/manapool-prices.json`, refreshed by
+   `scripts/fetch-manapool-prices.mjs` against
+   `https://manapool.com/api/v1/prices/sealed` (public, no auth, ~1700
+   in-stock products). Run `npm run refresh:manapool` to pull fresh
+   numbers; do this weekly or before a release.
+2. **`data/booster-prices.json`** — user-editable per-set MSRP map.
+   Keys are lowercase set codes; `"default"` is the universal fallback.
+   Used for sets Mana Pool doesn't currently stock.
+3. `data/sets/<code>.json` cost block, then `data/booster-contents/*.json`
+   costUsd as last-ditch fallbacks.
+
+Wired through `getPackCost` (sync, used by client MoneyStrip) and
+`resolveRecipe` (async, server route). The Mana Pool integration also
+provides deep links — see "Mana Pool integration" below.
+
+## Mana Pool integration
+
+`lib/manapool.ts` is the single entry point.
+
+- **Affiliate handle** lives in `NEXT_PUBLIC_MANAPOOL_REF` (optional;
+  links go out un-tagged when unset). When set, gets appended as `?ref=`
+  on every Mana Pool URL via `withManaPoolRef()`. Sign up at
+  https://manapool.com/affiliates — 5% on first sale, 7-day cookie.
+- **Pack buy button** in MoneyStrip (PackOpener) hides when there's no
+  current stock for that (set, packType) so we never render a dead link.
+  Generic "Booster Pack" listings on pre-modern sets (10E, M-series) map
+  to the "draft" pack type as a fallback.
+- **Card buy button** in CardDetailModal is built from
+  `/card/<set>/<collector_number>` which 301-redirects to the canonical
+  slug — works for any Scryfall card without per-card API calls.
+- The MSRP map at `data/booster-prices.json` remains the **fallback**
+  for out-of-stock sets; do not delete it.
 
 ## Card image rendering
 
