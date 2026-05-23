@@ -186,7 +186,7 @@ export function DraftRun({
       if (i === USER_SEAT) return [...seat.pool, userPicked];
       const myPack = packs[i];
       if (myPack.length === 0) return seat.pool;
-      const chosen = botPick(myPack, seat.pool);
+      const chosen = botPick(myPack, seat.pool, setMeta.code);
       return [...seat.pool, chosen];
     });
 
@@ -263,7 +263,7 @@ export function DraftRun({
       for (let i = 0; i < TOTAL_SEATS; i++) {
         const pack = curPacks[i];
         if (pack.length === 0) continue;
-        const chosen = botPick(pack, curSeats[i].pool);
+        const chosen = botPick(pack, curSeats[i].pool, setMeta.code);
         curSeats[i] = { pool: [...curSeats[i].pool, chosen] };
         curPacks[i] = pack.filter((p) => p.uid !== chosen.uid);
       }

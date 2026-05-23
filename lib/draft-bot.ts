@@ -1,5 +1,6 @@
 import type { ScryfallCard } from "./scryfall";
 import type { PulledCard } from "./pack-open";
+import { getCardStat } from "./draft-stats";
 
 /* ===========================================================================
    Draft bot — weighted picker.
@@ -135,10 +136,24 @@ function isLand(card: ScryfallCard): boolean {
   return (card.type_line ?? "").toLowerCase().includes("land");
 }
 
+/** Coefficient on the 17Lands GIH-WR quality bump. (gihWr − 0.5) is
+ *  scaled by 20 to land in roughly ±2 for ±10 % WR; we then multiply
+ *  by this weight so a 55 % WR card adds ~+1.0, a 45 % WR card ~−1.0.
+ *  Big enough to promote a great uncommon over a mediocre rare, small
+ *  enough not to override the rarity chase early or color-lock late. */
+const QUALITY_WEIGHT = 0.5;
+
+/** Fallback quality bump when GIH WR is unavailable but the card has a
+ *  meaningful ATA reading. Cards taken in the first 4 picks get a small
+ *  positive nudge, cards passed past pick 12 get a small negative one.
+ *  Used for sets with thin sample sizes or rarely-played cards. */
+const ATA_WEIGHT = 0.2;
+
 function scoreCard(
   candidate: PulledCard,
   myColors: Color[],
   pool: PulledCard[],
+  setCode?: string,
 ): number {
   const w = botWeights(pool.length);
   const card = candidate.card;
@@ -147,6 +162,23 @@ function scoreCard(
   let score = w.rarity * (RARITY_BASE[card.rarity] ?? 1);
 
   if (candidate.foil) score += 0.5;
+
+  // 17Lands quality signal — uses the set's draft-stats aggregate when
+  // we have data for it. GIH WR (Games-In-Hand Win Rate) is the cleanest
+  // signal we get from 17Lands; it's centered on 0.50 (50 %) so we
+  // recenter and scale. Bots with this data prefer a 58 %-WR uncommon
+  // over a 47 %-WR rare in the same pack, which matches how an
+  // experienced human drafter behaves. Cards with no aggregate (e.g.
+  // sets we don't ship data for, or cards under the sample-size floor)
+  // skip this contribution and behave exactly as before — rarity rules.
+  const stat = setCode ? getCardStat(setCode, card.name) : null;
+  if (stat?.gihWr != null) {
+    score += QUALITY_WEIGHT * (stat.gihWr - 0.5) * 20;
+  } else if (stat?.ata != null) {
+    // Fallback: invert ATA. The pivot is pick 8 (mid-pack — average
+    // card); a card with ATA 2 gets +1.2, ATA 14 gets −1.2.
+    score += ATA_WEIGHT * (8 - stat.ata) / 5;
+  }
 
   // Lands: useful as fixing once we have 2+ colors locked.
   if (isLand(card)) {
@@ -183,8 +215,14 @@ function scoreCard(
 
   if (curveOverloaded(pool, card.cmc)) score -= w.curve;
 
-  // Tiny jitter so identical packs don't always produce identical bot picks.
-  score += Math.random() * 0.05;
+  // Per-card jitter ±0.4. This is the dominant source of bot variance —
+  // close-score candidates flip between picks without changing the
+  // overall "I like rares in my colors" behaviour. Compared with the
+  // earlier ±0.025 tiebreaker, this lets a bot occasionally grab a card
+  // that's a fraction of a point off the optimum, the way a human
+  // drafter would value flavour / art / familiarity over a marginal
+  // rating gap.
+  score += (Math.random() - 0.5) * 0.8;
 
   return score;
 }
@@ -193,10 +231,24 @@ function scoreCard(
  * Pick the best card from a pack for a bot with the given pool. Caller
  * is responsible for moving the card to the bot's pool and shrinking
  * the pack.
+ *
+ * Most of the time the bot takes the top-scoring card. A small fraction
+ * of picks take the 2nd or 3rd-best card instead, mimicking the way a
+ * human drafter occasionally picks the flashier card, hate-picks a
+ * sideways-good rare, or just disagrees with the "obvious" pick. A
+ * safety cap stops it from making real blunders: the runner-up only
+ * gets picked if it's within MAX_SPICE_GAP points of the top score.
  */
+const PICK_TOP_RATE = 0.85;       // 85% of picks → top-scored card
+const PICK_SECOND_RATE = 0.97;    // 12% → #2 (between 0.85 and 0.97)
+                                  //  3% → #3
+const MAX_SPICE_GAP = 1.5;        // never pick a card that's more than
+                                  // 1.5 points worse than the optimum
+
 export function botPick(
   pack: PulledCard[],
   pool: PulledCard[],
+  setCode?: string,
 ): PulledCard {
   if (pack.length === 0) {
     throw new Error("botPick called with empty pack");
@@ -204,14 +256,26 @@ export function botPick(
   if (pack.length === 1) return pack[0];
 
   const myColors = dominantColors(pool);
-  let best = pack[0];
-  let bestScore = scoreCard(best, myColors, pool);
-  for (let i = 1; i < pack.length; i++) {
-    const s = scoreCard(pack[i], myColors, pool);
-    if (s > bestScore) {
-      best = pack[i];
-      bestScore = s;
-    }
+  // Score every card up front so we can sort and probe the top-K. The
+  // setCode propagates into scoreCard so the 17Lands GIH-WR contribution
+  // can consult the right per-set aggregate.
+  const scored = pack.map((p) => ({ card: p, score: scoreCard(p, myColors, pool, setCode) }));
+  scored.sort((a, b) => b.score - a.score);
+
+  const top = scored[0];
+  const roll = Math.random();
+  let pickIndex = 0;
+  if (roll > PICK_SECOND_RATE && scored.length > 2) {
+    pickIndex = 2;
+  } else if (roll > PICK_TOP_RATE && scored.length > 1) {
+    pickIndex = 1;
   }
-  return best;
+  if (pickIndex === 0) return top.card;
+
+  // Spice guard: a #2 or #3 pick only stands if its score is close to the
+  // top. Otherwise fall back to the optimum — keeps bots from passing a
+  // mythic for a common just to be quirky.
+  const candidate = scored[pickIndex];
+  if (top.score - candidate.score > MAX_SPICE_GAP) return top.card;
+  return candidate.card;
 }

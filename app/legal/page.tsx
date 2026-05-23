@@ -174,7 +174,86 @@ export default function LegalPage() {
       />
 
       <Article
-        title="4. No commerce, no entitlements"
+        title="4. Draft-bot tuning &amp; 17Lands data"
+        body={
+          <>
+            <p>
+              <strong>Card pick data retrieved from{" "}
+              <a
+                href="https://www.17lands.com"
+                className="underline decoration-dotted underline-offset-4 text-[var(--color-fg)]"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                17Lands
+              </a>
+              .</strong>
+            </p>
+            <p>
+              The AI bots in the Booster Draft experience consult per-card
+              aggregate statistics — average pick number, games-in-hand
+              win rate, and play rate — published by 17Lands, a community
+              statistics project that collects anonymized draft and game
+              data from MTG Arena Premier Draft players who opt in. Their
+              aggregates help the bots pick like an experienced human
+              drafter instead of a pure rarity-chase algorithm.
+            </p>
+            <p>
+              17Lands data on this site is{" "}
+              <strong>captured once and stored as static JSON</strong>{" "}
+              alongside the rest of the source. The site does not query
+              17Lands at runtime; refreshing the cached aggregates is a
+              manual maintenance step performed from a local script that
+              hits their public{" "}
+              <code>card_ratings/data</code> endpoint a handful of times
+              per set per refresh. This keeps load off their servers and
+              respects their stated preference that third-party tools
+              work from the public dataset rather than live API hits.
+            </p>
+            <p>
+              Sets we have 17Lands aggregates for are marked with a small
+              <span
+                className="inline-block mx-1.5 px-1.5 py-px rounded text-[10px] tracking-[0.14em] uppercase font-bold align-middle"
+                style={{
+                  background: "rgba(123,57,252,0.28)",
+                  color: "var(--accent-purple-light)",
+                  border: "1px solid rgba(164,132,215,0.4)",
+                  fontFamily: "var(--font-btn)",
+                }}
+              >
+                17L
+              </span>
+              badge on the set picker, and the citation
+              <em>&ldquo;Card pick data retrieved from 17Lands&rdquo;</em>{" "}
+              is shown at the top of the Booster Draft landing page and on
+              the per-set draft page whenever 17Lands data is in use. Sets
+              without the badge fall back to a rarity-based heuristic
+              that doesn&rsquo;t reference any external data.
+            </p>
+            <p>
+              17Lands is independent of Wizards of the Coast and of this
+              project. The citation above is not an endorsement —{" "}
+              <em>17Lands does not endorse Mythic Pulls or its findings</em>.
+              We use their data in good faith for the non-commercial
+              purposes described on this page, following the
+              <a
+                href="https://www.17lands.com/usage_guidelines"
+                className="underline decoration-dotted underline-offset-4 text-[var(--color-fg)]"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {" "}17Lands usage guidelines
+              </a>
+              {" "}for citation and attribution. If you are with 17Lands
+              and want this usage adjusted, please reach out via the
+              contact section below.
+            </p>
+          </>
+        }
+      />
+
+      <Article
+        title="5. No commerce, no entitlements"
         body={
           <>
             <p>
@@ -196,7 +275,7 @@ export default function LegalPage() {
       />
 
       <Article
-        title="5. Your data &amp; privacy"
+        title="6. Your data &amp; privacy"
         body={
           <>
             <p>
@@ -239,7 +318,7 @@ export default function LegalPage() {
       />
 
       <Article
-        title="6. &ldquo;As is&rdquo;"
+        title="7. &ldquo;As is&rdquo;"
         body={
           <>
             <p>
@@ -256,7 +335,7 @@ export default function LegalPage() {
       />
 
       <Article
-        title="7. Contact &amp; takedown requests"
+        title="8. Contact &amp; takedown requests"
         body={
           <>
             <p>

@@ -10,6 +10,7 @@ import {
   resolveRecipe,
 } from "@/lib/booster-loader";
 import { validateSetCode } from "@/lib/safe-url";
+import { setHasDraftStats } from "@/lib/draft-stats-meta";
 import { DraftRun } from "./DraftRun";
 
 interface Props {
@@ -136,6 +137,27 @@ export default async function DraftSetPage({ params }: Props) {
             <p className="text-[var(--color-ink)] mt-2">
               {mainCards.length} cards in pool · 3 packs × 8 seats · 40-card minimum deck
             </p>
+            {setHasDraftStats(set.code) && (
+              <p
+                className="mt-3 text-[12px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                style={{
+                  background: "rgba(123,57,252,0.18)",
+                  border: "1px solid rgba(164,132,215,0.35)",
+                  color: "var(--accent-purple-light)",
+                  fontFamily: "var(--font-ui)",
+                }}
+              >
+                Card pick data retrieved from{" "}
+                <a
+                  href={`https://www.17lands.com/card_data?expansion=${set.code.toUpperCase()}&format=PremierDraft`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-dotted underline-offset-4 hover:text-white"
+                >
+                  17Lands
+                </a>
+              </p>
+            )}
           </div>
         </div>
       </div>

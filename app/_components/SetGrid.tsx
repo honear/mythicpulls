@@ -4,6 +4,7 @@ import Link, { useLinkStatus } from "next/link";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import type { ScryfallSet } from "@/lib/scryfall";
+import { setHasDraftStats } from "@/lib/draft-stats-meta";
 
 type Filter = "all" | "recent" | "modern" | "legacy";
 
@@ -126,6 +127,11 @@ function SetTile({
   tileLabel: string;
 }) {
   const year = set.released_at?.slice(0, 4) ?? "—";
+  // Show a small "17L" badge on tiles whose set has a corresponding
+  // aggregate in data/draft-stats/<code>.json. Tells the user the bots
+  // in /draft and the pick weighting in /sealed are tuned by real
+  // Premier Draft data for this set.
+  const hasStats = setHasDraftStats(set.code);
 
   return (
     <li
@@ -179,13 +185,30 @@ function SetTile({
             </span>
           )}
         </div>
-        <div className="absolute top-2 left-3 right-3 flex items-center justify-between">
+        <div className="absolute top-2 left-3 right-3 flex items-center justify-between gap-2">
           <span className="text-[10px] tracking-[0.16em] uppercase font-semibold text-[var(--color-ink-muted)]">
             {set.code.toUpperCase()}
           </span>
-          <span className="text-[10px] tracking-[0.16em] uppercase text-[var(--color-ink-muted)]">
-            {year}
-          </span>
+          <div className="flex items-center gap-1.5">
+            {hasStats && (
+              <span
+                title="17Lands Premier Draft data available for this set"
+                aria-label="17Lands Premier Draft data available for this set"
+                className="text-[9px] tracking-[0.14em] uppercase font-bold px-1.5 py-0.5 rounded"
+                style={{
+                  background: "rgba(123,57,252,0.28)",
+                  color: "var(--accent-purple-light)",
+                  border: "1px solid rgba(164,132,215,0.4)",
+                  fontFamily: "var(--font-btn)",
+                }}
+              >
+                17L
+              </span>
+            )}
+            <span className="text-[10px] tracking-[0.16em] uppercase text-[var(--color-ink-muted)]">
+              {year}
+            </span>
+          </div>
         </div>
         <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between gap-2">
           <p

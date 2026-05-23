@@ -45,6 +45,26 @@ export default async function DraftSetPickerPage() {
             that signal colors and stay in their lanes. Build a 40-card deck
             from your picks plus as many basic lands as you want, then export.
           </p>
+          <p
+            className="text-[12px] mt-1 px-3 py-1.5 rounded-full inline-flex items-center gap-1.5"
+            style={{
+              background: "rgba(123,57,252,0.18)",
+              border: "1px solid rgba(164,132,215,0.35)",
+              color: "var(--accent-purple-light)",
+              fontFamily: "var(--font-ui)",
+            }}
+          >
+            Card pick data retrieved from{" "}
+            <a
+              href="https://www.17lands.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-dotted underline-offset-4 hover:text-white"
+            >
+              17Lands
+            </a>{" "}
+            <span className="text-white/60">(for sets with the 17L badge)</span>
+          </p>
         </div>
       </section>
 

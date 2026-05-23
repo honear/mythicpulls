@@ -42,3 +42,9 @@ next-env.d.ts
 
 # Local-only project notes (development log, scratch files)
 /notes/
+
+# 17Lands raw draft / game data dumps — multi-GB CSVs used for offline
+# experimentation only. Aggregate JSON pulled from 17Lands' card_ratings
+# endpoint lives in data/draft-stats/ and IS committed; the raw CSVs
+# below are not.
+/17Lands/
