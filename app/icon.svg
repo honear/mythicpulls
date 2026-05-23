@@ -1,0 +1,39 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    Three Tree City favicon. Mirrors the header Logomark exactly so the
+    browser tab badge matches the in-page wordmark. Next.js App Router
+    auto-serves /icon.svg as the favicon (modern browsers); the legacy
+    favicon.ico in this directory is kept as a fallback for very old
+    user-agents.
+  -->
+  <defs>
+    <linearGradient id="ttc-mark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a484d7" />
+      <stop offset="55%" stop-color="#7b39fc" />
+      <stop offset="100%" stop-color="#4f17d4" />
+    </linearGradient>
+  </defs>
+  <!-- Solid rounded background so the icon reads on both light and dark
+       browser chrome (Safari tab bar is light, Chrome dark on macOS,
+       etc.). Same deep purple as the page bg. -->
+  <rect x="0" y="0" width="32" height="32" rx="6" fill="#0d0820" />
+  <!-- Left tower with 2-merlon battlement. -->
+  <path
+    fill="url(#ttc-mark)"
+    d="M3 28 L3 11 L5 11 L5 9 L7 9 L7 11 L9 11 L9 9 L11 9 L11 11 L11 28 Z"
+  />
+  <!-- Right tower with 2-merlon battlement. -->
+  <path
+    fill="url(#ttc-mark)"
+    d="M21 28 L21 11 L23 11 L23 9 L25 9 L25 11 L27 11 L27 9 L29 9 L29 11 L29 28 Z"
+  />
+  <!-- Center tower — taller, 3-merlon battlement, with an arched
+       doorway carved out via a second subpath + fill-rule="evenodd".
+       Real cutout (not an overpainted dark patch) so the design stays
+       correct regardless of backdrop. -->
+  <path
+    fill="url(#ttc-mark)"
+    fill-rule="evenodd"
+    d="M11 28 L11 5 L13 5 L13 3 L15 3 L15 5 L17 5 L17 3 L19 3 L19 5 L21 5 L21 28 Z M14 28 L14 22 A2 2 0 0 1 18 22 L18 28 Z"
+  />
+</svg>

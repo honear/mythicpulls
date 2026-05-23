@@ -286,6 +286,14 @@ export function SiteHeader() {
   );
 }
 
+/**
+ * Three-tower castle silhouette. The "three" tower count is a quiet
+ * nod to the site name (Three Tree City), and the silhouette reads
+ * cleanly at every size from the favicon up to the header. Filled
+ * with the site's purple gradient. Negative-space arched doorway is
+ * cut out via a path filled with the page background so the cutout
+ * works even when the logo sits over a custom backdrop.
+ */
 function Logomark() {
   return (
     <svg
@@ -297,14 +305,31 @@ function Logomark() {
       aria-hidden
     >
       <defs>
-        <linearGradient id="hdr-mark" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id="hdr-mark" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#a484d7" />
           <stop offset="55%" stopColor="#7b39fc" />
           <stop offset="100%" stopColor="#4f17d4" />
         </linearGradient>
       </defs>
-      <circle cx="16" cy="16" r="12" stroke="url(#hdr-mark)" strokeWidth="2" />
-      <circle cx="16" cy="16" r="4" fill="url(#hdr-mark)" />
+      {/* Left tower with 2-merlon battlement. */}
+      <path
+        fill="url(#hdr-mark)"
+        d="M3 28 L3 11 L5 11 L5 9 L7 9 L7 11 L9 11 L9 9 L11 9 L11 11 L11 28 Z"
+      />
+      {/* Right tower with 2-merlon battlement. */}
+      <path
+        fill="url(#hdr-mark)"
+        d="M21 28 L21 11 L23 11 L23 9 L25 9 L25 11 L27 11 L27 9 L29 9 L29 11 L29 28 Z"
+      />
+      {/* Center tower — taller, 3-merlon battlement. The arched doorway
+          is included as a second subpath; fill-rule="evenodd" turns it
+          into a true cutout so the header's translucent backdrop shows
+          through (rather than painting a dark patch over the gradient). */}
+      <path
+        fill="url(#hdr-mark)"
+        fillRule="evenodd"
+        d="M11 28 L11 5 L13 5 L13 3 L15 3 L15 5 L17 5 L17 3 L19 3 L19 5 L21 5 L21 28 Z M14 28 L14 22 A2 2 0 0 1 18 22 L18 28 Z"
+      />
     </svg>
   );
 }
