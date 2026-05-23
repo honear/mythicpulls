@@ -400,6 +400,7 @@ export function DraftRun({
             setMeta={setMeta}
             pool={userPool}
             basicLandSamples={basicLandSamples}
+            mode="draft"
           />
         </div>
       )}

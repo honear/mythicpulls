@@ -4,16 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Menu, Swords, Users, X } from "lucide-react";
+import { Menu, PackageOpen, Swords, Users, X } from "lucide-react";
 import { HoloToggle } from "./HoloToggle";
 
 /**
  * Single global header used across every page (including home).
  *
- * Layout above the `sm` breakpoint: wordmark on the left, three pills on
- * the right — HoloToggle, "Play Draft", "Play Sealed", "My binder".
+ * Layout above the `sm` breakpoint: wordmark on the left, four pills on
+ * the right — HoloToggle, "Open packs", "Practice Draft",
+ * "Practice Sealed", "My binder".
  *
- * Mobile (`<640px`): the wordmark stays put, the three navigation pills
+ * Mobile (`<640px`): the wordmark stays put, the navigation pills
  * collapse behind a single hamburger button. A short popover slides down
  * showing every destination + the HoloToggle stacked vertically. We
  * deliberately keep the popover lightweight (no portal, no animation
@@ -30,6 +31,11 @@ export function SiteHeader() {
   const onCollection = pathname.startsWith("/collection");
   const onSealed = pathname.startsWith("/sealed");
   const onDraft = pathname.startsWith("/draft");
+  // "Open packs" is the home set-picker (root path) since pack-opening
+  // lives at /sets/<code> and the picker is on /. Highlight when we're
+  // anywhere in /sets/* or on the root path with no other section active.
+  const onOpenPacks =
+    pathname === "/" || pathname.startsWith("/sets");
 
   // Auto-close the mobile menu on route change so navigating from inside
   // it doesn't leave the panel parked open over the next page.
@@ -64,7 +70,7 @@ export function SiteHeader() {
       <nav className="w-full flex flex-row items-center justify-between py-4 sm:py-5 px-4 sm:px-6 md:px-10">
         <Link
           href="/"
-          aria-label="Mythic Pulls home"
+          aria-label="Mythic Grounds home"
           className="flex items-center gap-2.5 group"
         >
           <Logomark />
@@ -72,13 +78,30 @@ export function SiteHeader() {
             className="text-[15px] sm:text-[16px] font-semibold tracking-tight text-[var(--color-fg)]"
             style={{ fontFamily: "var(--font-ui)" }}
           >
-            Mythic Pulls
+            Mythic Grounds
           </span>
         </Link>
 
-        {/* Desktop / tablet nav — hidden on phones. */}
+        {/* Desktop / tablet nav — hidden on phones. Four primary
+            destinations: Open packs (the home set-picker for /sets/<code>),
+            Practice Draft, Practice Sealed, and the binder. */}
         <div className="hidden sm:flex items-center gap-2.5">
           <HoloToggle />
+          <Link
+            href="/"
+            aria-current={onOpenPacks ? "page" : undefined}
+            className="inline-flex items-center gap-2 h-[38px] pl-3 pr-4 rounded-[10px] text-[14px] font-medium transition-all"
+            style={{
+              background: "var(--accent-purple)",
+              color: "white",
+              fontFamily: "var(--font-btn)",
+              boxShadow:
+                "0 8px 20px -8px var(--accent-purple-glow), inset 0 1px 0 rgba(255,255,255,0.18)",
+            }}
+          >
+            <PackageOpen className="w-4 h-4" />
+            Open packs
+          </Link>
           <Link
             href="/draft"
             aria-current={onDraft ? "page" : undefined}
@@ -92,7 +115,7 @@ export function SiteHeader() {
             }}
           >
             <Users className="w-4 h-4" />
-            Play Draft
+            Practice Draft
           </Link>
           <Link
             href="/sealed"
@@ -107,7 +130,7 @@ export function SiteHeader() {
             }}
           >
             <Swords className="w-4 h-4" />
-            Play Sealed
+            Practice Sealed
           </Link>
           <Link
             href="/collection"
@@ -191,6 +214,22 @@ export function SiteHeader() {
             role="menu"
           >
             <Link
+              href="/"
+              role="menuitem"
+              aria-current={onOpenPacks ? "page" : undefined}
+              className="inline-flex items-center gap-2 h-11 px-4 rounded-[10px] text-[15px] font-medium"
+              style={{
+                background: "var(--accent-purple)",
+                color: "white",
+                fontFamily: "var(--font-btn)",
+                boxShadow:
+                  "0 8px 20px -8px var(--accent-purple-glow), inset 0 1px 0 rgba(255,255,255,0.18)",
+              }}
+            >
+              <PackageOpen className="w-4 h-4" />
+              Open packs
+            </Link>
+            <Link
               href="/draft"
               role="menuitem"
               aria-current={onDraft ? "page" : undefined}
@@ -204,7 +243,7 @@ export function SiteHeader() {
               }}
             >
               <Users className="w-4 h-4" />
-              Play Draft
+              Practice Draft
             </Link>
             <Link
               href="/sealed"
@@ -220,7 +259,7 @@ export function SiteHeader() {
               }}
             >
               <Swords className="w-4 h-4" />
-              Play Sealed
+              Practice Sealed
             </Link>
             <Link
               href="/collection"

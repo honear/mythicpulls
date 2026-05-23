@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Mythic Pulls — Hero-derived dark theme (global)
+   Mythic Grounds — Hero-derived dark theme (global)
    --------------------------------------------------------------
    The hero's deep-purple + liquid-glass aesthetic now governs the
    entire site. All tokens default to the dark mode.
    ============================================================ */
 
 @theme {
-  /* Page palette (dark by default). Mythic Pulls adopts the Datacore-style
+  /* Page palette (dark by default). Mythic Grounds adopts the Datacore-style
      deep-purple base: a near-black violet ground, with #7b39fc as the
      interactive accent and #2b2344 as the secondary surface tone. */
   --hero-bg:        #0d0820;

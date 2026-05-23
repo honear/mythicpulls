@@ -14,6 +14,8 @@
 
 const SETS_WITH_DRAFT_STATS = new Set<string>([
   "sos",
+  "tmt",
+  "ecl",
   "tla",
   "eoe",
   "fin",

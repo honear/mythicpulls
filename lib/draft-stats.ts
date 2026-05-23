@@ -16,6 +16,8 @@
  */
 
 import sosStats from "../data/draft-stats/sos.json";
+import tmtStats from "../data/draft-stats/tmt.json";
+import eclStats from "../data/draft-stats/ecl.json";
 import tlaStats from "../data/draft-stats/tla.json";
 import eoeStats from "../data/draft-stats/eoe.json";
 import finStats from "../data/draft-stats/fin.json";
@@ -89,6 +91,8 @@ export interface DraftStats {
 
 const STATS_BY_SET: Record<string, DraftStats> = {
   sos: sosStats as DraftStats,
+  tmt: tmtStats as DraftStats,
+  ecl: eclStats as DraftStats,
   tla: tlaStats as DraftStats,
   eoe: eoeStats as DraftStats,
   fin: finStats as DraftStats,

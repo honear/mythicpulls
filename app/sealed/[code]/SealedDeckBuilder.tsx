@@ -166,6 +166,11 @@ interface Props {
   setMeta: SetMeta;
   pool: PulledCard[];
   basicLandSamples: Partial<Record<string, ScryfallCard>>;
+  /** Format label shown in the deck-builder header. Defaults to "sealed"
+   *  since this component originated for the Sealed flow; pass "draft"
+   *  when reused under DraftRun so the heading reads "Draft deck builder"
+   *  instead of "Sealed deck builder". */
+  mode?: "sealed" | "draft";
 }
 
 interface DragState {
@@ -187,7 +192,7 @@ interface DragState {
 
 type PoolSort = "mana" | "color";
 
-export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
+export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sealed" }: Props) {
   const isMobile = useIsMobile();
   const POOL_CARD_W = isMobile ? POOL_CARD_W_MOBILE : POOL_CARD_W_DESKTOP;
   const DECK_CARD_W = isMobile ? DECK_CARD_W_MOBILE : DECK_CARD_W_DESKTOP;
@@ -457,6 +462,7 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
         valid={validDeck}
         onSortByMana={sortByMana}
         onExport={() => setExportOpen(true)}
+        mode={mode}
       />
 
       {/* DECK */}
@@ -575,6 +581,7 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples }: Props) {
           lands={lands}
           basicLandSamples={basicLandSamples}
           setMeta={setMeta}
+          mode={mode}
           onClose={() => setExportOpen(false)}
         />
       )}
@@ -850,7 +857,7 @@ function DragGhost({
    ============================================================ */
 
 function DeckHeader({
-  deckSize, deckMin, remaining, valid, onSortByMana, onExport,
+  deckSize, deckMin, remaining, valid, onSortByMana, onExport, mode,
 }: {
   deckSize: number;
   deckMin: number;
@@ -858,6 +865,7 @@ function DeckHeader({
   valid: boolean;
   onSortByMana: () => void;
   onExport: () => void;
+  mode: "sealed" | "draft";
 }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 mb-5 rounded-2xl liquid-glass">
@@ -866,7 +874,7 @@ function DeckHeader({
           className="text-[15px] font-semibold tracking-wide text-[var(--color-fg)]"
           style={{ fontFamily: "var(--font-ui)" }}
         >
-          Sealed deck builder
+          {mode === "draft" ? "Draft deck builder" : "Sealed deck builder"}
         </p>
         <div className="flex items-center gap-2">
           <span
@@ -1112,12 +1120,13 @@ function BasicLandRow({
    ============================================================ */
 
 function ExportModal({
-  deckCards, lands, basicLandSamples, setMeta, onClose,
+  deckCards, lands, basicLandSamples, setMeta, mode, onClose,
 }: {
   deckCards: ScryfallCard[];
   lands: BasicLandCounts;
   basicLandSamples: Partial<Record<string, ScryfallCard>>;
   setMeta: SetMeta;
+  mode: "sealed" | "draft";
   onClose: () => void;
 }) {
   const text = useMemo(
@@ -1125,6 +1134,10 @@ function ExportModal({
     [deckCards, lands, basicLandSamples],
   );
   const [copied, setCopied] = useState(false);
+  // Portal target available only client-side; defer mount until then so
+  // SSR doesn't try to access document.body.
+  const [portalReady, setPortalReady] = useState(false);
+  useEffect(() => setPortalReady(true), []);
 
   async function copyToClipboard() {
     try {
@@ -1137,9 +1150,17 @@ function ExportModal({
     }
   }
 
-  return (
+  if (!portalReady) return null;
+  // The deck builder paints cards with inline zIndex: 50 + stackIndex
+  // (and basic-land stacks climb higher than that), so the modal needs
+  // a z-index well above any card stack. We also portal to document.body
+  // because parent panels use backdrop-filter, which establishes a new
+  // containing block for fixed children and traps the modal underneath
+  // the cards' stacking context. z-[1200] matches CardDetailModal so
+  // both modals follow the same layering rule.
+  return createPortal(
     <div
-      className="fixed inset-0 z-40 grid place-items-center anim-detail-fade"
+      className="fixed inset-0 z-[1200] grid place-items-center anim-detail-fade"
       style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(6px)" }}
       onClick={onClose}
     >
@@ -1153,7 +1174,7 @@ function ExportModal({
               className="label-caps text-[var(--accent-purple-light)]"
               style={{ fontFamily: "var(--font-ui)" }}
             >
-              Export · {setMeta.code.toUpperCase()} sealed
+              Export · {setMeta.code.toUpperCase()} {mode}
             </p>
             <p
               className="text-[14px] font-semibold text-[var(--color-fg)] mt-0.5"
@@ -1195,6 +1216,7 @@ function ExportModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

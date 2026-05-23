@@ -12,7 +12,7 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Mythic Pulls — open Magic packs",
+  title: "Mythic Grounds — open Magic packs",
   description:
     "An elegant Magic: the Gathering booster-opening experience powered by Scryfall.",
 };
@@ -64,7 +64,7 @@ function SiteFooter() {
           >
             Scryfall
           </a>
-          . Mythic Pulls is an unofficial fan project.
+          . Mythic Grounds is an unofficial fan project.
         </p>
         <div className="flex flex-wrap items-center gap-3 md:gap-4">
           <Link

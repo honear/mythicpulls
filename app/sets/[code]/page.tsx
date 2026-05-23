@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props) {
   const set = await getSet(code);
   if (!set) return { title: "Set not found" };
   return {
-    title: `${set.name} · Open packs · Mythic Pulls`,
+    title: `${set.name} · Open packs · Mythic Grounds`,
     description: `Open ${set.name} (${set.code.toUpperCase()}) boosters with faithful drop rates.`,
   };
 }

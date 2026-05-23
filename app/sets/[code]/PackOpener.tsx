@@ -54,6 +54,11 @@ export function PackOpener({
   const [flipped, setFlipped] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<ViewMode>("reveal");
   const [detailUid, setDetailUid] = useState<string | null>(null);
+  // Art-crop slot used by the FannedPack the user just tapped. Carried
+  // through to RippingPack so the rip animation shows the same artwork
+  // as the pack they clicked on — without it the rip would always
+  // default to heroArtCrops[0] and visually swap to a different pack.
+  const [ripArtIndex, setRipArtIndex] = useState(0);
   // Session-level money tracker — resets on full page reload.
   const [stats, setStats] = useState<{ spent: number; pulled: number; packs: number }>({
     spent: 0,
@@ -314,13 +319,17 @@ export function PackOpener({
               <PackFan
                 available={availableTypes}
                 setMeta={setMeta}
-                onSelect={(t) => { setPackType(t); rip(t); }}
+                onSelect={(t, artIdx) => {
+                  setPackType(t);
+                  setRipArtIndex(artIdx);
+                  rip(t);
+                }}
               />
             </div>
           )}
 
           {phase === "ripping" && (
-            <RippingPack setMeta={setMeta} packType={packType} />
+            <RippingPack setMeta={setMeta} packType={packType} artIndex={ripArtIndex} />
           )}
 
           {phase === "revealing" && viewMode === "grid" && (
@@ -521,7 +530,11 @@ function PackFan({
 }: {
   available: PackType[];
   setMeta: SetMeta;
-  onSelect: (t: PackType) => void;
+  /** Fired when the user taps a pack. `artIndex` is the pack's position
+   *  in the ordered fan and matches the art-crop slot the FannedPack
+   *  used, so the rip animation can show the same artwork without a
+   *  jarring swap to a different pack's art. */
+  onSelect: (t: PackType, artIndex: number) => void;
 }) {
   // Play sits in the middle of the fan when available; the other packs
   // distribute around it. Falls back to PACK_ORDER for sets without play.
@@ -586,7 +599,7 @@ function PackFan({
           setMeta={setMeta}
           offset={0}
           isCenter
-          onSelect={() => onSelect(mobilePick)}
+          onSelect={() => onSelect(mobilePick, ordered.indexOf(mobilePick))}
           artIndex={ordered.indexOf(mobilePick)}
           compact
         />
@@ -606,7 +619,7 @@ function PackFan({
             setMeta={setMeta}
             offset={offset}
             isCenter={isCenter}
-            onSelect={() => onSelect(type)}
+            onSelect={() => onSelect(type, i)}
             artIndex={i}
           />
         );
@@ -852,14 +865,26 @@ function BoosterPack({
  * looks like the same pack the user just tapped, not a swapped-in flat
  * rectangle.
  */
-function RippingPack({ setMeta, packType }: { setMeta: SetMeta; packType: PackType }) {
+function RippingPack({
+  setMeta, packType, artIndex,
+}: {
+  setMeta: SetMeta;
+  packType: PackType;
+  /** Index into `setMeta.heroArtCrops` matching the FannedPack the user
+   *  tapped — keeps the rip animation showing the same artwork as the
+   *  pack they clicked, instead of always defaulting to slot 0. */
+  artIndex: number;
+}) {
   const c = packHue(packType);
   const isMobile = useIsMobile();
   const W = isMobile ? 210 : 260;
   const H = isMobile ? 308 : 380;
-  // Reuse the same hero art crop the FannedPack used so the rip feels
-  // continuous with the tap.
-  const heroArt = setMeta.heroArtCrops?.[0];
+  // Reuse the exact art crop the FannedPack used so the rip is visually
+  // continuous with the tap. Modulo by length defends against an
+  // artIndex larger than the available crops list (small sets may ship
+  // fewer art crops than there are pack types).
+  const crops = setMeta.heroArtCrops ?? [];
+  const heroArt = crops.length > 0 ? crops[artIndex % crops.length] : undefined;
 
   // Five card silhouettes fanning out of the pack. Pre-computed offsets:
   // outermost cards travel further horizontally and rotate more.

@@ -5,6 +5,8 @@
 
   "sets": {
     "SOS": { "start": "2026-04-21", "end": null },
+    "TMT": { "start": "2026-03-06", "end": null },
+    "ECL": { "start": "2026-01-23", "end": null },
     "TLA": { "start": "2025-11-11", "end": null },
     "EOE": { "start": "2025-07-29", "end": null },
     "FIN": { "start": "2025-06-10", "end": null },

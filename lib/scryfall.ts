@@ -11,7 +11,7 @@ const BASE = "https://api.scryfall.com";
 
 const HEADERS: HeadersInit = {
   "Accept": "application/json",
-  "User-Agent": "MythicPulls/0.1 (https://github.com/local; pack-opening sim)",
+  "User-Agent": "MythicGrounds/0.1 (https://github.com/local; pack-opening sim)",
 };
 
 export type Rarity = "common" | "uncommon" | "rare" | "mythic" | "special" | "bonus";
