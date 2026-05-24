@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSet, getSetCards, getSetTokens } from "@/lib/scryfall";
+import { getSet, getSetCards, getSetTokens, trimCardPool } from "@/lib/scryfall";
 import type { ScryfallCard } from "@/lib/scryfall";
 import { recommendedPackType, type PackType } from "@/lib/pack-rules";
 import { collectReferencedSets } from "@/lib/booster-config";
@@ -167,7 +167,8 @@ export default async function DraftSetPage({ params }: Props) {
           name: set.name,
           iconUri: set.icon_svg_uri,
         }}
-        pool={pool}
+        // Trim before hydration — see `trimCardForClient` in lib/scryfall.ts.
+        pool={trimCardPool(pool)}
         recipe={recipe.content}
         draftType={draftType}
         filters={filters}

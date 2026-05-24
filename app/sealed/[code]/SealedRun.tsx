@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sparkles, ArrowRight, FastForward } from "lucide-react";
 import { getCardImage, type ScryfallCard } from "@/lib/scryfall";
 import type { PackContent } from "@/lib/booster-config";
@@ -8,6 +8,7 @@ import type { FilterPredicate } from "@/lib/booster-filters";
 import { openPack, type CardPool, type PulledCard } from "@/lib/pack-open";
 import type { PackType } from "@/lib/pack-rules";
 import { preloadImages } from "@/lib/preload";
+import { idlePreloadCardPool } from "@/lib/idle-preload";
 import { SealedPackGrid } from "./SealedPackGrid";
 import { SealedDeckBuilder } from "./SealedDeckBuilder";
 
@@ -73,6 +74,15 @@ export function SealedRun({
   const packsOpened = packs.length;
   const packNumber = phase === "revealing" ? packsOpened + 1 : packsOpened;
   const poolFlat = packs.flat();
+
+  // Background pre-warm every card image in the pool on idle ticks.
+  // Sealed opens 6 packs in sequence; the per-pack preload race in
+  // `ripNextPack` becomes near-instant once the pool is HTTP-cached,
+  // which all but eliminates pack-to-pack reveal jitter on cold loads.
+  useEffect(() => {
+    const cancel = idlePreloadCardPool(pool);
+    return cancel;
+  }, [pool]);
 
   function ripNextPack() {
     if (packsOpened >= TOTAL_PACKS) return;

@@ -130,13 +130,19 @@ async function sj<T>(
   url: string,
   revalidate = 60 * 60 * 24,
   maxRetries = 2,
+  /** When true, bypass Next's fetch cache entirely (cache: "no-store").
+   *  Used as a retry mode when a previous cached response is suspected
+   *  bad (e.g. an empty card pool). The default path still caches. */
+  noStore = false,
 ): Promise<T> {
   let lastErr: unknown = null;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       const res = await fetch(url, {
         headers: HEADERS,
-        next: { revalidate },
+        ...(noStore
+          ? { cache: "no-store" as const }
+          : { next: { revalidate } }),
       });
       if (res.ok) return (await res.json()) as T;
 
@@ -234,13 +240,41 @@ export async function getSet(code: string): Promise<ScryfallSet | undefined> {
  * matches and silently falls through to its next outcome.
  */
 export async function getSetCards(code: string): Promise<ScryfallCard[]> {
+  // First try with the standard 7-day fetch cache. If that returns an
+  // empty pool we run the same query AGAIN with cache: "no-store" — that
+  // covers the failure mode where a transient Scryfall blip cached a
+  // 200 with `data: []` (which then served as the "result" for 7 days
+  // and produced the dreaded "0 cards in pack" UI). The no-store retry
+  // gives Scryfall a fresh chance; if it ALSO returns empty we accept
+  // it as the truth (genuinely new set, no cards indexed yet, etc.).
+  const first = await fetchAllPages(code, false);
+  if (first.length > 0) return filterPool(first);
+  // eslint-disable-next-line no-console
+  console.warn(
+    `[scryfall] getSetCards(${code}): cached/initial fetch returned 0 cards — retrying with cache: "no-store"`,
+  );
+  const retry = await fetchAllPages(code, true);
+  return filterPool(retry);
+}
+
+/** Helper extracted so the empty-pool retry can re-run the exact same
+ *  pagination loop with a different cache mode. */
+async function fetchAllPages(
+  code: string,
+  noStore: boolean,
+): Promise<ScryfallCard[]> {
   const q = encodeURIComponent(`set:${code} game:paper`);
   const out: ScryfallCard[] = [];
   let url: string | undefined =
     `${BASE}/cards/search?q=${q}&unique=prints&order=set&include_extras=false&include_variations=false&include_multilingual=true`;
   while (url) {
     try {
-      const page: ScryfallList<ScryfallCard> = await sj<ScryfallList<ScryfallCard>>(url, 60 * 60 * 24 * 7);
+      const page: ScryfallList<ScryfallCard> = await sj<ScryfallList<ScryfallCard>>(
+        url,
+        60 * 60 * 24 * 7,
+        2,
+        noStore,
+      );
       out.push(...page.data);
       url = page.has_more ? page.next_page : undefined;
       // gentle pacing for multi-page fetches in dev
@@ -248,10 +282,9 @@ export async function getSetCards(code: string): Promise<ScryfallCard[]> {
     } catch (e) {
       // sj already retried the page 3× — Scryfall is genuinely down for
       // this URL. Rather than killing the entire route, bail out with
-      // whatever we've collected so far. The Next fetch cache will likely
-      // get a successful response on the next request (we cache 7 days
-      // at the fetch layer) so subsequent loads will be complete. The
-      // engine's fallbacks tolerate incomplete pools.
+      // whatever we've collected so far. The engine's fallbacks tolerate
+      // incomplete pools, and the outer empty-pool retry will kick in
+      // when out=== [] so we don't bake a transient outage into cache.
       // eslint-disable-next-line no-console
       console.warn(
         `[scryfall] getSetCards(${code}): pagination failed at ${out.length} cards, returning partial result`,
@@ -260,13 +293,18 @@ export async function getSetCards(code: string): Promise<ScryfallCard[]> {
       break;
     }
   }
-  // Tokens / emblems / schemes are fetched through getSetTokens when a
-  // recipe references them, so they're filtered out here. Art series cards
-  // (layout: "art_series") are NOT excluded any more — they live in their
-  // own dedicated sets (e.g. ASOS for SOS) and Collector Booster recipes
-  // explicitly reference those sets for the art-card slot. Excluding them
-  // here would empty the ASOS pool and silently break those outcomes.
-  return out.filter(
+  return out;
+}
+
+/** Tokens / emblems / schemes are fetched through getSetTokens when a
+ *  recipe references them, so they're filtered out here. Art series
+ *  cards (layout: "art_series") are NOT excluded any more — they live
+ *  in their own dedicated sets (e.g. ASOS for SOS) and Collector
+ *  Booster recipes explicitly reference those sets for the art-card
+ *  slot. Excluding them here would empty the ASOS pool and silently
+ *  break those outcomes. */
+function filterPool(cards: ScryfallCard[]): ScryfallCard[] {
+  return cards.filter(
     (c) =>
       !c.digital &&
       !c.oversized &&
@@ -275,6 +313,106 @@ export async function getSetCards(code: string): Promise<ScryfallCard[]> {
       c.layout !== "emblem" &&
       c.layout !== "scheme",
   );
+}
+
+/**
+ * Strip ScryfallCard down to just the fields the client actually reads
+ * before serializing it into a server-component prop. The Scryfall API
+ * returns ~40 fields per card (oracle_text, rulings_uri, multiverse_ids,
+ * tcgplayer_id, purchase_uris, artist, flavor_text, …) that the TS
+ * interface declares away but which still ride along in the parsed
+ * JSON object — and therefore in the hydration payload. Calling this
+ * at the route boundary trims a typical set's pool from ~450–800 KB to
+ * ~150–250 KB (3–4× smaller First Interactive payload).
+ *
+ * Returns a value that still type-conforms to ScryfallCard so no
+ * consumer needs to change. Adding a new used field? Add it to the
+ * shape below — easier to add a known-needed field than to debug a
+ * mystery missing one downstream.
+ */
+export function trimCardForClient(c: ScryfallCard): ScryfallCard {
+  return {
+    id: c.id,
+    name: c.name,
+    set: c.set,
+    set_name: c.set_name,
+    collector_number: c.collector_number,
+    rarity: c.rarity,
+    type_line: c.type_line,
+    mana_cost: c.mana_cost,
+    cmc: c.cmc,
+    colors: c.colors,
+    color_identity: c.color_identity,
+    // Image URIs — shallow-clone so the original ScryfallImageUris
+    // object (which carries unused `small`/`png`/`border_crop`) stays
+    // upstream. We only need normal, large, and art_crop client-side.
+    image_uris: c.image_uris
+      ? {
+          normal: c.image_uris.normal,
+          large: c.image_uris.large,
+          art_crop: c.image_uris.art_crop,
+        }
+      : undefined,
+    card_faces: c.card_faces?.map((f) => ({
+      name: f.name,
+      mana_cost: f.mana_cost,
+      type_line: f.type_line,
+      image_uris: f.image_uris
+        ? {
+            normal: f.image_uris.normal,
+            large: f.image_uris.large,
+            art_crop: f.image_uris.art_crop,
+          }
+        : undefined,
+    })),
+    layout: c.layout,
+    // Used by the "View on Scryfall" link in CardDetailModal — keep.
+    scryfall_uri: c.scryfall_uri,
+    // CardDetailModal reads `usd`, `usd_foil`, `eur`. `getDisplayPrice`
+    // also falls back to `usd_etched` for etched-foil cards (rare but
+    // worth preserving so etched prints don't silently drop their
+    // price). Drop only `eur_foil` and `tix` (never used).
+    prices: c.prices
+      ? {
+          usd: c.prices.usd,
+          usd_foil: c.prices.usd_foil,
+          usd_etched: c.prices.usd_etched,
+          eur: c.prices.eur,
+        }
+      : undefined,
+    // Filter-relevant fields. All five are referenced by booster recipe
+    // filters and the basic-land logic; dropping any breaks specific
+    // set pack rolls (showcase frame filters, Japanese-alt-art filters,
+    // foil-only finishes, dual-mana basics, etc.).
+    frame_effects: c.frame_effects,
+    border_color: c.border_color,
+    promo_types: c.promo_types,
+    produced_mana: c.produced_mana,
+    lang: c.lang,
+    finishes: c.finishes,
+    // `digital`/`oversized` are post-fetch filters in filterPool above —
+    // by the time we hit the trim, they're already false for every
+    // card in the pool. Keep them in the return shape so the TS type
+    // stays satisfied even though we don't repaint them.
+    digital: false,
+    oversized: false,
+    // `booster` is referenced by some recipes to filter to
+    // "booster-eligible" cards (e.g. exclude planeswalker deck
+    // exclusives). Keep.
+    booster: c.booster,
+  };
+}
+
+/** Trim every card in a multi-set CardPool-shaped object. Convenience
+ *  wrapper for the 3 routes that ship a pool to the client. */
+export function trimCardPool(
+  pool: Record<string, ScryfallCard[]>,
+): Record<string, ScryfallCard[]> {
+  const out: Record<string, ScryfallCard[]> = {};
+  for (const setCode of Object.keys(pool)) {
+    out[setCode] = pool[setCode].map(trimCardForClient);
+  }
+  return out;
 }
 
 /* ---------------- Card image helpers ---------------- */

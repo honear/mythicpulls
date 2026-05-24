@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FastForward, Sparkles } from "lucide-react";
 import { getCardImage, type ScryfallCard } from "@/lib/scryfall";
 import type { PackContent } from "@/lib/booster-config";
@@ -9,6 +9,7 @@ import { openPack, type CardPool, type PulledCard } from "@/lib/pack-open";
 import type { PackType } from "@/lib/pack-rules";
 import { botPick } from "@/lib/draft-bot";
 import { preloadImages } from "@/lib/preload";
+import { idlePreloadCardPool } from "@/lib/idle-preload";
 import { SealedDeckBuilder } from "@/app/sealed/[code]/SealedDeckBuilder";
 import { DraftTable, type SeatInfo } from "./DraftTable";
 import { DraftPickPanel } from "./DraftPickPanel";
@@ -91,6 +92,16 @@ export function DraftRun({
   const [round, setRound] = useState<number>(0);
   /** Pick number within the current round, 1-indexed. */
   const [pickNumber, setPickNumber] = useState<number>(0);
+
+  // Background pre-warm the entire set's images on idle ticks. Draft
+  // bursts 8 packs × 15 cards = 120 distinct cards per round; the
+  // round-transition preload race becomes near-instant once the pool
+  // is HTTP-cached. This also covers all three rounds in one shot
+  // (the same card universe is sampled each round).
+  useEffect(() => {
+    const cancel = idlePreloadCardPool(pool);
+    return cancel;
+  }, [pool]);
 
   /**
    * In-flight pick. While set, the panel renders `prevPack` (the user's

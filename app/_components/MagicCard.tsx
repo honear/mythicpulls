@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ScryfallCard, ScryfallImageUris } from "@/lib/scryfall";
 import { getCardImage } from "@/lib/scryfall";
 import { useCardTilt } from "@/lib/useCardTilt";
@@ -62,6 +62,20 @@ export function MagicCard({
   holoEnabled = true,
 }: Props) {
   const data = normalize(card, width);
+
+  // Track JPEG-loaded state per face so a card-shaped skeleton can show
+  // while the image is in flight. Without this, slow / cold-cache
+  // images paint as a blank rectangle (or worse, a broken image icon).
+  // Skeleton fades out via `is-loaded` on the face wrapper; see
+  // `.card-mtg__skeleton` in globals.css.
+  const [frontLoaded, setFrontLoaded] = useState(false);
+  const [backLoaded, setBackLoaded] = useState(false);
+  // Reset loaded state if the underlying front URL changes (binder
+  // re-sort, switching pulls, etc.) so the skeleton appears for the
+  // new card while its JPEG fetches.
+  useEffect(() => {
+    setFrontLoaded(false);
+  }, [data.front]);
   // Holo shimmer is reserved for traditional foils — i.e. cards that came
   // out of a slot flagged `foil: true` in pack-rules.ts. Earlier this also
   // fired on every rare/mythic regardless of foil state, which made Play
@@ -105,7 +119,13 @@ export function MagicCard({
       aria-label={faceUp ? data.name : "Magic card, face down"}
     >
       <div className={`card-flip ${faceUp ? "" : "is-flipped"}`}>
-        <div className="card-mtg__face">
+        <div className={`card-mtg__face ${frontLoaded ? "is-loaded" : ""}`}>
+          {/* Loading skeleton — purple card-shaped shimmer that sits
+              under the JPEG until it loads, then fades out via the
+              `is-loaded` class. Skipped entirely when there's no
+              front URL (rare edge case) since there's nothing to wait
+              on; the empty face is what the user has anyway. */}
+          {data.front && <span className="card-mtg__skeleton" aria-hidden />}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={data.front}
@@ -113,6 +133,11 @@ export function MagicCard({
             className="card-mtg__art"
             draggable={false}
             loading="lazy"
+            onLoad={() => setFrontLoaded(true)}
+            // `error` resolves the same — we never want a missing image
+            // to leave the skeleton spinning forever. The <img> still
+            // renders alt text via the empty src.
+            onError={() => setFrontLoaded(true)}
           />
           {/* Glare + holo only on the front face, and only when revealed.
               The holo's visual treatment (default shimmer, masked, or
@@ -121,7 +146,13 @@ export function MagicCard({
           {faceUp && <span className="card-mtg__glare" />}
           {isHolographic && <span className="card-mtg__holo" />}
         </div>
-        <div className="card-mtg__face card-mtg__face--back">
+        <div className={`card-mtg__face card-mtg__face--back ${backLoaded ? "is-loaded" : ""}`}>
+          {/* Back face uses the same card-back JPEG for every card so
+              the skeleton only flashes on the very first card render
+              per session; subsequent renders hit the HTTP cache and
+              `onLoad` fires synchronously enough that the skeleton
+              never even paints. Still included for completeness. */}
+          <span className="card-mtg__skeleton" aria-hidden />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={CARD_BACK_URL}
@@ -129,6 +160,8 @@ export function MagicCard({
             className="card-mtg__art"
             draggable={false}
             loading="lazy"
+            onLoad={() => setBackLoaded(true)}
+            onError={() => setBackLoaded(true)}
           />
           {/* Glare on the back too — parallax still feels alive while face-down. */}
           {!faceUp && <span className="card-mtg__glare" />}

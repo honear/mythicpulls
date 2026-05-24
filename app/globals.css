@@ -370,6 +370,45 @@ html, body {
   -webkit-user-drag: none;
 }
 
+/* Loading skeleton — visible underneath the JPEG until it loads.
+ * Sits on the face's background layer; the <img> paints on top once
+ * its onLoad fires (we just add `is-loaded` to the parent face). The
+ * skeleton fades out smoothly so the transition reads as "card resolves
+ * into focus" rather than a hard swap.
+ *
+ * Visual: deep-purple base + a soft animated shimmer band sliding
+ * left → right, echoing the brand gradient. The band uses a 200%-wide
+ * background and animates background-position so we don't have to
+ * absolutely position another sliding element. */
+.card-mtg__skeleton {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  clip-path: inset(0 round var(--card-radius));
+  background:
+    linear-gradient(
+      110deg,
+      rgba(255, 255, 255, 0) 30%,
+      rgba(164, 132, 215, 0.18) 50%,
+      rgba(255, 255, 255, 0) 70%
+    ),
+    linear-gradient(160deg, #1a0f3d 0%, #2a1565 50%, #3a1099 100%);
+  background-size: 200% 100%, 100% 100%;
+  background-position: -50% 0, 0 0;
+  animation: cardSkeletonShimmer 1.6s linear infinite;
+  pointer-events: none;
+  transition: opacity 280ms ease;
+  opacity: 1;
+}
+.card-mtg__face.is-loaded .card-mtg__skeleton {
+  opacity: 0;
+}
+
+@keyframes cardSkeletonShimmer {
+  from { background-position: -50% 0, 0 0; }
+  to   { background-position: 150% 0, 0 0; }
+}
+
 /* Glare layer — moves with cursor, multiplied with art. */
 .card-mtg__glare {
   position: absolute;

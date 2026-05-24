@@ -6,6 +6,7 @@ import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
 import { PACKS, PACK_ORDER, getPackCost, type PackType } from "@/lib/pack-rules";
 import { getManaPoolPackUrl } from "@/lib/manapool";
 import { preloadImages } from "@/lib/preload";
+import { idlePreloadCardPool } from "@/lib/idle-preload";
 import type { PackContent } from "@/lib/booster-config";
 import type { FilterPredicate } from "@/lib/booster-filters";
 import { openPack, reconcileSlotLabel, type CardPool, type PulledCard } from "@/lib/pack-open";
@@ -72,6 +73,46 @@ export function PackOpener({
    *  init effect for the first card) never schedules a React state update
    *  during another component's render. */
   const valuedRef = useRef<Set<string>>(new Set());
+
+  // Background pre-warm the full set's card images on idle ticks. By
+  // the time the user picks a pack, every image they could pull is in
+  // the HTTP cache, so the in-rip preload race finishes near-instant
+  // and the reveal can never get spoiled by a slow image. Cancels on
+  // unmount or if the user navigates away mid-warm-up. See
+  // lib/idle-preload.ts for the metered-connection gate + chunking.
+  useEffect(() => {
+    const cancel = idlePreloadCardPool(pool);
+    return cancel;
+  }, [pool]);
+
+  // Speculative next-pack warm-up. When the user enters the revealing
+  // phase, roll a SPECULATIVE pack of the same type and actively
+  // preload its image URLs (priority over the idle warm-up above). The
+  // user's actual next "Open next pack" click rolls fresh with new
+  // RNG, but the two packs share ~70-90% of cards (common slot pool
+  // is small; same rares get re-rolled), so the cache is hot when
+  // they click. Pure function call — openPack doesn't mutate the
+  // pool — so the speculative roll has no side effects beyond CPU. */
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (phase !== "revealing") return;
+    const recipe = recipes[packType];
+    if (!recipe) return;
+    const speculative = openPack(recipe, pool, setMeta.code, filters);
+    const urls: string[] = speculative
+      .map(
+        (p) =>
+          getCardImage(p.card, "large") ??
+          getCardImage(p.card, "normal") ??
+          p.card.card_faces?.[0]?.image_uris?.large ??
+          p.card.card_faces?.[0]?.image_uris?.normal,
+      )
+      .filter((u): u is string => !!u);
+    preloadImages(urls);
+    // Deps deliberately omit `filters`/`setMeta` since they're stable
+    // for the lifetime of this component; including them would force
+    // a re-roll on every render of stable references in some paths.
+  }, [phase, packType, recipes, pool]);
 
   // The currently-selected pack type's MSRP. The route layer resolves per-set
   // overrides (data/sets/<code>.json cost field) up front; we fall back to the

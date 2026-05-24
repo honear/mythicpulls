@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSet, getSetCards, getSetTokens } from "@/lib/scryfall";
+import { getSet, getSetCards, getSetTokens, trimCardPool } from "@/lib/scryfall";
 import type { ScryfallCard } from "@/lib/scryfall";
 import { recommendedPackType, type PackType } from "@/lib/pack-rules";
 import { collectReferencedSets, type PackContent } from "@/lib/booster-config";
@@ -165,7 +165,11 @@ export default async function SetPage({ params, searchParams }: Props) {
           iconUri: set.icon_svg_uri,
           heroArtCrops,
         }}
-        pool={pool}
+        // Trim the multi-set pool right at the server/client boundary
+        // so we ship ~150–250 KB of essential fields instead of the
+        // ~450–800 KB raw Scryfall JSON. See `trimCardForClient` for
+        // the exact field set.
+        pool={trimCardPool(pool)}
         recipes={recipesByType}
         costs={costsByType}
         filters={filters}
