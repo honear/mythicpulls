@@ -25,26 +25,9 @@ export function HomeHero() {
       className="relative w-full overflow-hidden"
       style={{ background: "var(--hero-bg)" }}
     >
-      {/* Soft radial glow centered behind the wordmark. Pure decoration
-          — keeps the flat deep-purple from feeling lifeless. The blur
-          is wide so the gradient stays subtle; brightness drops off
-          before it can compete with the headline. */}
-      <div
-        aria-hidden
-        className="absolute pointer-events-none"
-        style={{
-          top: "10%",
-          left: "50%",
-          transform: "translate(-50%, 0)",
-          width: "900px",
-          height: "900px",
-          maxWidth: "120vw",
-          background:
-            "radial-gradient(closest-side, rgba(164,132,215,0.18) 0%, rgba(164,132,215,0.06) 50%, rgba(164,132,215,0) 75%)",
-          filter: "blur(12px)",
-        }}
-      />
-
+      {/* No radial glow behind the logo — the gradient + the bg are
+          enough to anchor the mark on their own. Earlier passes had
+          a wide blurred purple bloom here; removed per design call. */}
       <div className="relative z-10 mx-auto max-w-5xl w-full px-4 sm:px-6 md:px-10 pt-24 sm:pt-28 md:pt-36 pb-10 sm:pb-12 md:pb-16">
         <div className="flex flex-col items-center text-center gap-5 sm:gap-6">
           <HeroLogo />
@@ -101,12 +84,12 @@ export function HomeHero() {
  * the bundle.
  */
 function HeroLogo() {
-  // Sized to read cleanly at 120-170px range. The previous passes
-  // wrapped the mark in an outer halo + a wide ambient drop-shadow,
-  // both of which extended visibly past the silhouette and got
-  // clipped by the section's overflow:hidden bounds. This pass keeps
-  // only DOWNWARD shadow components (directional + dark anchor) so
-  // nothing leaks above the silhouette.
+  // Plain logo, no glow. Earlier iterations layered an outer halo,
+  // a wide purple drop-shadow, and a top sheen — all removed per
+  // design call. The gradient's own luminance against the deep-
+  // purple page bg is enough on its own; the only filter kept is a
+  // hairline dark shadow that lifts the silhouette by a couple of
+  // pixels so the mark doesn't read as "stuck flat" on the bg.
   return (
     <div
       className="relative shrink-0"
@@ -116,38 +99,15 @@ function HeroLogo() {
       }}
       aria-hidden
     >
-      {/* The logo. Drop-shadow stack is intentionally downward-only:
-            • directional purple cast (sits below the silhouette) →
-              reads as "lit from above with a soft purple bloom"
-            • hairline dark shadow → defines the edge against the
-              page bg.
-          No wide ambient glow + no halo div — those were producing
-          the top-edge clipping. The gradient's own luminance reads
-          fine on the deep-purple page bg without extra ambient. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/threetreecity_logo.svg?v=tree-grad"
         alt="Three Tree City"
         className="relative w-full h-full"
         style={{
-          filter:
-            "drop-shadow(0 8px 18px rgba(91, 30, 221, 0.22)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.32))",
+          filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35))",
         }}
         draggable={false}
-      />
-
-      {/* Top sheen — very subtle "glass catching light from above"
-          cue. Constrained to the top half of the silhouette so it
-          can't extend above the logo box (no clip risk). Low alpha
-          so the gradient stays the dominant surface. */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          inset: 0,
-          background:
-            "radial-gradient(ellipse 55% 32% at 50% 20%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 70%)",
-          mixBlendMode: "screen",
-        }}
       />
     </div>
   );

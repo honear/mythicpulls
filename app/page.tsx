@@ -9,34 +9,61 @@ import { ModeCard } from "./_components/ModeCard";
  * sealed), then navigate into the per-mode flow.
  *
  * Featured art crops behind each ModeCard come from the static
- * `data/set-art.json` map; no live Scryfall calls. Three hand-picked
- * sets serve as the visual hooks — easy to swap by changing the
- * codes below.
+ * `data/set-art.json` map; no live Scryfall calls. The three sets
+ * are picked *randomly per request* — see the `dynamic = "force-
+ * dynamic"` export below — so returning visitors get a different
+ * palette each time without ever paying a network round-trip
+ * (everything is already bundled at build time).
  */
 
-// Hand-picked sets used as the atmospheric backdrop for each ModeCard.
-// The art is heavily darkened by ModeCard's gradient overlay so the
-// exact choice matters less than "is this art in the static map?";
-// these three are all in the bundled set-art.json. Swap freely.
-const FEATURED_ART = {
-  /** Bloomburrow — bright, inviting cottagecore palette. */
-  open: "blb",
-  /** Modern Horizons 3 — saturated, competitive energy. */
-  draft: "mh3",
-  /** Duskmourn — moody, contemplative for the deck-builder. */
-  sealed: "dsk",
-} as const;
+// Opt out of static rendering on this route. The render itself is
+// fast (no fetches, just JSX + bundled JSON), but we DO need Next to
+// re-run it on every request so the three random art picks below
+// actually vary. The trade-off is no CDN-cached HTML on /, which is
+// fine for a low-traffic fan project — TTFB stays well under the
+// notice threshold.
+export const dynamic = "force-dynamic";
+
+// Hand-picked sets used as the *fallback* when the random pool is
+// somehow empty (shouldn't happen with 170+ cached entries). Kept
+// here so a degenerate set-art.json doesn't crash the page.
+const FALLBACK = { open: "blb", draft: "mh3", sealed: "dsk" } as const;
+
+/** Pick `n` distinct random items from `arr` (small-n, large-arr
+ *  friendly — uses a Set to dedupe indices on each draw). Returns
+ *  the picks in random order. */
+function pickN<T>(arr: T[], n: number): T[] {
+  if (n >= arr.length) return arr.slice();
+  const seen = new Set<number>();
+  const out: T[] = [];
+  while (out.length < n) {
+    const i = Math.floor(Math.random() * arr.length);
+    if (seen.has(i)) continue;
+    seen.add(i);
+    out.push(arr[i]);
+  }
+  return out;
+}
 
 export default function HomePage() {
   const artMap = getSetArtMap();
-  // Resolve once so we can hand each ModeCard the full entry
-  // (url + artist + cardName) — null-safe via fallback empty entry
-  // so a missing featured set just hides the credit instead of
-  // crashing render.
   const blank: SetArtEntry = { url: "", artist: null, cardName: null };
-  const openArt = artMap[FEATURED_ART.open] ?? blank;
-  const draftArt = artMap[FEATURED_ART.draft] ?? blank;
-  const sealedArt = artMap[FEATURED_ART.sealed] ?? blank;
+  // Pool of sets eligible for the random pick: must have an art URL
+  // (skip the handful of pre-1996 sets without one) AND a known
+  // artist (so the "Art by X" credit always renders — mixed-credit
+  // cards reads inconsistent). 170+ entries qualify, plenty for
+  // random selection without short-cycle repetition.
+  const pool = Object.values(artMap).filter(
+    (e) => !!e.url && !!e.artist,
+  );
+  const picks = pool.length >= 3
+    ? pickN(pool, 3)
+    : [
+        artMap[FALLBACK.open] ?? blank,
+        artMap[FALLBACK.draft] ?? blank,
+        artMap[FALLBACK.sealed] ?? blank,
+      ];
+  const [openArt, draftArt, sealedArt] = picks;
 
   return (
     <div className="flex flex-col">
