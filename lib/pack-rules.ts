@@ -6,10 +6,16 @@
  * load and exposed in the legacy shape so existing imports (PACKS,
  * getPackCost, recommendedPackType, packsAvailableFor) keep working.
  *
- * Per-set tweaks now live in:
- *   - data/sets/<code>.json — pointer + MSRP overrides per pack type
- *   - data/booster-contents/<name>.json — actual slot recipes
- * Look at lib/booster-config.ts for the loader API used by route code.
+ * Per-set recipe overrides live at `data/booster-contents/<setCode>.json`
+ * — the file is auto-discovered by lowercase set code. Define only the
+ * pack types that diverge from the default; missing pack types fall
+ * through to `data/booster-contents/default.json`. There is no longer
+ * a `data/sets/` indirection layer.
+ *
+ * Pack prices are sourced exclusively from Mana Pool live market data
+ * (lib/manapool.ts → data/manapool-prices.json). There is no hand-set
+ * MSRP fallback anywhere; if Mana Pool doesn't carry a product,
+ * `getPackCost` returns null and the UI shows "Not available".
  */
 
 import type { ScryfallSet } from "./scryfall";
@@ -18,31 +24,17 @@ import type { PackType } from "./booster-config";
 // plain object available at module evaluation time. Per-set recipes are
 // still loaded asynchronously via resolveRecipe in the route layer.
 import defaultContentJson from "../data/booster-contents/default.json";
-// Per-set MSRP map. Single user-editable file at data/booster-prices.json.
-// Bundled here so the sync code path (PackOpener's MoneyStrip math) can
-// read it without going through node:fs.
-import boosterPricesJson from "../data/booster-prices.json";
 // Live marketplace prices from Mana Pool, refreshed by
-// `scripts/fetch-manapool-prices.mjs`. Takes precedence over the MSRP
-// map for any (set, packType) Mana Pool currently has stock for — the
-// MSRP file remains the fallback for out-of-stock products.
+// `scripts/fetch-manapool-prices.mjs`. This is the SOLE source of pack
+// prices in the app — see lib/manapool.ts for the static-data shape.
 import { getManaPoolSpendPrice } from "./manapool";
 
 export type { PackType } from "./booster-config";
 
-/**
- * User-editable per-set price overrides. Keys are lowercase Scryfall set
- * codes (plus a "default" entry as a baseline). The `getPackCost` lookup
- * consults this map FIRST, before falling back to bundled defaults.
- *
- * Edit data/booster-prices.json to tweak prices without touching any TS.
- */
-const BOOSTER_PRICES = boosterPricesJson as unknown as Record<
-  string,
-  Partial<Record<PackType, number>>
->;
-
 interface DefaultContentShape {
+  /** Universal MSRP fallback per pack type. Consulted by `getPackCost`
+   *  when Mana Pool doesn't carry the (set, packType). Edit
+   *  `data/booster-contents/default.json::costUsd` to retune. */
   costUsd?: Partial<Record<PackType, number>>;
   play?: { cardCount: number; tagline?: string };
   draft?: { cardCount: number; tagline?: string };
@@ -52,14 +44,16 @@ interface DefaultContentShape {
 const defaultContent = defaultContentJson as unknown as DefaultContentShape;
 
 /** Legacy-shape pack metadata exposed for UI affordances (pack name,
- *  tagline, default MSRP). Slot recipes themselves are loaded
+ *  tagline, card count, fallback MSRP). Slot recipes are loaded
  *  asynchronously via resolveRecipe and are NOT exposed here. */
 export interface PackDefinition {
   type: PackType;
   name: string;
   tagline: string;
   cardCount: number;
-  /** Default USD MSRP — overridable per-set via data/sets/<code>.json. */
+  /** Fallback MSRP from `data/booster-contents/default.json::costUsd`.
+   *  This is the bottom of the price chain — used when neither Mana
+   *  Pool nor a set-specific `costUsd` has a value. */
   costUsd: number;
 }
 
@@ -83,29 +77,32 @@ export const PACKS: Record<PackType, PackDefinition> = {
 export const PACK_ORDER: PackType[] = ["play", "draft", "collector"];
 
 /**
- * Pack-cost lookup. Resolution order:
- *   1. Mana Pool live marketplace price (market > low) for this
- *      (set, packType) — sourced from data/manapool-prices.json,
- *      refreshed by `scripts/fetch-manapool-prices.mjs`.
- *   2. data/booster-prices.json — per-set MSRP override.
- *   3. data/booster-prices.json — "default" MSRP for this packType.
- *   4. data/booster-contents/default.json — bundled fallback.
+ * Pack price for the client's sync path (MoneyStrip math). Resolution:
  *
- * Step 1 only fires when a setCode is provided AND Mana Pool has stock;
- * otherwise the legacy MSRP map takes over. Edit data/booster-prices.json
- * to tweak any fallback price; re-run the fetch script to refresh live
- * prices.
+ *   1. Mana Pool live market price for (setCode, packType).
+ *   2. `data/booster-contents/default.json::costUsd[packType]` —
+ *      bundled at module load; lets the MoneyStrip's "Spent" counter
+ *      still tally a reasonable number for sets Mana Pool doesn't
+ *      currently stock.
+ *   3. null — UI renders "Not available".
+ *
+ * Per-set `costUsd` overrides from
+ * `data/booster-contents/<setCode>.json` are NOT consulted here because
+ * we can't statically bundle every per-set file; the async
+ * `resolveRecipe` server path handles that and the resolved value
+ * arrives via the `costs` prop on PackOpener. The sync path is a fallback
+ * for any pack type the route didn't pre-resolve.
  */
-export function getPackCost(packType: PackType, setCode?: string): number {
+export function getPackCost(
+  packType: PackType,
+  setCode?: string,
+): number | null {
   if (setCode) {
     const live = getManaPoolSpendPrice(setCode, packType);
     if (typeof live === "number") return live;
-    const override = BOOSTER_PRICES[setCode.toLowerCase()]?.[packType];
-    if (typeof override === "number") return override;
   }
-  const baseline = BOOSTER_PRICES.default?.[packType];
-  if (typeof baseline === "number") return baseline;
-  return PACKS[packType].costUsd;
+  const fallback = defaultContent.costUsd?.[packType];
+  return typeof fallback === "number" ? fallback : null;
 }
 
 /** Recommend a default pack type based on release date. */

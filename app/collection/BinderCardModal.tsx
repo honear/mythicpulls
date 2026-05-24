@@ -7,6 +7,8 @@ import type { CollectionEntry } from "@/lib/collection";
 import { safeExternalUrl } from "@/lib/safe-url";
 import { getManaPoolCardUrl } from "@/lib/manapool";
 import { useManaPoolSingle } from "@/lib/useManaPoolSingle";
+import { getCardmarketCardUrl } from "@/lib/cardmarket";
+import { useScryfallCardPrice } from "@/lib/useScryfallCardPrice";
 import { MagicCard } from "@/app/_components/MagicCard";
 
 /**
@@ -19,30 +21,19 @@ import { MagicCard } from "@/app/_components/MagicCard";
  * What it shows:
  *   - The stored art_crop rendered through MagicCard kind="lite"
  *   - Card name, rarity chip, foil chip, set/collector number chip
- *   - Buy on Mana Pool (purple, primary) + Buy at Card Kingdom (glass)
- *     + View on Scryfall (white)
+ *   - Buy on Mana Pool (purple, primary, live USD chip) + Buy on
+ *     Cardmarket (glass, live EUR chip) + View on Scryfall (white)
  *
  * What's intentionally missing vs CardDetailModal:
  *   - Type line: not stored on CollectionEntry
- *   - Market price: ditto. The MoneyStrip in PackOpener already shows
- *     it at pull time; once a card lands in the binder it's "kept",
- *     not "evaluated". Click "View on Scryfall" for the live price.
+ *   - TCGplayer market price headline: relies on a fetch we don't do
+ *     here. The MoneyStrip in PackOpener already shows it at pull
+ *     time; once a card lands in the binder it's "kept", not
+ *     "evaluated". Click "View on Scryfall" for the live figure.
  *
  * Portaled to document.body to escape the header's backdrop-filter
  * containing block (see AGENTS.md modal conventions).
  */
-
-/**
- * Card Kingdom search URL — mirrors the helper in CardDetailModal so
- * the binder uses the same destination. Kept inline rather than
- * exported from CardDetailModal to avoid a circular import (this file
- * doesn't otherwise depend on the modal).
- */
-function cardKingdomSearchUrl(name: string): string {
-  return `https://www.cardkingdom.com/catalog/search?search=header&filter%5Bname%5D=${encodeURIComponent(
-    name,
-  )}`;
-}
 
 interface Props {
   entry: CollectionEntry | null;
@@ -92,10 +83,15 @@ export function BinderCardModal({ entry, onClose }: Props) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // Live Mana Pool price for the inline pill on the Buy button. The
-  // hook handles undefined gracefully so it's safe to call before we
-  // bail on a closed modal.
+  // Live Mana Pool price for the inline pill on the Mana Pool buy
+  // button. Hooks handle undefined gracefully so it's safe to call
+  // before we bail on a closed modal.
   const { data: mpPrice } = useManaPoolSingle(entry?.cardId, entry?.foil);
+  // Scryfall EUR price for the Cardmarket button chip — binder
+  // entries don't store the original price block, so we look it up by
+  // Scryfall ID at modal open time. Cached in-memory so repeat opens
+  // skip the network round trip.
+  const { data: sfPrice } = useScryfallCardPrice(entry?.cardId, entry?.foil);
 
   if (!entry || suppress || !mounted) return null;
 
@@ -104,7 +100,7 @@ export function BinderCardModal({ entry, onClose }: Props) {
       entry.setCode.toLowerCase(),
     )}/${encodeURIComponent(entry.collectorNumber)}`,
   );
-  const ckHref = safeExternalUrl(cardKingdomSearchUrl(entry.name));
+  const cmHref = safeExternalUrl(getCardmarketCardUrl(entry.name));
   const mpHref = safeExternalUrl(
     getManaPoolCardUrl({
       set: entry.setCode,
@@ -113,6 +109,8 @@ export function BinderCardModal({ entry, onClose }: Props) {
   );
   const mpUsd =
     mpPrice?.bestUsd != null ? `$${mpPrice.bestUsd.toFixed(2)}` : null;
+  const eurChip =
+    sfPrice?.eur != null ? `€${sfPrice.eur.toFixed(2)}` : null;
 
   const node = (
     <div
@@ -156,6 +154,20 @@ export function BinderCardModal({ entry, onClose }: Props) {
             </span>
           </div>
 
+          {/* Artist credit, live-fetched via useScryfallCardPrice
+              alongside the EUR price. Mirrors CardDetailModal's
+              treatment. Conditionally rendered so binder entries on
+              networks where the fetch fails still display cleanly. */}
+          {sfPrice?.artist && (
+            <p
+              className="text-[12px] text-[var(--color-ink-muted)] -mt-1"
+              style={{ fontFamily: "var(--font-ui)" }}
+            >
+              Art by{" "}
+              <span className="text-[var(--color-fg)]/85">{sfPrice.artist}</span>
+            </p>
+          )}
+
           <div className="flex flex-wrap gap-2 mt-2">
             {mpHref && (
               <a
@@ -172,16 +184,24 @@ export function BinderCardModal({ entry, onClose }: Props) {
                 )}
               </a>
             )}
-            {ckHref && (
+            {cmHref && (
               <a
-                href={ckHref}
+                href={cmHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full liquid-glass text-[var(--color-fg)] text-sm font-semibold hover:brightness-110 transition-all"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white text-[var(--color-bg)] text-sm font-semibold hover:bg-white/90 transition-colors"
               >
-                <ShoppingBag className="w-3.5 h-3.5" /> Buy at Card Kingdom
-                {/* Card Kingdom has no public price API — no inline
-                    pill here; the button is a search link. */}
+                <ShoppingBag className="w-3.5 h-3.5" /> Buy on Cardmarket
+                {/* EUR price chip — live-fetched via Scryfall when the
+                    modal opens (binder entries don't store the price
+                    block; see useScryfallCardPrice). The chip uses a
+                    translucent-dark fill so it reads cleanly against
+                    the white button. */}
+                {eurChip && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-[var(--color-bg)]/10 text-[12px] font-semibold tabular-nums">
+                    {eurChip}
+                  </span>
+                )}
               </a>
             )}
             {scryfallHref && (
@@ -189,7 +209,7 @@ export function BinderCardModal({ entry, onClose }: Props) {
                 href={scryfallHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white text-[var(--color-bg)] text-sm font-semibold hover:bg-white/90 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full liquid-glass text-[var(--color-fg)] text-sm font-semibold hover:brightness-110 transition-all"
               >
                 <ExternalLink className="w-3.5 h-3.5" /> View on Scryfall
               </a>

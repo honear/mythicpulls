@@ -1,5 +1,5 @@
 {
-  "_doc": "Secrets of Strixhaven Play + Collector recipes from Wizards' product page. Set codes: SOS = main set, SOA = Mystical Archive, PSOS = Special Guests / promos, TSOS = tokens, SOC = SOS Commander, ASOS = Art Series. Percentages match the official rates verbatim.",
+  "_doc": "Secrets of Strixhaven Play + Collector recipes from Wizards' product page. File is auto-discovered by lowercase set code (sos) — see lib/booster-loader.ts::resolveRecipe. Pack types not defined here (draft) fall through to data/booster-contents/default.json. Set codes: SOS = main set, SOA = Mystical Archive, PSOS = Special Guests / promos, TSOS = tokens, SOC = SOS Commander, ASOS = Art Series. Percentages match the official rates verbatim.",
 
   "costUsd": {
     "play": 5.99,

@@ -10,34 +10,32 @@ import type {
   BoosterContents,
   PackContent,
   PackType,
-  SetConfig,
 } from "./booster-config";
-// User-editable per-set price map. Bundled at module-eval time so
-// resolveRecipe can apply the override synchronously without a second
-// fs read. Edit data/booster-prices.json to change prices.
-import boosterPricesJson from "../data/booster-prices.json";
-// Live marketplace prices from Mana Pool — wins over the MSRP map when
-// a (set, packType) has current stock. Refresh via the fetch script.
+// Mana Pool live market prices — the primary source of pack pricing.
+// When Mana Pool doesn't carry a (set, packType), we fall back to the
+// hand-set `costUsd` block on the relevant `data/booster-contents/*.json`
+// — set-specific first, then default. Only when BOTH the live lookup
+// and the costUsd fallback are missing does the UI render "Not available".
 import { getManaPoolSpendPrice } from "./manapool";
-
-const BOOSTER_PRICES = boosterPricesJson as unknown as Record<
-  string,
-  Partial<Record<PackType, number>>
->;
 
 /**
  * Server-only fs-based loader. Importing this from a client component
  * fails the build via "server-only". Pair with lib/booster-config.ts for
  * the client-safe types + helpers.
+ *
+ * Lookup model — there is no per-set config indirection any more. To
+ * customize a set's pack contents, drop a file at
+ * `data/booster-contents/<setCode>.json` defining whichever pack types
+ * differ from the global default. Pack types not present in that file
+ * fall through to `data/booster-contents/default.json`. Missing file →
+ * everything comes from default.
  */
 
 const DATA_ROOT = path.join(process.cwd(), "data");
 const CONTENTS_DIR = path.join(DATA_ROOT, "booster-contents");
-const SETS_DIR = path.join(DATA_ROOT, "sets");
 const FILTERS_FILE = path.join(DATA_ROOT, "filters.json");
 
-const contentCache = new Map<string, BoosterContents>();
-const setCache = new Map<string, SetConfig | null>();
+const contentCache = new Map<string, BoosterContents | null>();
 let filtersCache: Record<string, FilterPredicate> | null = null;
 
 async function readJsonOrNull<T>(filepath: string): Promise<T | null> {
@@ -57,21 +55,19 @@ export async function loadFilters(): Promise<Record<string, FilterPredicate>> {
   return filtersCache;
 }
 
+/**
+ * Load `data/booster-contents/<name>.json`. Caches the parse result —
+ * including a `null` for files that don't exist — so repeat lookups
+ * during a single request don't re-hit the disk. The cache is process-
+ * wide, which is fine because the files are bundled into the build and
+ * never mutate at runtime.
+ */
 export async function loadBoosterContents(name: string): Promise<BoosterContents | null> {
   const key = name.toLowerCase();
-  if (contentCache.has(key)) return contentCache.get(key)!;
+  if (contentCache.has(key)) return contentCache.get(key) ?? null;
   const file = path.join(CONTENTS_DIR, `${key}.json`);
   const data = await readJsonOrNull<BoosterContents>(file);
-  if (data) contentCache.set(key, data);
-  return data;
-}
-
-export async function loadSetConfig(code: string): Promise<SetConfig | null> {
-  const key = code.toLowerCase();
-  if (setCache.has(key)) return setCache.get(key)!;
-  const file = path.join(SETS_DIR, `${key}.json`);
-  const data = await readJsonOrNull<SetConfig>(file);
-  setCache.set(key, data);
+  contentCache.set(key, data);
   return data;
 }
 
@@ -80,79 +76,101 @@ export interface ResolvedRecipe {
   content: PackContent;
   /** Which JSON name produced it (for debugging / dev log). */
   source: string;
-  /** Per-pack-type MSRP, if the set or the default content set one. */
+  /** Resolved pack price in USD. Resolution:
+   *    1. Mana Pool live market price for this (set, packType)
+   *    2. `data/booster-contents/<setCode>.json::costUsd[packType]`
+   *    3. `data/booster-contents/default.json::costUsd[packType]`
+   *    4. undefined — renders as "Not available" in the UI. */
   costUsd: number | undefined;
 }
 
 /**
- * Resolve the booster content + cost for a (setCode, packType) pair:
- *   1. Look up data/sets/<code>.json. If it names a content for this pack
- *      type, use it; else fall back to "default".
- *   2. Load data/booster-contents/<name>.json. If the resolved content
- *      doesn't define this pack type, fall back to default's pack type.
- *   3. Cost: set config override > resolved content's per-type cost >
- *      default content's per-type cost.
+ * Resolve the booster content + cost for a (setCode, packType) pair.
+ *
+ *   1. Try `data/booster-contents/<setCode>.json`. If it defines this
+ *      pack type, use it ("source": setCode).
+ *   2. Otherwise fall through to `data/booster-contents/default.json`
+ *      ("source": "default"). Each set-specific file is a partial
+ *      override — undefined pack types automatically inherit default.
+ *   3. Cost resolution chain:
+ *        a. Mana Pool live market price for (setCode, packType).
+ *        b. Set-specific `costUsd[packType]` (from
+ *           `data/booster-contents/<setCode>.json`).
+ *        c. Default `costUsd[packType]` (from
+ *           `data/booster-contents/default.json`).
+ *        d. undefined → UI renders "Not available".
  */
 export async function resolveRecipe(
   setCode: string,
   packType: PackType,
 ): Promise<ResolvedRecipe | null> {
-  const setConfig = await loadSetConfig(setCode);
-  const contentName = setConfig?.boosters?.[packType] ?? "default";
+  const code = setCode.toLowerCase();
+  // Parallel load: most sets will only have a default hit, but we pay
+  // the same time either way and avoid a second await round-trip when
+  // a set-specific file does exist.
+  const [setSpecific, defaultContent] = await Promise.all([
+    loadBoosterContents(code),
+    loadBoosterContents("default"),
+  ]);
 
-  const named = await loadBoosterContents(contentName);
-  const fallback =
-    contentName !== "default" ? await loadBoosterContents("default") : null;
-
-  const content = named?.[packType] ?? fallback?.[packType] ?? null;
+  const content = setSpecific?.[packType] ?? defaultContent?.[packType] ?? null;
   if (!content) return null;
 
-  const defaultContent = await loadBoosterContents("default");
-  const defaultCostMap = (defaultContent as unknown as { costUsd?: Partial<Record<PackType, number>> })?.costUsd;
-  const namedCostMap = (named as unknown as { costUsd?: Partial<Record<PackType, number>> })?.costUsd;
-
-  // Resolution order — Mana Pool live price first (when in stock), then
-  // data/booster-prices.json (per-set, then default), then per-set JSON
-  // cost block, then the recipe's costUsd, then the bundled default
-  // content's costUsd. Mana Pool data refreshes via the fetch script;
-  // booster-prices.json is the user-editable MSRP fallback.
-  const code = setCode.toLowerCase();
+  // Cost chain: Mana Pool live → set-specific costUsd → default costUsd.
+  // Undefined falls through to the UI's "Not available" rendering. The
+  // MSRP fallbacks let the MoneyStrip's "Spent" counter still tally a
+  // reasonable number for sets Mana Pool doesn't currently stock.
   const livePrice = getManaPoolSpendPrice(code, packType);
-  const priceOverride =
-    BOOSTER_PRICES[code]?.[packType] ?? BOOSTER_PRICES.default?.[packType];
-
   const costUsd =
     livePrice ??
-    priceOverride ??
-    setConfig?.cost?.[packType] ??
-    namedCostMap?.[packType] ??
-    defaultCostMap?.[packType] ??
+    setSpecific?.costUsd?.[packType] ??
+    defaultContent?.costUsd?.[packType] ??
     undefined;
 
   return {
     content,
-    source: named?.[packType] ? contentName : "default",
+    source: setSpecific?.[packType] ? code : "default",
     costUsd,
   };
 }
 
-/** Which pack types does this set support? Reads data/sets/<code>.json if
- *  present; otherwise falls back to the legacy date-based heuristic. */
+/**
+ * Which pack types does this set support? Combines two signals:
+ *   - The date-based heuristic (play boosters only exist 2024-02-01+;
+ *     collector boosters only 2019-10-01+; draft is universal).
+ *   - The set-specific content file, if present, can extend the list
+ *     (e.g., a pre-2024 set that explicitly defines a play recipe).
+ *
+ * No `data/sets/<code>.json` indirection — pack availability now reads
+ * directly off the content file's defined pack types plus the date
+ * heuristic.
+ */
 export async function packsAvailableForSet(
   setCode: string,
   releasedAt: string | undefined,
 ): Promise<PackType[]> {
-  const setConfig = await loadSetConfig(setCode);
-  if (setConfig?.boosters) {
-    return (Object.keys(setConfig.boosters) as PackType[]).filter((t) =>
-      ["play", "draft", "collector"].includes(t),
-    );
-  }
-  // Legacy heuristic — matches the original packsAvailableFor in pack-rules.
   const released = releasedAt ?? "";
-  const out: PackType[] = [];
-  if (released >= "2024-02-01") out.push("play");
-  out.push("draft");
-  if (released >= "2019-10-01") out.push("collector");
-  return out;
+  const out = new Set<PackType>();
+
+  // Date-based heuristic: matches the legacy packsAvailableFor in
+  // lib/pack-rules.ts so behaviour is identical for sets without a
+  // dedicated content file.
+  if (released >= "2024-02-01") out.add("play");
+  out.add("draft");
+  if (released >= "2019-10-01") out.add("collector");
+
+  // If the set has its own content file, anything IT explicitly defines
+  // is available even if the date heuristic wouldn't have included it.
+  // (Use case: a one-off Universes-Beyond set that ships a custom Play
+  // Booster despite a pre-2024 release-equivalent code.)
+  const setSpecific = await loadBoosterContents(setCode.toLowerCase());
+  if (setSpecific) {
+    if (setSpecific.play) out.add("play");
+    if (setSpecific.draft) out.add("draft");
+    if (setSpecific.collector) out.add("collector");
+  }
+
+  // Preserve a stable display order — matches PACK_ORDER from pack-rules.
+  const order: PackType[] = ["play", "draft", "collector"];
+  return order.filter((t) => out.has(t));
 }

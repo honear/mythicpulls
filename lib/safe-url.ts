@@ -35,6 +35,12 @@ const ALLOWED_EXTERNAL_HOSTS: ReadonlySet<string> = new Set([
   // Mana Pool href, hiding the "Buy on Mana Pool" buttons.
   "manapool.com",
   "www.manapool.com",
+  // Cardmarket singles search (see lib/cardmarket.ts). EUR price source
+  // for the price chip is Scryfall's `prices.eur` field — which itself
+  // is sourced from Cardmarket — so we display the same number their
+  // listing page would show.
+  "cardmarket.com",
+  "www.cardmarket.com",
 ]);
 
 export function safeExternalUrl(url: string | undefined | null): string | null {

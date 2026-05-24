@@ -36,10 +36,14 @@ interface Props {
    *  the conventional t<code> tokens set. */
   pool: CardPool;
   /** Resolved pack contents per type. Provided by the route layer after
-   *  consulting data/sets/<code>.json + data/booster-contents/*. */
+   *  consulting data/booster-contents/<setCode>.json with fall-through
+   *  to data/booster-contents/default.json for any pack type the set-
+   *  specific file doesn't override. */
   recipes: Partial<Record<PackType, PackContent>>;
-  /** Per-pack-type MSRP override resolved at the route layer. Falls back
-   *  to getPackCost when missing. */
+  /** Per-pack-type live Mana Pool price resolved at the route layer.
+   *  Missing keys mean Mana Pool didn't carry that (set, packType);
+   *  the sync `getPackCost` call below also returns null in that case,
+   *  surfacing as "Not available" on the rip button. */
   costs: Partial<Record<PackType, number>>;
   filters: Record<string, FilterPredicate>;
   availableTypes: PackType[];
@@ -114,10 +118,12 @@ export function PackOpener({
     // a re-roll on every render of stable references in some paths.
   }, [phase, packType, recipes, pool]);
 
-  // The currently-selected pack type's MSRP. The route layer resolves per-set
-  // overrides (data/sets/<code>.json cost field) up front; we fall back to the
-  // legacy synchronous override map only if the route layer didn't supply one.
-  const packCost = costs[packType] ?? getPackCost(packType, setMeta.code);
+  // The currently-selected pack type's live Mana Pool price (market
+  // → low → null when Mana Pool doesn't carry the product). Server
+  // route-resolved `costs` arrives via the prop and wins; the sync
+  // `getPackCost` call covers any pack type the route didn't pre-
+  // resolve. `null` means "Not available" — handled in MoneyStrip.
+  const packCost: number | null = costs[packType] ?? getPackCost(packType, setMeta.code);
 
   /**
    * Open a pack. `typeOverride` lets callers (notably the fan click handler
@@ -142,11 +148,15 @@ export function PackOpener({
     setDetailUid(null);
     setViewMode("reveal");
     // Use the just-clicked type for the cost so the MoneyStrip doesn't
-    // lag a pack behind.
-    const costForThisPack = costs[t] ?? getPackCost(t, setMeta.code);
+    // lag a pack behind. Mana Pool may not carry every (set, packType)
+    // — when `costForThisPack` is null, "Spent" simply doesn't move
+    // and the MoneyStrip renders "Not available" on the button label
+    // instead of a price.
+    const costForThisPack: number | null =
+      costs[t] ?? getPackCost(t, setMeta.code);
     setStats((s) => ({
       ...s,
-      spent: s.spent + costForThisPack,
+      spent: s.spent + (costForThisPack ?? 0),
       packs: s.packs + 1,
     }));
     // Cinematic rip choreography runs ~1300ms (see RippingPack +
@@ -448,7 +458,10 @@ function MoneyStrip({
   stats, packCost, packTypeName, canRip, onRip, buyUrl,
 }: {
   stats: { spent: number; pulled: number; packs: number };
-  packCost: number;
+  /** Live Mana Pool price for the next rip, or `null` when Mana Pool
+   *  doesn't carry this (set, packType). Null renders the button
+   *  without a price chip and the "Spent" tally is unchanged on rip. */
+  packCost: number | null;
   /** Short type label shown on the rip button (e.g. "Play", "Collector"). */
   packTypeName: string;
   /** Disables the button during the 800ms ripping animation. */
@@ -465,16 +478,26 @@ function MoneyStrip({
     ? "text-[var(--color-rarity-rare)]"
     : "text-[var(--color-rarity-mythic)]";
   const usd = (n: number) => `$${n.toFixed(2)}`;
+  // "Spent" is only meaningful once at least one priced pack has been
+  // ripped — if every pack so far was unavailable on Mana Pool, the
+  // sum is 0 and "Profit" would falsely read as the entire pulled
+  // value. Show "—" in that case so users see "unavailable" instead
+  // of a misleading $0.00.
+  const noSpend = stats.spent === 0 && stats.packs > 0;
+  const spentLabel = noSpend ? "—" : usd(stats.spent);
+  const profitLabel = noSpend
+    ? "—"
+    : `${profitSign}${usd(Math.abs(profit))}`;
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 mb-4 rounded-2xl liquid-glass">
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
         <Stat label="Pulled" value={usd(stats.pulled)} accent="text-[var(--color-fg)]" />
-        <Stat label="Spent"  value={usd(stats.spent)} accent="text-[var(--color-ink-muted)]" />
+        <Stat label="Spent"  value={spentLabel} accent="text-[var(--color-ink-muted)]" />
         <Stat
           label={profit >= 0 ? "Profit" : "Loss"}
-          value={`${profitSign}${usd(Math.abs(profit))}`}
-          accent={profitColor}
+          value={profitLabel}
+          accent={noSpend ? "text-[var(--color-ink-muted)]" : profitColor}
         />
         <Stat label="Packs" value={String(stats.packs)} accent="text-[var(--color-fg)]" />
       </div>
@@ -510,7 +533,11 @@ function MoneyStrip({
             fontFamily: "var(--font-btn)",
             boxShadow: "0 8px 20px -8px var(--accent-purple-glow), inset 0 1px 0 rgba(255,255,255,0.18)",
           }}
-          aria-label={`Open another ${packTypeName} Booster for ${usd(packCost)}`}
+          aria-label={
+            packCost != null
+              ? `Open another ${packTypeName} Booster for ${usd(packCost)}`
+              : `Open another ${packTypeName} Booster (price not available on Mana Pool)`
+          }
         >
           <span
             className="grid place-items-center w-6 h-6 rounded-full text-[10px] font-bold tracking-wider uppercase"
@@ -519,10 +546,18 @@ function MoneyStrip({
             +1
           </span>
           <span className="text-[13px] font-medium tracking-wide">
-            Open next {packTypeName} Booster
+            Open another {packTypeName} Booster
           </span>
-          <span className="text-[13px] font-semibold tabular-nums opacity-90">
-            {usd(packCost)}
+          {/* Price chip — renders the live Mana Pool figure when
+              available, otherwise "Not available". The button stays
+              enabled either way; users can still rip when there's no
+              market price (e.g., out-of-stock products on Mana Pool). */}
+          <span
+            className={`text-[13px] font-semibold tabular-nums ${
+              packCost != null ? "opacity-90" : "opacity-70 italic font-medium"
+            }`}
+          >
+            {packCost != null ? usd(packCost) : "Not available"}
           </span>
         </button>
       </div>

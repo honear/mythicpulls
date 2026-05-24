@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 /**
@@ -35,7 +37,17 @@ export const contentType = "image/png";
 // the function uses request-time APIs or dynamic config.)
 export const dynamic = "force-static";
 
-export default function Image() {
+export default async function Image() {
+  // Load the brand tree-of-life SVG from disk at build time and embed
+  // it as a base64 data URL so Satori (the renderer under next/og)
+  // can rasterize it without needing an absolute http URL. The whole
+  // generator runs during `next build` so the read happens once and
+  // the resulting PNG is then statically served.
+  const logoBytes = await readFile(
+    join(process.cwd(), "public", "threetreecity_logo.svg"),
+  );
+  const logoDataUrl = `data:image/svg+xml;base64,${logoBytes.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -71,38 +83,20 @@ export default function Image() {
           }}
         />
 
-        {/* Top row — castle logomark + brand wordmark. The castle SVG is
-            inlined as JSX so Satori (the renderer under next/og) can
-            rasterize it without a separate asset fetch. Path data is
-            verbatim from `app/_components/SiteHeader.tsx::Logomark`. */}
+        {/* Top row — tree-of-life brand logo + wordmark. Embeds the
+            full `public/threetreecity_logo.svg` as a data URL so
+            Satori rasterizes the same artwork the site uses
+            elsewhere. The logo's gradient stops live inside the SVG;
+            no need to redefine them here. */}
         <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
-          <svg
-            width="120"
-            height="120"
-            viewBox="0 0 32 32"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <linearGradient id="og-mark" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#cbb3f0" />
-                <stop offset="55%" stopColor="#b48bff" />
-                <stop offset="100%" stopColor="#8a4dff" />
-              </linearGradient>
-            </defs>
-            <path
-              fill="url(#og-mark)"
-              d="M3 28 L3 11 L5 11 L5 9 L7 9 L7 11 L9 11 L9 9 L11 9 L11 11 L11 28 Z"
-            />
-            <path
-              fill="url(#og-mark)"
-              d="M21 28 L21 11 L23 11 L23 9 L25 9 L25 11 L27 11 L27 9 L29 9 L29 11 L29 28 Z"
-            />
-            <path
-              fill="url(#og-mark)"
-              fillRule="evenodd"
-              d="M11 28 L11 5 L13 5 L13 3 L15 3 L15 5 L17 5 L17 3 L19 3 L19 5 L21 5 L21 28 Z M14 28 L14 22 A2 2 0 0 1 18 22 L18 28 Z"
-            />
-          </svg>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={logoDataUrl}
+            alt=""
+            width={130}
+            height={130}
+            style={{ display: "flex" }}
+          />
           <div
             style={{
               fontSize: "44px",

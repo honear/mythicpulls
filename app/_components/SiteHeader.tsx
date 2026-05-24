@@ -34,11 +34,10 @@ export function SiteHeader() {
   const onCollection = pathname.startsWith("/collection");
   const onSealed = pathname.startsWith("/sealed");
   const onDraft = pathname.startsWith("/draft");
-  // "Open packs" is the home set-picker (root path) since pack-opening
-  // lives at /sets/<code> and the picker is on /. Highlight when we're
-  // anywhere in /sets/* or on the root path with no other section active.
-  const onOpenPacks =
-    pathname === "/" || pathname.startsWith("/sets");
+  // "Open packs" routes to /sets — the set picker lives there since
+  // the homepage redesign moved off the catalog grid. Highlight on any
+  // /sets/* path (the picker itself and any /sets/<code> child).
+  const onOpenPacks = pathname.startsWith("/sets");
 
   // Auto-close the mobile menu on route change so navigating from inside
   // it doesn't leave the panel parked open over the next page.
@@ -95,7 +94,7 @@ export function SiteHeader() {
         <div className="hidden sm:flex items-center gap-2.5">
           <SupportButton variant="desktop" />
           <Link
-            href="/"
+            href="/sets"
             aria-current={onOpenPacks ? "page" : undefined}
             className="inline-flex items-center gap-2 h-[38px] pl-3 pr-4 rounded-[10px] text-[14px] font-medium transition-all"
             style={{
@@ -137,7 +136,7 @@ export function SiteHeader() {
             }}
           >
             <Swords className="w-4 h-4" />
-            Practice Sealed
+            Build Sealed
           </Link>
           <Link
             href="/collection"
@@ -221,7 +220,7 @@ export function SiteHeader() {
             role="menu"
           >
             <Link
-              href="/"
+              href="/sets"
               role="menuitem"
               aria-current={onOpenPacks ? "page" : undefined}
               className="inline-flex items-center gap-2 h-11 px-4 rounded-[10px] text-[15px] font-medium"
@@ -287,49 +286,26 @@ export function SiteHeader() {
 }
 
 /**
- * Three-tower castle silhouette. The "three" tower count is a quiet
- * nod to the site name (Three Tree City), and the silhouette reads
- * cleanly at every size from the favicon up to the header. Filled
- * with the site's purple gradient. Negative-space arched doorway is
- * cut out via a path filled with the page background so the cutout
- * works even when the logo sits over a custom backdrop.
+ * Brand mark — the tree-of-life logo shared with the homepage hero
+ * and the favicon (see public/threetreecity_logo.svg). Loaded as a
+ * cached `<img>` rather than inline so the same asset serves header,
+ * landing, and any future surface without duplicating the 60-odd
+ * paths into the JS bundle. A tight drop-shadow keeps the mark
+ * legible against the header's translucent backdrop.
  */
 function Logomark() {
   return (
-    <svg
-      width="28"
-      height="28"
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/threetreecity_logo.svg?v=tree-grad"
+      alt=""
+      width={28}
+      height={28}
       aria-hidden
-    >
-      <defs>
-        <linearGradient id="hdr-mark" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#a484d7" />
-          <stop offset="55%" stopColor="#7b39fc" />
-          <stop offset="100%" stopColor="#4f17d4" />
-        </linearGradient>
-      </defs>
-      {/* Left tower with 2-merlon battlement. */}
-      <path
-        fill="url(#hdr-mark)"
-        d="M3 28 L3 11 L5 11 L5 9 L7 9 L7 11 L9 11 L9 9 L11 9 L11 11 L11 28 Z"
-      />
-      {/* Right tower with 2-merlon battlement. */}
-      <path
-        fill="url(#hdr-mark)"
-        d="M21 28 L21 11 L23 11 L23 9 L25 9 L25 11 L27 11 L27 9 L29 9 L29 11 L29 28 Z"
-      />
-      {/* Center tower — taller, 3-merlon battlement. The arched doorway
-          is included as a second subpath; fill-rule="evenodd" turns it
-          into a true cutout so the header's translucent backdrop shows
-          through (rather than painting a dark patch over the gradient). */}
-      <path
-        fill="url(#hdr-mark)"
-        fillRule="evenodd"
-        d="M11 28 L11 5 L13 5 L13 3 L15 3 L15 5 L17 5 L17 3 L19 3 L19 5 L21 5 L21 28 Z M14 28 L14 22 A2 2 0 0 1 18 22 L18 28 Z"
-      />
-    </svg>
+      draggable={false}
+      style={{
+        filter: "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45))",
+      }}
+    />
   );
 }

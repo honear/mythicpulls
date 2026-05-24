@@ -7,28 +7,21 @@ import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
 import { safeExternalUrl } from "@/lib/safe-url";
 import { getManaPoolCardUrl } from "@/lib/manapool";
 import { useManaPoolSingle } from "@/lib/useManaPoolSingle";
-import { reconcileSlotLabel } from "@/lib/pack-open";
+import { getCardmarketCardUrl } from "@/lib/cardmarket";
 import { MagicCard } from "./MagicCard";
-
-/**
- * Card Kingdom doesn't publish a free price API, so we can't display CK
- * prices alongside the Scryfall (TCGplayer-market) numbers. The closest we
- * can do is link to their search by card name — that lands the user on the
- * right product page with the current CK price.
- */
-function cardKingdomSearchUrl(name: string): string {
-  return `https://www.cardkingdom.com/catalog/search?search=header&filter%5Bname%5D=${encodeURIComponent(name)}`;
-}
 
 interface Props {
   card: ScryfallCard | null;
   foil?: boolean;
-  /** Optional slot label (e.g., "Rare / Mythic") shown alongside the card. */
+  /** Slot label from the pack recipe (e.g., "Rare / Mythic" or
+   *  "Mystical Archive"). Currently unused — the rarity chip in the
+   *  info panel conveys the same information. Kept on the prop so
+   *  PackOpener doesn't need to change when this lights back up. */
   slotLabel?: string;
   onClose: () => void;
 }
 
-export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
+export function CardDetailModal({ card, foil, onClose }: Props) {
   // Suppress the modal entirely on phones (≤639px). The full-screen
   // overlay is heavy mid-rip on a small viewport; tapping a card on
   // mobile now does nothing for the moment. Re-enable when we redesign
@@ -80,7 +73,13 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
   if (!card || suppress) return null;
 
   const price = getDisplayPrice(card, foil);
-  const eur = card.prices?.eur ? `€${Number(card.prices.eur).toFixed(2)}` : null;
+  // Cardmarket's EUR figure ships in `card.prices.eur` (Scryfall sources
+  // it directly from Cardmarket). Foil cards have their own `eur_foil`
+  // value; fall back to non-foil when foil isn't separately listed.
+  const eurRaw = foil
+    ? card.prices?.eur_foil ?? card.prices?.eur
+    : card.prices?.eur;
+  const eur = eurRaw ? `€${Number(eurRaw).toFixed(2)}` : null;
   const mpUsd =
     mpPrice?.bestUsd != null ? `$${mpPrice.bestUsd.toFixed(2)}` : null;
 
@@ -107,16 +106,6 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
         {/* Info */}
         <div className="liquid-panel rounded-2xl p-4 sm:p-6 md:p-7 flex flex-col gap-4 sm:gap-5 max-w-md self-center w-full">
           <div>
-            {/* Reconcile the slot's nominal label against the card's
-                actual rarity — a "Showcase Rare" slot that rolled a
-                mythic should read "Showcase Mythic" so the label and
-                the rarity chip below tell the same story. */}
-            {(() => {
-              const displayLabel = reconcileSlotLabel(slotLabel, card.rarity);
-              return displayLabel ? (
-                <p className="label-caps text-[var(--color-ink-muted)] mb-1">{displayLabel}</p>
-              ) : null;
-            })()}
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-[var(--color-fg)] leading-tight">
               {card.name}
             </h2>
@@ -133,19 +122,31 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
             </span>
           </div>
 
-          {(price || eur) && (
+          {/* Artist credit. Honors the illustrator behind the art —
+              Scryfall surfaces this on every card, and we already keep
+              it on the trimmed client payload (see `trimCardForClient`
+              in lib/scryfall.ts). Muted text so it sits as a quiet
+              attribution rather than competing with the price block. */}
+          {card.artist && (
+            <p
+              className="text-[12px] text-[var(--color-ink-muted)] -mt-1"
+              style={{ fontFamily: "var(--font-ui)" }}
+            >
+              Art by{" "}
+              <span className="text-[var(--color-fg)]/85">{card.artist}</span>
+            </p>
+          )}
+
+          {price && (
             <div className="flex flex-col gap-1">
               <p className="label-caps text-[var(--color-ink-muted)]">
-                Market price · TCGplayer
+                Approx. Market price
               </p>
-              <div className="flex items-baseline gap-3">
-                {price && (
-                  <p className="font-display text-3xl text-[var(--color-fg)]">{price.label}</p>
-                )}
-                {eur && (
-                  <p className="text-sm text-[var(--color-ink-muted)]">{eur}</p>
-                )}
-              </div>
+              {/* EUR / Cardmarket price now lives on the Cardmarket
+                  button below — showing it here too would render the
+                  same number twice. Keep this section as the headline
+                  TCGplayer market reference. */}
+              <p className="font-display text-3xl text-[var(--color-fg)]">{price.label}</p>
             </div>
           )}
 
@@ -159,8 +160,8 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
               we still funnel it through safeExternalUrl for consistency. */}
           {(() => {
             const scryfallHref = safeExternalUrl(card.scryfall_uri);
-            const ckHref = safeExternalUrl(cardKingdomSearchUrl(card.name));
             const mpHref = safeExternalUrl(getManaPoolCardUrl(card));
+            const cmHref = safeExternalUrl(getCardmarketCardUrl(card.name));
             return (
               <div className="flex flex-wrap gap-2 mt-2">
                 {mpHref && (
@@ -182,17 +183,24 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
                     )}
                   </a>
                 )}
-                {ckHref && (
+                {cmHref && (
                   <a
-                    href={ckHref}
+                    href={cmHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full liquid-glass text-[var(--color-fg)] text-sm font-semibold hover:brightness-110 transition-all"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white text-[var(--color-bg)] text-sm font-semibold hover:bg-white/90 transition-colors"
                   >
-                    <ShoppingBag className="w-3.5 h-3.5" /> Buy at Card Kingdom
-                    {/* Card Kingdom doesn't publish a free price feed
-                        — no inline pill here. The button is a search
-                        link that lands on the live CK product page. */}
+                    <ShoppingBag className="w-3.5 h-3.5" /> Buy on Cardmarket
+                    {/* Cardmarket's EUR price ships on the card from
+                        Scryfall already (they're Scryfall's EUR source);
+                        the inline pill shows it without a fetch. The
+                        chip uses a translucent-dark fill so it reads
+                        cleanly against the white button. */}
+                    {eur && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-[var(--color-bg)]/10 text-[12px] font-semibold tabular-nums">
+                        {eur}
+                      </span>
+                    )}
                   </a>
                 )}
                 {scryfallHref && (
@@ -200,7 +208,7 @@ export function CardDetailModal({ card, foil, slotLabel, onClose }: Props) {
                     href={scryfallHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white text-[var(--color-bg)] text-sm font-semibold hover:bg-white/90 transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full liquid-glass text-[var(--color-fg)] text-sm font-semibold hover:brightness-110 transition-all"
                   >
                     <ExternalLink className="w-3.5 h-3.5" /> View on Scryfall
                   </a>

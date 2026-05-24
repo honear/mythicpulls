@@ -51,18 +51,11 @@ export interface BoosterContents {
   play?: PackContent;
   draft?: PackContent;
   collector?: PackContent;
-}
-
-/** Per-set override file (data/sets/<code>.json). Missing file ⇒ defaults
- *  are used for every pack type and there are no MSRP overrides. */
-export interface SetConfig {
-  code: string;
-  name?: string;
-  /** Pack-type → content-file name (without extension), e.g. "default" or
-   *  "secrets_of_strixhaven". */
-  boosters?: Partial<Record<PackType, string>>;
-  /** Per-pack-type MSRP override. Falls back to the default's costUsd. */
-  cost?: Partial<Record<PackType, number>>;
+  /** Hand-set MSRP per pack type, used as a fallback when Mana Pool
+   *  doesn't carry the product. Resolution: Mana Pool live → set-
+   *  specific costUsd → default costUsd → undefined ("Not available").
+   *  Edit the relevant `data/booster-contents/*.json` to tweak these. */
+  costUsd?: Partial<Record<PackType, number>>;
 }
 
 /** Translates the `$tokens` sentinel to a real set code. Pure helper —

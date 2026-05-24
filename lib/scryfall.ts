@@ -104,6 +104,9 @@ export interface ScryfallCard {
    *  "etched", "glossy". Lets a filter narrow to "only available in foil"
    *  separate from the slot's foil flag. */
   finishes?: string[];
+  /** Illustrator name (e.g. "Sara Winters", "Chris Seaman"). Surfaced
+   *  in CardDetailModal as "Art by <artist>" credit. */
+  artist?: string;
 }
 
 interface ScryfallList<T> {
@@ -368,18 +371,23 @@ export function trimCardForClient(c: ScryfallCard): ScryfallCard {
     layout: c.layout,
     // Used by the "View on Scryfall" link in CardDetailModal — keep.
     scryfall_uri: c.scryfall_uri,
-    // CardDetailModal reads `usd`, `usd_foil`, `eur`. `getDisplayPrice`
-    // also falls back to `usd_etched` for etched-foil cards (rare but
-    // worth preserving so etched prints don't silently drop their
-    // price). Drop only `eur_foil` and `tix` (never used).
+    // CardDetailModal + Cardmarket button read `usd`, `usd_foil`, `eur`,
+    // `eur_foil`. `getDisplayPrice` falls back to `usd_etched` for
+    // etched-foil cards (rare but worth preserving so etched prints
+    // don't silently drop their price). Drop only `tix` (MTGO, unused).
     prices: c.prices
       ? {
           usd: c.prices.usd,
           usd_foil: c.prices.usd_foil,
           usd_etched: c.prices.usd_etched,
           eur: c.prices.eur,
+          eur_foil: c.prices.eur_foil,
         }
       : undefined,
+    // Artist name — used by CardDetailModal to credit the illustrator
+    // in the info panel. Cheap to keep (one string per card) and lets
+    // the same modal honor the art on every card it shows.
+    artist: c.artist,
     // Filter-relevant fields. All five are referenced by booster recipe
     // filters and the basic-land logic; dropping any breaks specific
     // set pack rolls (showcase frame filters, Japanese-alt-art filters,

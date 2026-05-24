@@ -1,7 +1,7 @@
 import { Users } from "lucide-react";
 import { getOpenableSets, getSetSampleArt } from "@/lib/scryfall";
 import { mapWithConcurrency } from "@/lib/concurrency";
-import { getSetArtMap } from "@/lib/set-art";
+import { getSetArtMap, type SetArtEntry } from "@/lib/set-art";
 import { SetGrid } from "../_components/SetGrid";
 
 /** See app/page.tsx for the static-map + concurrency-fallback rationale. */
@@ -16,7 +16,7 @@ const FALLBACK_CONCURRENCY = 4;
 export default async function DraftSetPickerPage() {
   const sets = await getOpenableSets();
 
-  const sampleArt: Record<string, string> = { ...getSetArtMap() };
+  const sampleArt: Record<string, SetArtEntry> = { ...getSetArtMap() };
   const missing = sets.filter((s) => !sampleArt[s.code.toLowerCase()]);
   if (missing.length > 0) {
     const fetched = await mapWithConcurrency(
@@ -28,7 +28,7 @@ export default async function DraftSetPickerPage() {
       },
     );
     for (const [code, art] of fetched) {
-      if (art) sampleArt[code] = art;
+      if (art) sampleArt[code] = { url: art, artist: null, cardName: null };
     }
   }
 

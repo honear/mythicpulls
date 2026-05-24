@@ -13,7 +13,8 @@
  *   1. Mana Pool market price for this (set, packType) — most honest
  *      "what you'd actually pay" figure.
  *   2. Mana Pool low ask — used when there's no recent-sales market price.
- *   3. data/booster-prices.json — fall back to MSRP for out-of-stock sets.
+ *   3. null — surfaces as "Not available" in the UI. There is no
+ *      hand-set MSRP fallback anywhere; Mana Pool is the only source.
  *
  * Buy links go to the canonical product page at
  * `https://manapool.com/sealed/<set>/<slug>` (or `/card/<set>/<num>` for

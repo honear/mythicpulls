@@ -81,23 +81,50 @@ sync.
 
 ## Booster pricing
 
-Resolution priority (high → low):
+**Mana Pool is the primary source of pack prices**, with a hand-set
+MSRP fallback on the booster-contents JSON. Chain (high → low):
 
-1. **Mana Pool live marketplace price** (market > low ask) — sourced
-   from `data/manapool-prices.json`, refreshed by
-   `scripts/fetch-manapool-prices.mjs` against
+1. **Mana Pool live market price** (market > low NM > low any-condition)
+   for (setCode, packType) — sourced from `data/manapool-prices.json`,
+   refreshed by `scripts/fetch-manapool-prices.mjs` against
    `https://manapool.com/api/v1/prices/sealed` (public, no auth, ~1700
-   in-stock products). Run `npm run refresh:manapool` to pull fresh
-   numbers; do this weekly or before a release.
-2. **`data/booster-prices.json`** — user-editable per-set MSRP map.
-   Keys are lowercase set codes; `"default"` is the universal fallback.
-   Used for sets Mana Pool doesn't currently stock.
-3. `data/sets/<code>.json` cost block, then `data/booster-contents/*.json`
-   costUsd as last-ditch fallbacks.
+   in-stock products). Run `npm run refresh:manapool` weekly.
+2. **Set-specific `costUsd`** in `data/booster-contents/<setCode>.json`
+   — only consulted by the server-side `resolveRecipe` path (the route
+   layer's `costs` prop). Used as the MSRP fallback for sets Mana Pool
+   doesn't currently stock.
+3. **Default `costUsd`** in `data/booster-contents/default.json` — the
+   universal MSRP fallback (play 5.99, draft 3.99, collector 25.99).
+   Bundled into the client so `getPackCost` can read it sync.
+4. **`null` / undefined** — UI renders **"Not available"** on the rip
+   button and `—` for Spent / Profit if every priced pack tally so far
+   has been null.
 
-Wired through `getPackCost` (sync, used by client MoneyStrip) and
-`resolveRecipe` (async, server route). The Mana Pool integration also
-provides deep links — see "Mana Pool integration" below.
+Wired through `getPackCost` (sync, client MoneyStrip — returns
+`number | null`) and `resolveRecipe` (async, server route — sets
+`costUsd` to `undefined` only when steps 1–3 all miss).
+
+The Mana Pool integration also powers deep "Buy on Mana Pool" links and
+per-card live prices — see "Mana Pool integration" below.
+
+## Booster recipes (per-set overrides)
+
+To customize what a set's pack contains, drop a file at
+`data/booster-contents/<setCode>.json` (lowercase). The file is auto-
+discovered by `lib/booster-loader.ts::resolveRecipe` — there is no
+`data/sets/` indirection. Define only the pack types that differ from
+the global default; missing types fall through to
+`data/booster-contents/default.json`.
+
+Example: `data/booster-contents/sos.json` defines `play` + `collector`
+(SOS-specific recipes for the Mystical Archive & Special Guests slots);
+the `draft` pack type is undefined, so SOS draft boosters automatically
+use the default draft recipe.
+
+Sets without a dedicated content file use the default recipe for every
+pack type. `packsAvailableForSet` combines a date-based heuristic with
+what the set's content file defines, so a one-off custom set can
+extend its available pack types beyond the date heuristic.
 
 ## Mana Pool integration
 
@@ -114,8 +141,12 @@ provides deep links — see "Mana Pool integration" below.
 - **Card buy button** in CardDetailModal is built from
   `/card/<set>/<collector_number>` which 301-redirects to the canonical
   slug — works for any Scryfall card without per-card API calls.
-- The MSRP map at `data/booster-prices.json` remains the **fallback**
-  for out-of-stock sets; do not delete it.
+- When Mana Pool has no listing, prices fall back to the booster-
+  contents `costUsd` map (see "Booster pricing" above for the full
+  chain). "Not available" only renders when both Mana Pool and the
+  MSRP fallback are missing. The legacy `data/booster-prices.json`
+  file was removed during the consolidation; do not re-add it — MSRPs
+  now live alongside the recipes in `data/booster-contents/*.json`.
 
 ## Card image rendering
 

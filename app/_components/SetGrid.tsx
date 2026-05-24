@@ -1,10 +1,11 @@
 "use client";
 
 import Link, { useLinkStatus } from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import type { ScryfallSet } from "@/lib/scryfall";
 import { setHasDraftStats } from "@/lib/draft-stats-meta";
+import type { SetArtEntry } from "@/lib/set-art";
 
 type Filter = "all" | "recent" | "modern" | "legacy";
 
@@ -23,9 +24,10 @@ export function SetGrid({
   showDraftStatsBadge = false,
 }: {
   sets: ScryfallSet[];
-  /** Per-set art-crop URLs keyed by lowercased set code. Optional — sets
-   *  without an entry fall back to icon-only. */
-  sampleArt?: Record<string, string>;
+  /** Per-set art credits keyed by lowercased set code. Each entry is
+   *  `{ url, artist, cardName }`. Sets without an entry fall back to
+   *  icon-only tiles with no tooltip. */
+  sampleArt?: Record<string, SetArtEntry>;
   /** Path prefix for each tile link. `/sets` (default) drops you in the
    *  single-pack opener; `/sealed` drops you in the 6-pack sealed flow. */
   linkBase?: string;
@@ -41,6 +43,35 @@ export function SetGrid({
 }) {
   const [filter, setFilter] = useState<Filter>("recent");
   const [query, setQuery] = useState("");
+
+  // Measured column count of the rendered grid, used to trim the
+  // "Recent" filter so it never ends in an orphan row (e.g., 17 sets
+  // at 8 cols would render 8 + 8 + 1, leaving one lonely tile). When
+  // we know the column count we slice the array to the largest
+  // multiple of cols that's ≤ the natural length. Initial value 0
+  // means "haven't measured yet" — the first render falls through to
+  // the un-trimmed list, then the ResizeObserver in the effect below
+  // fires and we re-render with the trimmed slice. Single-frame
+  // flicker on cold load only.
+  const gridRef = useRef<HTMLUListElement | null>(null);
+  const [cols, setCols] = useState<number>(0);
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el || typeof window === "undefined") return;
+    const measure = () => {
+      // `gridTemplateColumns` resolves to a space-separated list of
+      // computed track sizes (e.g. "152.5px 152.5px 152.5px ..."), one
+      // entry per column. Counting those entries gives us the live
+      // column count regardless of Tailwind breakpoint.
+      const tpl = getComputedStyle(el).gridTemplateColumns;
+      const n = tpl.split(/\s+/).filter(Boolean).length;
+      if (n > 0) setCols(n);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -104,33 +135,49 @@ export function SetGrid({
         </div>
       </div>
 
-      {filtered.length === 0 ? (
-        <Empty />
-      ) : (
-        <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-          {filtered.map((s, i) => (
-            <SetTile
-              key={s.id}
-              set={s}
-              index={i}
-              artUrl={sampleArt[s.code.toLowerCase()]}
-              linkBase={linkBase}
-              tileLabel={tileLabel}
-              showDraftStatsBadge={showDraftStatsBadge}
-            />
-          ))}
-        </ul>
-      )}
+      {(() => {
+        // Orphan-row trim: when the user is on "Recent" with no active
+        // search, slice the natural list down to the largest multiple
+        // of `cols` that fits. Other filters (Modern / Legacy / All)
+        // and active searches keep the full list — losing 1-5 results
+        // there would be confusing ("where's the set I searched for?").
+        // The clip is gated on cols > 0 so SSR + first paint show the
+        // un-trimmed list, then the ResizeObserver fires and a second
+        // render trims to fit.
+        const trimRecent = filter === "recent" && !query.trim() && cols > 0;
+        const visible = trimRecent
+          ? filtered.slice(0, Math.floor(filtered.length / cols) * cols)
+          : filtered;
+        if (visible.length === 0) return <Empty />;
+        return (
+          <ul
+            ref={gridRef}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"
+          >
+            {visible.map((s, i) => (
+              <SetTile
+                key={s.id}
+                set={s}
+                index={i}
+                artEntry={sampleArt[s.code.toLowerCase()]}
+                linkBase={linkBase}
+                tileLabel={tileLabel}
+                showDraftStatsBadge={showDraftStatsBadge}
+              />
+            ))}
+          </ul>
+        );
+      })()}
     </div>
   );
 }
 
 function SetTile({
-  set, index, artUrl, linkBase, tileLabel, showDraftStatsBadge,
+  set, index, artEntry, linkBase, tileLabel, showDraftStatsBadge,
 }: {
   set: ScryfallSet;
   index: number;
-  artUrl?: string;
+  artEntry?: SetArtEntry;
   linkBase: string;
   tileLabel: string;
   showDraftStatsBadge: boolean;
@@ -143,6 +190,15 @@ function SetTile({
   // are also tuned by 17Lands when they aren't.
   // Premier Draft data for this set.
   const hasStats = showDraftStatsBadge && setHasDraftStats(set.code);
+  const artUrl = artEntry?.url;
+  // Build the tooltip with set name, year, and (when present) the
+  // featured card + artist — so the artist gets credit via the
+  // browser tooltip on hover without cluttering the tile. The art is
+  // the same image used as the tile background, so the tooltip text
+  // honestly describes what the user is looking at.
+  const tooltip = artEntry?.artist
+    ? `${set.name} · ${year}\nArt: ${artEntry.cardName ?? "—"} by ${artEntry.artist}`
+    : `${set.name} · ${year}`;
 
   return (
     <li
@@ -152,7 +208,7 @@ function SetTile({
       <Link
         href={`${linkBase}/${set.code.toLowerCase()}`}
         className="group relative block aspect-square liquid-panel hover:bg-white/8 transition-colors lift overflow-hidden"
-        title={`${set.name} · ${year}`}
+        title={tooltip}
       >
         {/* Per-set art-crop background. Darkened heavily so the icon + text
             stay readable; brightens on hover for a subtle reveal. */}

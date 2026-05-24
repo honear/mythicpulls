@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { Hand } from "lucide-react";
 import type { PulledCard } from "@/lib/pack-open";
 import { getDisplayPrice } from "@/lib/scryfall";
@@ -504,27 +505,51 @@ function animateCycleOut(
     `translate(${dir * 560}px, 80px) rotateZ(${dir * 22}deg) scale(0.88)`;
   el.style.opacity = "0";
   window.setTimeout(() => {
-    commitCycle();
-    if (el && !keepFinalState) {
-      // Clearing inline transform + opacity used to FLICKER: the JSX
-      // transition (380ms snap) was still active when these reverted,
-      // so the browser animated the outgoing card back in from
-      // off-screen to its new back-of-stack rest, opacity fading from
-      // 0→1. To kill that, disable transitions for the duration of the
-      // cleanup. A forced reflow between the property reset and the
-      // transition restore commits the property changes synchronously
-      // so the subsequent transition: "" doesn't catch them.
-      el.style.transition = "none";
-      el.style.transform = "";
-      el.style.opacity = "";
-      // Force layout/style flush so the cleared values are applied
-      // with `transition: none` still in effect.
-      void el.offsetHeight;
-      // Re-enable the JSX-defined transition for any future property
-      // changes (e.g. the next time this slot becomes the top and
-      // animates back up the stack).
-      el.style.transition = "";
+    if (keepFinalState || !el) {
+      // Final-dismiss path leaves the off-stage state intact — the
+      // parent's view switch unmounts this CardDeck on the next React
+      // commit, so any cleanup would just flash a centered card for a
+      // single frame.
+      commitCycle();
+      return;
     }
+    // Cleanup choreography. Two competing facts:
+    //   - We need to clear our inline transform/opacity so React's
+    //     style prop (back-of-stack rest, opacity 1) becomes the source
+    //     of truth for the card's resting position.
+    //   - We need React to have committed the new cycle order BEFORE
+    //     we re-enable transitions; otherwise the cleared transform
+    //     resolves to centered identity, React then writes the new
+    //     back-of-stack rest, and the JSX-default 380ms transition
+    //     animates the card from centered → back. That mid-flight
+    //     position is visible for the duration of the snap → the
+    //     "flash" the user sees right after the card leaves.
+    //
+    // Solution:
+    //   1. Disable transitions so any change in the next few ms is a
+    //      teleport, not an animation.
+    //   2. flushSync the cycle commit so React writes the new transform
+    //      to el.style.transform synchronously, in the same JS turn.
+    //   3. Force a reflow to commit the React-written value to the
+    //      render tree.
+    //   4. Restore transitions so future moves (e.g. this slot becoming
+    //      the top again on a later cycle) animate normally.
+    //
+    // The element's inline transform is overwritten by React's flush in
+    // step 2; we don't have to clear it ourselves. Opacity IS cleared
+    // here because the JSX style prop doesn't manage it — leaving
+    // opacity:0 inline would keep the back-of-stack card invisible.
+    el.style.transition = "none";
+    el.style.opacity = "";
+    flushSync(commitCycle);
+    // After flushSync, React has rerendered with the new cycleOrder.
+    // The DeckSlot for this uid is now at the last position; its
+    // `rest` transform writes back-of-stack via the JSX style prop,
+    // which goes through React's reconciler and updates
+    // el.style.transform. The forced reflow commits both opacity and
+    // transform to the render tree before we restore transitions.
+    void el.offsetHeight;
+    el.style.transition = "";
   }, 340);
 }
 

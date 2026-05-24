@@ -61,8 +61,9 @@ export default async function SetPage({ params, searchParams }: Props) {
   if (!set) notFound();
 
   // What pack types are valid for this set + which is the recommended
-  // landing one. packsAvailableForSet reads data/sets/<code>.json first
-  // and falls back to the legacy date heuristic.
+  // landing one. packsAvailableForSet combines a date-based heuristic
+  // with whatever pack types the optional `data/booster-contents/
+  // <setCode>.json` explicitly defines.
   const available = await packsAvailableForSet(set.code, set.released_at);
   const initial = (sp.type as PackType) ?? recommendedPackType(set);
   const initialType = available.includes(initial) ? initial : available[0];
