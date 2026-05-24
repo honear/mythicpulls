@@ -25,9 +25,30 @@ export function HomeHero() {
       className="relative w-full overflow-hidden"
       style={{ background: "var(--hero-bg)" }}
     >
-      {/* No radial glow behind the logo — the gradient + the bg are
-          enough to anchor the mark on their own. Earlier passes had
-          a wide blurred purple bloom here; removed per design call. */}
+      {/* Soft radial glow behind the headline/wordmark area — gives
+          the flat purple bg a sense of depth and ties the
+          headline-and-subhead block together visually. The blur is
+          wide so the gradient stays subtle; brightness drops off
+          before it can compete with the text. The logo itself sits
+          ABOVE the glow's center (logo is at the top of the content
+          stack, glow centers around the headline), so this doesn't
+          re-introduce the per-logo bloom we just removed. */}
+      <div
+        aria-hidden
+        className="absolute pointer-events-none"
+        style={{
+          top: "10%",
+          left: "50%",
+          transform: "translate(-50%, 0)",
+          width: "900px",
+          height: "900px",
+          maxWidth: "120vw",
+          background:
+            "radial-gradient(closest-side, rgba(164,132,215,0.18) 0%, rgba(164,132,215,0.06) 50%, rgba(164,132,215,0) 75%)",
+          filter: "blur(12px)",
+        }}
+      />
+
       <div className="relative z-10 mx-auto max-w-5xl w-full px-4 sm:px-6 md:px-10 pt-24 sm:pt-28 md:pt-36 pb-10 sm:pb-12 md:pb-16">
         <div className="flex flex-col items-center text-center gap-5 sm:gap-6">
           <HeroLogo />
