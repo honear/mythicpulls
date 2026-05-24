@@ -95,6 +95,17 @@ html, body {
   color: var(--color-fg);
 }
 
+/* Suppress the iOS Safari / Chrome on Android default tap-highlight
+ * overlay (a translucent gray that flashes on every <button>, <a>,
+ * and role=button tap). Against this site's deep-purple page bg,
+ * that gray reads as a brief background flash on every card tap —
+ * most visible during draft where the cards are densely packed.
+ * Our own hover / active styles already provide the interaction
+ * feedback we want; the user-agent overlay is pure noise. */
+a, button, [role="button"], summary, label {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* ============================================================
    Type utilities
    ============================================================ */

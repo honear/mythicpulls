@@ -379,7 +379,24 @@ export function DraftRun({
               )}
               {phase === "picking" && (
                 <DraftPickPanel
-                  key={transition ? "exit" : `enter-${round}-${pickNumber}`}
+                  // Key intentionally does NOT depend on `transition`. The
+                  // exit transition keeps showing the same 15 cards
+                  // (transition.prevPack === the just-shown userPack), so
+                  // React should *reconcile in place* and only swap each
+                  // card's className from --enter to --exit. The earlier
+                  // `key={transition ? "exit" : "enter-X-Y"}` was flipping
+                  // the key on tap, which forced an unmount-then-remount
+                  // — for one frame between the two, the canvas behind
+                  // the panel (a soft purple radial-gradient) was exposed
+                  // and every card was gone, reading on mobile as
+                  // "purple blocks flash then cards reappear and exit".
+                  //
+                  // The key changes only when a genuinely new pack arrives
+                  // (`pickNumber` increments inside `processPick`, which
+                  // runs after the exit animation), which is the right
+                  // moment to remount and trigger the --enter animation
+                  // on the new 15 cards.
+                  key={`pack-${round}-${pickNumber}`}
                   pack={transition ? transition.prevPack : userPack}
                   onPick={onUserPickClick}
                   mode={transition ? "exit" : "enter"}
