@@ -91,7 +91,13 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full flex flex-col">
+      {/* Browser extensions (VPN/ad-blockers/proxies) commonly inject
+          attributes on <body> before React hydrates — e.g. the user's
+          `inject_newvt_svd="true"`. React's mismatch warning isn't
+          actionable for us in those cases, so suppress just the body
+          comparison. Real hydration mismatches inside our tree still
+          warn normally. */}
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <SiteHeader />
         <main className="flex-1 flex flex-col">{children}</main>
         <SiteFooter />

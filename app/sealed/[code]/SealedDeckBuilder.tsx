@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
-  Download, Copy, X, Plus, Minus, ArrowDownAZ, Palette,
+  Download, Copy, X, ArrowDownAZ, Palette,
 } from "lucide-react";
 
 /** Mobile breakpoint matcher — narrower than Tailwind's `sm` (640px).
@@ -414,9 +414,13 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sea
           else moveToColumn(drag.uid, column);
         }
       } else if (zone === "deck") {
-        // Dropped on the deck panel but not a specific column — use the
-        // default bucket for the card.
+        // Dropped inside the deck panel but not on a specific column.
+        // Treated as a "land in the natural bucket" intent: pool source
+        // adds, deck source resets the column override. This is the
+        // safety net for releases that overshoot the rightmost column
+        // or fall in the panel's padding.
         if (drag.source === "pool") addToDeck(drag.uid, defaultBucket(drag.card));
+        else if (!isBasic) moveToColumn(drag.uid, defaultBucket(drag.card));
       }
     }
 
@@ -563,11 +567,14 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sea
               className="flex items-start gap-2"
               style={{ minWidth: DECK_VISIBLE_COLUMNS * (DECK_CARD_W + 14) }}
             >
-              {/* While a drag is active we render every possible bucket
-                  (0..7+ and Lands), even empty ones. That gives the user a
-                  drop target for any mana value, so a pool card can land in
-                  a column the deck doesn't have any cards in yet. Empty
-                  columns show a dashed placeholder. */}
+              {/* During a drag, render every possible bucket (0..7+ and
+                  Lands) so the user can always drop onto a specific column
+                  — populated columns stay at their normal width, empty
+                  ones render as narrow placeholder columns (just the
+                  bucket label + a slim "drop here" pad). That keeps the
+                  layout shift small compared to expanding every empty to
+                  the full card width while still giving each bucket an
+                  unambiguous drop target. */}
               {(drag?.active
                 ? ALL_BUCKETS.map((b) =>
                     deckColumns.find((c) => c.bucket === b) ?? { bucket: b, groups: [] },
@@ -735,27 +742,25 @@ function PoolTile({
 }
 
 /**
- * Render slot — one visual tile in a deck column. We flatten the column's
- * groups into a sequence of slots:
- *   • Basic land groups collapse into a single slot with a count badge
- *     (so "Forest × 7" is one tile, not seven stacked copies).
- *   • Every other group expands one slot per pull, so duplicates stack
- *     with the Y-offset reveal that lets the user read each card's name.
+ * Render slot — one visual tile in a deck column. Every group (basic
+ * lands, non-land duplicates, single cards) collapses into one tile with
+ * a "× N" badge when N > 1.
+ *
+ * The collapsed tile represents one specific uid (`group[0]`), so drag and
+ * click operate per-copy: clicking removes that one uid, dragging the tile
+ * to a different column overrides that uid's column only. Re-render then
+ * picks the next uid in the group, so repeated drags off the same tile
+ * peel copies one-by-one. Dropping a uid into a column that already has a
+ * sibling copy merges them back into one collapsed tile because grouping
+ * is by `card.id` within the destination column.
+ *
+ * Basic lands keep the same "collapsed" render but route remove/drag-out
+ * through the `lands` counter instead of `inDeck` — see endDrag.
  */
-type RenderSlot =
-  | { kind: "stacked"; pulled: PulledCard }
-  | { kind: "collapsed"; pulled: PulledCard; count: number };
+type RenderSlot = { pulled: PulledCard; count: number };
 
 function buildColumnSlots(groups: PulledCard[][]): RenderSlot[] {
-  const slots: RenderSlot[] = [];
-  for (const g of groups) {
-    if (g.length > 0 && isBasicLandUid(g[0].uid)) {
-      slots.push({ kind: "collapsed", pulled: g[0], count: g.length });
-    } else {
-      for (const p of g) slots.push({ kind: "stacked", pulled: p });
-    }
-  }
-  return slots;
+  return groups.map((g) => ({ pulled: g[0], count: g.length }));
 }
 
 function DeckColumn({
@@ -776,6 +781,14 @@ function DeckColumn({
   // them but the header should still show the real total.
   const realCount = groups.reduce((s, g) => s + g.length, 0);
   const isEmpty = slots.length === 0;
+  // Empty columns appear only during a drag (the parent filters them out
+  // when idle), and render as a narrow placeholder strip: just enough to
+  // hold the bucket label and a "Drop here" target. Keeps the layout
+  // shift modest compared to expanding every empty bucket to the full
+  // card width.
+  const colW = isEmpty ? 64 : cardW + 10;
+  const innerW = isEmpty ? 56 : cardW;
+  const innerH = isEmpty ? cardH : (stackH || cardH);
 
   return (
     <div
@@ -783,7 +796,7 @@ function DeckColumn({
       data-column={String(bucket)}
       className="flex flex-col items-center shrink-0 rounded-lg transition-colors"
       style={{
-        width: cardW + 10,
+        width: colW,
         background: isPotentialTarget ? "rgba(123, 57, 252, 0.04)" : undefined,
       }}
     >
@@ -800,17 +813,14 @@ function DeckColumn({
       </div>
       <div
         className="relative"
-        style={{ width: cardW, height: stackH || cardH }}
+        style={{ width: innerW, height: innerH }}
       >
         {isEmpty && drag?.active && (
-          // Empty placeholder shown only while a drag is in progress. Lets
-          // the column read as a valid drop target even though there's no
-          // card in it yet — drop creates the column for real.
           <div
-            className="absolute inset-0 rounded-xl border-2 border-dashed grid place-items-center text-[11px] text-[var(--color-ink-dim)]"
+            className="absolute inset-0 rounded-xl border-2 border-dashed grid place-items-center text-[10px] text-[var(--color-ink-dim)] px-1 text-center leading-tight"
             style={{ borderColor: "rgba(164,132,215,0.30)" }}
           >
-            Drop here
+            Drop
           </div>
         )}
         {slots.map((slot, i) => (
@@ -839,14 +849,17 @@ function DeckSlotCard({
   cardW: number;
   stackOffset: number;
 }) {
-  const { pulled } = slot;
+  const { pulled, count } = slot;
   const beingDragged = drag?.active && drag.uid === pulled.uid;
-  const isCollapsed = slot.kind === "collapsed";
-  const count = isCollapsed ? slot.count : 1;
   const isBasic = isBasicLandUid(pulled.uid);
-  const aria = isBasic
-    ? `${pulled.card.name} ×${count} — click to remove one`
-    : `${pulled.card.name} — click to remove · drag to another column`;
+  const aria =
+    count > 1
+      ? isBasic
+        ? `${pulled.card.name} ×${count} — click to remove one`
+        : `${pulled.card.name} ×${count} — click to remove one · drag to peel one to another column`
+      : isBasic
+        ? `${pulled.card.name} — click to remove`
+        : `${pulled.card.name} — click to remove · drag to another column`;
 
   return (
     <button
@@ -872,7 +885,7 @@ function DeckSlotCard({
         holoEnabled={false}
         onPreview={() => handlers.openPreview(pulled.card, pulled.foil)}
       />
-      {isCollapsed && count > 1 && (
+      {count > 1 && (
         <span
           className="absolute top-1 right-1 grid place-items-center rounded-full text-[12px] font-bold leading-none px-2 py-1 z-10"
           style={{
@@ -1128,16 +1141,18 @@ function BasicLandRow({
     <div className="rounded-2xl liquid-panel overflow-hidden">
       <PanelHeader
         title="Basic lands"
-        subtitle="Add as many of each as you need — they don't come from your packs."
+        subtitle="Click to add — click a land in your deck to remove."
         countLabel={`${(Object.values(lands) as number[]).reduce((s, n) => s + n, 0)} lands`}
       />
       <div className="p-3 sm:p-4 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-2.5">
         {BASIC_LANDS.map((land) => {
           const count = lands[land.name];
           return (
-            <div
+            <button
               key={land.name}
-              className="flex items-center gap-2 rounded-xl px-2.5 py-2 border sm:min-w-[178px]"
+              onClick={() => onBump(land.name, 1)}
+              aria-label={`Add a ${land.name}${count > 0 ? ` (${count} in deck)` : ""}`}
+              className="flex items-center gap-2.5 rounded-xl px-3 py-2 border sm:min-w-[178px] transition-colors hover:bg-white/5 focus:outline-none"
               style={{
                 borderColor: count > 0 ? land.color : "var(--color-line)",
                 background:
@@ -1146,51 +1161,35 @@ function BasicLandRow({
                     : "transparent",
               }}
             >
-              <div
-                className="grid place-items-center rounded-md text-[12px] font-bold shrink-0"
-                style={{
-                  width: 30, height: 30,
-                  background: land.color, color: "#1a1a1a",
-                }}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/mana/${land.symbol}.svg`}
+                alt=""
+                width={22}
+                height={22}
+                className="shrink-0"
+                draggable={false}
+              />
+              <span
+                className="flex-1 min-w-0 text-left text-[13px] font-semibold text-[var(--color-fg)] truncate"
+                style={{ fontFamily: "var(--font-ui)" }}
               >
-                {land.symbol}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p
-                  className="text-[13px] font-semibold text-[var(--color-fg)] truncate"
-                  style={{ fontFamily: "var(--font-ui)" }}
-                >
-                  {land.name}
-                </p>
-              </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <button
-                  onClick={() => onBump(land.name, -1)}
-                  disabled={count === 0}
-                  className="grid place-items-center w-6 h-6 rounded-md disabled:opacity-30"
-                  style={{ background: "rgba(255,255,255,0.06)" }}
-                  aria-label={`Remove a ${land.name}`}
-                >
-                  <Minus className="w-3 h-3" />
-                </button>
+                Add {land.name}
+              </span>
+              {count > 0 && (
                 <span
-                  className="font-display text-base w-6 text-center tabular-nums"
+                  className="grid place-items-center rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums shrink-0"
                   style={{
-                    color: count > 0 ? "var(--color-fg)" : "var(--color-ink-dim)",
+                    background: "var(--accent-purple)",
+                    color: "white",
+                    fontFamily: "var(--font-btn)",
+                    minWidth: 24,
                   }}
                 >
                   {count}
                 </span>
-                <button
-                  onClick={() => onBump(land.name, 1)}
-                  className="grid place-items-center w-6 h-6 rounded-md"
-                  style={{ background: "var(--accent-purple)", color: "white" }}
-                  aria-label={`Add a ${land.name}`}
-                >
-                  <Plus className="w-3 h-3" />
-                </button>
-              </div>
-            </div>
+              )}
+            </button>
           );
         })}
       </div>
