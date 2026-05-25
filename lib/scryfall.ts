@@ -233,6 +233,40 @@ export async function getSet(code: string): Promise<ScryfallSet | undefined> {
 /* ---------------- Cards by set ---------------- */
 
 /**
+ * Read a pre-baked set's card pool from `data/set-cards/<code>.json` if
+ * the file exists. Written by scripts/build-set-cards.mjs and updated
+ * periodically (monthly cadence is fine for an evergreen set, more often
+ * when new sets release). The on-disk JSON is already trimmed +
+ * filtered, so the caller can use it as-is.
+ *
+ * Returns null when:
+ *   • running in a browser (fs unavailable),
+ *   • the file doesn't exist (brand-new set added between bake runs,
+ *     or a set the bake script chose not to fetch),
+ *   • read/parse fails (corrupted file — we shouldn't mask the live
+ *     fetch's chance to succeed).
+ *
+ * The lazy dynamic import keeps `node:fs` out of client bundles even
+ * though this file is also imported by client components for the types.
+ */
+async function readPreBakedSetCards(code: string): Promise<ScryfallCard[] | null> {
+  if (typeof window !== "undefined") return null;
+  try {
+    const [{ readFile }, { join }] = await Promise.all([
+      import("node:fs/promises"),
+      import("node:path"),
+    ]);
+    const filePath = join(process.cwd(), "data", "set-cards", `${code.toLowerCase()}.json`);
+    const raw = await readFile(filePath, "utf8");
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return null;
+    return parsed as ScryfallCard[];
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Fetch every card in a set that's actually eligible for boosters.
  * Uses `unique=prints` to keep alt-art / language variants as distinct
  * entries (Scryfall would collapse them under `unique=cards`), and
@@ -241,8 +275,16 @@ export async function getSet(code: string): Promise<ScryfallSet | undefined> {
  * the multilingual flag those alt-art Japanese cards never come back from
  * the API — and any recipe outcome filtered by `lang: "ja"` finds no
  * matches and silently falls through to its next outcome.
+ *
+ * The disk-first read at the top is the steady-state path — pre-baked
+ * by scripts/build-set-cards.mjs. The live Scryfall pagination below
+ * stays in place for the long tail (brand-new sets the bake hasn't
+ * caught yet, or sets the bake script chose to skip).
  */
 export async function getSetCards(code: string): Promise<ScryfallCard[]> {
+  const preBaked = await readPreBakedSetCards(code);
+  if (preBaked && preBaked.length > 0) return preBaked;
+
   // First try with the standard 7-day fetch cache. If that returns an
   // empty pool we run the same query AGAIN with cache: "no-store" — that
   // covers the failure mode where a transient Scryfall blip cached a
@@ -488,6 +530,11 @@ export async function getSetSampleArt(code: string): Promise<string | null> {
  */
 export async function getSetTokens(code: string): Promise<ScryfallCard[]> {
   const lower = code.toLowerCase();
+  // Pre-baked tokens live at data/set-cards/t<code>.json — same on-disk
+  // location as regular set pools but with the t-prefix. Check that first
+  // before paginating Scryfall, same disk-first strategy as getSetCards.
+  const preBakedTokens = await readPreBakedSetCards(`t${lower}`);
+  if (preBakedTokens && preBakedTokens.length > 0) return preBakedTokens;
   const candidates = [`t${lower}`, lower];
   for (const c of candidates) {
     const q = encodeURIComponent(`set:${c} type:token`);

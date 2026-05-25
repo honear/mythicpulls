@@ -33,6 +33,19 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Force-include the pre-baked card pools in every serverless function
+  // that might read them. lib/scryfall.ts loads `data/set-cards/<code>.json`
+  // via `fs.readFile` with a runtime-computed path — Next's static
+  // analyzer can't see which files are actually read, so it skips them
+  // when tracing. Listing the glob here makes Vercel package the full
+  // directory with the function bundle. Without this every disk read
+  // ENOENT-fails on Vercel and the runtime silently falls back to the
+  // slow live Scryfall pagination.
+  outputFileTracingIncludes: {
+    "/sets/[code]": ["./data/set-cards/**/*.json"],
+    "/draft/[code]": ["./data/set-cards/**/*.json"],
+    "/sealed/[code]": ["./data/set-cards/**/*.json"],
+  },
   async headers() {
     return [
       {

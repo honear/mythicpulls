@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "refresh:manapool": "node scripts/fetch-manapool-prices.mjs"
+    "refresh:manapool": "node scripts/fetch-manapool-prices.mjs",
+    "warm-cache": "node scripts/warm-cache.mjs",
+    "refresh:set-cards": "node scripts/build-set-cards.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
