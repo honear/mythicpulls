@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Hand } from "lucide-react";
 import type { PulledCard } from "@/lib/pack-open";
 import { MagicCard } from "@/app/_components/MagicCard";
@@ -95,7 +95,13 @@ export function DraftPickPanel({
   pack, onPick, mode, exitDirection, pickedUid, hint,
 }: {
   pack: PulledCard[];
-  onPick: (uid: string) => void;
+  /** target tells the parent where the pick should land:
+   *   • "deck" — desktop left-click → auto-place in the deck builder's
+   *              default mana-value column.
+   *   • "pool" — desktop right-click + every touch/keyboard activation →
+   *              leave the card in the pool for the user to triage later
+   *              (the historical behavior). */
+  onPick: (uid: string, target: "deck" | "pool") => void;
   mode: "enter" | "exit";
   /** Direction packs are passing this round. "left" → cards depart toward
    *  the left and the next pack arrives from the right. */
@@ -108,6 +114,7 @@ export function DraftPickPanel({
   const sorted = useMemo(() => sortPackByRarity(pack), [pack]);
   const { preview, armHover, clearHover } = useHoverPreview();
   const layout = useDraftLayout();
+  const isDesktop = layout === LAYOUT_DESKTOP;
   // Mobile peek — triggered by tapping the loupe ("+" magnifier) on
   // each card. Replaces the earlier long-press gesture, which fought
   // iOS Safari's image-save callout on the underlying <img>. Single
@@ -125,7 +132,20 @@ export function DraftPickPanel({
     <div className="flex flex-col items-center gap-4 w-full">
       <p className="text-[11px] sm:text-xs text-[var(--color-ink-muted)] inline-flex items-center gap-2 text-center px-2">
         <Hand className="w-3.5 h-3.5 shrink-0" />
-        {hint}
+        <span>
+          {hint}
+          {isDesktop ? (
+            <>
+              {" · "}
+              <span className="text-[var(--accent-purple-light)]">left-click</span>
+              {" → deck · "}
+              <span className="text-[var(--accent-purple-light)]">right-click</span>
+              {" → pool"}
+            </>
+          ) : (
+            " · tap a card to take it"
+          )}
+        </span>
       </p>
       <div
         style={{
@@ -143,7 +163,7 @@ export function DraftPickPanel({
             key={p.uid}
             pulled={p}
             cardW={layout.w}
-            onPick={() => { clearHover(); onPick(p.uid); }}
+            onPick={(target) => { clearHover(); onPick(p.uid, target); }}
             onPreview={() => setTouchPreview(p)}
             mode={mode}
             exitDirection={exitDirection}
@@ -176,7 +196,12 @@ function PickableCard({
 }: {
   pulled: PulledCard;
   cardW: number;
-  onPick: () => void;
+  /** target chosen by the input: mouse-left → "deck", everything else
+   *  (mouse-right via contextmenu, touch, keyboard activation) → "pool".
+   *  We detect mouse vs. touch from the last pointerdown's pointerType so
+   *  that synthetic keyboard `click` events (no preceding pointerdown)
+   *  fall through to the desktop default. */
+  onPick: (target: "deck" | "pool") => void;
   /** Mobile-only — fires when the user taps the loupe ("+" magnifier)
    *  button rendered on top of the card art. The button stops
    *  propagation so this never collides with the pick (`onPick`). */
@@ -228,17 +253,35 @@ function PickableCard({
     cssVars.animationDelay = `${jitter}ms`;
   }
 
+  // Pointer source for the most recent press. "mouse" defaults so a
+  // keyboard activation (Enter/Space — no preceding pointerdown) is
+  // treated as a desktop click and routes the card into the deck. Touch
+  // taps overwrite this to "touch" via pointerdown, so the tap fallback
+  // routes to the pool (existing mobile behavior).
+  const lastPointerType = useRef<string>("mouse");
+
   return (
     <button
       onClick={() => {
         hapticTap();
-        onPick();
+        onPick(lastPointerType.current === "mouse" ? "deck" : "pool");
+      }}
+      onContextMenu={(e) => {
+        // Suppress the OS menu and route the pick to the pool. We don't
+        // call onPick here for non-mouse pointers — touch devices don't
+        // fire contextmenu in the same way and we want the tap path to
+        // remain the only entry point on mobile.
+        if (mode === "exit") { e.preventDefault(); return; }
+        e.preventDefault();
+        hapticTap();
+        onHoverEnd();
+        onPick("pool");
       }}
       disabled={mode === "exit"}
       onPointerEnter={(e) => onHover(pulled.card, pulled.foil, e)}
       onPointerMove={(e) => onHover(pulled.card, pulled.foil, e)}
       onPointerLeave={onHoverEnd}
-      onPointerDown={onHoverEnd}
+      onPointerDown={(e) => { lastPointerType.current = e.pointerType || "mouse"; onHoverEnd(); }}
       className={className}
       style={cssVars}
       aria-label={`Pick ${pulled.card.name}`}

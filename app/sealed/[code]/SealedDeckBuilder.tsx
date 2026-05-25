@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Download, Copy, X, Plus, Minus, ArrowDownAZ, Palette,
@@ -173,6 +173,13 @@ interface Props {
    *  when reused under DraftRun so the heading reads "Draft deck builder"
    *  instead of "Sealed deck builder". */
   mode?: "sealed" | "draft";
+  /** Uids that should auto-land in the deck (in their default mana-value
+   *  column) the first time they show up in `pool`. Used by the draft
+   *  flow's desktop left-click affordance: DraftRun pushes the picked
+   *  uid here, we place it once, and then the user is free to drag it
+   *  back to the pool — a ref tracks "already placed" so we don't
+   *  re-add it on subsequent renders. */
+  autoDeckUids?: ReadonlyArray<string>;
 }
 
 interface DragState {
@@ -194,7 +201,7 @@ interface DragState {
 
 type PoolSort = "mana" | "color";
 
-export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sealed" }: Props) {
+export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sealed", autoDeckUids }: Props) {
   const isMobile = useIsMobile();
   const POOL_CARD_W = isMobile ? POOL_CARD_W_MOBILE : POOL_CARD_W_DESKTOP;
   const DECK_CARD_W = isMobile ? DECK_CARD_W_MOBILE : DECK_CARD_W_DESKTOP;
@@ -247,6 +254,37 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sea
     card: ScryfallCard;
     foil: boolean;
   } | null>(null);
+
+  /* -------- auto-place (draft left-click → deck) --------
+   * DraftRun pushes uids into `autoDeckUids` when the user left-clicks
+   * a card in the pack panel. We watch `pool` for those uids and, the
+   * first time we see one, drop it into the deck under its default
+   * mana-value bucket. The `placedRef` guard means we only do this
+   * once per uid — if the user later drags the card back to the pool,
+   * it stays there even though the uid is still in `autoDeckUids`. */
+  const placedRef = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    if (!autoDeckUids || autoDeckUids.length === 0) return;
+    const want = new Set(autoDeckUids);
+    const toPlace: { uid: string; column: ColumnId }[] = [];
+    for (const p of pool) {
+      if (!want.has(p.uid)) continue;
+      if (placedRef.current.has(p.uid)) continue;
+      toPlace.push({ uid: p.uid, column: defaultBucket(p.card) });
+      placedRef.current.add(p.uid);
+    }
+    if (toPlace.length === 0) return;
+    setInDeck((prev) => {
+      const next = new Set(prev);
+      for (const t of toPlace) next.add(t.uid);
+      return next;
+    });
+    setOverrides((prev) => {
+      const next = new Map(prev);
+      for (const t of toPlace) next.set(t.uid, t.column);
+      return next;
+    });
+  }, [pool, autoDeckUids]);
 
   /* -------- card-move primitives -------- */
 

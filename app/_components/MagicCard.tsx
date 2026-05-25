@@ -165,9 +165,23 @@ export function MagicCard({
               to ~26px on mobile-sized tiles via @container queries
               below in globals.css. */}
           {faceUp && onPreview && (
-            <button
-              type="button"
+            // Span (not button) so we can nest inside the outer
+            // <button> wrappers that PickableCard / PoolTile / etc.
+            // place around the whole card without producing invalid
+            // HTML (nested-button hydration warning). role+tabIndex
+            // keep keyboard + screen-reader behavior consistent with
+            // a real button. stopPropagation + preventDefault still
+            // keep the outer click from firing.
+            <span
+              role="button"
+              tabIndex={0}
               onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                onPreview();
+              }}
+              onKeyDown={(e) => {
+                if (e.key !== "Enter" && e.key !== " ") return;
                 e.stopPropagation();
                 e.preventDefault();
                 onPreview();
@@ -177,7 +191,7 @@ export function MagicCard({
               className="card-mtg__loupe"
             >
               <ZoomIn className="w-4 h-4" />
-            </button>
+            </span>
           )}
         </div>
         <div className={`card-mtg__face card-mtg__face--back ${backLoaded ? "is-loaded" : ""}`}>

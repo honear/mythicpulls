@@ -92,6 +92,12 @@ export function DraftRun({
   const [round, setRound] = useState<number>(0);
   /** Pick number within the current round, 1-indexed. */
   const [pickNumber, setPickNumber] = useState<number>(0);
+  /** Uids that should be auto-placed into the deck builder's deck the
+   *  moment they appear in the user pool. Filled by desktop left-clicks
+   *  on the pack panel; SealedDeckBuilder consumes the list via a
+   *  ref-guarded effect that only places each uid once (so the user can
+   *  still drag a card back out to the pool afterwards). */
+  const [autoDeckUids, setAutoDeckUids] = useState<string[]>([]);
 
   // Background pre-warm the entire set's images on idle ticks. Draft
   // bursts 8 packs × 15 cards = 120 distinct cards per round; the
@@ -164,11 +170,18 @@ export function DraftRun({
 
   /** Public click handler — kicks off the exit animation, then defers the
    *  actual state update until the animation has played. Re-entrant clicks
-   *  during the animation are dropped (the panel disables clicks too). */
-  function onUserPickClick(uid: string) {
+   *  during the animation are dropped (the panel disables clicks too).
+   *  `target` is set by the panel: desktop left-clicks route the card to
+   *  the deck (auto-place), right-clicks and touch taps drop it into the
+   *  pool. We add to `autoDeckUids` immediately (before the 520ms timeout)
+   *  so it's already in place when `processPick` finally updates `userPool`. */
+  function onUserPickClick(uid: string, target: "deck" | "pool") {
     if (transition || phase !== "picking") return;
     const userPack = packs[USER_SEAT];
     if (!userPack.find((p) => p.uid === uid)) return;
+    if (target === "deck") {
+      setAutoDeckUids((prev) => (prev.includes(uid) ? prev : [...prev, uid]));
+    }
     setTransition({
       prevPack: userPack,
       pickedUid: uid,
@@ -402,7 +415,7 @@ export function DraftRun({
                   mode={transition ? "exit" : "enter"}
                   exitDirection={transition ? transition.direction : passDirection}
                   pickedUid={transition?.pickedUid}
-                  hint={`Pack ${round} · Pick ${totalPickInRound} · click a card to take it`}
+                  hint={`Pack ${round} · Pick ${totalPickInRound}`}
                 />
               )}
             </div>
@@ -429,6 +442,7 @@ export function DraftRun({
             pool={userPool}
             basicLandSamples={basicLandSamples}
             mode="draft"
+            autoDeckUids={autoDeckUids}
           />
         </div>
       )}
