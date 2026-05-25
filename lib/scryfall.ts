@@ -233,32 +233,43 @@ export async function getSet(code: string): Promise<ScryfallSet | undefined> {
 /* ---------------- Cards by set ---------------- */
 
 /**
- * Read a pre-baked set's card pool from `data/set-cards/<code>.json` if
- * the file exists. Written by scripts/build-set-cards.mjs and updated
- * periodically (monthly cadence is fine for an evergreen set, more often
- * when new sets release). The on-disk JSON is already trimmed +
- * filtered, so the caller can use it as-is.
+ * Read a pre-baked set's card pool from `data/set-cards/<code>.json.gz`
+ * if the file exists. Written by scripts/build-set-cards.mjs and
+ * updated periodically (monthly cadence is fine for an evergreen set,
+ * more often when new sets release). The on-disk payload is already
+ * trimmed + filtered, gzipped at level 9, so we just gunzip + JSON.parse
+ * and return.
+ *
+ * Why gzip: raw JSON for ~177 sets clocked in at 371 MB, which blew
+ * Vercel's 250 MB serverless function bundle limit. Gzip compresses
+ * MTG card JSON ~80% (lots of repeated set codes, color symbols,
+ * Scryfall URL prefixes), dropping the bundle to ~60-90 MB. Decompress
+ * cost is ~5 ms per set on a Vercel function, lost in the noise next
+ * to the eliminated Scryfall round-trips.
  *
  * Returns null when:
  *   • running in a browser (fs unavailable),
  *   • the file doesn't exist (brand-new set added between bake runs,
  *     or a set the bake script chose not to fetch),
- *   • read/parse fails (corrupted file — we shouldn't mask the live
- *     fetch's chance to succeed).
+ *   • read/decompress/parse fails (corrupted file — we shouldn't mask
+ *     the live fetch's chance to succeed).
  *
- * The lazy dynamic import keeps `node:fs` out of client bundles even
- * though this file is also imported by client components for the types.
+ * The lazy dynamic import keeps `node:fs`/`node:zlib` out of client
+ * bundles even though this file is also imported by client components
+ * for the types.
  */
 async function readPreBakedSetCards(code: string): Promise<ScryfallCard[] | null> {
   if (typeof window !== "undefined") return null;
   try {
-    const [{ readFile }, { join }] = await Promise.all([
+    const [{ readFile }, { join }, { gunzipSync }] = await Promise.all([
       import("node:fs/promises"),
       import("node:path"),
+      import("node:zlib"),
     ]);
-    const filePath = join(process.cwd(), "data", "set-cards", `${code.toLowerCase()}.json`);
-    const raw = await readFile(filePath, "utf8");
-    const parsed = JSON.parse(raw);
+    const filePath = join(process.cwd(), "data", "set-cards", `${code.toLowerCase()}.json.gz`);
+    const gz = await readFile(filePath);
+    const json = gunzipSync(gz).toString("utf8");
+    const parsed = JSON.parse(json);
     if (!Array.isArray(parsed)) return null;
     return parsed as ScryfallCard[];
   } catch {

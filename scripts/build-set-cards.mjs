@@ -34,6 +34,7 @@
 import { readFile, writeFile, mkdir, readdir, stat } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gzipSync } from "node:zlib";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -389,7 +390,7 @@ async function main() {
     const before = codes.length;
     const filtered = [];
     for (const c of codes) {
-      const exists = await fileExists(join(OUT_DIR, `${c}.json`));
+      const exists = await fileExists(join(OUT_DIR, `${c}.json.gz`));
       if (!exists) filtered.push(c);
     }
     codes = filtered;
@@ -427,11 +428,17 @@ async function main() {
         }
         const trimmed = filtered.map(trimCard);
         const json = JSON.stringify(trimmed);
-        await writeFile(join(OUT_DIR, `${code}.json`), json, "utf8");
+        // Gzip on disk. The JSON is highly compressible (~80% smaller)
+        // and Vercel caps serverless function bundles at 250MB unzipped
+        // — 371MB of raw JSON blew that. Runtime reads via `gunzipSync`,
+        // which costs ~5ms for a 1MB payload, lost in the noise.
+        const gz = gzipSync(json, { level: 9 });
+        await writeFile(join(OUT_DIR, `${code}.json.gz`), gz);
         stats.ok++;
         stats.totalCards += trimmed.length;
-        stats.totalBytes += json.length;
-        console.log(`${tag} ${code.padEnd(8)} ${trimmed.length.toString().padStart(4)} cards · ${(json.length / 1024).toFixed(1).padStart(7)} KB`);
+        stats.totalBytes += gz.length;
+        const ratio = ((1 - gz.length / json.length) * 100).toFixed(0);
+        console.log(`${tag} ${code.padEnd(8)} ${trimmed.length.toString().padStart(4)} cards · ${(gz.length / 1024).toFixed(1).padStart(7)} KB gz (-${ratio}%)`);
       } catch (err) {
         stats.fail++;
         console.error(`${tag} ${code.padEnd(8)} FAILED — ${err.message ?? err}`);
@@ -443,7 +450,7 @@ async function main() {
   const secs = ((Date.now() - t0) / 1000).toFixed(1);
   console.log("");
   console.log(`Done in ${secs}s — ${stats.ok} ok, ${stats.empty} empty, ${stats.fail} failed`);
-  console.log(`Total: ${stats.totalCards.toLocaleString()} cards across ${stats.ok} files, ${(stats.totalBytes / 1024 / 1024).toFixed(1)} MB on disk`);
+  console.log(`Total: ${stats.totalCards.toLocaleString()} cards across ${stats.ok} files, ${(stats.totalBytes / 1024 / 1024).toFixed(1)} MB on disk (gzipped)`);
   if (stats.fail > 0) process.exit(1);
 }
 

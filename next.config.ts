@@ -42,9 +42,9 @@ const nextConfig: NextConfig = {
   // ENOENT-fails on Vercel and the runtime silently falls back to the
   // slow live Scryfall pagination.
   outputFileTracingIncludes: {
-    "/sets/[code]": ["./data/set-cards/**/*.json"],
-    "/draft/[code]": ["./data/set-cards/**/*.json"],
-    "/sealed/[code]": ["./data/set-cards/**/*.json"],
+    "/sets/[code]": ["./data/set-cards/**/*.json.gz"],
+    "/draft/[code]": ["./data/set-cards/**/*.json.gz"],
+    "/sealed/[code]": ["./data/set-cards/**/*.json.gz"],
   },
   async headers() {
     return [
