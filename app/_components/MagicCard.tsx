@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ZoomIn } from "lucide-react";
 import type { ScryfallCard, ScryfallImageUris } from "@/lib/scryfall";
 import { getCardImage } from "@/lib/scryfall";
 import { useCardTilt } from "@/lib/useCardTilt";
@@ -51,6 +52,13 @@ interface Props {
   className?: string;
   /** Disable the holo shimmer entirely (useful when the card is in a deck). */
   holoEnabled?: boolean;
+  /** When provided, render a small "+" magnifier button in the top-
+   *  right corner of the face-up card. Tapping it fires this callback
+   *  WITHOUT propagating to the card's `onClick` (so a binder card
+   *  doesn't both preview AND open its detail modal on a single tap).
+   *  Used as the explicit preview trigger on mobile, replacing the
+   *  long-press gesture that fights iOS's image-save sheet. */
+  onPreview?: () => void;
 }
 
 export function MagicCard({
@@ -60,6 +68,7 @@ export function MagicCard({
   width,
   className,
   holoEnabled = true,
+  onPreview,
 }: Props) {
   const data = normalize(card, width);
 
@@ -145,6 +154,31 @@ export function MagicCard({
               body[data-holo] — see globals.css. */}
           {faceUp && <span className="card-mtg__glare" />}
           {isHolographic && <span className="card-mtg__holo" />}
+          {/* Loupe / "+" preview button. Only renders when the parent
+              supplied an `onPreview` callback and the card is face-up.
+              `stopPropagation` + `preventDefault` keep this from
+              bubbling into the card's own click handler (so tapping
+              the loupe on a binder card previews, not opens the full
+              modal). The button sits in the top-right corner with a
+              darkened circle backdrop so it stays readable over any
+              art. Card-width-scaled: ~32px on desktop cards, shrinks
+              to ~26px on mobile-sized tiles via @container queries
+              below in globals.css. */}
+          {faceUp && onPreview && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                onPreview();
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label="Preview card"
+              className="card-mtg__loupe"
+            >
+              <ZoomIn className="w-4 h-4" />
+            </button>
+          )}
         </div>
         <div className={`card-mtg__face card-mtg__face--back ${backLoaded ? "is-loaded" : ""}`}>
           {/* Back face uses the same card-back JPEG for every card so

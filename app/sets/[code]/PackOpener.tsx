@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Sparkles, RotateCcw, Save, Eye, GripVertical, LayoutGrid, Layers, ShoppingBag } from "lucide-react";
+import { Sparkles, RotateCcw, Save, GripVertical, LayoutGrid, Layers, ShoppingBag, ZoomIn } from "lucide-react";
 import { getCardImage, getDisplayPrice } from "@/lib/scryfall";
 import { PACKS, PACK_ORDER, getPackCost, type PackType } from "@/lib/pack-rules";
 import { getManaPoolPackUrl } from "@/lib/manapool";
@@ -15,6 +15,7 @@ import { useDragReorder } from "@/lib/useDragReorder";
 import { useCardTilt } from "@/lib/useCardTilt";
 import { MagicCard } from "@/app/_components/MagicCard";
 import { CardDetailModal } from "@/app/_components/CardDetailModal";
+import { TouchPreview } from "@/app/_components/TouchPreview";
 import { HoloToggle } from "@/app/_components/HoloToggle";
 import { CardDeck } from "./CardDeck";
 
@@ -248,11 +249,6 @@ export function PackOpener({
   const detailPulled =
     detailUid ? pulled.find((p) => p.uid === detailUid) ?? null : null;
 
-  function flipAll() {
-    setFlipped(new Set(pulled.map((p) => p.uid)));
-    pulled.forEach((p) => markRevealed(p.uid));
-  }
-
   function flipOne(uid: string) {
     setFlipped((prev) => {
       const next = new Set(prev);
@@ -413,17 +409,18 @@ export function PackOpener({
 
         {phase === "revealing" && (
           <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between border-t border-[var(--color-line)] px-4 sm:px-6 py-3 sm:py-4">
-            <div className="flex flex-col md:flex-row gap-3 md:items-center">
+            {/* items-start on mobile keeps the ViewToggle pill at its
+                intrinsic width — flex-col defaults to stretch, which
+                was making the toggle span the full row. */}
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-3">
               <PullSummary pulled={pulled} />
               <ViewToggle mode={viewMode} onChange={setViewMode} />
             </div>
             <div className="flex flex-wrap gap-2">
-              <button
-                onClick={flipAll}
-                className="inline-flex items-center gap-2 label-caps px-4 py-2.5 rounded-full btn-hero-secondary liquid-glass"
-              >
-                <Eye className="w-3.5 h-3.5" /> Reveal all
-              </button>
+              {/* "Reveal all" button removed — the reveal mode's
+                  click-or-drag-the-top-card flow already cycles each
+                  card, and the grid view auto-flips all cards on
+                  switch. A dedicated button was redundant with both. */}
               <button
                 onClick={saveAll}
                 className="inline-flex items-center gap-2 label-caps px-4 py-2.5 rounded-full bg-white text-[var(--color-bg)] hover:bg-white/90 transition-colors"
@@ -490,8 +487,15 @@ function MoneyStrip({
     : `${profitSign}${usd(Math.abs(profit))}`;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 mb-4 rounded-2xl liquid-glass">
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+    // Mobile-first layout: compact inline-stat scoreboard on top,
+    // controls underneath. Stats render as "label · value" pairs
+    // (inline, not stacked) so all four fit in a single row on most
+    // phones, or wrap to 2 rows tightly. Desktop keeps the original
+    // big-number presentation.
+    <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3 px-4 py-3 mb-4 rounded-2xl liquid-glass">
+      {/* Stats — inline on mobile (label + value side-by-side, smaller
+          font), stacked on tablet+ (existing big-number display). */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 sm:gap-x-6">
         <Stat label="Pulled" value={usd(stats.pulled)} accent="text-[var(--color-fg)]" />
         <Stat label="Spent"  value={spentLabel} accent="text-[var(--color-ink-muted)]" />
         <Stat
@@ -501,14 +505,11 @@ function MoneyStrip({
         />
         <Stat label="Packs" value={String(stats.packs)} accent="text-[var(--color-fg)]" />
       </div>
-      {/* Right-side controls: HoloToggle (foil shimmer style switcher),
-          optional "Buy on Mana Pool" pill, and the "Open next <type>
-          Booster" rip button. HoloToggle lives here rather than in the
-          site nav so it sits next to the cards its setting actually
-          affects. The Mana Pool button only renders when there's
-          current stock for this exact (set, packType) — see
-          `getManaPoolPackUrl`. */}
-      <div className="flex flex-wrap items-center gap-2">
+      {/* Controls. On mobile: HoloToggle + Buy on left (gap-2, tight),
+          rip button at right. On tablet+: same row but expanded. The
+          rip button text + price collapse on mobile so the entire
+          row fits a single line without overflow. */}
+      <div className="flex flex-wrap items-center justify-end gap-2">
         <HoloToggle />
         {buyUrl && (
           <a
@@ -520,7 +521,9 @@ function MoneyStrip({
             title="Open product page on Mana Pool"
           >
             <ShoppingBag className="w-3.5 h-3.5" />
-            <span>Buy on Mana Pool</span>
+            {/* Short label on mobile so the row stays compact. */}
+            <span className="sm:hidden">Mana Pool</span>
+            <span className="hidden sm:inline">Buy on Mana Pool</span>
           </a>
         )}
         <button
@@ -545,8 +548,11 @@ function MoneyStrip({
           >
             +1
           </span>
+          {/* Shortened verb on mobile so the button text + price chip
+              fit on a single line next to the Foil/Buy controls. */}
           <span className="text-[13px] font-medium tracking-wide">
-            Open another {packTypeName} Booster
+            <span className="sm:hidden">Open next</span>
+            <span className="hidden sm:inline">Open another {packTypeName} Booster</span>
           </span>
           {/* Price chip — renders the live Mana Pool figure when
               available, otherwise "Not available". The button stays
@@ -566,10 +572,19 @@ function MoneyStrip({
 }
 
 function Stat({ label, value, accent }: { label: string; value: string; accent: string }) {
+  // Mobile: inline `LABEL · value` (one line each). Desktop: stacked
+  // label-above-big-value (the original scoreboard look). The flex
+  // direction changes per breakpoint, items-baseline keeps the inline
+  // mobile layout from looking tilted when the value font has a
+  // taller cap-height than the label.
   return (
-    <div className="flex flex-col">
-      <span className="label-caps text-[var(--color-ink-muted)]/80">{label}</span>
-      <span className={`font-display text-xl ${accent}`}>{value}</span>
+    <div className="flex flex-row items-baseline gap-1.5 sm:flex-col sm:items-start sm:gap-0">
+      <span className="label-caps text-[var(--color-ink-muted)]/80 text-[10px] sm:text-[11px]">
+        {label}
+      </span>
+      <span className={`font-display text-base sm:text-xl tabular-nums ${accent}`}>
+        {value}
+      </span>
     </div>
   );
 }
@@ -985,6 +1000,12 @@ function RippingPack({
   const isMobile = useIsMobile();
   const W = isMobile ? 210 : 260;
   const H = isMobile ? 308 : 380;
+  // Mobile scale factor for the silhouette + sparkle scatter — keeps
+  // the fan-out distances inside the reveal canvas's overflow-hidden
+  // box (~336px wide on a 360px phone after padding). At desktop's
+  // x=±200 the outer silhouettes would clip; scaling to ~0.7 brings
+  // them inside the visible area.
+  const m = isMobile ? 0.7 : 1;
   // Reuse the exact art crop the FannedPack used so the rip is visually
   // continuous with the tap. Modulo by length defends against an
   // artIndex larger than the available crops list (small sets may ship
@@ -993,27 +1014,29 @@ function RippingPack({
   const heroArt = crops.length > 0 ? crops[artIndex % crops.length] : undefined;
 
   // Five card silhouettes fanning out of the pack. Pre-computed offsets:
-  // outermost cards travel further horizontally and rotate more.
+  // outermost cards travel further horizontally and rotate more. x
+  // values are scaled by `m` on mobile so the outer cards stay inside
+  // the reveal canvas instead of getting clipped by overflow-hidden.
   const silhouettes = [
-    { x: -200, rot: -32, delay: 380 },
-    { x: -100, rot: -18, delay: 420 },
-    { x:    0, rot:   0, delay: 460 },
-    { x:  100, rot:  18, delay: 500 },
-    { x:  200, rot:  32, delay: 540 },
+    { x: -200 * m, rot: -32, delay: 380 },
+    { x: -100 * m, rot: -18, delay: 420 },
+    { x:    0,     rot:   0, delay: 460 },
+    { x:  100 * m, rot:  18, delay: 500 },
+    { x:  200 * m, rot:  32, delay: 540 },
   ];
 
-  // Scatter of sparkle particles around the top opening. Travel distances
-  // capped so sparkles stay inside the reveal canvas's overflow-hidden box
-  // (~130px headroom above the pack on mobile, more on desktop).
+  // Scatter of sparkle particles around the top opening. Travel
+  // distances also scaled on mobile so the outermost sparkles don't
+  // get clipped at the canvas edges.
   const sparkles = [
-    { x: -100, y: -110, delay: 360, size: 5 },
-    { x:  -60, y: -135, delay: 400, size: 4 },
-    { x:  -25, y: -150, delay: 460, size: 6 },
-    { x:   25, y: -145, delay: 500, size: 4 },
-    { x:   70, y: -125, delay: 380, size: 5 },
-    { x:  115, y: -100, delay: 440, size: 4 },
-    { x: -125, y:  -70, delay: 520, size: 3 },
-    { x:  130, y:  -65, delay: 560, size: 3 },
+    { x: -100 * m, y: -110, delay: 360, size: 5 },
+    { x:  -60 * m, y: -135, delay: 400, size: 4 },
+    { x:  -25 * m, y: -150, delay: 460, size: 6 },
+    { x:   25 * m, y: -145, delay: 500, size: 4 },
+    { x:   70 * m, y: -125, delay: 380, size: 5 },
+    { x:  115 * m, y: -100, delay: 440, size: 4 },
+    { x: -125 * m, y:  -70, delay: 520, size: 3 },
+    { x:  130 * m, y:  -65, delay: 560, size: 3 },
   ];
 
   return (
@@ -1214,13 +1237,32 @@ function CardSpread({
   onReorder: (from: number, to: number) => void;
 }) {
   const isMobile = useIsMobile();
-  const cardW = isMobile ? 144 : 180;
+  // Bigger tiles on mobile — two per row at ~156 each. 156×2 + 14 gap
+  // = 326, which fits inside the ~327 px we have at the smallest
+  // common phone width (375 viewport − 24 outer padding − 24 inner
+  // padding). Cards used to be 144 and the canvas felt underused.
+  const cardW = isMobile ? 156 : 180;
+  // Mobile peek — opened by an explicit magnifier button rendered in
+  // the caption row beneath each face-up card (not an overlay on top
+  // of the art). The overlay version was small and easy to miss-tap;
+  // moving it out of the card image area means tap-to-flip never
+  // collides with tap-to-peek. The button only renders on mobile via
+  // `(hover: none)` media query (desktop has the HoverPreview + the
+  // click-to-open detail modal already).
+  const [touchPreview, setTouchPreview] = useState<PulledCard | null>(null);
   const { bind } = useDragReorder({
     onReorder,
     onTap: (i) => {
       const p = pulled[i];
       if (p) onTap(p.uid);
     },
+    // Disable drag entirely on phones — the gesture clashed with
+    // vertical scrolling and there's no realistic mobile flow that
+    // needs pack-rip cards to be reorderable. Tap-to-flip / tap-to-
+    // open-modal still works because useDragReorder fires `onTap`
+    // when no drag activated. Threshold ∞ ensures movement never
+    // crosses the drag-engagement gate.
+    threshold: isMobile ? Number.POSITIVE_INFINITY : 6,
   });
 
   return (
@@ -1229,7 +1271,7 @@ function CardSpread({
         <p className="text-[11px] sm:text-xs text-[var(--color-ink-muted)] inline-flex items-center gap-2">
           <GripVertical className="w-3.5 h-3.5" />
           {isMobile
-            ? "Tap face-down to flip · long-press to drag"
+            ? "Tap to flip · tap the magnifier to peek"
             : "Click face-down to flip · click face-up for details · drag to rearrange"}
         </p>
       </div>
@@ -1259,7 +1301,13 @@ function CardSpread({
               onPointerCancel={bound.onPointerCancel}
               data-dragging={bound["data-dragging"]}
               data-drop-target={bound["data-drop-target"]}
-              className={`anim-card-rise touch-none flex flex-col items-center ${
+              // touch-none on desktop so pointer-drag works smoothly;
+              // touch-pan-y on mobile so the page can still scroll
+              // while the finger is on a card (drag is disabled on
+              // mobile anyway — see threshold above).
+              className={`anim-card-rise flex flex-col items-center ${
+                isMobile ? "touch-pan-y" : "touch-none"
+              } ${
                 bound["data-drop-target"]
                   ? "card-drop-target rounded-[12px]"
                   : ""
@@ -1299,24 +1347,59 @@ function CardSpread({
                 >
                   {p.card.name}
                 </p>
-                {/* Rarity + optional "Foil" suffix. Reconcile against
-                    the card's actual rolled rarity (see
+                {/* Rarity + optional "Foil" suffix, plus the mobile-
+                    only magnifier "peek" button. Reconcile rarity
+                    against the card's actual rolled rarity (see
                     lib/pack-open.ts) so the chip matches the glow
                     colour. Foil is rendered in the dedicated bonus
-                    accent so it stands out as the "special" tag. */}
-                <p
-                  className={`text-center text-[10px] tracking-[0.18em] uppercase font-semibold transition-opacity duration-500 mt-0.5 ${rarityColor(
-                    p.card.rarity,
-                  )} ${isFaceUp ? "opacity-100" : "opacity-0"}`}
+                    accent so it stands out as the "special" tag.
+                    The magnifier is rendered as a sibling here — not
+                    on top of the card art — so a tap to peek never
+                    races with the card's own tap-to-flip / tap-to-
+                    open-detail-modal gesture. It's hidden on hover-
+                    capable pointers via `peek-pill` styles in
+                    globals.css. */}
+                <div
+                  className={`inline-flex items-center justify-center gap-2 mt-0.5 transition-opacity duration-500 ${
+                    isFaceUp ? "opacity-100" : "opacity-0"
+                  }`}
                 >
-                  {reconcileSlotLabel(p.slotLabel, p.card.rarity)}
-                  {p.foil && (
-                    <>
-                      <span className="text-[var(--color-ink-muted)] mx-1.5">·</span>
-                      <span className="text-[var(--color-rarity-bonus)]">Foil</span>
-                    </>
+                  <span
+                    className={`text-center text-[10px] tracking-[0.18em] uppercase font-semibold ${rarityColor(
+                      p.card.rarity,
+                    )}`}
+                  >
+                    {reconcileSlotLabel(p.slotLabel, p.card.rarity)}
+                    {p.foil && (
+                      <>
+                        <span className="text-[var(--color-ink-muted)] mx-1.5">·</span>
+                        <span className="text-[var(--color-rarity-bonus)]">Foil</span>
+                      </>
+                    )}
+                  </span>
+                  {isFaceUp && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        // The whole tile is wrapped in pointer
+                        // handlers from useDragReorder — stopPropagation
+                        // keeps this from registering as a tap on the
+                        // card itself (which would flip / open the
+                        // modal). preventDefault belt-and-braces
+                        // against any synthesized click bubbling.
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setTouchPreview(p);
+                      }}
+                      onPointerDown={(e) => e.stopPropagation()}
+                      onPointerUp={(e) => e.stopPropagation()}
+                      aria-label={`Peek at ${p.card.name}`}
+                      className="peek-pill"
+                    >
+                      <ZoomIn className="w-3 h-3" />
+                    </button>
                   )}
-                </p>
+                </div>
                 {price && (
                   <p className="text-xs font-semibold text-[var(--color-fg)] mt-1">
                     {price.label}
@@ -1327,6 +1410,12 @@ function CardSpread({
           );
         })}
       </div>
+      {touchPreview && (
+        <TouchPreview
+          card={{ kind: "scryfall", card: touchPreview.card, foil: touchPreview.foil }}
+          onDismiss={() => setTouchPreview(null)}
+        />
+      )}
     </div>
   );
 }

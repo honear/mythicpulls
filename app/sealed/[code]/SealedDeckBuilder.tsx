@@ -25,7 +25,9 @@ import type { ScryfallCard } from "@/lib/scryfall";
 import type { PulledCard } from "@/lib/pack-open";
 import { MagicCard } from "@/app/_components/MagicCard";
 import { HoverPreview } from "@/app/_components/HoverPreview";
+import { TouchPreview } from "@/app/_components/TouchPreview";
 import { useHoverPreview } from "@/lib/useHoverPreview";
+import { hapticTap } from "@/lib/haptics";
 import {
   exportDeckText,
   emptyBasicLandCounts,
@@ -235,6 +237,16 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sea
   const [drag, setDrag] = useState<DragState | null>(null);
   const [poolSort, setPoolSort] = useState<PoolSort>("mana");
   const { preview, armHover, clearHover } = useHoverPreview();
+  // Mobile peek — opened via the loupe ("+" magnifier) button rendered
+  // by MagicCard on top of each card art. Replaces the earlier long-
+  // press gesture, which conflicted with iOS Safari's image Save /
+  // Share callout on the underlying <img>. The deck builder always
+  // has a full ScryfallCard, so we forward it through TouchPreview as
+  // the "scryfall" CardLike variant.
+  const [touchPreview, setTouchPreview] = useState<{
+    card: ScryfallCard;
+    foil: boolean;
+  } | null>(null);
 
   /* -------- card-move primitives -------- */
 
@@ -300,6 +312,17 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sea
 
   function moveDrag(e: React.PointerEvent<HTMLElement>) {
     if (!drag || e.pointerId !== drag.pointerId) return;
+    // Drag is disabled on phones — the gesture clashes with vertical
+    // scrolling and pool→deck taps already cover the common flow.
+    // We still track pointer position so an in-flight pointer doesn't
+    // get orphaned, but we never flip `active=true`, which means
+    // `endDrag` always takes the !wasActive branch and treats the
+    // release as a tap (the existing add-to-deck / remove-from-deck
+    // path).
+    if (isMobile) {
+      setDrag({ ...drag, x: e.clientX, y: e.clientY });
+      return;
+    }
     const dx = e.clientX - drag.startX;
     const dy = e.clientY - drag.startY;
     const past = dx * dx + dy * dy >= DRAG_THRESHOLD * DRAG_THRESHOLD;
@@ -324,6 +347,9 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sea
 
     if (!wasActive) {
       // Treat as a tap — pool→deck (default bucket) or deck→pool.
+      // A brief haptic tap confirms the action on supporting devices
+      // (Android — iOS doesn't expose vibration to the web).
+      hapticTap();
       if (drag.source === "pool") {
         addToDeck(drag.uid, defaultBucket(drag.card));
       } else if (isBasic && basicName) {
@@ -451,6 +477,8 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sea
     cancelDrag,
     armHover,
     clearHover,
+    openPreview: (card: ScryfallCard, foil: boolean) =>
+      setTouchPreview({ card, foil }),
   };
 
   return (
@@ -480,12 +508,16 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sea
           title="Deck"
           subtitle={
             deckColumns.length === 0
-              ? "Drag (or click) pool cards into a column to add them"
-              : "Click to remove · drag between columns to override placement"
+              ? isMobile
+                ? "Tap pool cards to add them"
+                : "Drag (or click) pool cards into a column to add them"
+              : isMobile
+                ? "Tap to remove"
+                : "Click to remove · drag between columns to override placement"
           }
           countLabel={`${deckCards.length} from pool`}
         />
-        <div className="px-3 sm:px-4 py-3 overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
+        <div className="px-3 sm:px-4 py-3 overflow-x-auto scroll-contain" style={{ WebkitOverflowScrolling: "touch" }}>
           {deckColumns.length === 0 && !drag?.active ? (
             <EmptyDeckTarget />
           ) : (
@@ -538,7 +570,9 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sea
           subtitle={
             poolGroups.length === 0
               ? "Every pulled card is in the deck."
-              : "Click to add · drag onto a deck column to place"
+              : isMobile
+                ? "Tap to add"
+                : "Click to add · drag onto a deck column to place"
           }
           countLabel={`${poolCards.length} card${poolCards.length === 1 ? "" : "s"}`}
           right={<PoolSortToggle value={poolSort} onChange={setPoolSort} />}
@@ -574,6 +608,12 @@ export function SealedDeckBuilder({ setMeta, pool, basicLandSamples, mode = "sea
       {preview && !drag && (
         <HoverPreview card={preview.card} foil={preview.foil} x={preview.x} y={preview.y} />
       )}
+      {touchPreview && (
+        <TouchPreview
+          card={{ kind: "scryfall", card: touchPreview.card, foil: touchPreview.foil }}
+          onDismiss={() => setTouchPreview(null)}
+        />
+      )}
 
       {exportOpen && (
         <ExportModal
@@ -600,6 +640,9 @@ interface SharedHandlers {
   cancelDrag: () => void;
   armHover: (card: ScryfallCard, foil: boolean, e: React.PointerEvent) => void;
   clearHover: () => void;
+  /** Open the centered mobile peek for this card. Wired from the
+   *  loupe ("+" magnifier) button rendered on top of each MagicCard. */
+  openPreview: (card: ScryfallCard, foil: boolean) => void;
 }
 
 function PoolTile({
@@ -633,6 +676,7 @@ function PoolTile({
         faceUp
         width={cardW}
         holoEnabled={false}
+        onPreview={() => handlers.openPreview(head.card, head.foil)}
       />
       {count > 1 && (
         <span
@@ -788,6 +832,7 @@ function DeckSlotCard({
         faceUp
         width={cardW}
         holoEnabled={false}
+        onPreview={() => handlers.openPreview(pulled.card, pulled.foil)}
       />
       {isCollapsed && count > 1 && (
         <span
@@ -1165,7 +1210,7 @@ function ExportModal({
       onClick={onClose}
     >
       <div
-        className="anim-detail-rise w-[min(640px,92vw)] max-h-[80vh] flex flex-col rounded-2xl liquid-panel"
+        className="anim-detail-rise w-[min(640px,92vw)] max-h-[80dvh] flex flex-col rounded-2xl liquid-panel"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--color-line)]">

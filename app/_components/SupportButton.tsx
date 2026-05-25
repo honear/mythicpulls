@@ -103,7 +103,10 @@ export function SupportButton({
                 className="border-0 block"
                 style={{
                   width: "min(400px, calc(100vw - 24px))",
-                  height: "min(680px, calc(100vh - 24px))",
+                  // Use dvh (dynamic viewport height) instead of vh so
+                  // iOS Safari's collapsing chrome doesn't push the
+                  // bottom of the iframe under the address bar.
+                  height: "min(680px, calc(100dvh - 24px))",
                   background: "#f9f9f9",
                   borderRadius: 14,
                   boxShadow:

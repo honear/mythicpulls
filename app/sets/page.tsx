@@ -67,7 +67,10 @@ export default async function SetsPage() {
         >
           Catalog · {sets.length} sets
         </p>
-        <h1 className="font-display text-[1.9rem] sm:text-[2.2rem] md:text-6xl text-[var(--color-fg)] mt-2 leading-[0.95] balance">
+        <h1
+          className="font-display text-[var(--color-fg)] mt-2 leading-[0.95] balance"
+          style={{ fontSize: "clamp(28px, 7vw, 56px)" }}
+        >
           Pick a set. <em className="ai-grad">Rip it</em> open.
         </h1>
         <p className="mt-3 text-[var(--color-ink)] max-w-xl">

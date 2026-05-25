@@ -106,6 +106,18 @@ a, button, [role="button"], summary, label {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Contain overscroll on any scrollable container so reaching the
+ * end of an internal list doesn't rubber-band the whole page (iOS)
+ * or trigger pull-to-refresh (Android). Applied via a utility class
+ * `scroll-contain` and globally to scrollable modal/drawer surfaces
+ * where the page underneath shouldn't move. */
+.scroll-contain {
+  overscroll-behavior: contain;
+}
+[data-modal-scroll] {
+  overscroll-behavior: contain;
+}
+
 /* ============================================================
    Type utilities
    ============================================================ */
@@ -379,6 +391,110 @@ a, button, [role="button"], summary, label {
   object-fit: cover;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+/* "+" loupe / preview button — top-right corner of face-up cards
+ * when MagicCard receives an `onPreview` prop. Sized 32px so it
+ * meets a reasonable tap target on mobile while staying small
+ * enough to not dominate the card art. Uses a translucent dark
+ * circle backdrop with a subtle white ring + drop-shadow so it
+ * reads cleanly over both light and dark card art.
+ *
+ * z-index above the glare + holo overlays so it stays clickable
+ * regardless of card state. The button itself uses pointer-events:
+ * auto explicitly because the surrounding `.card-mtg__art` (img)
+ * is not a touch target; without explicit `auto` the button could
+ * inherit suppressed pointer-events in some browsers. */
+.card-mtg__loupe {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 4;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.95);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 4px 12px -4px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+.card-mtg__loupe:hover {
+  background: rgba(0, 0, 0, 0.75);
+  transform: scale(1.05);
+}
+.card-mtg__loupe:active {
+  transform: scale(0.96);
+}
+/* Hide the loupe on devices with a precise pointer + hover capability
+ * (i.e. desktop mice). Those users already get the centered HoverPreview
+ * on the draft / sealed views and the click-to-open detail modal on the
+ * binder + pack reveal grid — a "+" button on top of every card would
+ * just be visual noise. Touch / coarse pointers (phones, tablets, touch
+ * laptops in tablet mode) see the loupe so they have a non-long-press
+ * way to peek without fighting iOS's image-save callout. */
+@media (hover: hover) and (pointer: fine) {
+  .card-mtg__loupe {
+    display: none;
+  }
+}
+
+/* Peek pill — small magnifier button rendered in the caption row
+ * beneath a card (used in PackOpener's CardSpread and CollectionBinder).
+ * Sits outside the card image so a tap to peek never collides with the
+ * card's own tap-to-flip / tap-to-open gesture. Mobile-only: hidden on
+ * hover-capable devices, which already have a HoverPreview / click-to-
+ * open-modal path. The visual is a 26 px glass circle with the icon
+ * centered — restrained enough not to compete with the card name /
+ * rarity chip alongside it, but big enough to be a comfortable touch
+ * target (≥ 24 px minimum). */
+.peek-pill {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-fg);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 2px 6px -2px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: background-color 160ms ease, transform 160ms ease;
+  flex-shrink: 0;
+}
+.peek-pill:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: scale(1.06);
+}
+.peek-pill:active {
+  transform: scale(0.94);
+}
+/* Hide on desktop — hover/click already covers the preview affordance
+ * (HoverPreview on draft + sealed; the detail modal on the binder /
+ * pack reveal). The peek pill is purely a touch-fallback. */
+@media (hover: hover) and (pointer: fine) {
+  .peek-pill {
+    display: none;
+  }
+}
+
+/* Apply the same touch-callout suppression to every interactive
+ * card surface — long-press anywhere on a card body should fire OUR
+ * preview, never iOS's image-save menu. `.card-mtg` wraps every
+ * rendered card (binder, pack reveal grid, deck builder pool, draft
+ * pick panel). */
+.card-mtg {
+  -webkit-touch-callout: none;
 }
 
 /* Loading skeleton — visible underneath the JPEG until it loads.
@@ -752,8 +868,17 @@ body[data-holo="off"] .card-mtg__holo {
   to   { opacity: 1; transform: translateY(0)   scale(1); }
 }
 
+/* Bottom-sheet rise — used by card-detail modals on phones, where
+ * they're anchored to the bottom of the viewport. Slides up from
+ * fully off-screen at a snappier curve than the desktop fade-up. */
+@keyframes sheetRise {
+  from { opacity: 0; transform: translateY(100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .anim-detail-fade { animation: detailFade 220ms ease-out both; }
 .anim-detail-rise { animation: detailRise 340ms cubic-bezier(0.22, 0.9, 0.3, 1) both; }
+.anim-sheet-rise  { animation: sheetRise 320ms cubic-bezier(0.22, 0.9, 0.3, 1) both; }
 .anim-card-rise   { animation: cardRiseIn 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 
 .anim-pack-wobble    { animation: packWobble 200ms ease-in-out both; transform-origin: center bottom; }

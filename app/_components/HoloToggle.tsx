@@ -79,7 +79,7 @@ export function HoloToggle() {
       aria-pressed={style === "shimmer"}
       aria-label={`Foil shimmer: ${label}. Click to toggle.`}
       title={`Foil shimmer ${style === "shimmer" ? "on" : "off"} — click to toggle`}
-      className="inline-flex items-center gap-1.5 h-[38px] px-3 rounded-[10px] text-[12px] font-medium transition-colors hover:bg-white/10 border border-[var(--color-line)]"
+      className="inline-flex items-center gap-1.5 h-11 sm:h-[38px] px-3 rounded-[10px] text-[12px] font-medium transition-colors hover:bg-white/10 border border-[var(--color-line)]"
       style={{
         color: "var(--color-ink)",
         fontFamily: "var(--font-ui)",

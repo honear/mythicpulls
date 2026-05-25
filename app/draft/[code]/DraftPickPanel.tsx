@@ -5,7 +5,9 @@ import { Hand } from "lucide-react";
 import type { PulledCard } from "@/lib/pack-open";
 import { MagicCard } from "@/app/_components/MagicCard";
 import { HoverPreview } from "@/app/_components/HoverPreview";
+import { TouchPreview } from "@/app/_components/TouchPreview";
 import { useHoverPreview } from "@/lib/useHoverPreview";
+import { hapticTap } from "@/lib/haptics";
 
 // Card width + column count adapt to viewport. Desktop keeps the planned
 // 5 × 3 layout; tablets drop to 4 columns; phones use 3 narrower columns
@@ -106,6 +108,12 @@ export function DraftPickPanel({
   const sorted = useMemo(() => sortPackByRarity(pack), [pack]);
   const { preview, armHover, clearHover } = useHoverPreview();
   const layout = useDraftLayout();
+  // Mobile peek — triggered by tapping the loupe ("+" magnifier) on
+  // each card. Replaces the earlier long-press gesture, which fought
+  // iOS Safari's image-save callout on the underlying <img>. Single
+  // overlay state at the panel level so taps across cards share the
+  // mount lifecycle and avoid a per-card render storm.
+  const [touchPreview, setTouchPreview] = useState<PulledCard | null>(null);
   // Rows = total grid slots / cols. Draft Boosters max 15 (5×3); mobile
   // collapses to 3×5; tablet to 4×4. The minHeight reserves the full grid
   // so the canvas doesn't visibly shrink as picks drain the pack.
@@ -136,6 +144,7 @@ export function DraftPickPanel({
             pulled={p}
             cardW={layout.w}
             onPick={() => { clearHover(); onPick(p.uid); }}
+            onPreview={() => setTouchPreview(p)}
             mode={mode}
             exitDirection={exitDirection}
             isPicked={mode === "exit" && pickedUid === p.uid}
@@ -152,16 +161,26 @@ export function DraftPickPanel({
           y={preview.y}
         />
       )}
+      {touchPreview && (
+        <TouchPreview
+          card={{ kind: "scryfall", card: touchPreview.card, foil: touchPreview.foil }}
+          onDismiss={() => setTouchPreview(null)}
+        />
+      )}
     </div>
   );
 }
 
 function PickableCard({
-  pulled, cardW, onPick, mode, exitDirection, isPicked, onHover, onHoverEnd,
+  pulled, cardW, onPick, onPreview, mode, exitDirection, isPicked, onHover, onHoverEnd,
 }: {
   pulled: PulledCard;
   cardW: number;
   onPick: () => void;
+  /** Mobile-only — fires when the user taps the loupe ("+" magnifier)
+   *  button rendered on top of the card art. The button stops
+   *  propagation so this never collides with the pick (`onPick`). */
+  onPreview: () => void;
   mode: "enter" | "exit";
   exitDirection: "left" | "right";
   isPicked: boolean;
@@ -211,7 +230,10 @@ function PickableCard({
 
   return (
     <button
-      onClick={onPick}
+      onClick={() => {
+        hapticTap();
+        onPick();
+      }}
       disabled={mode === "exit"}
       onPointerEnter={(e) => onHover(pulled.card, pulled.foil, e)}
       onPointerMove={(e) => onHover(pulled.card, pulled.foil, e)}
@@ -229,6 +251,7 @@ function PickableCard({
             faceUp
             width={cardW}
             holoEnabled
+            onPreview={onPreview}
           />
         </div>
       </div>

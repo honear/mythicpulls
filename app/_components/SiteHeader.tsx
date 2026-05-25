@@ -157,7 +157,8 @@ export function SiteHeader() {
             href="/collection"
             aria-current={onCollection ? "page" : undefined}
             aria-label="My binder"
-            className="inline-flex items-center justify-center h-[38px] px-3 rounded-[10px] text-[13px] font-medium transition-colors hover:bg-white/10 border border-[var(--color-line)]"
+            // h-11 on mobile = 44px, the iOS HIG minimum tap target.
+            className="inline-flex items-center justify-center h-11 px-3 rounded-[10px] text-[13px] font-medium transition-colors hover:bg-white/10 border border-[var(--color-line)]"
             style={{
               color: "var(--color-fg)",
               fontFamily: "var(--font-ui)",
@@ -171,7 +172,8 @@ export function SiteHeader() {
             aria-expanded={menuOpen}
             aria-controls="site-mobile-menu"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
-            className="grid place-items-center w-[38px] h-[38px] rounded-[10px] border border-[var(--color-line)] transition-colors hover:bg-white/10"
+            // w-11 h-11 = 44×44px tap target.
+            className="grid place-items-center w-11 h-11 rounded-[10px] border border-[var(--color-line)] transition-colors hover:bg-white/10"
             style={{ color: "var(--color-fg)" }}
           >
             {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}

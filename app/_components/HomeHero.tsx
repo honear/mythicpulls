@@ -49,7 +49,7 @@ export function HomeHero() {
         }}
       />
 
-      <div className="relative z-10 mx-auto max-w-5xl w-full px-4 sm:px-6 md:px-10 pt-24 sm:pt-28 md:pt-36 pb-10 sm:pb-12 md:pb-16">
+      <div className="relative z-10 mx-auto max-w-5xl w-full px-4 sm:px-6 md:px-10 pt-20 sm:pt-24 md:pt-36 pb-6 sm:pb-10 md:pb-16">
         <div className="flex flex-col items-center text-center gap-5 sm:gap-6">
           <HeroLogo />
           <p

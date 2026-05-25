@@ -42,6 +42,41 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Allow the dev server to serve `_next/*` resources (HMR socket,
+  // JS bundles) to phones / iPads on the same LAN. Without this,
+  // Next.js 16 blocks cross-origin dev-resource requests from any
+  // origin other than localhost — which means a phone hitting
+  // `http://192.168.1.118:3000` gets the SSR HTML but the client JS
+  // never loads, React doesn't hydrate, mobile-conditional hooks
+  // stay at their SSR defaults, and every button is dead.
+  //
+  // Patterns use glob `*` wildcards (one segment each). The list
+  // below covers the typical home / office LAN subnets without
+  // exposing the dev server to the public internet. Dev-only; this
+  // config has no effect on production builds.
+  allowedDevOrigins: [
+    // 192.168.x.x — most home routers
+    "192.168.*.*",
+    // 10.x.x.x — some home / corporate LANs
+    "10.*.*.*",
+    // 172.16.x.x – 172.31.x.x — uncommon but valid private range
+    "172.16.*.*",
+    "172.17.*.*",
+    "172.18.*.*",
+    "172.19.*.*",
+    "172.20.*.*",
+    "172.21.*.*",
+    "172.22.*.*",
+    "172.23.*.*",
+    "172.24.*.*",
+    "172.25.*.*",
+    "172.26.*.*",
+    "172.27.*.*",
+    "172.28.*.*",
+    "172.29.*.*",
+    "172.30.*.*",
+    "172.31.*.*",
+  ],
 };
 
 export default nextConfig;

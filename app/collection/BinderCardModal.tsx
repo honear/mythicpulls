@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ExternalLink, ShoppingBag, X } from "lucide-react";
 import type { CollectionEntry } from "@/lib/collection";
@@ -9,6 +9,7 @@ import { getManaPoolCardUrl } from "@/lib/manapool";
 import { useManaPoolSingle } from "@/lib/useManaPoolSingle";
 import { getCardmarketCardUrl } from "@/lib/cardmarket";
 import { useScryfallCardPrice } from "@/lib/useScryfallCardPrice";
+import { useSwipeDismiss } from "@/lib/useSwipeDismiss";
 import { MagicCard } from "@/app/_components/MagicCard";
 
 /**
@@ -41,42 +42,25 @@ interface Props {
 }
 
 export function BinderCardModal({ entry, onClose }: Props) {
-  // Mobile suppression matches CardDetailModal — the full-bleed overlay
-  // doesn't fit on phones yet. Reconsider when we redesign a mobile
-  // card details surface.
-  const [suppress, setSuppress] = useState(false);
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(max-width: 639px)");
-    const on = () => setSuppress(mq.matches);
-    on();
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, []);
-
-  useEffect(() => {
-    if (entry && suppress) onClose();
-  }, [entry, suppress, onClose]);
-
   // Escape to close.
   useEffect(() => {
-    if (!entry || suppress) return;
+    if (!entry) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [entry, onClose, suppress]);
+  }, [entry, onClose]);
 
   // Lock body scroll while open.
   useEffect(() => {
-    if (!entry || suppress) return;
+    if (!entry) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
     };
-  }, [entry, suppress]);
+  }, [entry]);
 
   // SSR-safe portal target — render nothing until the client mounts so
   // the portal call doesn't crash on the server.
@@ -92,8 +76,15 @@ export function BinderCardModal({ entry, onClose }: Props) {
   // Scryfall ID at modal open time. Cached in-memory so repeat opens
   // skip the network round trip.
   const { data: sfPrice } = useScryfallCardPrice(entry?.cardId, entry?.foil);
+  // Swipe-down-to-dismiss for the mobile bottom sheet. Bound to the
+  // entire sheet body (with the sheet's own scroll ref) so a pull-
+  // down from anywhere dismisses the modal when content is scrolled
+  // to the top — vertical scrolling still works otherwise. Pulling
+  // past 100px closes the modal.
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const swipe = useSwipeDismiss({ onDismiss: onClose, scrollRef: sheetRef });
 
-  if (!entry || suppress || !mounted) return null;
+  if (!entry || !mounted) return null;
 
   const scryfallHref = safeExternalUrl(
     `https://scryfall.com/card/${encodeURIComponent(
@@ -114,7 +105,8 @@ export function BinderCardModal({ entry, onClose }: Props) {
 
   const node = (
     <div
-      className="fixed inset-0 z-[1200] flex items-start sm:items-center justify-center px-3 sm:px-4 py-4 sm:py-8 overflow-y-auto anim-detail-fade"
+      className="fixed inset-0 z-[1200] flex items-end sm:items-center justify-center px-0 sm:px-4 py-0 sm:py-8 overflow-y-auto anim-detail-fade"
+      data-modal-scroll
       role="dialog"
       aria-modal="true"
       aria-label={`${entry.name} details`}
@@ -126,18 +118,72 @@ export function BinderCardModal({ entry, onClose }: Props) {
         aria-label="Close details"
       />
 
-      <div className="relative grid md:grid-cols-[auto_1fr] gap-4 md:gap-10 max-w-3xl w-full anim-detail-rise my-auto">
+      {/* Sheet wrapper — mirrors CardDetailModal's mobile bottom-sheet
+          treatment. Anchored to the bottom on phones with a swipe-
+          down dismiss gesture on the grip; floating in the center on
+          sm+ with the original animation. See that file for details. */}
+      <div
+        ref={sheetRef}
+        className="relative w-full sm:max-w-3xl max-h-[92dvh] sm:max-h-none overflow-y-auto sm:overflow-visible anim-sheet-rise sm:anim-detail-rise px-4 pt-4 pb-6 sm:p-0 my-auto bg-[var(--color-bg)] sm:bg-transparent rounded-t-3xl sm:rounded-none border-t border-white/5 sm:border-0"
+        data-modal-scroll
+        style={swipe.sheetStyle}
+        {...swipe.bind}
+        // Tap-outside-content dismissal: any click on the sheet
+        // wrapper itself (padding / grip / gaps) closes the modal.
+        // The card image and info panel each stop propagation so
+        // taps on actual content stay open. Matches the user's
+        // mental model of "tap anywhere besides the card and the
+        // section underneath to close".
+        onClick={onClose}
+      >
+        {/* Bottom-sheet drag handle. Visual affordance for the swipe-
+            down dismiss; the actual gesture is bound to the entire
+            sheet wrapper (with the iOS pull-to-dismiss idiom — only
+            fires when scrollTop=0). Hidden at sm+. */}
+        <div
+          aria-hidden
+          className="sm:hidden flex justify-center -mt-1 mb-2 py-2 pointer-events-none"
+        >
+          <div className="w-12 h-1.5 rounded-full bg-white/25" />
+        </div>
+        <div className="grid md:grid-cols-[auto_1fr] gap-4 md:gap-10">
         {/* Card image — uses the kind="lite" path so we don't need a
             full ScryfallCard. Width tracks the existing CardDetailModal
-            responsive sizing. */}
+            responsive sizing. The inner stopPropagation wrapper is
+            sized to the card itself (md:contents collapses on desktop
+            so the layout is unchanged) — tapping in the empty space
+            beside the centered card on phones still bubbles to the
+            sheet and dismisses. */}
         <div className="flex justify-center md:block">
-          <BinderDetailCard entry={entry} />
+          {/* w-fit shrinks the stop-prop wrapper to exactly the
+              card's width on mobile so taps beside the centered
+              card bubble to the sheet (and dismiss). md:contents
+              collapses the wrapper out of desktop layout while
+              still letting events flow through. */}
+          <div
+            onClick={(ev) => ev.stopPropagation()}
+            className="w-fit md:contents"
+          >
+            <BinderDetailCard entry={entry} />
+          </div>
         </div>
 
-        {/* Info panel */}
-        <div className="liquid-panel rounded-2xl p-4 sm:p-6 md:p-7 flex flex-col gap-4 sm:gap-5 max-w-md self-center w-full">
+        {/* Info panel — stop propagation so taps inside the panel
+            (text, chips, buttons) never bubble to the sheet's
+            onClick={onClose}. Real interactive elements inside
+            (buy links, close button) still fire their own
+            handlers before propagation is stopped. */}
+        <div
+          onClick={(ev) => ev.stopPropagation()}
+          className="liquid-panel rounded-2xl p-4 sm:p-6 md:p-7 flex flex-col gap-4 sm:gap-5 max-w-md self-center w-full"
+        >
           <div>
-            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-[var(--color-fg)] leading-tight">
+            {/* Headline size dialed in for mobile sheet width. The
+                previous text-2xl (24px) wrapped multi-line card names
+                like "Tamiyo, Inquisitive Student" to three lines on a
+                320px-wide panel; bumped down to text-xl on mobile and
+                added `balance` so the line breaks land more evenly. */}
+            <h2 className="font-display text-xl sm:text-3xl md:text-4xl text-[var(--color-fg)] leading-tight balance">
               {entry.name}
             </h2>
           </div>
@@ -221,6 +267,7 @@ export function BinderCardModal({ entry, onClose }: Props) {
               <X className="w-3.5 h-3.5" /> Close
             </button>
           </div>
+        </div>
         </div>
       </div>
     </div>

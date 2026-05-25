@@ -129,7 +129,11 @@ export function SetGrid({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search set by name or code…"
-            className="w-full pl-11 pr-4 py-3 rounded-full liquid-glass focus:outline-none text-sm text-[var(--color-fg)] placeholder:text-[var(--color-ink-muted)]/70"
+            // text-base (16px) on mobile to avoid iOS Safari's
+            // auto-zoom on focus (any input < 16px triggers a 1.5×
+            // page zoom that breaks layout until reload).
+            // sm:text-sm restores the smaller text on tablet+.
+            className="w-full pl-11 pr-4 py-3 rounded-full liquid-glass focus:outline-none text-base sm:text-sm text-[var(--color-fg)] placeholder:text-[var(--color-ink-muted)]/70"
             style={{ fontFamily: "var(--font-ui)" }}
           />
         </div>

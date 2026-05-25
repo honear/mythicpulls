@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Trash2, Sparkles, GripVertical } from "lucide-react";
+import { Search, Trash2, Sparkles, GripVertical, ZoomIn } from "lucide-react";
 
 /** Mobile breakpoint matcher used to scale binder card width.
  *  SSR-safe (defaults desktop). */
@@ -25,6 +25,7 @@ import {
   type CollectionEntry,
 } from "@/lib/collection";
 import { MagicCard } from "@/app/_components/MagicCard";
+import { TouchPreview } from "@/app/_components/TouchPreview";
 import { useDragReorder } from "@/lib/useDragReorder";
 import { BinderCardModal } from "./BinderCardModal";
 
@@ -39,6 +40,7 @@ export function CollectionBinder() {
   // entryId of the card whose detail modal is currently open. Cleared
   // when the modal closes. Mirrors PackOpener's `detailUid` pattern.
   const [detailKey, setDetailKey] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setMounted(true);
@@ -174,7 +176,9 @@ export function CollectionBinder() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by name or set…"
-              className="pl-11 pr-4 py-2.5 rounded-full liquid-glass focus:outline-none w-full md:w-72 text-sm text-[var(--color-fg)] placeholder:text-[var(--color-ink-muted)]/70"
+              // text-base (16px) on mobile to skip iOS Safari's
+              // auto-zoom; sm:text-sm restores compact size on tablet+.
+              className="pl-11 pr-4 py-2.5 rounded-full liquid-glass focus:outline-none w-full md:w-72 text-base sm:text-sm text-[var(--color-fg)] placeholder:text-[var(--color-ink-muted)]/70"
             />
           </div>
           <button
@@ -192,8 +196,10 @@ export function CollectionBinder() {
 
       <p className="text-xs text-[var(--color-ink-muted)] mb-4 inline-flex items-center gap-2">
         <GripVertical className="w-3.5 h-3.5" />
-        Click face-down to flip · click face-up to open · drag to reorder ·{" "}
-        {sort !== "manual" && (
+        {isMobile
+          ? "Tap to flip / open · tap the magnifier to peek"
+          : "Click face-down to flip · click face-up to open · drag to reorder · "}
+        {!isMobile && sort !== "manual" && (
           <span className="text-[var(--color-rarity-rare)]">
             switch to “custom” sort to enable drag
           </span>
@@ -234,12 +240,25 @@ function BinderGrid({
   const isMobile = useIsMobile();
   // Two cards per row on phones (~150px each); desktop keeps the 180px tile.
   const cardW = isMobile ? 150 : 180;
+  // Mobile peek — explicit magnifier button rendered alongside the
+  // SET·# caption beneath each card. Lives outside the card image so
+  // tapping the card to flip / open the detail modal never races
+  // with tapping to peek. Hidden on hover-capable pointers (desktop)
+  // via the `.peek-pill` media query in globals.css — desktop already
+  // shows the detail modal on click.
+  const [touchPreview, setTouchPreview] = useState<CollectionEntry | null>(null);
   const { bind } = useDragReorder({
     onReorder: canReorder ? onReorder : () => {},
     onTap: (i) => {
       const e = entries[i];
       if (e) onTap(keyOf(e));
     },
+    // Drag-to-reorder is desktop-only. Mobile users tap to flip /
+    // open and never need to rearrange — the gesture only fought
+    // page scrolling there. Threshold ∞ keeps movement from ever
+    // tripping the drag-engagement check, so onTap still fires on
+    // release as a clean tap.
+    threshold: isMobile ? Number.POSITIVE_INFINITY : 6,
   });
   return (
     <ul
@@ -262,7 +281,13 @@ function BinderGrid({
             onPointerCancel={bound.onPointerCancel}
             data-dragging={bound["data-dragging"]}
             data-drop-target={bound["data-drop-target"]}
-            className={`anim-card-rise touch-none ${
+            // touch-pan-y on mobile lets the page scroll while the
+            // finger is over a card (drag is disabled on mobile via
+            // threshold=∞); touch-none on desktop keeps the drag
+            // gesture smooth.
+            className={`anim-card-rise ${
+              isMobile ? "touch-pan-y" : "touch-none"
+            } ${
               bound["data-dragging"] ? "card-dragging" : ""
             } ${
               canReorder && bound["data-drop-target"]
@@ -284,12 +309,48 @@ function BinderGrid({
               faceUp={revealed.has(key)}
               width={cardW}
             />
-            <p className="mt-2 text-[10px] tracking-wider uppercase font-medium text-[var(--color-ink-muted)] truncate">
-              {e.setCode.toUpperCase()} · #{e.collectorNumber}
-            </p>
+            <div className="mt-2 flex items-center justify-center gap-2 text-[10px] tracking-wider uppercase font-medium text-[var(--color-ink-muted)]">
+              <span className="truncate">
+                {e.setCode.toUpperCase()} · #{e.collectorNumber}
+              </span>
+              {/* Mobile peek button. stopPropagation prevents the tap
+                  from bubbling into the parent <li>'s pointer handlers
+                  (which would treat it as a tap on the card and open
+                  the detail modal). Desktop hides this via
+                  `.peek-pill` media query — clicking the card opens
+                  the same modal there already. */}
+              <button
+                type="button"
+                onClick={(ev) => {
+                  ev.stopPropagation();
+                  ev.preventDefault();
+                  setTouchPreview(e);
+                }}
+                onPointerDown={(ev) => ev.stopPropagation()}
+                onPointerUp={(ev) => ev.stopPropagation()}
+                aria-label={`Peek at ${e.name}`}
+                className="peek-pill"
+              >
+                <ZoomIn className="w-3 h-3" />
+              </button>
+            </div>
           </li>
         );
       })}
+      {touchPreview && (
+        <TouchPreview
+          card={{
+            kind: "lite",
+            name: touchPreview.name,
+            setCode: touchPreview.setCode,
+            collectorNumber: touchPreview.collectorNumber,
+            art: touchPreview.image,
+            rarity: touchPreview.rarity,
+            foil: touchPreview.foil,
+          }}
+          onDismiss={() => setTouchPreview(null)}
+        />
+      )}
     </ul>
   );
 }
