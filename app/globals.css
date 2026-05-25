@@ -289,6 +289,27 @@ a, button, [role="button"], summary, label {
   border-radius: var(--radius-lg);
 }
 
+/* Skeleton placeholder — gentle pulse animation used by SetPageSkeleton
+   while a per-set route is fetching its Scryfall data. Subtle so it
+   doesn't feel noisy on the deep-purple backdrop. */
+.skeleton-pulse {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.10) 50%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes skeleton-shimmer {
+  0%   { background-position:  150% 0; }
+  100% { background-position: -150% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-pulse { animation: none; }
+}
+
 .btn-hero-secondary {
   color: var(--color-fg);
   background: rgba(255, 255, 255, 0.04);

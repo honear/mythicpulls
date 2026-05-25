@@ -62,11 +62,17 @@ export function HomeHero() {
             className="hero-title balance"
             style={{
               fontSize: "clamp(34px, 6.2vw, 70px)",
-              lineHeight: 1.02,
+              lineHeight: 1.18,
               maxWidth: "880px",
             }}
           >
-            Open packs. Run drafts. <em className="ai-grad">Build sealed decks.</em>
+            {/* Three nouns in italic-purple ("packs", "drafts",
+                "sealed"), the connective tissue in white. `<em>` picks
+                up the existing `.hero-title em` rule, which already
+                applies italic + purple + brand serif + a hair of
+                horizontal padding so the italics don't crowd the
+                neighboring punctuation. */}
+            Open <em>packs</em>. Run <em>drafts</em>. Build <em>sealed</em> decks.
           </h1>
           <p
             className="text-[15px] sm:text-[17px] leading-snug max-w-[560px] text-white/70"

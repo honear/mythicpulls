@@ -72,10 +72,18 @@ export default function HomePage() {
         className="relative mx-auto max-w-7xl w-full px-4 sm:px-6 md:px-10 pb-20 sm:pb-28"
         id="modes"
       >
-        {/* Three-up on desktop, stacks on mobile. Gap roughly matches
-            the page gutter so the cards breathe but stay grouped as
-            a single composition. */}
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+        {/* Always three-up at lg+ (1024px+); below that we collapse
+            straight to a single column. We avoid the 2+1 in-between
+            because that breaks the three-mode rhythm of the page —
+            user explicitly preferred a stacked column to a lopsided
+            grid. The 3-col threshold sits at lg rather than sm/md
+            because each ModeCard packs an icon + eyebrow + title +
+            two-line description + CTA pill + artist credit inside a
+            63:88 aspect; below ~300px wide the CTA gets clipped.
+            When stacked (single column), we cap the list at max-w-md
+            so a tablet-sized viewport doesn't blow the cards up to
+            ~1300px tall each. */}
+        <ul className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 max-w-md mx-auto lg:max-w-none">
           <li className="anim-card-rise" style={{ animationDelay: "60ms" }}>
             <ModeCard
               icon={PackageOpen}

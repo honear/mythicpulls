@@ -16,8 +16,16 @@ interface Props {
   onCardSeen?: (uid: string) => void;
 }
 
+// Reveal mode shows ONE card at a time in the center of the canvas.
+// Mobile bumped from 240 → 310 so the hero card actually fills the
+// phone viewport — at 240 there was ~67px of dead margin per side on
+// a 375px screen, which made the swipe-through reveal feel small
+// against a generous canvas. 310 × (88/63) ≈ 433px tall, fits inside
+// the mobile canvas's 560px min-height with room for caption text,
+// and leaves ~32px of margin on each side of a 375px viewport so the
+// drag gesture still has somewhere to throw to.
 const CARD_W_DESKTOP = 320;
-const CARD_W_MOBILE = 240;
+const CARD_W_MOBILE = 310;
 const STACK_DEPTH = 5;           // visible cards at any time
 const THRESHOLD = 6;             // px before press becomes a drag
 const COMMIT_DIST = 40;          // px before the deck cycles
