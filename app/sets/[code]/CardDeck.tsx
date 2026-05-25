@@ -175,7 +175,9 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
     <div className="w-full flex flex-col items-center gap-5">
       <p className="text-xs text-[var(--color-ink-muted)] inline-flex items-center gap-2">
         <Hand className="w-3.5 h-3.5" />
-        Drag (or click) the top card to send it to the back
+        {isMobile
+          ? "Swipe (or tap) the top card to send it to the back"
+          : "Drag (or click) the top card to send it to the back"}
       </p>
 
       {/* Fixed-size stage so the page height never shifts as cards cycle. */}
