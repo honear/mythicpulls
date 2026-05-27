@@ -16,8 +16,12 @@ const geist = Geist({
  * Resolve the absolute site URL used to make relative image references
  * (notably the auto-discovered `opengraph-image`) into shareable URLs.
  * Resolution order:
- *   1. NEXT_PUBLIC_SITE_URL — set in `.env.local` to pin to a custom
- *      domain when one is configured.
+ *   1. NEXT_PUBLIC_SITE_URL — set in Vercel's project env vars to
+ *      `https://threetreecity.com` so Open Graph previews and the
+ *      canonical link tag point at the custom domain. Without this,
+ *      Vercel's auto-injected env (step 2) would put the share URL
+ *      on `*.vercel.app`, which is what Fortinet / enterprise URL
+ *      filters treat as untrusted shared hosting.
  *   2. VERCEL_PROJECT_PRODUCTION_URL — automatically populated by Vercel
  *      on production builds; matches the canonical `*.vercel.app` host.
  *   3. Localhost fallback so `npm run dev` doesn't crash.

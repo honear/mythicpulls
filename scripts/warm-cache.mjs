@@ -42,7 +42,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const SET_ART_PATH = join(ROOT, "data", "set-art.json");
 
-const BASE_URL = (process.env.BASE_URL ?? "https://threetreecity.vercel.app").replace(/\/+$/, "");
+const BASE_URL = (process.env.BASE_URL ?? "https://threetreecity.com").replace(/\/+$/, "");
 // Warmer hits OUR server, which then triggers Scryfall fetches with the
 // throttling already baked into lib/scryfall.ts. Bumping warmer-side
 // concurrency past ~6 doesn't make Scryfall any happier (the server
