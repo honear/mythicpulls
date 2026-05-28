@@ -48,6 +48,21 @@ export function useCardTilt<T extends HTMLElement = HTMLDivElement>({
    *  once per animation frame by the rAF callback below. */
   const pendingRef = useRef<{ x: number; y: number } | null>(null);
   const rafRef = useRef<number | null>(null);
+  // Tilt is fine-pointer only. On touch/coarse pointers the pointer
+  // handlers would still fire on tap/drag, add `.is-tilting`
+  // (`will-change: transform`) and light up `--glare-opacity` — which
+  // promotes the card to its own GPU layer and forces the glare/holo
+  // `mix-blend-mode` overlays to recomposite against it. On mobile
+  // Chrome that recompositing intermittently flashes the layer to black
+  // (the "cards strobing to black" bug). Gating tilt to fine pointers
+  // never promotes the layer, so the static card composites cleanly.
+  // Mirrors the loupe's `(hover: hover) and (pointer: fine)` split.
+  const finePointerRef = useRef(false);
+  useEffect(() => {
+    finePointerRef.current = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    ).matches;
+  }, []);
 
   const apply = useCallback(
     (el: T, x: number, y: number) => {
@@ -78,7 +93,7 @@ export function useCardTilt<T extends HTMLElement = HTMLDivElement>({
 
   const onPointerEnter = useCallback(
     (e: React.PointerEvent<T>) => {
-      if (!enabled) return;
+      if (!enabled || !finePointerRef.current) return;
       const el = ref.current;
       if (!el) return;
       el.classList.add("is-tilting");
@@ -96,7 +111,7 @@ export function useCardTilt<T extends HTMLElement = HTMLDivElement>({
 
   const onPointerMove = useCallback(
     (e: React.PointerEvent<T>) => {
-      if (!enabled) return;
+      if (!enabled || !finePointerRef.current) return;
       const el = ref.current;
       if (!el) return;
       // Defensive: pointerenter occasionally doesn't fire after hot reload

@@ -674,6 +674,24 @@ body[data-holo="off"] .card-mtg__holo {
   opacity: 0;
 }
 
+/* Touch / coarse-pointer devices: neutralize the blend-mode overlays.
+   `color-dodge` (holo) and `overlay` (glare) inside the card's
+   `preserve-3d` + `backface-visibility: hidden` stack make mobile
+   Chrome intermittently composite the layer against an empty buffer,
+   strobing the card to black. Tilt is already disabled here (see
+   useCardTilt.ts), so glare stays at opacity 0 and is invisible; the
+   holo drops to plain alpha at a softer opacity so foils still read as
+   a subtle rainbow film instead of flashing. */
+@media (hover: none), (pointer: coarse) {
+  .card-mtg__glare,
+  .card-mtg__holo {
+    mix-blend-mode: normal;
+  }
+  .card-mtg__holo {
+    opacity: calc(var(--holo-opacity, 0.55) * 0.5);
+  }
+}
+
 /* Flip wrapper */
 .card-flip {
   position: relative;
