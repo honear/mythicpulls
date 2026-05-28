@@ -720,31 +720,6 @@ body[data-holo="off"] .card-mtg__holo {
    so the browser actually animates the snap. */
 .deck-slot-dragging { transition: none !important; }
 
-/* Reveal-deck compositing relief for touch / Android Chrome.
-   A full pack mounts ~15 stacked .deck-slot layers, each force-promoted
-   via inline `will-change: transform, opacity` and each wrapping a
-   `preserve-3d` + `backface-visibility: hidden` card. On Android that
-   stack overwhelms the compositor (bad lag) and partially backface-culls
-   layers — the reported "bottom half of a card vanishes and shows the
-   one behind", with strobing. Reveal cards are ALWAYS face-up and never
-   flip, so the 3D-flip machinery is pure liability here: flatten it and
-   drop the always-on layer promotion so Chrome composites on demand.
-   Scoped to .deck-slot so the flip animation elsewhere is untouched. */
-@media (hover: none), (pointer: coarse) {
-  .deck-slot {
-    will-change: auto !important;
-  }
-  .deck-slot .card-mtg,
-  .deck-slot .card-flip {
-    transform-style: flat;
-  }
-  .deck-slot .card-mtg,
-  .deck-slot .card-mtg__face {
-    backface-visibility: visible;
-    -webkit-backface-visibility: visible;
-  }
-}
-
 /* Drop target placeholder during reorder */
 .card-drop-target { outline: 2px dashed rgba(164, 132, 215, 0.7); outline-offset: 4px; }
 
