@@ -206,6 +206,7 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
               key={uid}
               pulled={p}
               cardW={CARD_W}
+              imageSize={isMobile ? "normal" : "large"}
               stackPos={Math.min(i, STACK_DEPTH - 1)}
               behindStack={i >= STACK_DEPTH}
               isTop={i === 0}
@@ -241,12 +242,15 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
 /* ---------------- Single card slot ---------------- */
 
 function DeckSlot({
-  pulled, cardW, stackPos, behindStack, isTop, isFinalCard, hide,
+  pulled, cardW, imageSize, stackPos, behindStack, isTop, isFinalCard, hide,
   onCommitCycle, onDragStateChange, onFinalDismiss,
 }: {
   pulled: PulledCard;
   /** Card render width, scaled per viewport by the parent. */
   cardW: number;
+  /** Scryfall image variant. Mobile pins to "normal" (488px) to keep
+   *  iOS WebKit from memory-evicting the tab; desktop uses "large". */
+  imageSize: "normal" | "large";
   stackPos: number;
   /** When true, the card has cycled past the visible window; it should
    *  finish its animation toward the back, then fade out. */
@@ -476,6 +480,7 @@ function DeckSlot({
         card={{ kind: "scryfall", card: pulled.card, foil: pulled.foil }}
         faceUp
         width={cardW}
+        imageSize={imageSize}
       />
     </div>
   );

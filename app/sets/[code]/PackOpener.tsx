@@ -188,12 +188,18 @@ export function PackOpener({
     const ripTimer = new Promise<void>((resolve) => {
       window.setTimeout(resolve, 1300);
     });
+    // Preload the SAME variant the reveal deck will render: "normal" on
+    // mobile (matches CardDeck's imageSize override — keeps us from
+    // fetching + decoding both "large" and "normal" of every card, which
+    // doubled iOS memory pressure), "large" on desktop.
+    const revealSize = isMobile ? "normal" : "large";
+    const revealFallback = isMobile ? "large" : "normal";
     const urls = result.map(
       (p) =>
-        getCardImage(p.card, "large") ??
-        getCardImage(p.card, "normal") ??
-        p.card.card_faces?.[0]?.image_uris?.large ??
-        p.card.card_faces?.[0]?.image_uris?.normal,
+        getCardImage(p.card, revealSize) ??
+        getCardImage(p.card, revealFallback) ??
+        p.card.card_faces?.[0]?.image_uris?.[revealSize] ??
+        p.card.card_faces?.[0]?.image_uris?.[revealFallback],
     );
     Promise.all([ripTimer, preloadImages(urls)]).then(() => {
       setPhase("revealing");

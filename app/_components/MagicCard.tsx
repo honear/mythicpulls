@@ -59,6 +59,14 @@ interface Props {
    *  Used as the explicit preview trigger on mobile, replacing the
    *  long-press gesture that fights iOS's image-save sheet. */
   onPreview?: () => void;
+  /** Force a specific Scryfall image variant, overriding the width-based
+   *  heuristic. Used by the mobile reveal deck to pin to `normal`
+   *  (488px, ~1.3MB decoded) instead of `large` (672px, ~2.5MB) even
+   *  though the card renders wider than 175px — large images accumulate
+   *  in iOS WebKit's decoded-image cache across a session and trigger a
+   *  per-tab memory eviction (the tab silently reloads). `normal` halves
+   *  the per-card memory and is still crisp on a phone screen. */
+  imageSize?: "normal" | "large";
 }
 
 export function MagicCard({
@@ -69,8 +77,9 @@ export function MagicCard({
   className,
   holoEnabled = true,
   onPreview,
+  imageSize,
 }: Props) {
-  const data = normalize(card, width);
+  const data = normalize(card, width, imageSize);
 
   // Track JPEG-loaded state per face so a card-shaped skeleton can show
   // while the image is in flight. Without this, slow / cold-cache
@@ -219,7 +228,7 @@ export function MagicCard({
   );
 }
 
-function normalize(card: CardLike, width?: number): {
+function normalize(card: CardLike, width?: number, sizeOverride?: "normal" | "large"): {
   name: string;
   front: string;
   setCode: string;
@@ -229,8 +238,9 @@ function normalize(card: CardLike, width?: number): {
 } {
   // Pick the smallest Scryfall variant that still looks crisp at the
   // requested render width; fall back to the other variant if Scryfall
-  // didn't provide the preferred one (rare).
-  const preferred = preferredImageSize(width);
+  // didn't provide the preferred one (rare). An explicit `sizeOverride`
+  // wins over the width heuristic — see the `imageSize` prop doc.
+  const preferred = sizeOverride ?? preferredImageSize(width);
   const fallback: keyof ScryfallImageUris = preferred === "large" ? "normal" : "large";
   if (card.kind === "scryfall") {
     const c = card.card;
