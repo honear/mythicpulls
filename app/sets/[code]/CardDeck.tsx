@@ -87,6 +87,19 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
     pulled.map((p) => p.uid),
   );
   const [draggingUid, setDraggingUid] = useState<string | null>(null);
+  // Mobile unmounts occluded deep-stack cards (see the render cap in the
+  // map below). A card committed mid-drag jumps to the back of the order
+  // but must stay mounted — while the finger still holds it (draggingUid)
+  // and through its release snap-back to the stack (settlingUid) — or it
+  // would vanish under the cursor the instant the cycle commits.
+  const [settlingUid, setSettlingUid] = useState<string | null>(null);
+  const settleTimerRef = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+    },
+    [],
+  );
   /** Uids that have been the top of the deck at least once. Starts with the
    *  initial top, since it's immediately visible. */
   const [seen, setSeen] = useState<Set<string>>(
@@ -198,7 +211,13 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
           // flies off-screen and fades before it lands past the window, so
           // dropping it mid-cleanup is a no-op (the flushSync cleanup runs
           // harmlessly on the detached node). Desktop keeps the full stack.
-          if (isMobile && i > STACK_DEPTH) return null;
+          if (
+            isMobile &&
+            i > STACK_DEPTH &&
+            uid !== draggingUid &&
+            uid !== settlingUid
+          )
+            return null;
           // Cards past the visible window clamp to the back-of-stack rest
           // slot — they overlap there but only the latest in DOM order is
           // visible. Keeping the windowed set mounted lets the snap-back
@@ -224,7 +243,21 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
               isFinalCard={isFinalCard}
               hide={hide}
               onCommitCycle={() => sendToBack(uid)}
-              onDragStateChange={(d) => setDraggingUid(d ? uid : null)}
+              onDragStateChange={(d) => {
+                if (d) {
+                  setDraggingUid(uid);
+                  return;
+                }
+                setDraggingUid(null);
+                // Keep the just-released card mounted through its snap-back
+                // to the back of the stack before the render cap drops it.
+                setSettlingUid(uid);
+                if (settleTimerRef.current)
+                  clearTimeout(settleTimerRef.current);
+                settleTimerRef.current = window.setTimeout(() => {
+                  setSettlingUid((s) => (s === uid ? null : s));
+                }, 450);
+              }}
               onFinalDismiss={dismissFinal}
             />
           );
