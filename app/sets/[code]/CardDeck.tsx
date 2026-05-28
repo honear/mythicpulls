@@ -447,7 +447,7 @@ function DeckSlot({
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerCancel}
-      className={`absolute touch-none ${
+      className={`deck-slot absolute touch-none ${
         dragging ? "deck-slot-dragging " : ""
       }${
         (isTop || dragging) && !hide
