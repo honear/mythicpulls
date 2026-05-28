@@ -188,10 +188,21 @@ export function CardDeck({ pulled, onAllRevealed, onCardSeen }: Props) {
         {cycleOrder.map((uid, i) => {
           const p = byUid.get(uid);
           if (!p) return null;
-          // Render every card always. Cards past the visible window clamp
-          // to the back-of-stack rest slot — they overlap there but only
-          // the latest in DOM order is visible. Keeping them mounted lets
-          // the snap-back transition play after a release.
+          // Mobile GPU relief: a full pack is ~15 cards, but only the front
+          // STACK_DEPTH are visible — the rest pile fully occluded at the
+          // back-of-stack rest slot, contributing zero pixels but a full
+          // composited 3D layer each. A budget phone GPU chokes on a dozen
+          // such layers immediately (smooth grid view, laggy reveal). Cap
+          // the rendered window to the visible stack plus one backing card.
+          // Cards beyond it are invisible anyway; the just-cycled top card
+          // flies off-screen and fades before it lands past the window, so
+          // dropping it mid-cleanup is a no-op (the flushSync cleanup runs
+          // harmlessly on the detached node). Desktop keeps the full stack.
+          if (isMobile && i > STACK_DEPTH) return null;
+          // Cards past the visible window clamp to the back-of-stack rest
+          // slot — they overlap there but only the latest in DOM order is
+          // visible. Keeping the windowed set mounted lets the snap-back
+          // transition play after a release.
           const isFinalCard = lastUid !== null && uid === lastUid;
           // Once we're in "awaiting final dismiss" mode, fade the back-pile
           // so the lone last card sits clean on the stage. Exemption: if the
@@ -473,7 +484,11 @@ function DeckSlot({
         // so the lone last card sits clean. Pointer-events are also
         // disabled via the className when hide=true.
         opacity: hide ? 0 : 1,
-        willChange: "transform, opacity",
+        // Only promote the card that's actually moving (top / being
+        // dragged) to its own compositing layer. A permanent
+        // will-change on every stacked slot pins a dozen GPU layers at
+        // rest, which is what overwhelms a budget phone's compositor.
+        willChange: isTop || dragging ? "transform, opacity" : "auto",
       }}
     >
       <MagicCard
