@@ -100,6 +100,42 @@ function isMeteredConnection(): boolean {
   return false;
 }
 
+/**
+ * Detects clients where eagerly decoding a few hundred card images into
+ * memory risks a per-tab memory eviction. The big one is iOS: Safari,
+ * Chrome-iOS, and Firefox-iOS are ALL WebKit under the hood, and WebKit
+ * enforces a hard per-tab memory budget — exceed it and the engine kills
+ * and reloads the page. Symptom: open a pack on an iPhone, the tab silently
+ * reloads, and you're bounced back to the "Open a new pack" screen mid-rip.
+ *
+ * On these clients we skip the background full-pool warm-up entirely. The
+ * rip-time active preload (`lib/preload.ts`) still loads the ~15 images of
+ * the actual pack being opened, so reveals stay smooth — we just don't
+ * speculatively warm the other ~485 images the user may never see.
+ *
+ * Covers:
+ *   • iPhone / iPod / iPad (incl. iPadOS 13+ which reports a Mac UA but
+ *     exposes touch), and
+ *   • any narrow-viewport device (Android phones included) — the warm-up
+ *     is a desktop nicety, not worth the memory risk on a phone.
+ */
+function isMemoryConstrainedClient(): boolean {
+  if (typeof navigator === "undefined" || typeof window === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  const isIOS =
+    /iPad|iPhone|iPod/.test(ua) ||
+    // iPadOS 13+ masquerades as desktop Safari/Mac — disambiguate via
+    // touch support, which a real Mac doesn't report.
+    (/Macintosh/.test(ua) &&
+      typeof document !== "undefined" &&
+      "ontouchend" in document);
+  if (isIOS) return true;
+  if (typeof window.matchMedia === "function" && window.matchMedia("(max-width: 639px)").matches) {
+    return true;
+  }
+  return false;
+}
+
 interface IdlePreloadOptions {
   /** How many URLs to start loading per idle tick. Bigger → faster
    *  warm-up but more network contention; smaller → friendlier to
@@ -131,6 +167,13 @@ export function idlePreloadImages(
     // eslint-disable-next-line no-console
     console.info(
       "[idle-preload] skipping warm-up — metered/slow connection or saveData set",
+    );
+    return () => {};
+  }
+  if (!forceEnable && isMemoryConstrainedClient()) {
+    // eslint-disable-next-line no-console
+    console.info(
+      "[idle-preload] skipping warm-up — memory-constrained mobile client (iOS/narrow viewport); rip-time preload still covers the opened pack",
     );
     return () => {};
   }

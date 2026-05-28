@@ -56,6 +56,12 @@ type Phase = "idle" | "ripping" | "revealing";
 export function PackOpener({
   setMeta, pool, recipes, costs, filters, availableTypes, initialType,
 }: Props) {
+  // Memory-constrained mobile clients (notably iOS WebKit — Safari,
+  // Chrome-iOS, Firefox-iOS) get aggressive per-tab memory eviction, so
+  // we skip the speculative image warm-up there. See the idle-preload
+  // guard for the full rationale; this is the same defense applied to
+  // the per-reveal speculative roll below.
+  const isMobile = useIsMobile();
   const [packType, setPackType] = useState<PackType>(initialType);
   const [phase, setPhase] = useState<Phase>("idle");
   const [pulled, setPulled] = useState<PulledCard[]>([]);
@@ -101,6 +107,13 @@ export function PackOpener({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (phase !== "revealing") return;
+    // Skip on mobile — the speculative roll loads ~15 large JPEGs per
+    // reveal, and on iOS those accumulate in WebKit's decoded-image
+    // cache across successive packs until the tab gets memory-evicted
+    // and silently reloads. The rip-time active preload still warms the
+    // actual pack the user opens, so correctness is unaffected; only the
+    // "instant next pack" nicety is dropped on phones.
+    if (isMobile) return;
     const recipe = recipes[packType];
     if (!recipe) return;
     const speculative = openPack(recipe, pool, setMeta.code, filters);
@@ -117,7 +130,7 @@ export function PackOpener({
     // Deps deliberately omit `filters`/`setMeta` since they're stable
     // for the lifetime of this component; including them would force
     // a re-roll on every render of stable references in some paths.
-  }, [phase, packType, recipes, pool]);
+  }, [phase, packType, recipes, pool, isMobile]);
 
   // The currently-selected pack type's live Mana Pool price (market
   // → low → null when Mana Pool doesn't carry the product). Server
