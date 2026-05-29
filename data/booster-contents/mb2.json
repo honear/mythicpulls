@@ -1,13 +1,38 @@
 {
-  "_doc": "Mystery Booster 2 (MB2, released 2024-08-02) — bespoke, hand-authored recipe (NOT generated). Mystery Booster sells as a SINGLE booster type, so `authoritative` makes the set offer only this one pack and hides the Play/Draft/Collector options the date heuristic would otherwise show. Modelled like a mystery pack: cards spanning every rarity drawn from the MB2 pool, one guaranteed rare/mythic, and a closing foil. Exact per-slot odds are approximate — no official 'Collecting' article has been processed for this set yet. The single type is mapped onto the generic 'draft' opener because the UI only labels play/draft/collector; treat the label loosely.",
+  "_doc": "Mystery Booster 2 (MB2, 2024-08-02) — bespoke recipe modelled on the OFFICIAL structure from Wizards' 'What's Inside Mystery Booster 2' article: 14 cards = 10 commons/uncommons (2 per color) + 1 multicolor/artifact/common-or-uncommon land + 1 rare/mythic + 1 Future Sight-frame card (60% rare/mythic) + 1 white-bordered reprint (40% rare/mythic) + 1 playtest card. Single product type → authoritative:true. Note: our engine can't filter by card COLOR, so the 10 colored + 1 multi/art/land slots are modelled together as 11 common/uncommon draws; the Future Sight (filter future_frame), white-bordered (white_border) and playtest (playtest_card) slots are filtered exactly. There is NO guaranteed traditional foil (only <5% within the Future Sight slot, omitted here). VALUE NOTE: even faithfully modelled, a pack sims to ~$38 median in Scryfall singles vs the ~$16 sealed price — MB2 is packed with reprinted staples and Scryfall's prices for this thin, recent set are almost certainly inflated. The simulator reflects the source prices; this is not a recipe bug.",
   "authoritative": true,
   "draft": {
     "cardCount": 15,
-    "tagline": "15 reprinted cards spanning the whole game — every rarity — capped with a foil · the mystery pack",
+    "tagline": "14 cards + 1 playtest · 11 commons/uncommons · 1 rare/mythic · Future Sight frame · white-bordered reprint",
     "slots": [
-      { "label": "Card", "count": 13, "outcomes": [{ "weight": 1 }] },
+      {
+        "label": "Common / Uncommon",
+        "count": 11,
+        "outcomes": [
+          { "weight": 50, "rarity": "common" },
+          { "weight": 50, "rarity": "uncommon" }
+        ]
+      },
       { "label": "Rare / Mythic", "outcomes": [{ "weight": 86, "rarity": "rare" }, { "weight": 14, "rarity": "mythic" }] },
-      { "label": "Foil", "foil": true, "outcomes": [{ "weight": 1 }] }
+      {
+        "label": "Future Sight Frame",
+        "outcomes": [
+          { "weight": 51.6, "rarity": "rare", "filter": "future_frame" },
+          { "weight": 8.4, "rarity": "mythic", "filter": "future_frame" },
+          { "weight": 20, "rarity": "common", "filter": "future_frame" },
+          { "weight": 20, "rarity": "uncommon", "filter": "future_frame" }
+        ]
+      },
+      {
+        "label": "White-Bordered Reprint",
+        "outcomes": [
+          { "weight": 34.4, "rarity": "rare", "filter": "white_border" },
+          { "weight": 5.6, "rarity": "mythic", "filter": "white_border" },
+          { "weight": 30, "rarity": "common", "filter": "white_border" },
+          { "weight": 30, "rarity": "uncommon", "filter": "white_border" }
+        ]
+      },
+      { "label": "Playtest Card", "outcomes": [{ "weight": 1, "filter": "playtest_card" }] }
     ]
   }
 }

@@ -82,6 +82,9 @@
 
   "_doc_retro_frame": "Old-border (1997 frame) retro treatment, e.g. The Brothers' War retro artifacts, Dominaria Remastered retro frame. Matches card.frame.",
   "retro_frame": { "frame": "1997" },
+  "future_frame": { "frame": "future" },
+  "white_border": { "border_color": "white" },
+  "playtest_card": { "promo_types": "playtest" },
   "full_art": { "full_art": true },
   "_doc_full_art_land": "Full-art LANDS only (basic or nonbasic). Use this in basic-land slots instead of bare full_art, which would also match full-art creatures/scenes and leak non-lands into the land slot.",
   "full_art_land": { "all": [{ "type_line_includes": "Land" }, { "full_art": true }] },

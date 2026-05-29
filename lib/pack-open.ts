@@ -363,5 +363,13 @@ export function openPack(
     }
   }
 
-  return pulled;
+  // Non-game inserts (tokens, art cards, punch-out/ad cards) always reveal
+  // first, regardless of where their slot sits in the recipe — collector
+  // recipes often place the token last. Array partition is a stable
+  // reorder, so the rest of the pack keeps its recipe order behind them.
+  // Draft/Sealed callers filter `isToken` out entirely, so this is inert
+  // for them.
+  const tokens = pulled.filter((p) => p.isToken);
+  if (tokens.length === 0 || tokens.length === pulled.length) return pulled;
+  return [...tokens, ...pulled.filter((p) => !p.isToken)];
 }
