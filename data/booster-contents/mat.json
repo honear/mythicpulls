@@ -1,73 +1,152 @@
 {
-  "_doc": "Magic: The Gathering — March of the Machine: The Aftermath (MAT). Source: Wizards 'Collecting March of the Machine' article (https://magic.wizards.com/en/news/feature/collecting-march-of-the-machine), which announces The Aftermath as sold in 5-card Epilogue Boosters + 6-card Collector Boosters but provides NO slot breakdowns or drop rates for The Aftermath. Recipe is therefore DERIVED from the set's known micro-set structure (50 cards spanning uncommon/rare/mythic, no commons). authoritative=true. APPROXIMATIONS: (1) The Aftermath had NO Play or Draft Boosters — its 5-card Epilogue Booster is mapped onto our 'draft' pack type as the closest analogue. (2) No official percentages exist for The Aftermath, so rare/mythic and foil splits are reasonable estimates, not Wizards-published numbers. (3) Borderless/showcase 'booster fun' treatments are approximated with the borderless filter on the MAT pool.",
+  "_doc": "Magic: The Gathering \u2014 March of the Machine: The Aftermath (MAT). Source: Wizards 'Collecting March of the Machine' article (https://magic.wizards.com/en/news/feature/collecting-march-of-the-machine), which announces The Aftermath as sold in 5-card Epilogue Boosters + 6-card Collector Boosters but provides NO slot breakdowns or drop rates for The Aftermath. Recipe is therefore DERIVED from the set's known micro-set structure (50 cards spanning uncommon/rare/mythic, no commons). authoritative=true. APPROXIMATIONS: (1) The Aftermath had NO Play or Draft Boosters \u2014 its 5-card Epilogue Booster is mapped onto our 'draft' pack type as the closest analogue. (2) No official percentages exist for The Aftermath, so rare/mythic and foil splits are reasonable estimates, not Wizards-published numbers. (3) Borderless/showcase 'booster fun' treatments are approximated with the borderless filter on the MAT pool. [Chase fix: added halo-foil outcomes (MAT signature treatment) so halo foils are reachable.]",
   "authoritative": true,
-
   "draft": {
     "cardCount": 5,
-    "tagline": "5-card Epilogue Booster (modeled as draft) · 50-card micro-set · guaranteed rare/mythic + 1 traditional foil · DERIVED (no official Aftermath odds)",
+    "tagline": "5-card Epilogue Booster (modeled as draft) \u00b7 50-card micro-set \u00b7 guaranteed rare/mythic + 1 traditional foil \u00b7 DERIVED (no official Aftermath odds)",
     "slots": [
       {
         "label": "Uncommon",
         "count": 3,
-        "outcomes": [{ "weight": 1, "set": "MAT", "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "MAT",
+            "rarity": "uncommon"
+          }
+        ]
       },
-
       {
         "label": "Rare / Mythic",
         "outcomes": [
-          { "weight": 73.3, "set": "MAT", "rarity": "rare" },
-          { "weight": 26.7, "set": "MAT", "rarity": "mythic" }
+          {
+            "weight": 73.3,
+            "set": "MAT",
+            "rarity": "rare"
+          },
+          {
+            "weight": 26.7,
+            "set": "MAT",
+            "rarity": "mythic"
+          }
         ]
       },
-
       {
         "label": "Traditional Foil",
         "foil": true,
         "outcomes": [
-          { "weight": 70, "set": "MAT", "rarity": "uncommon" },
-          { "weight": 25, "set": "MAT", "rarity": "rare" },
-          { "weight": 5,  "set": "MAT", "rarity": "mythic" }
+          {
+            "weight": 70,
+            "set": "MAT",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 25,
+            "set": "MAT",
+            "rarity": "rare"
+          },
+          {
+            "weight": 5,
+            "set": "MAT",
+            "rarity": "mythic"
+          }
         ]
       }
     ]
   },
-
   "collector": {
     "cardCount": 6,
-    "tagline": "6-card Collector Booster · all-foil with borderless/extended-art chase · DERIVED (no official Aftermath odds)",
+    "tagline": "6-card Collector Booster \u00b7 all-foil with borderless/extended-art chase \u00b7 DERIVED (no official Aftermath odds)",
     "slots": [
       {
         "label": "Traditional Foil Uncommon",
         "count": 3,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "MAT", "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "MAT",
+            "rarity": "uncommon"
+          }
+        ]
       },
-
       {
         "label": "Non-foil Borderless Rare / Mythic",
         "outcomes": [
-          { "weight": 80, "set": "MAT", "rarity": "rare",   "filter": "borderless" },
-          { "weight": 20, "set": "MAT", "rarity": "mythic", "filter": "borderless" }
+          {
+            "weight": 80,
+            "set": "MAT",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 20,
+            "set": "MAT",
+            "rarity": "mythic",
+            "filter": "borderless"
+          }
         ]
       },
-
       {
         "label": "Traditional Foil Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 80, "set": "MAT", "rarity": "rare" },
-          { "weight": 20, "set": "MAT", "rarity": "mythic" }
+          {
+            "weight": 80,
+            "set": "MAT",
+            "rarity": "rare"
+          },
+          {
+            "weight": 20,
+            "set": "MAT",
+            "rarity": "mythic"
+          }
         ]
       },
-
       {
         "label": "Foil Borderless / Extended-art Chase",
         "foil": true,
         "outcomes": [
-          { "weight": 45, "set": "MAT", "rarity": "rare",   "filter": "borderless" },
-          { "weight": 10, "set": "MAT", "rarity": "mythic", "filter": "borderless" },
-          { "weight": 38, "set": "MAT", "rarity": "rare",   "filter": "extended_art" },
-          { "weight": 7,  "set": "MAT", "rarity": "mythic", "filter": "extended_art" }
+          {
+            "weight": 45,
+            "set": "MAT",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 10,
+            "set": "MAT",
+            "rarity": "mythic",
+            "filter": "borderless"
+          },
+          {
+            "weight": 38,
+            "set": "MAT",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 7,
+            "set": "MAT",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 12,
+            "set": "mat",
+            "rarity": "rare",
+            "filter": "halo_foil",
+            "foil": true,
+            "label": "Halo Foil"
+          },
+          {
+            "weight": 4,
+            "set": "mat",
+            "rarity": "mythic",
+            "filter": "halo_foil",
+            "foil": true,
+            "label": "Halo Foil"
+          }
         ]
       }
     ]

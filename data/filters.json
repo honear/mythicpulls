@@ -4,9 +4,10 @@
   "_doc_basic_land": "Matches both 'Basic Land — X' and 'Basic Snow Land — X'. The engine also uses this filter at the candidate stage to *exclude* basic lands from non-land slots so a common slot doesn't accidentally pull a Plains.",
   "basic_land": { "type_line_includes": "Basic" },
 
-  "showcase": { "frame_effects": "showcase" },
-  "extended_art": { "frame_effects": "extendedart" },
-  "borderless": { "border_color": "borderless" },
+  "_doc_chase_exclusion": "The broad frame treatments (showcase / extended_art / borderless) describe the FRAME only. They deliberately EXCLUDE the dedicated ultra-chase FINISHES (raised-foil anime, serialized, halo/textured/gilded/etc.) — those carry their own promo_types AND have their own dedicated, low-rate slots in the recipes. Without this exclusion a card like Bloomburrow's raised-foil Lumra ($600+) is BOTH showcase AND borderless, so the ordinary 'Showcase Woodland' slot would pull it at full rate and massively inflate pack value. Keep the exclusion list in sync with the dedicated finish filters below.",
+  "showcase": { "all": [ { "frame_effects": "showcase" }, { "not": { "promo_types": ["raisedfoil", "serialized", "halofoil", "textured", "gilded", "galaxyfoil", "fracturefoil", "manafoil", "neonink", "oilslick", "stepandcompleat", "surgefoil"] } } ] },
+  "extended_art": { "all": [ { "frame_effects": "extendedart" }, { "not": { "promo_types": ["raisedfoil", "serialized", "halofoil", "textured", "gilded", "galaxyfoil", "fracturefoil", "manafoil", "neonink", "oilslick", "stepandcompleat", "surgefoil"] } } ] },
+  "borderless": { "all": [ { "border_color": "borderless" }, { "not": { "promo_types": ["raisedfoil", "serialized", "halofoil", "textured", "gilded", "galaxyfoil", "fracturefoil", "manafoil", "neonink", "oilslick", "stepandcompleat", "surgefoil"] } } ] },
 
   "_doc_borderless_edp_dual": "Borderless Elder Dragon, Planeswalker, or non-basic Land — the SOS Collector's chase 'Booster Fun' subtype. Match conditions: border_color is borderless AND the type_line contains (Elder + Dragon) OR Planeswalker OR (Land but not Basic). Subtypes are matched individually so 'Legendary Creature — Dragon Elder' and 'Legendary Creature — Elder Dragon' both qualify.",
   "borderless_edp_dual": {
@@ -136,7 +137,18 @@
             "extendedart",
             "boosterfun",
             "godzillaseries",
-            "draculaseries"
+            "draculaseries",
+            "raisedfoil",
+            "halofoil",
+            "textured",
+            "gilded",
+            "galaxyfoil",
+            "fracturefoil",
+            "manafoil",
+            "neonink",
+            "oilslick",
+            "stepandcompleat",
+            "surgefoil"
           ]
         }
       }

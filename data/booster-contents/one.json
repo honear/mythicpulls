@@ -1,5 +1,5 @@
 {
-  "_doc": "Phyrexia: All Will Be One (ONE) Draft + Collector recipes from Wizards' 'Collecting Phyrexia: All Will Be One' article (https://magic.wizards.com/en/news/feature/collecting-phyrexia-all-will-be-one). Product lineup: Set, Draft, Collector, Jumpstart, Bundle (Compleat Edition), Commander, Prerelease \u2014 we model only Draft + Collector (authoritative). Finish filters: 'step-and-compleat foil' outcomes use the step_and_compleat filter (verified: ONE carries promo_type stepandcompleat at common/uncommon/rare/mythic). Approximations that remain: 'ichor' is an alternate brushstroke art style, not a foil finish and has no Scryfall promo_type of its own, so ichor cards stay as plain cards of their rarity (noted in slot labels) and borderless ichor uses the borderless filter; 'oil slick raised foil' is exclusive to the Bundle: Compleat Edition Booster, which we don't model (Draft + Collector only), so it has no slot here; borderless fast-land / borderless manga / borderless concept-praetor Booster Fun variants are collapsed to the borderless filter; Commander/Jumpstart extended-art rares are approximated with the ONE main-set extended_art filter (those secondary sets aren't modeled). Percentages match the article where stated. [Commander-slot fix: now references ONC (the ONE Commander set) so collector packs include Commander-deck cards.]",
+  "_doc": "Phyrexia: All Will Be One (ONE) Draft + Collector recipes from Wizards' 'Collecting Phyrexia: All Will Be One' article (https://magic.wizards.com/en/news/feature/collecting-phyrexia-all-will-be-one). Product lineup: Set, Draft, Collector, Jumpstart, Bundle (Compleat Edition), Commander, Prerelease \u2014 we model only Draft + Collector (authoritative). Finish filters: 'step-and-compleat foil' outcomes use the step_and_compleat filter (verified: ONE carries promo_type stepandcompleat at common/uncommon/rare/mythic). Approximations that remain: 'ichor' is an alternate brushstroke art style, not a foil finish and has no Scryfall promo_type of its own, so ichor cards stay as plain cards of their rarity (noted in slot labels) and borderless ichor uses the borderless filter; 'oil slick raised foil' is exclusive to the Bundle: Compleat Edition Booster, which we don't model (Draft + Collector only), so it has no slot here; borderless fast-land / borderless manga / borderless concept-praetor Booster Fun variants are collapsed to the borderless filter; Commander/Jumpstart extended-art rares are approximated with the ONE main-set extended_art filter (those secondary sets aren't modeled). Percentages match the article where stated. [Commander-slot fix: now references ONC (the ONE Commander set) so collector packs include Commander-deck cards.] [Chase fix: kept step_and_compleat slot (63 cards) and ADDED a separate low-rate oil-slick raised-foil chase (25 cards) to the foil booster-fun slot.]",
   "authoritative": true,
   "draft": {
     "cardCount": 16,
@@ -312,6 +312,22 @@
             "rarity": "mythic",
             "filter": "borderless",
             "label": "Borderless Booster Fun Mythic"
+          },
+          {
+            "weight": 1.5,
+            "set": "one",
+            "rarity": "rare",
+            "filter": "oil_slick",
+            "foil": true,
+            "label": "Oil-Slick Raised Foil"
+          },
+          {
+            "weight": 0.6,
+            "set": "one",
+            "rarity": "mythic",
+            "filter": "oil_slick",
+            "foil": true,
+            "label": "Oil-Slick Raised Foil"
           }
         ]
       }
