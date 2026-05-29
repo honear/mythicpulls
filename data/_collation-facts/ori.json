@@ -1,0 +1,27 @@
+{
+  "code": "ori",
+  "name": "Magic Origins",
+  "released": "2015-07-17",
+  "composition": { "common": 101, "uncommon": 80, "rare": 55, "mythic": 11 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Land slot may instead hold a checklist card. Double-faced cards (5 mythic DFCs) replace the rare; when a DFC appears a checklist is also present. If a foil appears it displaces a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "double-faced cards seem to appear in ~1/25 of packs; checklist rate in non-DFC packs ~1/24 (2/25 total)",
+  "sourceNotes": "Core set. 55 rares + 11 mythics slightly off normal large-set counts to accommodate the DFC sheet. Four basic land variations. Printed USA and Belgium. 36 packs per box."
+}

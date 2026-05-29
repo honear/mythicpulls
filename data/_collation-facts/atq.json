@@ -1,0 +1,27 @@
+{
+  "code": "atq",
+  "name": "Antiquities",
+  "released": "1994-03",
+  "composition": { "common": null, "uncommon": null, "rare": 0, "mythic": 0 },
+  "collationMethod": "striped, 11x11 sheets; common sheet + uncommon sheet",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 8,
+    "commons": 6,
+    "uncommons": 2,
+    "rares": 0,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "8-card booster: 6 from the common sheet, 2 from the uncommon sheet. No rare slot. Packs can be front- or back-facing; uncommons may come before or after commons. Pre-foil era."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "no separate rares; effective rarity depends on the sheet and how many times a card is printed on it (C1/C2/C4 commons; U1/U2/U3 uncommons)",
+  "sourceNotes": "Small set, 85 cards (100 counting art variations). Two print sheets only (common + uncommon); no distinct rare rarity. Page classes cards by print frequency, so composition counts left null. Printed Belgium. 60 packs per box."
+}

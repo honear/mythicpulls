@@ -89,6 +89,9 @@ export interface ScryfallCard {
    *  this for treatment variants — borderless, showcase, extended-art,
    *  inverted, etalon-frame, etc. */
   frame_effects?: string[];
+  /** Frame generation: "1993" | "1997" | "2003" | "2015" | "future".
+   *  Used by retro-frame treatment filters. */
+  frame?: string;
   /** "black" | "white" | "borderless" | "gold" | "silver". */
   border_color?: string;
   /** Promo variant tags, e.g. ["special-guests"], ["serialized"]. */
@@ -446,6 +449,8 @@ export function trimCardForClient(c: ScryfallCard): ScryfallCard {
     // set pack rolls (showcase frame filters, Japanese-alt-art filters,
     // foil-only finishes, dual-mana basics, etc.).
     frame_effects: c.frame_effects,
+    frame: c.frame,
+    full_art: c.full_art,
     border_color: c.border_color,
     promo_types: c.promo_types,
     produced_mana: c.produced_mana,

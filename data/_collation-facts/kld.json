@@ -1,0 +1,27 @@
+{
+  "code": "kld",
+  "name": "Kaladesh",
+  "released": "2016-09-30",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "If a foil appears it displaces a common (this includes masterpieces). Masterpieces displace C1 commons."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["masterpieces"],
+  "statedRates": "Foil 1:67. Masterpieces (Kaladesh Inventions) 1:2160 cards.",
+  "sourceNotes": "Large set with three variations of each standard basic land plus 30 Masterpieces (Kaladesh Inventions). US printing sequential collation with C1/C2 common collation. 36 packs per box."
+}

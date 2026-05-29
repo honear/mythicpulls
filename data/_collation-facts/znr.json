@@ -1,0 +1,27 @@
+{
+  "code": "znr",
+  "name": "Zendikar Rising",
+  "released": "2020-09-25",
+  "composition": { "common": 101, "uncommon": 80, "rare": 64, "mythic": 20 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "33% of boosters",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Every pack contains exactly one non-foil double-faced card in a normal slot per its rarity (20 DFC uncommons, 11 DFC rares, 5 DFC mythics, the DFC rares/mythics being in addition to normal counts). If a foil appears it displaces a common and appears after the rare. Ad card may be a double-faced card placeholder. Three variations of each basic land."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["showcase", "borderless"],
+  "statedRates": "Foils in ~33% of boosters.",
+  "sourceNotes": "Large set of the era. Printed US, Belgium, Japan. 36 packs per box. Set boosters also existed but are not modelled per spec. Rare count 64 includes 11 DFC; mythic 20 includes 5 DFC."
+}

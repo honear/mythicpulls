@@ -39,6 +39,7 @@ interface DefaultContentShape {
   play?: { cardCount: number; tagline?: string };
   draft?: { cardCount: number; tagline?: string };
   collector?: { cardCount: number; tagline?: string };
+  jumpstart?: { cardCount: number; tagline?: string };
 }
 
 const defaultContent = defaultContentJson as unknown as DefaultContentShape;
@@ -72,9 +73,10 @@ export const PACKS: Record<PackType, PackDefinition> = {
   play: buildDefinition("play", "Play Booster"),
   draft: buildDefinition("draft", "Draft Booster"),
   collector: buildDefinition("collector", "Collector Booster"),
+  jumpstart: buildDefinition("jumpstart", "Jumpstart Booster"),
 };
 
-export const PACK_ORDER: PackType[] = ["play", "draft", "collector"];
+export const PACK_ORDER: PackType[] = ["play", "draft", "collector", "jumpstart"];
 
 /**
  * Pack price for the client's sync path (MoneyStrip math). Resolution:

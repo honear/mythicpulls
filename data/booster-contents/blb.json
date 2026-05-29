@@ -1,0 +1,398 @@
+{
+  "_doc": "Bloomburrow (BLB) Play + Collector recipes from Wizards' official 'Collecting Bloomburrow' article (https://magic.wizards.com/en/news/feature/collecting-bloomburrow). Bloomburrow shipped Play + Collector boosters only \u2014 NO Draft Booster \u2014 so authoritative is true and draft is intentionally undefined. Sub-set codes: BLB = main set, SPG = Special Guests, BLC = Bloomburrow Commander. The article publishes exact rates for the seasonal land, token/art slot, Collector foil rare/mythic, and Collector Commander slot; it does NOT publish a rare-vs-mythic split for the Play rare/mythic, wildcard, or foil slots, nor a consolidated per-treatment split for the Collector alternate-border slots, so those use the standard Play Booster splits (spec defaults) with Booster Fun folded in, and are approximated. Approximations: seasonal full-art basics modeled via basic_land filter (season distribution captured as land-slot weights); Imagine treatments modeled with borderless filter (frame approximation); Special Guests via the special_guest filter against SPG. Specific finishes re-pointed to dedicated filters: the Collector slot-7 'Raised Foil Anime' outcome (3.66% per the article) now uses the raised_foil filter instead of the borderless stand-in.",
+  "authoritative": true,
+  "play": {
+    "cardCount": 14,
+    "tagline": "14 cards \u00b7 seasonal full-art land \u00b7 1 foil \u00b7 Special Guest from The List replaces a common in 1.5% of packs",
+    "slots": [
+      {
+        "label": "Token / Art Card",
+        "token": true,
+        "outcomes": [
+          {
+            "weight": 65,
+            "set": "BLB",
+            "label": "Token / Ad Card"
+          },
+          {
+            "weight": 30,
+            "set": "BLB",
+            "label": "Art Card"
+          },
+          {
+            "weight": 5,
+            "set": "BLB",
+            "label": "Signature Art Card"
+          }
+        ]
+      },
+      {
+        "label": "Common",
+        "count": 6,
+        "outcomes": [
+          {
+            "weight": 98.5,
+            "set": "BLB",
+            "rarity": "common"
+          },
+          {
+            "weight": 1.5,
+            "set": "SPG",
+            "filter": "special_guest",
+            "label": "Special Guest"
+          }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "BLB",
+            "rarity": "uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          {
+            "weight": 50,
+            "set": "BLB",
+            "rarity": "common"
+          },
+          {
+            "weight": 30,
+            "set": "BLB",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 13,
+            "set": "BLB",
+            "rarity": "rare"
+          },
+          {
+            "weight": 7,
+            "set": "BLB",
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 85.7,
+            "set": "BLB",
+            "rarity": "rare"
+          },
+          {
+            "weight": 14.3,
+            "set": "BLB",
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Traditional Foil",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 50,
+            "set": "BLB",
+            "rarity": "common"
+          },
+          {
+            "weight": 30,
+            "set": "BLB",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 13,
+            "set": "BLB",
+            "rarity": "rare"
+          },
+          {
+            "weight": 7,
+            "set": "BLB",
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Seasonal Full-Art Land",
+        "basicLand": true,
+        "outcomes": [
+          {
+            "weight": 40,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Spring"
+          },
+          {
+            "weight": 30,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Summer"
+          },
+          {
+            "weight": 20,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Autumn"
+          },
+          {
+            "weight": 10,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Winter"
+          }
+        ]
+      }
+    ]
+  },
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards + foil token \u00b7 all foil commons & uncommons \u00b7 Commander extended-art chase \u00b7 raised-foil anime alternate-border slot",
+    "slots": [
+      {
+        "label": "Foil Double-Sided Token",
+        "token": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "BLB",
+            "label": "Foil Token"
+          }
+        ]
+      },
+      {
+        "label": "Foil Common",
+        "count": 5,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "BLB",
+            "rarity": "common"
+          }
+        ]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 4,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "BLB",
+            "rarity": "uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Foil Seasonal Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 40,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Spring"
+          },
+          {
+            "weight": 30,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Summer"
+          },
+          {
+            "weight": 20,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Autumn"
+          },
+          {
+            "weight": 10,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Winter"
+          }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 85.7,
+            "set": "BLB",
+            "rarity": "rare"
+          },
+          {
+            "weight": 14.4,
+            "set": "BLB",
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Commander Extended-Art Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 78.9,
+            "set": "BLC",
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "Extended-Art Commander Rare"
+          },
+          {
+            "weight": 5.63,
+            "set": "BLC",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Commander Face"
+          },
+          {
+            "weight": 5.63,
+            "set": "BLC",
+            "rarity": "mythic",
+            "filter": "borderless"
+          },
+          {
+            "weight": 4.23,
+            "set": "BLC",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Imagine"
+          },
+          {
+            "weight": 2.82,
+            "set": "BLC",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Imagine"
+          },
+          {
+            "weight": 2.8,
+            "set": "BLC",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "foil": true,
+            "label": "Foil Borderless Commander"
+          }
+        ]
+      },
+      {
+        "label": "Alternate-Border Rare / Mythic",
+        "count": 2,
+        "outcomes": [
+          {
+            "weight": 60,
+            "set": "BLB",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Showcase Woodland"
+          },
+          {
+            "weight": 8,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Showcase Woodland"
+          },
+          {
+            "weight": 13,
+            "set": "BLB",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 4,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 8,
+            "set": "BLB",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 3,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "borderless"
+          },
+          {
+            "weight": 3,
+            "set": "BLB",
+            "rarity": "rare",
+            "filter": "field_notes"
+          },
+          {
+            "weight": 1,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "field_notes"
+          }
+        ]
+      },
+      {
+        "label": "Foil Alternate-Border / Raised Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 60,
+            "set": "BLB",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Foil Showcase Woodland"
+          },
+          {
+            "weight": 8,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Foil Showcase Woodland"
+          },
+          {
+            "weight": 13,
+            "set": "BLB",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 4,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 8,
+            "set": "BLB",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 3.34,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "borderless"
+          },
+          {
+            "weight": 3.66,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "raised_foil",
+            "label": "Raised Foil Anime"
+          }
+        ]
+      }
+    ]
+  }
+}

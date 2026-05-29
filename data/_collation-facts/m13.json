@@ -1,0 +1,27 @@
+{
+  "code": "m13",
+  "name": "Magic 2013",
+  "released": "2012-07-13",
+  "composition": { "common": 101, "uncommon": 60, "rare": 53, "mythic": 15 },
+  "collationMethod": "US sequential, C1/C2 common collation",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "10 commons, 3 uncommons, 1 rare, 1 ad card, 1 basic land. If a foil appears it comes after the land and displaces a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Core set. 15-card booster packs plus an additional ad card (36/box). Foil 1:67 cards. US sequential collation with C1/C2 common runs. The ad/marketing card carries tokens/tips on its front face (not a collectible token slot)."
+}

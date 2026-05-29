@@ -63,6 +63,23 @@ export function PackOpener({
   // the per-reveal speculative roll below.
   const isMobile = useIsMobile();
   const [packType, setPackType] = useState<PackType>(initialType);
+  // Single source of truth for "the pack type currently in play" — the
+  // type of the pack that was actually opened (or is being opened). The
+  // `packType` STATE above mirrors this for display (MoneyStrip label,
+  // RippingPack art, buy link), but display state is subject to React's
+  // async batching, so any code that *acts* on the current type (the
+  // "Open next" rip) reads the ref instead. This closes a long-standing
+  // bug where "Open next" on a Collector pack occasionally re-opened the
+  // default pack type because it read a stale `packType` state. The ref
+  // is written synchronously inside `rip`, so it's always exactly the
+  // type of the pack on screen. See `rip` below.
+  const currentTypeRef = useRef<PackType>(initialType);
+  // Synchronous re-entrancy guard for `rip`. The `phase === "ripping"`
+  // state check has a one-frame race: two taps dispatched before React
+  // re-renders both read the stale "idle"/"revealing" phase and each
+  // open a pack. A ref flips synchronously inside `rip`, so the second
+  // tap bails immediately. Cleared when the reveal commits (or on reset).
+  const rippingRef = useRef(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [pulled, setPulled] = useState<PulledCard[]>([]);
   const [flipped, setFlipped] = useState<Set<string>>(new Set());
@@ -140,20 +157,37 @@ export function PackOpener({
   const packCost: number | null = costs[packType] ?? getPackCost(packType, setMeta.code);
 
   /**
-   * Open a pack. `typeOverride` lets callers (notably the fan click handler
-   * and the MoneyStrip's "Open next" button) pass the clicked pack type
-   * directly — necessary because `setPackType` is async and the previous
-   * `packType` state would otherwise be read here.
+   * Open a pack. Resolution of WHICH type opens follows one rule:
    *
-   * Phase guard: only blocks during the 800ms "ripping" animation. Mid-
-   * reveal rips are allowed — the MoneyStrip button uses this path to
-   * chain-open more of the same type without going back to the fan.
+   *   t = typeOverride ?? currentTypeRef.current
+   *
+   * - The fan passes an explicit `typeOverride` (the pack the user just
+   *   tapped) — that becomes the new current type.
+   * - The MoneyStrip's "Open next" calls `rip()` with NO argument, so it
+   *   re-opens exactly the type already on screen, read from the ref.
+   *
+   * We deliberately do NOT fall back to the `packType` STATE here: state
+   * is async and could lag a render behind, which is what caused "Open
+   * next" to occasionally swap pack types. The ref is the authority and
+   * is written synchronously below, so display state and behaviour can
+   * never disagree about what's being opened.
+   *
+   * Phase guard: only blocks during the "ripping" animation. Mid-reveal
+   * rips are allowed — the MoneyStrip button uses this path to chain-open
+   * more of the same type without going back to the fan.
    */
   function rip(typeOverride?: PackType) {
-    if (phase === "ripping") return;
-    const t = typeOverride ?? packType;
+    // Re-entrancy guard (synchronous) — see rippingRef declaration.
+    if (rippingRef.current || phase === "ripping") return;
+    const t = typeOverride ?? currentTypeRef.current;
     const recipe = recipes[t];
     if (!recipe) return; // shouldn't happen — route layer filtered availableTypes
+    rippingRef.current = true;
+    // Commit the opened type to the ref FIRST (synchronous, authoritative)
+    // and mirror it into display state. Now every subsequent read — the
+    // MoneyStrip label, the buy link, the next "Open next" — agrees.
+    currentTypeRef.current = t;
+    setPackType(t);
     setPhase("ripping");
     const result = openPack(recipe, pool, setMeta.code, filters);
     setPulled(result);
@@ -202,11 +236,15 @@ export function PackOpener({
         p.card.card_faces?.[0]?.image_uris?.[revealFallback],
     );
     Promise.all([ripTimer, preloadImages(urls)]).then(() => {
+      // Reveal committed — release the re-entrancy guard so the
+      // MoneyStrip "Open next" can chain the following pack.
+      rippingRef.current = false;
       setPhase("revealing");
     });
   }
 
   function reset() {
+    rippingRef.current = false;
     setPhase("idle");
     setPulled([]);
     setFlipped(new Set());
@@ -320,7 +358,10 @@ export function PackOpener({
         packCost={packCost}
         packTypeName={PACKS[packType].name.replace(" Booster", "")}
         canRip={phase !== "ripping" && !!recipes[packType]}
-        onRip={() => rip(packType)}
+        // No argument → rip() re-opens the type currently on screen
+        // (read from currentTypeRef), guaranteeing "Open next" never
+        // swaps to a different pack type than the one revealed.
+        onRip={() => rip()}
         // Deep-link to Mana Pool's product page for this exact pack so
         // the user can actually buy the real thing if they're enjoying
         // the simulator. Returns null when Mana Pool has no current
@@ -392,8 +433,16 @@ export function PackOpener({
               <PackFan
                 available={availableTypes}
                 setMeta={setMeta}
+                // Pre-select whatever type is currently in play so that
+                // returning to the fan (via "Open another") keeps the
+                // user on the pack they were opening, instead of
+                // snapping back to the default center pack.
+                defaultType={packType}
                 onSelect={(t, artIdx) => {
-                  setPackType(t);
+                  // rip(t) is the sole writer of the current type — it
+                  // sets currentTypeRef + packType — so we don't set
+                  // packType here too (would be a redundant second
+                  // write and risk drift). We only stash the art slot.
                   setRipArtIndex(artIdx);
                   rip(t);
                 }}
@@ -666,7 +715,7 @@ function useIsMobile(): boolean {
 }
 
 function PackFan({
-  available, setMeta, onSelect,
+  available, setMeta, onSelect, defaultType,
 }: {
   available: PackType[];
   setMeta: SetMeta;
@@ -675,6 +724,10 @@ function PackFan({
    *  used, so the rip animation can show the same artwork without a
    *  jarring swap to a different pack's art. */
   onSelect: (t: PackType, artIndex: number) => void;
+  /** Pack type to pre-select in the mobile single-pack view. Lets the
+   *  fan reopen on the type the user was last opening (instead of the
+   *  center default) when they return via "Open another". */
+  defaultType?: PackType;
 }) {
   // Play sits in the middle of the fan when available; the other packs
   // distribute around it. Falls back to PACK_ORDER for sets without play.
@@ -687,9 +740,15 @@ function PackFan({
   })();
   const centerIdx = Math.floor(ordered.length / 2);
   const isMobile = useIsMobile();
-  // Selected pack type for the mobile single-pack view. Defaults to
-  // whichever pack the fan would put at center (Play if available).
-  const [mobilePick, setMobilePick] = useState<PackType>(ordered[centerIdx] ?? ordered[0]);
+  // Selected pack type for the mobile single-pack view. Prefer the
+  // caller-supplied `defaultType` (the type the user was last opening)
+  // so returning to the fan keeps them on that pack; otherwise default
+  // to whichever pack the fan would put at center (Play if available).
+  const initialPick =
+    defaultType && ordered.includes(defaultType)
+      ? defaultType
+      : ordered[centerIdx] ?? ordered[0];
+  const [mobilePick, setMobilePick] = useState<PackType>(initialPick);
   // If `available` changes (e.g. set page swap), make sure the selection
   // still points at a valid type.
   useEffect(() => {
@@ -929,6 +988,7 @@ function packHue(packType: PackType) {
     case "play":      return { from: "#3b1d6e", to: "#1a0a3b", edge: "#0a0420" };
     case "draft":     return { from: "#1e3a8a", to: "#0a193b", edge: "#04081d" };
     case "collector": return { from: "#7e1d6e", to: "#330b3b", edge: "#1d0420" };
+    case "jumpstart": return { from: "#1d6e57", to: "#0a3b2c", edge: "#042018" };
   }
 }
 

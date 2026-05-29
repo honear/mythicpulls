@@ -1,0 +1,27 @@
+{
+  "code": "ust",
+  "name": "Unstable",
+  "released": "2017-12-08",
+  "composition": { "common": 60, "uncommon": 60, "rare": 35, "mythic": 10 },
+  "collationMethod": "sequential, ~50-card runs (10x10 sheets, top/bottom halves)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 8,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": true,
+    "adCard": false,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "15-card pack plus an additional token card. Pack: 8 commons, 3 uncommons, 1 rare, 1 basic land, 2 contraptions, 1 token. If a foil appears it displaces a common. Foil commons/uncommons/lands appear between the uncommons and the rare; foil contraptions/rares appear between the land and contraptions. Steamflogger Boss replaces the basic land slot."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["contraption"],
+  "statedRates": null,
+  "sourceNotes": "Silver-border 'Un-' set. Composition also includes 45 contraptions, five basic lands, and one special black-bordered card; some cards have multiple variations. Mythic count (10) matches small sets prior to Oath of the Gatewatch. Printed in USA. 36 packs per box."
+}

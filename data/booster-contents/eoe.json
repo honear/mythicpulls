@@ -1,0 +1,162 @@
+{
+  "_doc": "Edge of Eternities (EOE) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-edge-of-eternities . Lineup is authoritative: EOE had Play Boosters + Collector Boosters and NO Draft Boosters. Sub-set codes: EOE = main set, EOS = Stellar Sights bonus sheet (45 lands), SPG = Special Guests, EOC = EOE Commander, TEOE = tokens. Percentages match Wizards' verbatim odds (entries the article gave as '<1%' are modeled as 0.1). Re-pointing: the Stellar Sights 'Galaxy Foil' and 'Poster Galaxy Foil' outcomes now carry the galaxy_foil filter, and the 'Japan Showcase Fracture Foil' outcome now uses the fracture_foil filter (article confirms galaxy foil on Stellar Sights lands and a 1% fracture-foil Japan Showcase). Remaining approximations: the 'Viewport', 'Triumphant', and 'Surreal' booster-fun treatments all collapse to the borderless filter (engine can't distinguish them) and 'extended-art' booster-fun -> extended_art; 'Celestial' basics -> basic_land (kept in their land slot, so their galaxy-foil variant stays on basic_land rather than galaxy_foil); plain (non-fracture) Japan Showcase -> japanese filter; 'Viewport Galaxy Foil' stays on the borderless filter (can't express borderless + galaxy_foil together) and 'poster' / 'singularity' finishes have no dedicated filter. Textless singularity-foil Sothera modeled with a plain outcome. Stellar Sights cards reference the EOS set.",
+
+  "authoritative": true,
+
+  "play": {
+    "cardCount": 14,
+    "tagline": "13 cards + token · Stellar Sights, Viewport & Special Guest rates faithful to Wizards' spec",
+    "slots": [
+      { "label": "Token", "token": true, "outcomes": [{ "weight": 1, "set": "TEOE" }] },
+      {
+        "label": "Common",
+        "count": 6,
+        "outcomes": [
+          { "weight": 98.2, "set": "EOE", "rarity": "common" },
+          { "weight": 1.8,  "set": "SPG", "filter": "special_guest", "label": "Special Guest" }
+        ]
+      },
+      { "label": "Uncommon", "count": 3, "outcomes": [{ "weight": 1, "set": "EOE", "rarity": "uncommon" }] },
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          { "weight": 12.5, "set": "EOE", "rarity": "common" },
+          { "weight": 62.5, "set": "EOE", "rarity": "uncommon" },
+          { "weight": 10.6, "set": "EOE", "rarity": "rare" },
+          { "weight": 0.1,  "set": "EOE", "rarity": "mythic" },
+          { "weight": 10,   "set": "EOS", "rarity": "rare",   "label": "Stellar Sights" },
+          { "weight": 2.5,  "set": "EOS", "rarity": "mythic", "label": "Stellar Sights" },
+          { "weight": 1,    "set": "EOE", "rarity": "rare",   "filter": "borderless", "label": "Viewport" },
+          { "weight": 0.1,  "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Viewport" },
+          { "weight": 0.1,  "set": "EOE", "rarity": "rare",   "filter": "borderless", "label": "Triumphant / Surreal" },
+          { "weight": 0.1,  "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Triumphant / Surreal" }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 80.4, "set": "EOE", "rarity": "rare" },
+          { "weight": 14.2, "set": "EOE", "rarity": "mythic" },
+          { "weight": 0.1,  "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Viewport" },
+          { "weight": 2,    "set": "EOE", "rarity": "rare",   "filter": "borderless", "label": "Triumphant / Surreal" },
+          { "weight": 0.1,  "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Triumphant / Surreal" }
+        ]
+      },
+      {
+        "label": "Foil",
+        "foil": true,
+        "outcomes": [
+          { "weight": 58,  "set": "EOE", "rarity": "common" },
+          { "weight": 32,  "set": "EOE", "rarity": "uncommon" },
+          { "weight": 6.4, "set": "EOE", "rarity": "rare" },
+          { "weight": 1.1, "set": "EOE", "rarity": "mythic" },
+          { "weight": 1,   "set": "EOS", "rarity": "rare",   "label": "Stellar Sights" },
+          { "weight": 0.1, "set": "EOS", "rarity": "mythic", "label": "Stellar Sights" },
+          { "weight": 0.1, "set": "EOE", "rarity": "rare",   "filter": "borderless", "label": "Viewport / Triumphant / Surreal" },
+          { "weight": 0.1, "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Viewport / Triumphant / Surreal" }
+        ]
+      },
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          { "weight": 64, "set": "EOE", "filter": "basic_land" },
+          { "weight": 16, "set": "EOE", "filter": "basic_land", "foil": true },
+          { "weight": 16, "set": "EOE", "filter": "basic_land", "label": "Celestial" },
+          { "weight": 4,  "set": "EOE", "filter": "basic_land", "foil": true, "label": "Celestial" }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards + foil token/art · Stellar Sights, Booster Fun & Commander chases",
+    "slots": [
+      {
+        "label": "Art Card / Token",
+        "token": true,
+        "outcomes": [
+          { "weight": 65, "set": "TEOE", "foil": true, "label": "Foil Token" },
+          { "weight": 30, "set": "TEOE", "label": "Art Card" },
+          { "weight": 5,  "set": "TEOE", "filter": "gold_stamped", "label": "Gold-Stamped Art Card" }
+        ]
+      },
+      { "label": "Foil Common", "count": 5, "foil": true, "outcomes": [{ "weight": 1, "set": "EOE", "rarity": "common" }] },
+      { "label": "Foil Uncommon", "count": 4, "foil": true, "outcomes": [{ "weight": 1, "set": "EOE", "rarity": "uncommon" }] },
+      {
+        "label": "Celestial Basic Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [
+          { "weight": 66.6, "set": "EOE", "filter": "basic_land", "label": "Celestial Foil" },
+          { "weight": 33.3, "set": "EOE", "filter": "basic_land", "label": "Celestial Galaxy Foil" }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 86, "set": "EOE", "rarity": "rare" },
+          { "weight": 14, "set": "EOE", "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Commander Card",
+        "outcomes": [
+          { "weight": 9,  "set": "EOC", "rarity": "mythic", "filter": "borderless", "label": "Borderless Legendary" },
+          { "weight": 91, "set": "EOC", "rarity": "rare",   "filter": "extended_art" }
+        ]
+      },
+      {
+        "label": "Booster Fun Rare / Mythic",
+        "outcomes": [
+          { "weight": 47, "set": "EOE", "rarity": "rare",   "filter": "extended_art", "label": "Extended-Art" },
+          { "weight": 5,  "set": "EOE", "rarity": "mythic", "filter": "extended_art", "label": "Extended-Art" },
+          { "weight": 7,  "set": "EOE", "rarity": "rare",   "filter": "borderless", "label": "Viewport" },
+          { "weight": 4,  "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Viewport" },
+          { "weight": 17, "set": "EOE", "rarity": "rare",   "filter": "borderless", "label": "Triumphant" },
+          { "weight": 3,  "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Triumphant" },
+          { "weight": 15, "set": "EOE", "rarity": "rare",   "filter": "borderless", "label": "Surreal" },
+          { "weight": 2,  "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Surreal" }
+        ]
+      },
+      {
+        "label": "Stellar Sights Land",
+        "outcomes": [
+          { "weight": 36, "set": "EOS", "rarity": "rare" },
+          { "weight": 9,  "set": "EOS", "rarity": "mythic" },
+          { "weight": 18, "set": "EOS", "rarity": "rare",   "label": "Poster" },
+          { "weight": 4,  "set": "EOS", "rarity": "mythic", "label": "Poster" },
+          { "weight": 12, "set": "EOS", "rarity": "rare",   "foil": true },
+          { "weight": 3,  "set": "EOS", "rarity": "mythic", "foil": true },
+          { "weight": 6,  "set": "EOS", "rarity": "rare",   "foil": true, "label": "Poster Foil" },
+          { "weight": 1.5, "set": "EOS", "rarity": "mythic", "foil": true, "label": "Poster Foil" },
+          { "weight": 6,  "set": "EOS", "rarity": "rare",   "foil": true, "filter": "galaxy_foil", "label": "Galaxy Foil" },
+          { "weight": 1.5, "set": "EOS", "rarity": "mythic", "foil": true, "filter": "galaxy_foil", "label": "Galaxy Foil" },
+          { "weight": 3,  "set": "EOS", "rarity": "rare",   "foil": true, "filter": "galaxy_foil", "label": "Poster Galaxy Foil" },
+          { "weight": 0.1, "set": "EOS", "rarity": "mythic", "foil": true, "filter": "galaxy_foil", "label": "Poster Galaxy Foil" }
+        ]
+      },
+      {
+        "label": "Foil Booster Fun Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 38, "set": "EOE", "rarity": "rare",   "filter": "extended_art", "label": "Extended-Art" },
+          { "weight": 4,  "set": "EOE", "rarity": "mythic", "filter": "extended_art", "label": "Extended-Art" },
+          { "weight": 6,  "set": "EOE", "rarity": "rare",   "filter": "borderless", "label": "Viewport" },
+          { "weight": 3,  "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Viewport" },
+          { "weight": 13, "set": "EOE", "rarity": "rare",   "filter": "borderless", "label": "Triumphant" },
+          { "weight": 2,  "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Triumphant" },
+          { "weight": 12, "set": "EOE", "rarity": "rare",   "filter": "borderless", "label": "Surreal" },
+          { "weight": 2,  "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Surreal" },
+          { "weight": 6,  "set": "SPG", "filter": "special_guest", "label": "Special Guest" },
+          { "weight": 9,  "set": "EOE", "rarity": "rare", "filter": "japanese", "label": "Japan Showcase" },
+          { "weight": 1,  "set": "EOE", "rarity": "rare", "filter": "fracture_foil", "label": "Japan Showcase Fracture Foil" },
+          { "weight": 2,  "set": "EOE", "rarity": "rare",   "filter": "borderless", "label": "Viewport Galaxy Foil" },
+          { "weight": 1,  "set": "EOE", "rarity": "mythic", "filter": "borderless", "label": "Viewport Galaxy Foil" },
+          { "weight": 0.1, "set": "EOE", "rarity": "mythic", "label": "Textless Singularity Foil Sothera" }
+        ]
+      }
+    ]
+  }
+}

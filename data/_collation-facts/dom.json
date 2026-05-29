@@ -1,0 +1,27 @@
+{
+  "code": "dom",
+  "name": "Dominaria",
+  "released": "2018-04-27",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons; legendary-creature slot",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Every pack contains at least one legendary creature via a dedicated legendary slot. That slot is rare 1/4 of the time (no separate normal rare then) and uncommon 3/4 of the time (a normal rare also present). When the legendary slot is rare there are 3 non-legendary uncommons, otherwise 2, so the pack still totals 3 uncommons + 1 rare. Common foils appear 1 in every 8 packs and displace a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "Common foils 1 in 8 packs. Legendary slot is rare exactly 1/4 of the time. 20 uncommon legendary creatures.",
+  "sourceNotes": "Large set; first set of the era with only large sets. Four basic land variations. 36 packs per box. Printed in USA and Belgium."
+}

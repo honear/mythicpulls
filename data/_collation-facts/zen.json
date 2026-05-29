@@ -1,0 +1,27 @@
+{
+  "code": "zen",
+  "name": "Zendikar",
+  "released": "2009-10-02",
+  "composition": { "common": 101, "uncommon": 60, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Pack is 10 commons, 3 uncommons, a rare, an ad card, and a basic land (always full-art). If a foil appears it follows the land, displacing a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["full-art basic land"],
+  "statedRates": null,
+  "sourceNotes": "Large set. Printed in USA and Belgium. 36 packs per box. Some packs contained 'Priceless Treasures' (real reacquired old cards inserted as a bonus) — not modelled. Basic lands are always the full-art versions. Booster has both a basic land and an ad card."
+}

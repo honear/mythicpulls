@@ -1,0 +1,27 @@
+{
+  "code": "arn",
+  "name": "Arabian Nights",
+  "released": "1993-12",
+  "composition": { "common": null, "uncommon": null, "rare": 0, "mythic": 0 },
+  "collationMethod": "striped, 11x11 sheets; common sheet + uncommon sheet",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 8,
+    "commons": 6,
+    "uncommons": 2,
+    "rares": 0,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "8-card booster: 6 from the common sheet, 2 from the uncommon sheet. No rare slot. Packs can be front- or back-facing; uncommons may come before or after commons. Pre-foil era."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "no separate rares; rarity derived from sheet print frequency (C1/C4/C5/C11 on common sheet, U1/U3 etc. on uncommon sheet)",
+  "sourceNotes": "Small set, 78 cards. Two print sheets only (common + uncommon); there is no distinct rare rarity. Page gives no clean common/uncommon totals (cards classed by print frequency), so composition counts left null. Printed Belgium. 60 packs per box."
+}

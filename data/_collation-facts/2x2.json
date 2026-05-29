@@ -1,0 +1,39 @@
+{
+  "code": "2x2",
+  "name": "Double Masters 2022",
+  "released": "2022-07-08",
+  "composition": {
+    "common": 92,
+    "uncommon": 80,
+    "rare": 120,
+    "mythic": 40
+  },
+  "collationMethod": "sequential, Japanese printing",
+  "packTypes": [
+    "draft"
+  ],
+  "draft": {
+    "cardCount": 16,
+    "commons": 8,
+    "uncommons": 3,
+    "rares": 2,
+    "foils": 2,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "guaranteed",
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "16 game cards plus a guaranteed Cryptic Spires dual land and an ad/placeholder card. Structure: ad/placeholder + Cryptic Spires + 2 foils + 2 rares + 3 uncommons + 8 commons. Two rares and two foils per pack. Mythic rate 1/7. Empirical (60 boxes/1440 packs): 2063 common, 677 uncommon, 140 rare/mythic."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [
+    "borderless"
+  ],
+  "statedRates": "Mythic rate 1/7. Empirical (1440 packs): 2063 common, 677 uncommon, 140 rare+mythic (87 normal rare, 27 borderless rare, 17 mythic, 9 borderless mythic).",
+  "sourceNotes": "Double Masters 2022: 16 cards + a guaranteed Cryptic Spires dual land + ad/placeholder card. Two rare slots and two foil slots per pack. Printed in Japan. 24 packs per box. Borderless variants seeded into common/uncommon/rare runs. The Cryptic Spires copy is a fixed extra and not counted in the 16 advertised cards here (cardCount=16 = 8C+3U+2R+1 foil? note: foils are 2; see notes).",
+  "skip": true,
+  "skipReason": "Superseded by a hand-authored recipe derived from the official Wizards 'Collecting' article (more accurate odds + full product lineup). The generator must NOT overwrite data/booster-contents/2x2.json."
+}

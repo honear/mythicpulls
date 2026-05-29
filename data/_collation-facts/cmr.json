@@ -1,0 +1,27 @@
+{
+  "code": "cmr",
+  "name": "Commander Legends",
+  "released": "2020-11-20",
+  "composition": { "common": 141, "uncommon": 120, "rare": 77, "mythic": 22 },
+  "collationMethod": "sequential, A/B/C common runs",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 20,
+    "commons": 13,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": null,
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "20-card pack: 13 commons, 3 uncommons, 1 rare, 2 legendary cards, 1 guaranteed foil, plus an ad card. The 2 legend slots may be uncommon/rare/mythic legendaries; at most 1 mythic. If The Prismatic Piper (special rarity) appears it comes after the foil and displaces a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["foil-etched"],
+  "statedRates": "Average ~1.5 non-legendary uncommons per pack; at most 1 mythic per pack; can have two rares.",
+  "sourceNotes": "Extra-large Commander draft set with 20-card boosters (2 legendary slots) and a guaranteed foil. 24 packs per box. One card of special rarity (The Prismatic Piper). An additional 32 reprinted legendaries appear in draft boosters only with foil-etched treatment. Printed in USA and Belgium; figures from US Pack Anatomy."
+}

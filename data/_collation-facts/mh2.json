@@ -1,0 +1,27 @@
+{
+  "code": "mh2",
+  "name": "Modern Horizons 2",
+  "released": "2021-06-18",
+  "composition": { "common": 101, "uncommon": 100, "rare": 78, "mythic": 24 },
+  "collationMethod": "sequential, C1/C2 commons (new style)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "33%",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Extra new-to-Modern reprint slot between uncommons and the rare (can be uncommon, rare, or mythic): 10 commons + 3 uncommons + 1 reprint + 1 rare + ad card. Foil (~33% of boosters) displaces a common and appears after the rare. Rare slot rates: 78% normal rare, 13% mythic, 8% non-borderless variant, 1% borderless; mythic rate 1/7."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["borderless", "old border", "sketch", "retro frame"],
+  "statedRates": "Foil ~33% of boosters. Rare slot: 78% rare, 13% mythic, 8% variant, 1% borderless; mythic rate 1/7. Reprint sheet: 1x each mythic, 2x each rare, 4x each uncommon.",
+  "sourceNotes": "Composition counts uncommon 100 (20 reprints), rare 78 (18 new-to-Modern reprints), mythic 24 (4 reprints). Has a dedicated new-to-Modern reprint slot. Basic lands NOT included in boosters. Printed USA, Belgium, Japan. 36 packs per box."
+}

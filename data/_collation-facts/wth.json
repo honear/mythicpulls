@@ -1,0 +1,27 @@
+{
+  "code": "wth",
+  "name": "Weatherlight",
+  "released": "1997-06-09",
+  "composition": { "common": 62, "uncommon": 55, "rare": 50, "mythic": 0 },
+  "collationMethod": "Belgian striped (10x11 sheets)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "Pack order: 3 uncommons, 1 rare, 11 commons."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Small set, English printed in Belgium (US-printed English Weatherlight unknown). 36 packs per box. Pre-1999, no foils."
+}

@@ -1,0 +1,27 @@
+{
+  "code": "wwk",
+  "name": "Worldwake",
+  "released": "2010-02-05",
+  "composition": { "common": 60, "uncommon": 40, "rare": 35, "mythic": 10 },
+  "collationMethod": "sequential",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Pack is 10 commons, 3 uncommons, a rare, an ad card, and a basic land (from Zendikar). If a foil appears it is at the end, displacing a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Small set. Printed in USA only. 36 packs per box. Basic land in booster is from Zendikar. Booster has both a basic land and an ad card."
+}

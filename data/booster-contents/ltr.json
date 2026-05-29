@@ -1,0 +1,328 @@
+{
+  "_doc": "The Lord of the Rings: Tales of Middle-earth (LTR) Draft + Collector recipes. Source: Wizards 'Collecting The Lord of the Rings: Tales of Middle-earth' (https://magic.wizards.com/en/news/feature/collecting-the-lord-of-the-rings-tales-of-middle-earth). LTR shipped Set + Draft + Collector (no Play); per assignment we model draft + collector, authoritative true (set/play hidden). The Draft Booster slot list past slot 8 was not fully detailed in the article, so the draft pack uses the standard 15-card draft shape (10 commons w/ foil swap, 3 uncommons, 1 rare/mythic 85.7/14.3, 1 land) \u2014 faithful to LTR's stated rare split. Sub-set codes: LTR = main, LTC = LOTR Commander, $tokens = tokens. The Realms & Relics box-topper sub-set and the serialized 1/1 One Ring have no separate Scryfall code we rely on here, so they are approximated as main-set mythics with descriptive labels (Realms & Relics \u2192 mythic; One Ring serialized \u2192 mythic + serialized filter). The article confirms the surge-foil Realms & Relics chase, so that outcome now carries the surge_foil filter; the full-art map basic land now uses the full_art filter instead of basic_land. The non-surge Realms & Relics box-topper outcomes stay plain mythic stand-ins. Borderless scene and showcase Ring still use borderless/showcase. Jumpstart and Commander decks omitted.",
+  "authoritative": true,
+  "draft": {
+    "cardCount": 15,
+    "tagline": "15 cards \u00b7 1 rare/mythic \u00b7 1 land \u00b7 the classic Middle-earth draft pack",
+    "slots": [
+      {
+        "label": "Common",
+        "count": 9,
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "common"
+          }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          {
+            "weight": 88.8,
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 11.2,
+            "rarity": "uncommon",
+            "label": "Nazgul Variant"
+          }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 85.7,
+            "rarity": "rare"
+          },
+          {
+            "weight": 14.3,
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "filter": "basic_land"
+          }
+        ]
+      },
+      {
+        "label": "Foil",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 67,
+            "rarity": "common"
+          },
+          {
+            "weight": 20,
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 10,
+            "rarity": "rare"
+          },
+          {
+            "weight": 3,
+            "rarity": "mythic"
+          }
+        ]
+      }
+    ]
+  },
+  "collector": {
+    "cardCount": 15,
+    "tagline": "15 premium cards \u00b7 borderless scene, showcase Ring & extended-art chases \u00b7 serialized One Ring 1/1",
+    "slots": [
+      {
+        "label": "Foil Common",
+        "count": 3,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "common"
+          }
+        ]
+      },
+      {
+        "label": "Foil Common / Sol Ring / One Ring",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 99.1,
+            "rarity": "common",
+            "label": "Foil Common"
+          },
+          {
+            "weight": 0.6,
+            "rarity": "rare",
+            "label": "Sol Ring Variant"
+          },
+          {
+            "weight": 0.3,
+            "rarity": "mythic",
+            "label": "Sol Ring Variant"
+          },
+          {
+            "weight": 3e-05,
+            "rarity": "mythic",
+            "filter": "serialized",
+            "label": "Serialized The One Ring 1/1"
+          }
+        ]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 2,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 88.8,
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 11.2,
+            "rarity": "uncommon",
+            "label": "Nazgul Variant"
+          }
+        ]
+      },
+      {
+        "label": "Foil Full-Art Map Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "filter": "full_art_land"
+          }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 85.7,
+            "rarity": "rare"
+          },
+          {
+            "weight": 14.3,
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Extended-Art Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 86.1,
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 13.9,
+            "rarity": "mythic",
+            "filter": "extended_art"
+          }
+        ]
+      },
+      {
+        "label": "Extended-Art Commander Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 94.2,
+            "set": "LTC",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 5.8,
+            "set": "LTC",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          }
+        ]
+      },
+      {
+        "label": "Showcase Ring / Nazgul Uncommon",
+        "outcomes": [
+          {
+            "weight": 91,
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Showcase Ring"
+          },
+          {
+            "weight": 9,
+            "rarity": "uncommon",
+            "label": "Nazgul Variant"
+          }
+        ]
+      },
+      {
+        "label": "Booster Fun Treatment",
+        "outcomes": [
+          {
+            "weight": 50,
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Showcase Ring"
+          },
+          {
+            "weight": 18.7,
+            "filter": "non_basic_land",
+            "label": "Borderless Land"
+          },
+          {
+            "weight": 31.3,
+            "rarity": "mythic",
+            "label": "Realms & Relics"
+          }
+        ]
+      },
+      {
+        "label": "Borderless Scene Card",
+        "outcomes": [
+          {
+            "weight": 17,
+            "rarity": "common",
+            "filter": "borderless",
+            "label": "Scene Common"
+          },
+          {
+            "weight": 26.4,
+            "rarity": "uncommon",
+            "filter": "borderless",
+            "label": "Scene Uncommon"
+          },
+          {
+            "weight": 39.6,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Scene Rare"
+          },
+          {
+            "weight": 17,
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Scene Mythic"
+          }
+        ]
+      },
+      {
+        "label": "Showcase Ring / Scene / Nazgul Uncommon",
+        "outcomes": [
+          {
+            "weight": 23.3,
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Showcase Ring"
+          },
+          {
+            "weight": 41.8,
+            "rarity": "common",
+            "filter": "borderless",
+            "label": "Scene Common"
+          },
+          {
+            "weight": 32.6,
+            "rarity": "uncommon",
+            "filter": "borderless",
+            "label": "Scene Uncommon"
+          },
+          {
+            "weight": 2.3,
+            "rarity": "uncommon",
+            "label": "Nazgul Variant"
+          }
+        ]
+      },
+      {
+        "label": "Foil Chase Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 60,
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Foil Showcase Ring"
+          },
+          {
+            "weight": 25,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Foil Borderless Scene"
+          },
+          {
+            "weight": 10,
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Foil Showcase Ring Mythic"
+          },
+          {
+            "weight": 4.2,
+            "set": "LTC",
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "Foil Extended-Art Commander Mythic"
+          },
+          {
+            "weight": 0.8,
+            "rarity": "mythic",
+            "filter": "surge_foil",
+            "label": "Surge Foil Realms & Relics"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -4,7 +4,22 @@
   "costUsd": {
     "play": 5.99,
     "draft": 3.99,
-    "collector": 25.99
+    "collector": 25.99,
+    "jumpstart": 4.99
+  },
+
+  "jumpstart": {
+    "cardCount": 20,
+    "tagline": "20 cards · two themed half-decks + lands · ready to shuffle together and play",
+    "slots": [
+      { "label": "Common", "count": 13, "outcomes": [{ "weight": 1, "rarity": "common" }] },
+      { "label": "Uncommon", "count": 4, "outcomes": [{ "weight": 1, "rarity": "uncommon" }] },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [{ "weight": 86, "rarity": "rare" }, { "weight": 14, "rarity": "mythic" }]
+      },
+      { "label": "Land", "count": 2, "basicLand": true, "outcomes": [{ "weight": 1, "filter": "basic_land" }] }
+    ]
   },
 
   "play": {

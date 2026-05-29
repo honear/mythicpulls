@@ -1,0 +1,79 @@
+{
+  "code": "stx",
+  "name": "Strixhaven: School of Mages",
+  "released": "2021-04-23",
+  "composition": {
+    "common": 105,
+    "uncommon": 80,
+    "rare": 69,
+    "mythic": 21
+  },
+  "collationMethod": "sequential",
+  "packTypes": [
+    "draft"
+  ],
+  "draft": {
+    "cardCount": 15,
+    "commons": 9,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "33% of boosters",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "9 commons, a common-or-rare lesson, 3 uncommons, a rare, a Mystical Archive card, and an ad-or-placeholder card. No basic land slot. Uncommon lessons count among the three uncommons when they appear. If a foil appears it displaces a non-lesson common and appears after the Mystical Archive card. Set has 63 additional Mystical Archive cards beyond the listed composition. [Refined: added Lesson slot + Mystical Archive slot (set STA); pack totals 15.]",
+    "extraSlots": [
+      {
+        "label": "Lesson",
+        "outcomes": [
+          {
+            "weight": 70,
+            "rarity": "common",
+            "filter": "lesson"
+          },
+          {
+            "weight": 20,
+            "rarity": "uncommon",
+            "filter": "lesson"
+          },
+          {
+            "weight": 10,
+            "rarity": "rare",
+            "filter": "lesson"
+          }
+        ]
+      },
+      {
+        "label": "Mystical Archive",
+        "outcomes": [
+          {
+            "weight": 66,
+            "set": "sta",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 27,
+            "set": "sta",
+            "rarity": "rare"
+          },
+          {
+            "weight": 7,
+            "set": "sta",
+            "rarity": "mythic"
+          }
+        ]
+      }
+    ]
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [
+    "mystical archive",
+    "lesson"
+  ],
+  "statedRates": "Foils in ~33% of boosters. Placeholder cards ~15% of the time.",
+  "sourceNotes": "Unusual set size due to lesson cards. Mystical Archive slot is in every pack (18 uncommon-archive run, plus rare/mythic archives). Printed US, Belgium, Japan. 36 packs per box. Composition does NOT include the 63 Mystical Archive cards."
+}

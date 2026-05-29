@@ -1,0 +1,27 @@
+{
+  "code": "jou",
+  "name": "Journey into Nyx",
+  "released": "2014-05-02",
+  "composition": { "common": 60, "uncommon": 60, "rare": 35, "mythic": 10 },
+  "collationMethod": "sequential",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "If a foil appears it displaces a common (a B common). Basic land is from Theros."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "Foil rare sheet has 3 copies of each rare and 1 of each mythic, violating the normal 1/8 mythic rate.",
+  "sourceNotes": "Small set. US printing sequential collation. 36 packs per box. Rare 'god pack' exists containing all 15 god cards from the Theros block instead of the usual contents (plus an ad card). Basic land from Theros."
+}

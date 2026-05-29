@@ -1,0 +1,27 @@
+{
+  "code": "aer",
+  "name": "Aether Revolt",
+  "released": "2017-01-20",
+  "composition": { "common": 70, "uncommon": 60, "rare": 42, "mythic": 12 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "If a foil appears it displaces a common and appears after the rare. Land slot may be a basic land or checklist."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["masterpiece"],
+  "statedRates": "Masterpieces (Kaladesh Inventions) 1:2160 cards.",
+  "sourceNotes": "Small set. 24 masterpieces, three basic land variations from Kaladesh. 36 packs per box. Printed in USA and Belgium."
+}

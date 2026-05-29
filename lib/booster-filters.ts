@@ -48,6 +48,11 @@ export interface FilterPredicate {
   type_line_includes?: string;
   type_line_excludes?: string;
   produced_mana?: string | string[];
+  /** card.frame — "1993" | "1997" | "2003" | "2015" | "future". Used for
+   *  retro-frame treatments. */
+  frame?: string | string[];
+  /** card.full_art boolean — full-art lands / cards. */
+  full_art?: boolean;
   collector_number_in?: string[];
   collector_number_range?: [number, number];
   not?: FilterPredicate;
@@ -108,6 +113,14 @@ export function matchesFilter(card: ScryfallCard, p: FilterPredicate): boolean {
   }
 
   if (p.produced_mana && !anyOf(card.produced_mana, p.produced_mana)) return false;
+
+  if (p.frame) {
+    const want = asArray(p.frame)!;
+    if (!card.frame || !want.includes(card.frame)) return false;
+  }
+  if (p.full_art !== undefined) {
+    if (Boolean(card.full_art) !== p.full_art) return false;
+  }
 
   if (p.collector_number_in) {
     if (!p.collector_number_in.includes(card.collector_number)) return false;
@@ -195,6 +208,10 @@ export function predicateIsAltArtIntent(
     if (colors.includes("borderless")) return true;
   }
   if (p.promo_types !== undefined) return true;
+  // Retro frame + full-art are alt-art treatments; skip regular_print (which
+  // would otherwise exclude frame_effects:"fullart" and boosterfun retros).
+  if (p.frame !== undefined) return true;
+  if (p.full_art !== undefined) return true;
   if (p.lang !== undefined) {
     const langs = Array.isArray(p.lang) ? p.lang : [p.lang];
     if (langs.some((l) => l !== "en")) return true;

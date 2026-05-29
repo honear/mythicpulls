@@ -1,0 +1,27 @@
+{
+  "code": "afr",
+  "name": "Adventures in the Forgotten Realms",
+  "released": "2021-07-23",
+  "composition": { "common": 101, "uncommon": 80, "rare": 60, "mythic": 20 },
+  "collationMethod": "sequential, non-standard common collation",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "33% of boosters",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "10 commons, 3 uncommons, 1 rare, 1 basic land, 1 ad card. If a foil appears it displaces a common and appears after the rare. Ad card may be a double-faced placeholder. Four variations of each basic land; showcase lands are gutter-cut."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["showcase", "borderless"],
+  "statedRates": "Foils in ~33% of boosters.",
+  "sourceNotes": "Large set of the era, no double-faced cards. Printed US, Belgium, Japan. 36 packs per box."
+}

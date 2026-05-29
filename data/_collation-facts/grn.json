@@ -1,0 +1,46 @@
+{
+  "code": "grn",
+  "name": "Guilds of Ravnica",
+  "released": "2018-10-05",
+  "composition": {
+    "common": 101,
+    "uncommon": 80,
+    "rare": 53,
+    "mythic": 15
+  },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": [
+    "draft"
+  ],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Basic lands are replaced by a guildgate slot (10 guildgate variations). No basic-land slot. If a foil appears it displaces a common and appears after the rare. Common foils appear 1 in every 8 packs. [Refined: guildgate slot (filter: dual_land_common) replaces the basic-land slot; pack totals 15.]",
+    "extraSlots": [
+      {
+        "label": "Guildgate",
+        "basicLand": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "filter": "dual_land_common"
+          }
+        ]
+      }
+    ]
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "Common foils 1 in 8 packs.",
+  "sourceNotes": "Large set. Basic lands replaced by five guildgates (two variations each). Theme boosters also documented on page but not modelled. 36 packs per box. Printed in USA and Belgium."
+}

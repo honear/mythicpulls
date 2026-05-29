@@ -1,0 +1,27 @@
+{
+  "code": "drk",
+  "name": "The Dark",
+  "released": "1994-08",
+  "composition": { "common": 41, "uncommon": 43, "rare": 35, "mythic": 0 },
+  "collationMethod": "striped, 11x11 sheets; common sheet (C3/C1) + uncommon sheet (U2 uncommons / U1 rares)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 8,
+    "commons": 6,
+    "uncommons": 2,
+    "rares": 0,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "8-card booster: 6 from the common sheet, 2 from the uncommon sheet (no dedicated rare slot — both 'uncommon' and 'rare' cards share the uncommon sheet). Cards back-facing, uncommon-common ordering. Pre-foil era."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "rares are the U1 (single-print) cards on the uncommon sheet; uncommons are U2 (double-print); the lone C1 card (Maze of Ith) sits between C3 commons and U2 uncommons",
+  "sourceNotes": "Small set, 119 cards. Page states 40 commons (C3) + 1 C1 (Maze of Ith) = 41 commons recorded; 43 uncommons (U2); 35 rares (U1). Only two physical sheets exist. Printed Belgium. 60 packs per box."
+}

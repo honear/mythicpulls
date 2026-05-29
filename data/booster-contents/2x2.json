@@ -1,0 +1,120 @@
+{
+  "_doc": "Double Masters 2022 (2X2) Draft + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-double-masters-2022-and-product-overview . Lineup is Draft Booster + Collector Booster only (no Set Booster); Box Toppers are sold separately and ignored. Authoritative. Draft Boosters have 16 cards: 8 commons, 3 uncommons, 2 rares/mythics, 2 traditional foils (any rarity), 1 Cryptic Spires land, 1 token/ad card. 'A third of the time' the borderless commons/uncommons appear; 11% of Draft Boosters contain at least one non-foil borderless rare/mythic (modeled by upgrading the rare/mythic slot). Collector Boosters have 15 cards. Treatments: the final Collector slot is 'Traditional foil borderless rare/mythic OR textured foil mythic' per the article — the 3% textured-foil-mythic chase outcome now uses the textured_foil filter (was approximated as borderless), while the traditional-foil-borderless rare/mythic outcomes keep the borderless filter. Foil-etched rares/mythics use the etched_foil filter. Cryptic Spires is a common nonbasic land in the set so it's drawn from the set pool with a non_basic_land filter.",
+
+  "authoritative": true,
+
+  "draft": {
+    "cardCount": 17,
+    "tagline": "16 cards + token · 2 rares/mythics · 2 foils · Cryptic Spires every pack",
+    "slots": [
+      {
+        "label": "Token / Ad Card",
+        "token": true,
+        "outcomes": [{ "weight": 1, "set": "2X2" }]
+      },
+      {
+        "label": "Cryptic Spires",
+        "outcomes": [{ "weight": 1, "set": "2X2", "filter": "non_basic_land", "label": "Cryptic Spires" }]
+      },
+      {
+        "label": "Common",
+        "count": 8,
+        "outcomes": [{ "weight": 1, "set": "2X2", "rarity": "common" }]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [{ "weight": 1, "set": "2X2", "rarity": "uncommon" }]
+      },
+      {
+        "label": "Rare / Mythic",
+        "count": 2,
+        "outcomes": [
+          { "weight": 71.5, "set": "2X2", "rarity": "rare" },
+          { "weight": 23.0, "set": "2X2", "rarity": "mythic" },
+          { "weight": 4.8,  "set": "2X2", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 0.7,  "set": "2X2", "rarity": "mythic", "filter": "borderless" }
+        ]
+      },
+      {
+        "label": "Foil",
+        "count": 2,
+        "foil": true,
+        "outcomes": [
+          { "weight": 50, "set": "2X2", "rarity": "common" },
+          { "weight": 30, "set": "2X2", "rarity": "uncommon" },
+          { "weight": 15, "set": "2X2", "rarity": "rare" },
+          { "weight": 5,  "set": "2X2", "rarity": "mythic" }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 15,
+    "tagline": "15 premium cards · borderless rares · foil-etched chase · textured-foil mythic shot",
+    "slots": [
+      {
+        "label": "Foil Common",
+        "count": 5,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "2X2", "rarity": "common" }]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 2,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "2X2", "rarity": "uncommon" }]
+      },
+      {
+        "label": "Non-foil Borderless Common / Uncommon",
+        "count": 2,
+        "outcomes": [
+          { "weight": 60, "set": "2X2", "rarity": "common",   "filter": "borderless" },
+          { "weight": 40, "set": "2X2", "rarity": "uncommon", "filter": "borderless" }
+        ]
+      },
+      {
+        "label": "Foil Borderless Common / Uncommon",
+        "count": 2,
+        "foil": true,
+        "outcomes": [
+          { "weight": 60, "set": "2X2", "rarity": "common",   "filter": "borderless" },
+          { "weight": 40, "set": "2X2", "rarity": "uncommon", "filter": "borderless" }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 77, "set": "2X2", "rarity": "rare" },
+          { "weight": 23, "set": "2X2", "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Non-foil Borderless Rare / Mythic",
+        "outcomes": [
+          { "weight": 77, "set": "2X2", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 23, "set": "2X2", "rarity": "mythic", "filter": "borderless" }
+        ]
+      },
+      {
+        "label": "Foil-Etched Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 77, "set": "2X2", "rarity": "rare",   "filter": "etched_foil" },
+          { "weight": 23, "set": "2X2", "rarity": "mythic", "filter": "etched_foil" }
+        ]
+      },
+      {
+        "label": "Foil Borderless Rare / Mythic or Textured Foil Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 74.7, "set": "2X2", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 22.3, "set": "2X2", "rarity": "mythic", "filter": "borderless" },
+          { "weight": 3,    "set": "2X2", "rarity": "mythic", "filter": "textured_foil", "label": "Textured Foil Mythic" }
+        ]
+      }
+    ]
+  }
+}

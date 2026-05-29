@@ -1,0 +1,40 @@
+{
+  "code": "mom",
+  "name": "March of the Machine",
+  "released": "2023-04-21",
+  "composition": {
+    "common": 106,
+    "uncommon": 80,
+    "rare": 60,
+    "mythic": 20
+  },
+  "collationMethod": "sequential, multi-run (A/B/C commons), 112-card sheets (JP)",
+  "packTypes": [
+    "draft"
+  ],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:45",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Per JP anatomy each pack has a Multiverse Legends slot, a Battle slot, and a double-faced card slot in addition to the standard cards: 1 land + 1 Multiverse Legend + 1 Battle + 1 DFC + 1 rare + 2-3 uncommons + 7-8 commons + ad/placeholder card. The single MOM rare may be the Battle, the DFC, or a non-DFC card. If the Multiverse Legend is rare, a separate MOM rare still appears. If a foil appears it displaces a common. Only the Japanese printing is detailed on the page."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [
+    "Multiverse Legends",
+    "Battle (double-faced)",
+    "full-art basic land"
+  ],
+  "statedRates": "Foil 1:45 cards. ~3/10 of packs have 3 non-DFC uncommons. Only one non-foil MOM rare per pack.",
+  "sourceNotes": "Large set: 5 DFC commons, 30 DFC uncommons, 16 DFC rares, 10 DFC mythics. Three variations of each basic land plus 10 extra common lands that can replace basics. Multiverse Legends bonus sheet (20 uncommon, 30 rare, 15 mythic) appears in its own slot. Page only documents the Japanese printing. 36 packs per box. Card counts/slot structure here reflect the page's stated JP anatomy; the land slot can be a basic or common land.",
+  "skip": true,
+  "skipReason": "Superseded by a hand-authored recipe derived from the official Wizards 'Collecting' article (more accurate odds + full product lineup). The generator must NOT overwrite data/booster-contents/mom.json."
+}

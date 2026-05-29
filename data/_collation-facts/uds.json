@@ -1,0 +1,27 @@
+{
+  "code": "uds",
+  "name": "Urza's Destiny",
+  "released": "1999-06-07",
+  "composition": { "common": 55, "uncommon": 44, "rare": 44, "mythic": 0 },
+  "collationMethod": "Belgian: striped collation, 10x11 and 12x11 sheets",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": "1:100",
+    "foilGuaranteed": false,
+    "foilReplaces": "same rarity",
+    "notes": "Foils inserted only between stripes, displacing a card of the same rarity. Possible to get multiple foils in one pack."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Small set. Printed USA and Belgium; page only documents Belgian striped collation (pack order: 3 uncommons, 1 rare, 11 commons). US printing existence confirmed but no openings identified. Foil 1:100 cards. 36 packs per box."
+}

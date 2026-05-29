@@ -1,0 +1,27 @@
+{
+  "code": "ulg",
+  "name": "Urza's Legacy",
+  "released": "1999-02-15",
+  "composition": { "common": 55, "uncommon": 44, "rare": 44, "mythic": 0 },
+  "collationMethod": "US sequential (10x11 sheets)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": "1:100",
+    "foilGuaranteed": false,
+    "foilReplaces": "same rarity",
+    "notes": "US pack order: 11 commons, 3 uncommons, 1 rare. First set to include foils in boosters; advertised odds 1:100 cards. A foil replaces the last slot of a card of the same rarity (e.g. a foil rare replaces the regular rare)."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Small set printed in USA and Belgium. 36 packs per box. First Magic set with foils in booster packs (advertised 1:100 cards). Foil displaces the same-rarity card."
+}

@@ -1,0 +1,27 @@
+{
+  "code": "mm2",
+  "name": "Modern Masters 2015",
+  "released": "2015-05-22",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, A/B/C/D common runs (novel configuration)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": null,
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "15-card pack plus an additional ad card (placed at the beginning, reversed so the ad side shows). Every pack contains a foil card. Pack order: ad card, 10 commons, 3 uncommons, 1 rare, 1 foil. Foil slot likely: common 5/7, uncommon 3/14, rare/mythic 1/14; mythic rate probably 1/8 (separate rare/mythic sheets)."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "foil slot likely: common 5/7, uncommon 3/14, rare/mythic 1/14; mythic ~1/8 within rare slot",
+  "sourceNotes": "Masters reprint set. Large set, normal size for its era. Every pack guarantees a foil. English printing used recyclable paperboard packaging (collation unchanged). Marketing cards have token/emblem/tip card on front face. Printed in USA. 24 packs per box."
+}

@@ -1,0 +1,204 @@
+{
+  "_doc": "Teenage Mutant Ninja Turtles (code TMT) — Universes Beyond set. Source: https://magic.wizards.com/en/news/feature/collecting-teenage-mutant-ninja-turtles . Lineup is Play Boosters + Collector Boosters only (no Draft). Percentages taken verbatim from the article's odds tables. TMT Play Boosters have a distinctive 'Legendary Turtle' slot plus the usual wildcard / rare-mythic / foil / land slots. Approximations: separate printings and Booster Fun frames (scene cards, sewer cards, silhouette cards, source material, pizza/rooftop lands, surge-foil 'pixel'/new-to-Magic, Japan Showcase, Commander-deck 'TMC' reprints, Kevin Eastman headliners) have no dedicated Scryfall sub-set code we model, so they are approximated against the main TMT pool with the nearest available filter: scene/sewer/silhouette/source-material/pizza/rooftop/new-to-Magic -> 'showcase', Japan Showcase -> 'japanese', extended-art -> 'extended_art', borderless mythic & Eastman headliners -> 'borderless'. The article names 'surge foil' as the specific finish on the Surge Foil Commander-deck (TMC) reprints, Surge Foil New-to-Magic, and Surge Foil Pixel chases, so those outcomes target it exactly via promo_types -> 'surge_foil' instead of plain foil / the 'showcase' frame stand-in. Surge-foil pizza/rooftop lands stay on basicLand + basic_land (the structural land filter takes precedence in the land slot). The Japan Showcase fracture-foil cards stay on 'japanese' because the lang=ja constraint is the load-bearing distinction the article emphasizes; we don't trade it for the finish filter. Full-art/pizza/rooftop lands use basicLand + basic_land. Sub-percentages reported as 'less than 1%' are entered as 0.5. The Legendary Turtle slot's main-set rarities (64.1/13.1/6.9/3.4) are listed verbatim and do not sum to 100 in the article (the remainder is the scene/silhouette riders, also listed).",
+
+  "authoritative": true,
+
+  "play": {
+    "cardCount": 15,
+    "tagline": "14 cards + token · 1 Legendary Turtle · 1 rare/mythic · 1 foil · scene & sewer rates faithful to Wizards' spec",
+    "slots": [
+      { "label": "Token", "token": true, "outcomes": [{ "weight": 1, "set": "$tokens" }] },
+
+      {
+        "label": "Common",
+        "count": 7,
+        "outcomes": [
+          { "weight": 92.3, "set": "TMT", "rarity": "common" },
+          { "weight": 4.2,  "set": "TMT", "rarity": "common", "filter": "showcase", "label": "Scene Card" },
+          { "weight": 3.5,  "set": "TMT", "rarity": "common", "filter": "showcase", "label": "Source Material" }
+        ]
+      },
+
+      {
+        "label": "Uncommon",
+        "count": 2,
+        "outcomes": [
+          { "weight": 88.3, "set": "TMT", "rarity": "uncommon" },
+          { "weight": 3.9,  "set": "TMT", "rarity": "uncommon", "filter": "showcase", "label": "Scene Card" },
+          { "weight": 7.8,  "set": "TMT", "rarity": "uncommon", "filter": "showcase", "label": "Sewer Card" }
+        ]
+      },
+
+      {
+        "label": "Legendary Turtle",
+        "outcomes": [
+          { "weight": 64.1, "set": "TMT", "rarity": "common" },
+          { "weight": 13.1, "set": "TMT", "rarity": "uncommon" },
+          { "weight": 6.9,  "set": "TMT", "rarity": "rare" },
+          { "weight": 3.4,  "set": "TMT", "rarity": "mythic" },
+          { "weight": 4.6,  "set": "TMT", "rarity": "common",   "filter": "showcase", "label": "Scene" },
+          { "weight": 6.5,  "set": "TMT", "rarity": "uncommon", "filter": "showcase", "label": "Scene" },
+          { "weight": 1,    "set": "TMT", "rarity": "rare",     "filter": "showcase", "label": "Scene" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "mythic",   "filter": "showcase", "label": "Silhouette" }
+        ]
+      },
+
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          { "weight": 24.9, "set": "TMT", "rarity": "common" },
+          { "weight": 62.1, "set": "TMT", "rarity": "uncommon" },
+          { "weight": 7.6,  "set": "TMT", "rarity": "rare" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "mythic" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "common",   "filter": "showcase", "label": "Scene" },
+          { "weight": 1.3,  "set": "TMT", "rarity": "uncommon", "filter": "showcase", "label": "Scene" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "rare",     "filter": "showcase", "label": "Scene" },
+          { "weight": 2.6,  "set": "TMT", "rarity": "uncommon", "filter": "showcase", "label": "Sewer" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "rare",     "filter": "showcase", "label": "Sewer" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "mythic",   "filter": "showcase", "label": "Silhouette" }
+        ]
+      },
+
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 84.9, "set": "TMT", "rarity": "rare" },
+          { "weight": 9.2,  "set": "TMT", "rarity": "mythic" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "rare",   "filter": "showcase", "label": "Scene" },
+          { "weight": 4.1,  "set": "TMT", "rarity": "rare",   "filter": "showcase", "label": "Sewer" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "mythic", "filter": "showcase", "label": "Sewer" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "mythic", "filter": "showcase", "label": "Silhouette" }
+        ]
+      },
+
+      {
+        "label": "Foil",
+        "foil": true,
+        "outcomes": [
+          { "weight": 61.5, "set": "TMT", "rarity": "common" },
+          { "weight": 27.7, "set": "TMT", "rarity": "uncommon" },
+          { "weight": 6.7,  "set": "TMT", "rarity": "rare" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "mythic" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "rare",   "filter": "showcase", "label": "Scene / Sewer / Silhouette" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "mythic", "filter": "showcase", "label": "Scene / Sewer / Silhouette" }
+        ]
+      },
+
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          { "weight": 48, "set": "TMT", "filter": "dual_land_common" },
+          { "weight": 32, "set": "TMT", "filter": "basic_land", "label": "Rooftop" },
+          { "weight": 12, "set": "TMT", "filter": "dual_land_common", "foil": true },
+          { "weight": 8,  "set": "TMT", "filter": "basic_land", "foil": true, "label": "Rooftop" }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards · all-foil core · Commander reprints, sewer & silhouette chases",
+    "slots": [
+      {
+        "label": "Art Card / Token",
+        "token": true,
+        "outcomes": [
+          { "weight": 65, "set": "$tokens", "foil": true, "label": "Foil Token" },
+          { "weight": 30, "set": "$tokens", "label": "Art Card" },
+          { "weight": 5,  "set": "$tokens", "filter": "gold_stamped", "label": "Gold-Stamped Art Card" }
+        ]
+      },
+
+      {
+        "label": "Foil Common",
+        "count": 5,
+        "foil": true,
+        "outcomes": [
+          { "weight": 88.4, "set": "TMT", "rarity": "common" },
+          { "weight": 8.7,  "set": "TMT", "filter": "dual_land_common", "label": "Dual Land" },
+          { "weight": 2.9,  "set": "TMT", "rarity": "common", "filter": "showcase", "label": "Scene Card" }
+        ]
+      },
+
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [
+          { "weight": 80.9, "set": "TMT", "rarity": "uncommon" },
+          { "weight": 10.3, "set": "TMT", "rarity": "uncommon", "filter": "showcase", "label": "Scene Card" },
+          { "weight": 8.8,  "set": "TMT", "rarity": "uncommon", "filter": "showcase", "label": "Sewer Card" }
+        ]
+      },
+
+      {
+        "label": "Commander Deck Reprint",
+        "outcomes": [
+          { "weight": 51.9, "set": "TMT", "rarity": "common",   "label": "TMC Reprint" },
+          { "weight": 17.3, "set": "TMT", "rarity": "uncommon", "label": "TMC Reprint" },
+          { "weight": 23.1, "set": "TMT", "rarity": "common",   "foil": true, "filter": "surge_foil", "label": "Surge Foil TMC" },
+          { "weight": 7.7,  "set": "TMT", "rarity": "uncommon", "foil": true, "filter": "surge_foil", "label": "Surge Foil TMC" }
+        ]
+      },
+
+      {
+        "label": "Foil Basic Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [
+          { "weight": 66.7, "set": "TMT", "filter": "basic_land", "label": "Pizza Land" },
+          { "weight": 11.1, "set": "TMT", "filter": "basic_land", "label": "Surge Foil Pizza" },
+          { "weight": 22.2, "set": "TMT", "filter": "basic_land", "label": "Surge Foil Rooftop" }
+        ]
+      },
+
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 87.6, "set": "TMT", "rarity": "rare" },
+          { "weight": 12.4, "set": "TMT", "rarity": "mythic" }
+        ]
+      },
+
+      {
+        "label": "Booster Fun",
+        "count": 2,
+        "outcomes": [
+          { "weight": 2.9,  "set": "TMT", "rarity": "mythic", "filter": "showcase", "label": "Silhouette" },
+          { "weight": 5.8,  "set": "TMT", "rarity": "rare",   "filter": "showcase", "label": "Scene" },
+          { "weight": 14.6, "set": "TMT", "rarity": "rare",   "filter": "showcase", "label": "Sewer" },
+          { "weight": 16.1, "set": "TMT", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 2.2,  "set": "TMT", "rarity": "mythic", "filter": "borderless" },
+          { "weight": 26.2, "set": "TMT", "rarity": "rare",   "filter": "showcase", "label": "New-to-Magic" },
+          { "weight": 19,   "set": "TMT", "rarity": "rare",   "label": "Reprint" },
+          { "weight": 6.1,  "set": "TMT", "rarity": "rare",   "foil": true, "filter": "surge_foil", "label": "Surge Foil New-to-Magic" },
+          { "weight": 1.9,  "set": "TMT", "rarity": "rare",   "foil": true, "filter": "surge_foil", "label": "Surge Foil Pixel" }
+        ]
+      },
+
+      {
+        "label": "Source Material",
+        "outcomes": [
+          { "weight": 75, "set": "TMT", "rarity": "common", "filter": "showcase", "label": "Source Material" },
+          { "weight": 25, "set": "TMT", "rarity": "common", "filter": "showcase", "foil": true, "label": "Source Material Foil" }
+        ]
+      },
+
+      {
+        "label": "Foil Booster Fun Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 13.2, "set": "TMT", "rarity": "rare",   "filter": "showcase", "label": "Scene" },
+          { "weight": 33,   "set": "TMT", "rarity": "rare",   "filter": "showcase", "label": "Sewer" },
+          { "weight": 36.3, "set": "TMT", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 6.6,  "set": "TMT", "rarity": "mythic", "filter": "showcase", "label": "Silhouette" },
+          { "weight": 9,    "set": "TMT", "rarity": "rare",   "filter": "japanese", "label": "Japan Showcase" },
+          { "weight": 0.5,  "set": "TMT", "rarity": "mythic", "filter": "borderless", "label": "Kevin Eastman Headliner" }
+        ]
+      }
+    ]
+  }
+}

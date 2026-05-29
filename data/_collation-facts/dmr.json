@@ -1,0 +1,39 @@
+{
+  "code": "dmr",
+  "name": "Dominaria Remastered",
+  "released": "2023-01-13",
+  "composition": {
+    "common": 101,
+    "uncommon": 80,
+    "rare": 60,
+    "mythic": 20
+  },
+  "collationMethod": "sequential, A/B common runs",
+  "packTypes": [
+    "draft"
+  ],
+  "draft": {
+    "cardCount": 15,
+    "commons": 9,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "33%",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "15-card pack: 9 commons, 3 uncommons, 1 rare, 1 extra common-or-uncommon slot, 1 old-frame basic land, plus an ad card. The extra slot is an old-frame card in 3/4 of packs. If a foil appears it displaces a common and comes before the basic land. Borderless commons/uncommons displace the third uncommon; a borderless rare replaces the normal rare."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [
+    "retro frame",
+    "borderless"
+  ],
+  "statedRates": "Foil rate 33% of boosters; extra slot is old-frame in 3/4 of packs.",
+  "sourceNotes": "Large remastered set with two variations of each basic land (old-frame basic land slot in every pack). 36 packs per box. Printed in English in USA and Belgium; figures from US Pack Anatomy.",
+  "skip": true,
+  "skipReason": "Superseded by a hand-authored recipe derived from the official Wizards 'Collecting' article (more accurate odds + full product lineup). The generator must NOT overwrite data/booster-contents/dmr.json."
+}

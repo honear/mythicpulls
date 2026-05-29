@@ -1,0 +1,42 @@
+{
+  "code": "mkm",
+  "name": "Murders at Karlov Manor",
+  "released": "2024-02-09",
+  "composition": {
+    "common": 81,
+    "uncommon": 100,
+    "rare": 70,
+    "mythic": 10
+  },
+  "collationMethod": "Japanese sequential, ~112-card sheets",
+  "packTypes": [
+    "play"
+  ],
+  "draft": null,
+  "play": {
+    "cardCount": 14,
+    "commons": 7,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": true,
+    "land": true,
+    "token": true,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "14 game cards + 1 art card / token / ad insert. A List or Special Guest card may occupy a common slot. 36 packs per box."
+  },
+  "collector": null,
+  "specialTreatments": [
+    "magnified showcase",
+    "ravnica city",
+    "borderless",
+    "dossier showcase",
+    "prism"
+  ],
+  "statedRates": "Observed uncommon wildcard rate ~52% (JP). Common wildcard appears within normal runs.",
+  "sourceNotes": "Play boosters newly introduced with this set; no Draft boosters. Site documents Japanese sequential collation runs in detail; English drop rates not published on the page.",
+  "skip": true,
+  "skipReason": "Superseded by a hand-authored recipe derived from the official Wizards 'Collecting' article (more accurate odds + full product lineup). The generator must NOT overwrite data/booster-contents/mkm.json."
+}

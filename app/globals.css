@@ -414,12 +414,15 @@ a, button, [role="button"], summary, label {
   -webkit-user-drag: none;
 }
 
-/* "+" loupe / preview button — top-right corner of face-up cards
- * when MagicCard receives an `onPreview` prop. Sized 32px so it
- * meets a reasonable tap target on mobile while staying small
- * enough to not dominate the card art. Uses a translucent dark
- * circle backdrop with a subtle white ring + drop-shadow so it
- * reads cleanly over both light and dark card art.
+/* "+" loupe / preview button — bottom-left corner of face-up cards
+ * when MagicCard receives an `onPreview` prop. Bottom-left keeps it
+ * clear of the card's title, mana cost, and type line (all clustered
+ * along the top edge of Magic card art), where a top-corner button
+ * was occluding vital info. Sized 32px so it meets a reasonable tap
+ * target on mobile while staying small enough to not dominate the
+ * card art. Uses a translucent dark circle backdrop with a subtle
+ * white ring + drop-shadow so it reads cleanly over both light and
+ * dark card art.
  *
  * z-index above the glare + holo overlays so it stays clickable
  * regardless of card state. The button itself uses pointer-events:
@@ -428,8 +431,8 @@ a, button, [role="button"], summary, label {
  * inherit suppressed pointer-events in some browsers. */
 .card-mtg__loupe {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  bottom: 6px;
+  left: 6px;
   z-index: 4;
   width: 32px;
   height: 32px;

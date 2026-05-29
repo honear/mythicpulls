@@ -1,0 +1,27 @@
+{
+  "code": "inv",
+  "name": "Invasion",
+  "released": "2000-10-02",
+  "composition": { "common": 110, "uncommon": 110, "rare": 110, "mythic": 0 },
+  "collationMethod": "US: sequential collation, 10x11 sheets, four common runs (A/B 30 cards, C/D 25 cards)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": "1:100",
+    "foilGuaranteed": false,
+    "foilReplaces": "same rarity",
+    "notes": "Pack order: 11 commons, 3 uncommons, 1 rare. Foil appears at end of pack displacing same rarity. Foil basic lands displace a common; non-foil basic lands otherwise do not appear in booster packs."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Large set; also has four variations of each basic land. Printed in English in the USA; Belgian English printing existence unknown. Booster commons: 6 from runs A/B + 5 from runs C/D. Tournament packs (30 lands, 3 rares, 10 uncommons, 32 commons) documented but not modelled. Foil 1:100 cards. 36 packs per box."
+}

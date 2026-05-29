@@ -1,0 +1,27 @@
+{
+  "code": "frf",
+  "name": "Fate Reforged",
+  "released": "2015-01-23",
+  "composition": { "common": 60, "uncommon": 60, "rare": 34, "mythic": 10 },
+  "collationMethod": "sequential",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Land slot is either a non-basic tap land or a Khans of Tarkir fetch land (~1/24). Basic lands do NOT appear in English boosters except as foils. If a foil appears it displaces a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "Fetch lands appear ~1/24. Foil 1:67.",
+  "sourceNotes": "Page describes as 'large set' but lists small-set composition (60/60/34/10) plus 10 extra non-basic lands and two variations of each standard basic land. Rare lands from Khans of Tarkir can also appear (with KTK expansion symbol). US printing sequential collation. 36 packs per box."
+}

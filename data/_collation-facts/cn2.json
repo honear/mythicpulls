@@ -1,0 +1,27 @@
+{
+  "code": "cn2",
+  "name": "Conspiracy: Take the Crown",
+  "released": "2016-08-26",
+  "composition": { "common": 80, "uncommon": 60, "rare": 42, "mythic": 12 },
+  "collationMethod": "sequential, A/B/C1/C2 common runs",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "15-card pack plus an additional ad card. Pack: 10 commons, 3 uncommons, 1 rare, 1 conspiracy, 1 ad card. Foil conspiracies displace the conspiracy slot; otherwise a foil displaces a common and appears immediately after the rare. Almost certainly not possible for two foils in one pack. The conspiracy slot is rare or mythic in 1/6 of packs."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["conspiracy"],
+  "statedRates": "conspiracy slot is rare/mythic in 1/6 of packs (includes foils)",
+  "sourceNotes": "Draft-matters supplemental set. Composition also includes 12 conspiracy cards and 15 cards with draft-related abilities (the draft-related cards are collated with the normal cards, unlike original Conspiracy). Kaya, Ghost Assassin has alternate foil art (222/221). Printed in USA. 36 packs per box."
+}

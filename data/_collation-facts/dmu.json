@@ -1,0 +1,36 @@
+{
+  "code": "dmu",
+  "name": "Dominaria United",
+  "released": "2022-09-09",
+  "composition": {
+    "common": 101,
+    "uncommon": 80,
+    "rare": 60,
+    "mythic": 20
+  },
+  "collationMethod": "sequential, two-run 101 common collation",
+  "packTypes": [
+    "draft"
+  ],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:45",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "10 commons + 3 uncommons + 1 rare + 1 land + ad card. If a foil appears it comes after the rare and displaces a common (becomes 9 commons). Each pack contains exactly one (non-foil) legendary creature, which may occupy the third uncommon slot or the rare slot."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "Foil 1:45 cards. In 3/4 of packs the third uncommon is a legendary creature; in 1/4 the rare is the legendary creature.",
+  "sourceNotes": "Large set, normal size for era. Four variations of each basic land. Printed in USA, Belgium, Japan; US printing modeled. 36 packs per box. Guaranteed-legend mechanic: legendary creatures form their own uncommon run.",
+  "skip": true,
+  "skipReason": "Superseded by a hand-authored recipe derived from the official Wizards 'Collecting' article (more accurate odds + full product lineup). The generator must NOT overwrite data/booster-contents/dmu.json."
+}

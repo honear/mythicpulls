@@ -1,0 +1,27 @@
+{
+  "code": "p02",
+  "name": "Portal Second Age",
+  "released": "1998-06-01",
+  "composition": { "common": 70, "uncommon": 45, "rare": 35, "mythic": 0 },
+  "collationMethod": "sequential, 10x11 sheets, single 110-card common run (C1/C2)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 9,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "Back-facing pack. Fixed order: 9 commons + 3 uncommons + 1 rare + 2 basic lands. No ad/tip card in the pack."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "Single 110-card common run: 30 cards appear once (C1), 40 appear twice (C2). No foils.",
+  "sourceNotes": "Small set with more commons but fewer uncommons/rares than a normal small set. Pre-foil era (1998), no foils. Three variations of each basic land; 2 basic lands per pack. Printed in USA and Belgium; US printing modeled. 36 packs per box."
+}

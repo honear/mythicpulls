@@ -1,0 +1,27 @@
+{
+  "code": "iko",
+  "name": "Ikoria: Lair of Behemoths",
+  "released": "2020-04-24",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:45",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "If a foil appears it displaces a common and appears after the rare. Three variations of each basic land plus 10 extra common (tap) lands that can replace basic lands in the land slot; basic lands appear ~1/2 the time."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["showcase", "borderless"],
+  "statedRates": "Common foil rate ~1/6; uncommon foil rate ~1/12. Rare-variant rate ~1/3 for cards with variants.",
+  "sourceNotes": "Large set of the era. Printed US, Belgium, Japan. 36 packs per box. Land slot includes tap lands."
+}

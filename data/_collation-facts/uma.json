@@ -1,0 +1,27 @@
+{
+  "code": "uma",
+  "name": "Ultimate Masters",
+  "released": "2018-12-07",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 20 },
+  "collationMethod": "sequential, Japanese 112-card sheets",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "guaranteed",
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "Every pack contains a foil card (ad card + foil + rare + 3 uncommons + 10 commons). Mythics replace rare ~1/8. Empirical foil rarity over 32 boxes: 549 common, 161 uncommon, 52 rare, 6 mythic."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "Mythic replaces rare ~1/8. Empirical foil distribution (32 boxes): 549 common, 161 uncommon, 52 rare, 6 mythic.",
+  "sourceNotes": "Masters reprint set; has 20 mythics (5 extra vs normal large set). Printed in Japan, 112-card sheets, front-facing. 24 packs per box. Ad card carries a token on its front."
+}

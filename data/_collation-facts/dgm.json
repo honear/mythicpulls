@@ -1,0 +1,27 @@
+{
+  "code": "dgm",
+  "name": "Dragon's Maze",
+  "released": "2013-05-03",
+  "composition": { "common": 60, "uncommon": 40, "rare": 35, "mythic": 10 },
+  "collationMethod": "sequential",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Foil appears after the rare, displacing a B common. The land slot is NOT a basic land: it is a rare shock land from RTR/GTC (with that set's expansion symbol), Maze's End, or a guildgate."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["shock lands (RTR/GTC reprints)", "guildgates"],
+  "statedRates": "shock land rarity ~1/242 per copy",
+  "sourceNotes": "Small set with 11 extra lands. The pack's land slot is a special dual-land slot (shock land / Maze's End / guildgate), not a basic land. Marketing/ad cards bear tokens/tips on front but counted as ad card. Foil 1:67. 36 packs per box."
+}

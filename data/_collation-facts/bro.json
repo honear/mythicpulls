@@ -1,0 +1,49 @@
+{
+  "code": "bro",
+  "name": "The Brothers' War",
+  "released": "2022-11-18",
+  "composition": {
+    "common": 101,
+    "uncommon": 80,
+    "rare": 63,
+    "mythic": 26
+  },
+  "collationMethod": "sequential, multi-run (A/B/C commons), 112-card sheets (JP)",
+  "packTypes": [
+    "draft"
+  ],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:45",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Plus 1 retro-artifact slot: 10 commons + 3 uncommons + 1 rare + 1 retro artifact + ad card; a basic land appears only in some packs (displacing a common), and lands and foils never appear in the same pack. If a foil appears it displaces a common (becomes 9 commons). Only the Japanese printing is detailed on the page. [Refined: retro-artifact slot (set BRR) replaces the sometimes-present basic land; pack totals 15.]",
+    "extraSlots": [
+      {
+        "label": "Retro Artifact",
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "brr"
+          }
+        ]
+      }
+    ]
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [
+    "retro frame artifact",
+    "schematic (alternate art)",
+    "full-art basic land"
+  ],
+  "statedRates": "Foil 1:45 cards. Retro-artifact slot: uncommon ~66%, rare ~27%, mythic ~7%; schematic version ~1/6 independent of rarity. Marketing card: DFC helper ~1/5, punch-out counter ~1/8.",
+  "sourceNotes": "Large set: 6 DFC mythics. Additional 63 retro artifacts (18 uncommon, 30 rare, 15 mythic) available in the dedicated retro-artifact slot. Page only documents the Japanese printing (US/Belgian not detailed). 36 packs per box. Retro-artifact slot is an extra slot beyond the standard 14 game cards; full pack listed as ad + retro + rare + 3 unc + 10 com (16 cards incl. ad)."
+}

@@ -1,0 +1,27 @@
+{
+  "code": "ice",
+  "name": "Ice Age",
+  "released": "1995-06-01",
+  "composition": { "common": 121, "uncommon": 121, "rare": 121, "mythic": 0 },
+  "collationMethod": "striped, 11x11 sheets",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "Pack order: 3 uncommons, 1 rare, 11 commons. Basic lands (incl. snow-covered) do not appear in booster packs."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Large set printed in Belgium with striped collation. 36 packs per box. Set has three variations of each standard basic land plus five snow-covered basics, but lands are not in boosters. Pre-1999, no foils."
+}

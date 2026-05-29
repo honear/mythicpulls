@@ -1,0 +1,27 @@
+{
+  "code": "m21",
+  "name": "Core Set 2021",
+  "released": "2020-07-03",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons (classic US format)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:45",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Two US pack formats described: classic (common-uncommon-rare-land-ad) and a 'new' format (rare first, commons last). Both are 15-card draft boosters. Land slot holds a basic land or tap land (10 extra common lands). Showcase variants and borderless non-planeswalker cards appear in the foil slot. If a foil appears it displaces a common and appears after the rare."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["showcase", "borderless"],
+  "statedRates": "consistent with common foil rate ~1/6 and uncommon foil ~1/12",
+  "sourceNotes": "Core set. Three basic land variations plus 10 extra common lands. Printed USA, Belgium, and Japan. 36 packs per box. Borderless planeswalkers also exist."
+}

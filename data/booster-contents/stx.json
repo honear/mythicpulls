@@ -1,0 +1,220 @@
+{
+  "_doc": "Strixhaven: School of Mages (STX) Draft + Collector recipes. The `draft` block is the original collation-derived recipe from data/_collation-facts/stx.json (The Collation Project) and is kept verbatim. The `collector` block was added from Wizards' official 'Collecting Strixhaven: School of Mages' article (https://magic.wizards.com/en/news/feature/collecting-strixhaven-school-mages-2021-03-25). STX (Apr 2021) is pre-Play-Booster, so there is intentionally NO play booster; Set Boosters are skipped per assignment. authoritative=true. Set composition (main set, excludes the 63 Mystical Archive cards): 105C / 80U / 69R / 21M. Sub-set codes: STX = main set, STA = Mystical Archive bonus sheet (Scryfall code 'sta'), C21 = Commander 2021 / Strixhaven Commander (the extended-art Commander slot), TSTX = tokens. Collector Booster = 16 (15 cards + 1 foil double-sided token): 1 foil-etched Mystical Archive uncommon, 1 foil-etched Mystical Archive rare/mythic, 1 traditional-foil Mystical Archive uncommon, 1 mixed traditional-foil slot (Mystical Archive rare/mythic OR foil extended-art main-set rare/mythic OR foil borderless mythic), 1 traditional-foil lesson, 1 extended-art/borderless rare/mythic (main set), 1 extended-art Commander rare/mythic, 1 traditional-foil rare/mythic, 2 traditional-foil uncommons, 5 traditional-foil commons, 1 foil token. The two foil-etched Archive cards are paired so one is always global art and one is the Japanese alternate art (modeled here as 50/50 japanese on each foil-etched slot). Article pool sizes used to DERIVE weights (exact percentages were not published): foil-etched Archive rare/mythic pool '30 rares / 15 mythic rares' -> 2:1 by count = 66.7% rare / 33.3% mythic. The mixed traditional-foil slot lists 'Mystical Archive global (45) + Mystical Archive Japanese alt-art (45) + foil extended-art main-set rares/mythics (81) + foil borderless mythics (9)' = 180 cards; weights are apportioned by those pool sizes (45/180, 45/180, 81/180, 9/180), with the 81 extended-art split rare:mythic by the main-set ~69R:21M ratio and the 90 Archive cards split uncommon/rare/mythic by the 18U:30R:15M Archive composition. Lesson slot: article states 6 boosters average ~5 common/uncommon lessons + 1 rare/mythic lesson (modeled 70/20/10 common/uncommon/rare like the draft lesson slot, matching the kept draft block). Approximations: Japanese alternate-art uses the japanese filter; foil-etched uses etched_foil; borderless planeswalker / borderless Elder Dragon use the borderless filter; showcase/extended-art booster-fun uses extended_art; lessons use the lesson filter.",
+
+  "authoritative": true,
+
+  "draft": {
+    "cardCount": 15,
+    "tagline": "9 commons · 3 uncommons · 1× rare/mythic · foil 33% of boosters",
+    "slots": [
+      {
+        "label": "Common",
+        "count": 8,
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "common"
+          }
+        ]
+      },
+      {
+        "label": "Common (or Foil)",
+        "outcomes": [
+          {
+            "weight": 67,
+            "rarity": "common"
+          },
+          {
+            "weight": 22.11,
+            "rarity": "common",
+            "foil": true
+          },
+          {
+            "weight": 6.6,
+            "rarity": "uncommon",
+            "foil": true
+          },
+          {
+            "weight": 3.3,
+            "rarity": "rare",
+            "foil": true
+          },
+          {
+            "weight": 0.99,
+            "rarity": "mythic",
+            "foil": true
+          }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 86,
+            "rarity": "rare"
+          },
+          {
+            "weight": 14,
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Lesson",
+        "outcomes": [
+          {
+            "weight": 70,
+            "rarity": "common",
+            "filter": "lesson"
+          },
+          {
+            "weight": 20,
+            "rarity": "uncommon",
+            "filter": "lesson"
+          },
+          {
+            "weight": 10,
+            "rarity": "rare",
+            "filter": "lesson"
+          }
+        ]
+      },
+      {
+        "label": "Mystical Archive",
+        "outcomes": [
+          {
+            "weight": 66,
+            "set": "sta",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 27,
+            "set": "sta",
+            "rarity": "rare"
+          },
+          {
+            "weight": 7,
+            "set": "sta",
+            "rarity": "mythic"
+          }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards + foil token · foil-etched Mystical Archive · Japanese alt-art · extended-art chase",
+    "slots": [
+      {
+        "label": "Foil Token",
+        "token": true,
+        "outcomes": [{ "weight": 1, "set": "TSTX", "label": "Foil Double-Sided Token" }]
+      },
+
+      {
+        "label": "Foil Common",
+        "count": 5,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "STX", "rarity": "common" }]
+      },
+
+      {
+        "label": "Foil Uncommon",
+        "count": 2,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "STX", "rarity": "uncommon" }]
+      },
+
+      {
+        "label": "Foil Lesson",
+        "foil": true,
+        "outcomes": [
+          { "weight": 70, "set": "STX", "rarity": "common",   "filter": "lesson" },
+          { "weight": 20, "set": "STX", "rarity": "uncommon", "filter": "lesson" },
+          { "weight": 10, "set": "STX", "rarity": "rare",     "filter": "lesson" }
+        ]
+      },
+
+      {
+        "label": "Foil-Etched Mystical Archive Uncommon",
+        "outcomes": [
+          { "weight": 50, "set": "STA", "rarity": "uncommon", "filter": "etched_foil", "label": "Foil-Etched Mystical Archive" },
+          { "weight": 50, "set": "STA", "rarity": "uncommon", "filter": "etched_foil", "label": "Foil-Etched Mystical Archive (Japanese)" }
+        ]
+      },
+
+      {
+        "label": "Foil-Etched Mystical Archive Rare / Mythic",
+        "outcomes": [
+          { "weight": 33.4, "set": "STA", "rarity": "rare",   "filter": "etched_foil", "label": "Foil-Etched Mystical Archive" },
+          { "weight": 16.6, "set": "STA", "rarity": "mythic", "filter": "etched_foil", "label": "Foil-Etched Mystical Archive" },
+          { "weight": 33.3, "set": "STA", "rarity": "rare",   "filter": "etched_foil", "label": "Foil-Etched Mystical Archive (Japanese)" },
+          { "weight": 16.7, "set": "STA", "rarity": "mythic", "filter": "etched_foil", "label": "Foil-Etched Mystical Archive (Japanese)" }
+        ]
+      },
+
+      {
+        "label": "Traditional Foil Mystical Archive Uncommon",
+        "foil": true,
+        "outcomes": [
+          { "weight": 50, "set": "STA", "rarity": "uncommon", "label": "Foil Mystical Archive" },
+          { "weight": 50, "set": "STA", "rarity": "uncommon", "filter": "japanese", "label": "Foil Mystical Archive (Japanese)" }
+        ]
+      },
+
+      {
+        "label": "Foil Mystical Archive / Extended-Art / Borderless",
+        "foil": true,
+        "outcomes": [
+          { "weight": 7.7,  "set": "STA", "rarity": "uncommon", "label": "Foil Mystical Archive" },
+          { "weight": 12.8, "set": "STA", "rarity": "rare",     "label": "Foil Mystical Archive" },
+          { "weight": 4.5,  "set": "STA", "rarity": "mythic",   "label": "Foil Mystical Archive" },
+          { "weight": 7.7,  "set": "STA", "rarity": "uncommon", "filter": "japanese", "label": "Foil Mystical Archive (Japanese)" },
+          { "weight": 12.8, "set": "STA", "rarity": "rare",     "filter": "japanese", "label": "Foil Mystical Archive (Japanese)" },
+          { "weight": 4.5,  "set": "STA", "rarity": "mythic",   "filter": "japanese", "label": "Foil Mystical Archive (Japanese)" },
+          { "weight": 34.6, "set": "STX", "rarity": "rare",     "filter": "extended_art", "label": "Foil Extended-Art" },
+          { "weight": 10.4, "set": "STX", "rarity": "mythic",   "filter": "extended_art", "label": "Foil Extended-Art" },
+          { "weight": 5,    "set": "STX", "rarity": "mythic",   "filter": "borderless",   "label": "Foil Borderless Mythic" }
+        ]
+      },
+
+      {
+        "label": "Extended-Art / Borderless Rare / Mythic",
+        "outcomes": [
+          { "weight": 60, "set": "STX", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 18, "set": "STX", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 17, "set": "STX", "rarity": "mythic", "filter": "borderless", "label": "Borderless Planeswalker / Elder Dragon" },
+          { "weight": 5,  "set": "STX", "rarity": "rare",   "filter": "borderless", "label": "Borderless Elder Dragon" }
+        ]
+      },
+
+      {
+        "label": "Extended-Art Commander Rare / Mythic",
+        "outcomes": [
+          { "weight": 80, "set": "C21", "rarity": "rare",   "filter": "extended_art", "label": "Strixhaven Commander Rare" },
+          { "weight": 20, "set": "C21", "rarity": "mythic", "filter": "extended_art", "label": "Strixhaven Commander Mythic" }
+        ]
+      },
+
+      {
+        "label": "Traditional Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 86, "set": "STX", "rarity": "rare" },
+          { "weight": 14, "set": "STX", "rarity": "mythic" }
+        ]
+      }
+    ]
+  }
+}

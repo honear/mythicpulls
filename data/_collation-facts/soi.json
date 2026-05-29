@@ -1,0 +1,63 @@
+{
+  "code": "soi",
+  "name": "Shadows over Innistrad",
+  "released": "2016-04-08",
+  "composition": {
+    "common": 101,
+    "uncommon": 80,
+    "rare": 53,
+    "mythic": 15
+  },
+  "collationMethod": "sequential, C1/C2 commons (modified for fewer commons per pack)",
+  "packTypes": [
+    "draft"
+  ],
+  "draft": {
+    "cardCount": 15,
+    "commons": 9,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Pack has only 9 commons because it includes a dedicated double-faced card (DFC) slot. Structure: 9 commons, 3 uncommons, 1 rare, 1 DFC (common/uncommon), then a basic land OR checklist, then an ad card. A rare/mythic DFC appears 1/8 of the time (replaces a common, and forces a rare checklist in that pack). Foil displaces a common; cannot get a rare/mythic DFC and a foil in the same pack. [Refined: added dedicated DFC slot (filter: double_faced) so the pack totals 15.]",
+    "extraSlots": [
+      {
+        "label": "Double-Faced Card",
+        "outcomes": [
+          {
+            "weight": 60,
+            "rarity": "common",
+            "filter": "double_faced"
+          },
+          {
+            "weight": 27.5,
+            "rarity": "uncommon",
+            "filter": "double_faced"
+          },
+          {
+            "weight": 10.5,
+            "rarity": "rare",
+            "filter": "double_faced"
+          },
+          {
+            "weight": 2,
+            "rarity": "mythic",
+            "filter": "double_faced"
+          }
+        ]
+      }
+    ]
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [
+    "double-faced cards"
+  ],
+  "statedRates": "Rare/mythic double-faced card appears 1/8 of packs. Foil 1:67.",
+  "sourceNotes": "Large set with three variations of each standard basic land and 33 double-faced cards. The DFC slot is in addition to the standard 14 game cards (commons reduced from 10 to 9 to make room). Land slot is a basic land or checklist. US printing sequential collation with modified C1/C2 common collation. 36 packs per box."
+}

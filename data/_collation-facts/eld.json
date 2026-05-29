@@ -1,0 +1,134 @@
+{
+  "code": "eld",
+  "name": "Throne of Eldraine",
+  "released": "2019-10-04",
+  "composition": {
+    "common": 101,
+    "uncommon": 80,
+    "rare": 53,
+    "mythic": 15
+  },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": [
+    "draft",
+    "collector"
+  ],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:45",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "If a foil appears it displaces a common and appears after the rare. Four variations of each basic land."
+  },
+  "play": null,
+  "collector": {
+    "cardCount": 15,
+    "commons": 9,
+    "uncommons": 0,
+    "rares": 2,
+    "wildcard": false,
+    "land": false,
+    "token": true,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "9 foil common+uncommon (combined slot), 3 showcase/borderless, 1 ancillary, 1 extended-art rare, 1 foil rare, 1 foil double-sided token. Basic lands do not appear. [Refined: hand-specified 15-card Collector layout; approximate odds.]",
+    "slotsOverride": [
+      {
+        "label": "Foil Token",
+        "token": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "$tokens"
+          }
+        ]
+      },
+      {
+        "label": "Foil Common",
+        "count": 7,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "common"
+          }
+        ]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 2,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Showcase Rare / Mythic",
+        "count": 3,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 85,
+            "rarity": "rare",
+            "filter": "showcase"
+          },
+          {
+            "weight": 15,
+            "rarity": "mythic",
+            "filter": "showcase"
+          }
+        ]
+      },
+      {
+        "label": "Extended-Art Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 85,
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 15,
+            "rarity": "mythic",
+            "filter": "extended_art"
+          }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 80,
+            "rarity": "rare"
+          },
+          {
+            "weight": 20,
+            "rarity": "mythic"
+          }
+        ]
+      }
+    ],
+    "tagline": "15 premium cards \u00b7 7 foil commons + 2 foil uncommons \u00b7 showcase/extended-art/foil rares \u00b7 the chase pack"
+  },
+  "specialTreatments": [
+    "showcase",
+    "borderless",
+    "extended-art"
+  ],
+  "statedRates": "Common foil rate ~1/6; uncommon foil rate ~1/12; borderless/showcase rares ~1/34; overall variant rate ~1/27. Collector: ~half of packs 7 foil commons + 2 foil uncommons.",
+  "sourceNotes": "Large set of the era. Printed US, Belgium, Japan. 36 packs per box. Collector boosters detailed in their own Pack Anatomy section."
+}

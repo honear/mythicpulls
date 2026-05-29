@@ -1,0 +1,27 @@
+{
+  "code": "bfz",
+  "name": "Battle for Zendikar",
+  "released": "2015-10-02",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "If a foil appears it displaces a common (this includes expeditions)."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["expeditions"],
+  "statedRates": "25 Zendikar Expeditions; official rarity 'a little more frequent than a premium foil mythic rare'.",
+  "sourceNotes": "Large set with five variations of each standard basic land plus 25 Zendikar Expeditions (Battle Lands / premium lands). Expeditions appear in the foil slot, displacing a common. US printing sequential collation with C1/C2 common collation. 36 packs per box."
+}

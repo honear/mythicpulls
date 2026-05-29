@@ -277,7 +277,47 @@ export default function LegalPage() {
       />
 
       <Article
-        title="5. No commerce, no entitlements"
+        title="5. Pack collation &amp; contents data"
+        body={
+          <>
+            <p>
+              The booster &ldquo;recipes&rdquo; that decide what each pack can
+              contain — slot structure, rarity odds, foil rates, and which
+              booster types a set was even sold in — are derived in large part
+              from{" "}
+              <a
+                href="https://www.lethe.xyz/mtg/collation/"
+                className="underline decoration-dotted underline-offset-4 text-[var(--color-fg)]"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                The Collation Project
+              </a>
+              , an independent fan-maintained reference that meticulously
+              documents how Magic booster packs are physically collated across
+              the game&rsquo;s entire history.
+            </p>
+            <p>
+              <strong>Special thanks</strong> to The Collation Project for the
+              painstaking older-set pack data that would otherwise be
+              near-impossible to reconstruct. For recent sets we also follow
+              Wizards of the Coast&rsquo;s official &ldquo;Collecting&rdquo;
+              product articles. As with everything else here, this information
+              is captured once into static JSON alongside the source — the site
+              does not query lethe.xyz at runtime.
+            </p>
+            <p>
+              The Collation Project is independent of Wizards of the Coast and
+              of this project; the citation above is not an endorsement. If you
+              maintain that resource and would like this credit adjusted, please
+              reach out via the contact section below.
+            </p>
+          </>
+        }
+      />
+
+      <Article
+        title="6. No commerce, no entitlements"
         body={
           <>
             <p>
@@ -299,7 +339,7 @@ export default function LegalPage() {
       />
 
       <Article
-        title="6. Your data &amp; privacy"
+        title="7. Your data &amp; privacy"
         body={
           <>
             <p>
@@ -342,7 +382,7 @@ export default function LegalPage() {
       />
 
       <Article
-        title="7. &ldquo;As is&rdquo;"
+        title="8. &ldquo;As is&rdquo;"
         body={
           <>
             <p>
@@ -359,7 +399,7 @@ export default function LegalPage() {
       />
 
       <Article
-        title="8. Contact &amp; takedown requests"
+        title="9. Contact &amp; takedown requests"
         body={
           <>
             <p>

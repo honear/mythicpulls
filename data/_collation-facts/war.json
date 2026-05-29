@@ -1,0 +1,27 @@
+{
+  "code": "war",
+  "name": "War of the Spark",
+  "released": "2019-05-03",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons; planeswalker slot",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Every pack contains exactly one non-foil planeswalker (an additional foil planeswalker can also appear). Works like Dominaria's legendary slot but mostly invisible: 3/4 of packs have an uncommon planeswalker among the 3 uncommons, and the rare is a planeswalker 1/4 of the time. Pack still totals 3 uncommons + 1 rare. Common foils appear 1 in every 8 packs and displace a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "Common foils 1 in 8 packs. 20 uncommon planeswalkers. Rare slot is a planeswalker 1/4 of the time; planeswalkers slightly more common than other cards of the same rarity.",
+  "sourceNotes": "Large set. Three basic land variations. Belgian and Japanese printings also documented on page but not modelled. 36 packs per box. Printed in USA and Belgium."
+}

@@ -1,0 +1,27 @@
+{
+  "code": "gtc",
+  "name": "Gatecrash",
+  "released": "2013-02-01",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Foil appears after the rare, displacing a common. Basic lands are the Return to Ravnica basic lands with their original expansion symbols."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Large set, 80 uncommons. Uses Return to Ravnica basic lands. Marketing/ad cards bear tokens/tips on front but counted as ad card. Foil 1:67. 36 packs per box."
+}

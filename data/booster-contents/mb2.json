@@ -1,0 +1,13 @@
+{
+  "_doc": "Mystery Booster 2 (MB2, released 2024-08-02) — bespoke, hand-authored recipe (NOT generated). Mystery Booster sells as a SINGLE booster type, so `authoritative` makes the set offer only this one pack and hides the Play/Draft/Collector options the date heuristic would otherwise show. Modelled like a mystery pack: cards spanning every rarity drawn from the MB2 pool, one guaranteed rare/mythic, and a closing foil. Exact per-slot odds are approximate — no official 'Collecting' article has been processed for this set yet. The single type is mapped onto the generic 'draft' opener because the UI only labels play/draft/collector; treat the label loosely.",
+  "authoritative": true,
+  "draft": {
+    "cardCount": 15,
+    "tagline": "15 reprinted cards spanning the whole game — every rarity — capped with a foil · the mystery pack",
+    "slots": [
+      { "label": "Card", "count": 13, "outcomes": [{ "weight": 1 }] },
+      { "label": "Rare / Mythic", "outcomes": [{ "weight": 86, "rarity": "rare" }, { "weight": 14, "rarity": "mythic" }] },
+      { "label": "Foil", "foil": true, "outcomes": [{ "weight": 1 }] }
+    ]
+  }
+}

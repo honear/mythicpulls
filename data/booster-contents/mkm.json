@@ -1,0 +1,188 @@
+{
+  "_doc": "Murders at Karlov Manor (MKM) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-murders-at-karlov-manor . MKM was the FIRST Play Booster set: lineup is Play + Collector ONLY (no Draft Booster), so only those two types are defined and authoritative is true. Set codes: MKM = main set, TMKM = tokens, AMKM = Art Series, SPG = Special Guests (Disturbing the Scene), PLST = The List, CMKM = MKM Commander. Treatment filters reviewed against the article: MKM uses only traditional foil (no named special-foil finish like textured/raised/surge), so the foil slots correctly carry no finish filter. Serialized Ravnica City uses the serialized filter (correct); borderless dual lands + Kaya/Kellan use the borderless filter (correct); extended-art Commander/Booster Fun use extended_art (correct). Remaining approximations with no matching filter: showcase magnified / showcase dossier collapse to the showcase filter; the invisible-ink dossier (a Collector-exclusive markup on dossier mythics — no invisible_ink filter exists) stays on the showcase filter; full-art Impossible basic lands keep the basic_land filter as the load-bearing land constraint (no composite full-art+basic filter exists). The 6-7 common range is modeled as 6 fixed commons + a Special Guests/List wildcard slot reflecting the 1-in-8 (12.5%) replacement rate.",
+
+  "authoritative": true,
+
+  "play": {
+    "cardCount": 15,
+    "tagline": "14 cards + token/art card · 1-in-8 Special Guests/List · borderless dual-land & full-art land rates faithful to Wizards' spec",
+    "slots": [
+      {
+        "label": "Art / Token",
+        "token": true,
+        "outcomes": [
+          { "weight": 55, "set": "TMKM", "label": "Ad / Token" },
+          { "weight": 10, "set": "TMKM", "label": "Helper Punch-Out" },
+          { "weight": 35, "set": "AMKM", "label": "Art Card" }
+        ]
+      },
+
+      {
+        "label": "Common",
+        "count": 6,
+        "outcomes": [{ "weight": 1, "set": "MKM", "rarity": "common" }]
+      },
+
+      {
+        "label": "Common / Special Guests / The List",
+        "outcomes": [
+          { "weight": 87.5, "set": "MKM", "rarity": "common" },
+          { "weight": 1.56, "set": "SPG", "filter": "special_guest", "label": "Special Guest" },
+          { "weight": 9.38, "set": "PLST", "label": "The List (common/uncommon)" },
+          { "weight": 1.56, "set": "PLST", "label": "The List (rare/mythic)" }
+        ]
+      },
+
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [{ "weight": 1, "set": "MKM", "rarity": "uncommon" }]
+      },
+
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 75, "set": "MKM", "rarity": "rare" },
+          { "weight": 25, "set": "MKM", "rarity": "mythic" }
+        ]
+      },
+
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          { "weight": 50, "set": "MKM", "rarity": "common" },
+          { "weight": 30, "set": "MKM", "rarity": "uncommon" },
+          { "weight": 13, "set": "MKM", "rarity": "rare" },
+          { "weight": 7,  "set": "MKM", "rarity": "mythic" },
+          { "weight": 14.58, "set": "MKM", "rarity": "rare", "filter": "non_basic_land", "label": "Rare Dual Land" },
+          { "weight": 2.08,  "set": "MKM", "rarity": "rare", "filter": "borderless", "label": "Borderless Dual Land" }
+        ]
+      },
+
+      {
+        "label": "Traditional Foil",
+        "foil": true,
+        "outcomes": [
+          { "weight": 50, "set": "MKM", "rarity": "common" },
+          { "weight": 30, "set": "MKM", "rarity": "uncommon" },
+          { "weight": 13, "set": "MKM", "rarity": "rare" },
+          { "weight": 7,  "set": "MKM", "rarity": "mythic" }
+        ]
+      },
+
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          { "weight": 53.33, "set": "MKM", "filter": "basic_land" },
+          { "weight": 13.33, "set": "MKM", "filter": "basic_land", "foil": true },
+          { "weight": 26.66, "set": "MKM", "filter": "basic_land", "label": "Full-Art Impossible Land" },
+          { "weight": 6.33,  "set": "MKM", "filter": "basic_land", "foil": true, "label": "Full-Art Impossible Land (foil)" }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards + double-sided token · extended-art Commander & Booster Fun chase slots · serialized Ravnica City & Special Guests rates faithful to Wizards' spec",
+    "slots": [
+      {
+        "label": "Double-Sided Token",
+        "token": true,
+        "outcomes": [{ "weight": 1, "set": "TMKM", "label": "Double-Sided Token" }]
+      },
+
+      {
+        "label": "Foil Common",
+        "count": 4,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "MKM", "rarity": "common" }]
+      },
+
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "MKM", "rarity": "uncommon" }]
+      },
+
+      {
+        "label": "Foil Full-Art Impossible Basic Land",
+        "foil": true,
+        "basicLand": true,
+        "outcomes": [{ "weight": 1, "set": "MKM", "filter": "basic_land", "label": "Full-Art Impossible Land" }]
+      },
+
+      {
+        "label": "Non-Foil Showcase",
+        "outcomes": [
+          { "weight": 62.3, "set": "MKM", "rarity": "common", "filter": "showcase" },
+          { "weight": 37.7, "set": "MKM", "rarity": "uncommon", "filter": "showcase" }
+        ]
+      },
+
+      {
+        "label": "Foil Showcase",
+        "foil": true,
+        "outcomes": [
+          { "weight": 62.3, "set": "MKM", "rarity": "common", "filter": "showcase" },
+          { "weight": 37.7, "set": "MKM", "rarity": "uncommon", "filter": "showcase" }
+        ]
+      },
+
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 75,   "set": "MKM", "rarity": "rare" },
+          { "weight": 12.5, "set": "MKM", "rarity": "rare", "filter": "non_basic_land", "label": "Rare Dual Land" },
+          { "weight": 12.5, "set": "MKM", "rarity": "mythic" }
+        ]
+      },
+
+      {
+        "label": "Non-Foil Extended-Art Rare / Mythic",
+        "outcomes": [
+          { "weight": 93.55, "set": "MKM", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 6.45,  "set": "MKM", "rarity": "mythic", "filter": "extended_art" }
+        ]
+      },
+
+      {
+        "label": "Extended-Art Commander Rare / Mythic",
+        "outcomes": [
+          { "weight": 8.93, "set": "CMKM", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 8.5,  "set": "CMKM", "rarity": "mythic", "filter": "extended_art", "foil": true },
+          { "weight": 78.11, "set": "CMKM", "rarity": "rare",  "filter": "extended_art" },
+          { "weight": 4.46,  "set": "CMKM", "rarity": "rare",  "filter": "extended_art", "label": "Variant Extended-Art Rare" }
+        ]
+      },
+
+      {
+        "label": "Non-Foil Booster Fun",
+        "outcomes": [
+          { "weight": 60, "set": "MKM", "rarity": "rare",   "filter": "showcase" },
+          { "weight": 25, "set": "MKM", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 10, "set": "MKM", "rarity": "mythic", "filter": "showcase" },
+          { "weight": 5,  "set": "MKM", "rarity": "mythic", "filter": "borderless" }
+        ]
+      },
+
+      {
+        "label": "Foil Booster Fun",
+        "foil": true,
+        "outcomes": [
+          { "weight": 33.3, "set": "MKM", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 3,    "set": "MKM", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 40,   "set": "MKM", "rarity": "rare",   "filter": "showcase" },
+          { "weight": 10,   "set": "MKM", "rarity": "mythic", "filter": "showcase" },
+          { "weight": 7,    "set": "MKM", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 3,    "set": "SPG",  "filter": "special_guest", "label": "Special Guest" },
+          { "weight": 0.6,  "set": "MKM", "rarity": "mythic", "filter": "serialized", "label": "Serialized Ravnica City" },
+          { "weight": 0.1,  "set": "MKM", "rarity": "mythic", "filter": "showcase", "label": "Invisible Ink Dossier" }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "code": "ala",
+  "name": "Shards of Alara",
+  "released": "2008-10-03",
+  "composition": { "common": 101, "uncommon": 60, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:56",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Pack is 10 commons, 3 uncommons, a rare, a basic land, and an ad card. If a foil appears it follows the ad card, displacing a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "First set of this size and the first set with mythic rares. Printed in USA only (Belgian unknown). 36 packs per box. Booster has both a basic land and an ad card. Tournament packs described but not modelled."
+}

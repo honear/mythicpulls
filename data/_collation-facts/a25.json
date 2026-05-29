@@ -1,0 +1,27 @@
+{
+  "code": "a25",
+  "name": "Masters 25",
+  "released": "2018-03-16",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "guaranteed",
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "Every pack contains a foil card (10 commons + 3 uncommons + 1 rare + 1 foil + ad card). Foil slot: common 5/7, uncommon 3/14, rare/mythic 1/14. Ad card has a token on its front face."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "Foil slot: common 5/7, uncommon 3/14, rare/mythic 1/14.",
+  "sourceNotes": "Masters reprint set (Masters 25). 24 packs per box. USA printing, sequential C1/C2 collation. Marketing/ad card carries a token on its front."
+}

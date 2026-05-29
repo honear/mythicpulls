@@ -1,0 +1,27 @@
+{
+  "code": "jud",
+  "name": "Judgment",
+  "released": "2002-05-27",
+  "composition": { "common": 55, "uncommon": 44, "rare": 44, "mythic": 0 },
+  "collationMethod": "sequential (US); striped (Belgian)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": "1:70",
+    "foilGuaranteed": false,
+    "foilReplaces": "same rarity",
+    "notes": "If a foil appears it is the last card, displacing a card of the same rarity (foil rare replaces the rare, etc.). Max one foil per pack."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Small set. Printed in USA (sequential) and Belgium (striped). 36 packs per box. No basic land or ad card in booster."
+}

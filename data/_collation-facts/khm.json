@@ -1,0 +1,27 @@
+{
+  "code": "khm",
+  "name": "Kaldheim",
+  "released": "2021-02-05",
+  "composition": { "common": 101, "uncommon": 80, "rare": 64, "mythic": 20 },
+  "collationMethod": "sequential, C1/C2 commons (Zendikar Rising style)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "33% of boosters",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Land slot is a snow basic land or a common tapped dual land (dual ~5/12 of the time); two variations of each snow basic plus 10 extra common lands. If a foil appears it displaces a common and appears after the land. Ad card may be a double-faced placeholder (~20% placeholder)."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["showcase"],
+  "statedRates": "Foils in ~33% of boosters. Land slot common dual land 5/12 of the time.",
+  "sourceNotes": "Large set of the era. Printed US, Belgium, Japan. 36 packs per box. Rare count 64 includes 11 DFC; mythic 20 includes 5 DFC."
+}

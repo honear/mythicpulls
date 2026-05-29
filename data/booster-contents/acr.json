@@ -1,0 +1,325 @@
+{
+  "_doc": "Assassin's Creed (ACR) recipes. Source: Wizards 'Collecting Assassin's Creed' (https://magic.wizards.com/en/news/feature/collecting-assassins-creed). ACR is a non-draftable Universes Beyond set sold ONLY as Beyond Boosters + Collector Boosters (no Play/Draft/Set). MAPPING APPROXIMATION: we model the 11-card Beyond Booster under our 'draft' pack type (we have no 'beyond' type); slot labels keep the 'Beyond' name. authoritative true so play/collector-only assumptions don't surface other types. Sub-sets: ACR = main set, $tokens = tokens. The 'Memory Corridor' treatment is showcase (kept on the showcase filter); the article confirms the 5 memory-corridor mythics in the Collector Foil Alternate-Frame slot also got textured foiling, so that outcome now uses the textured_foil filter. Foil-etched cards use etched_foil, borderless scene uses borderless, and the full-art basic lands now use the full_art filter instead of basic_land. Serialized double-rainbow-foil cards stay on the serialized filter. Collector decks/accessories omitted. NOTE: Wizards markets the Beyond Booster as '11 cards', but the article's verbatim slot bullets enumerate only 8 card slots (3 uncommons + 5 single slots); cardCount=8 keeps slots/weights faithful to the listed contents. The Collector Booster's enumerated slots do sum to 11, matching its marketed count.",
+  "authoritative": true,
+  "draft": {
+    "cardCount": 8,
+    "tagline": "Beyond Booster \u00b7 1 rare/mythic \u00b7 1 booster-fun card \u00b7 1 token/art card",
+    "slots": [
+      {
+        "label": "Token / Art Card",
+        "token": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "$tokens"
+          }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Land / Scene",
+        "basicLand": true,
+        "outcomes": [
+          {
+            "weight": 96.6,
+            "filter": "full_art_land",
+            "label": "Full-Art Basic Land"
+          },
+          {
+            "weight": 3.09,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Scene Rare"
+          },
+          {
+            "weight": 0.31,
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Scene Mythic"
+          }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 82.05,
+            "rarity": "rare"
+          },
+          {
+            "weight": 17.95,
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Traditional Foil",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 83.34,
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 13.67,
+            "rarity": "rare"
+          },
+          {
+            "weight": 2.99,
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Booster Fun",
+        "outcomes": [
+          {
+            "weight": 69.44,
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Showcase Uncommon"
+          },
+          {
+            "weight": 8.64,
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Showcase Rare"
+          },
+          {
+            "weight": 1.54,
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Showcase Mythic"
+          },
+          {
+            "weight": 1.23,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Rare"
+          },
+          {
+            "weight": 2.47,
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Mythic"
+          },
+          {
+            "weight": 13.89,
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "foil": true,
+            "label": "Foil Showcase Uncommon"
+          },
+          {
+            "weight": 1.73,
+            "rarity": "rare",
+            "filter": "showcase",
+            "foil": true,
+            "label": "Foil Showcase Rare"
+          },
+          {
+            "weight": 0.31,
+            "rarity": "mythic",
+            "filter": "showcase",
+            "foil": true,
+            "label": "Foil Showcase Mythic"
+          },
+          {
+            "weight": 0.25,
+            "rarity": "rare",
+            "filter": "borderless",
+            "foil": true,
+            "label": "Foil Borderless Rare"
+          },
+          {
+            "weight": 0.49,
+            "rarity": "mythic",
+            "filter": "borderless",
+            "foil": true,
+            "label": "Foil Borderless Mythic"
+          }
+        ]
+      }
+    ]
+  },
+  "collector": {
+    "cardCount": 11,
+    "tagline": "Premium all-foil core \u00b7 extended-art, borderless & foil-etched chases \u00b7 serialized hits",
+    "slots": [
+      {
+        "label": "Foil Token / Art Card",
+        "token": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "$tokens"
+          }
+        ]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Foil Showcase Memory Corridor Uncommon",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "uncommon",
+            "filter": "showcase"
+          }
+        ]
+      },
+      {
+        "label": "Foil-Etched Uncommon",
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "uncommon",
+            "filter": "etched_foil"
+          }
+        ]
+      },
+      {
+        "label": "Foil Land / Scene",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 86.4,
+            "filter": "full_art_land",
+            "label": "Foil Full-Art Basic Land"
+          },
+          {
+            "weight": 12.36,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Scene Rare"
+          },
+          {
+            "weight": 1.24,
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Scene Mythic"
+          }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 82.05,
+            "rarity": "rare"
+          },
+          {
+            "weight": 17.95,
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Extended-Art Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 97,
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 3.0,
+            "rarity": "mythic",
+            "filter": "extended_art"
+          }
+        ]
+      },
+      {
+        "label": "Foil Alternate-Frame Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 39.62,
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "Foil Extended-Art Rare"
+          },
+          {
+            "weight": 34.67,
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Foil Showcase Rare"
+          },
+          {
+            "weight": 9.91,
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Foil Borderless Mythic"
+          },
+          {
+            "weight": 6.19,
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Foil Showcase Mythic"
+          },
+          {
+            "weight": 4.95,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Foil Borderless Rare"
+          },
+          {
+            "weight": 3.25,
+            "rarity": "mythic",
+            "filter": "textured_foil",
+            "label": "Textured Foil Showcase Mythic"
+          },
+          {
+            "weight": 1.24,
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "Foil Extended-Art Mythic"
+          },
+          {
+            "weight": 0.17,
+            "rarity": "mythic",
+            "filter": "serialized",
+            "label": "Serialized"
+          }
+        ]
+      },
+      {
+        "label": "Foil-Etched Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 82.05,
+            "rarity": "rare",
+            "filter": "etched_foil"
+          },
+          {
+            "weight": 17.95,
+            "rarity": "mythic",
+            "filter": "etched_foil"
+          }
+        ]
+      }
+    ]
+  }
+}

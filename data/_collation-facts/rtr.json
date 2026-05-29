@@ -1,0 +1,27 @@
+{
+  "code": "rtr",
+  "name": "Return to Ravnica",
+  "released": "2012-10-05",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Foil appears after the rare, displacing a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "First set with 80 uncommons. Large set, five basic-land variations (one is on the foil uncommon sheet). Marketing/ad cards bear tokens/tips on front but counted as ad card. Foil 1:67. 36 packs per box."
+}

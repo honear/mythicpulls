@@ -1,0 +1,27 @@
+{
+  "code": "ema",
+  "name": "Eternal Masters",
+  "released": "2016-06-10",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 common collation",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": null,
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "15-card pack plus an additional ad card. Every pack contains a foil card. Pack: 10 commons, 3 uncommons, 1 rare, 1 foil, 1 ad card. In the foil slot, commons appear 5/7 of the time, uncommons 3/14, and rares (or mythic rares) 1/14."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "foil slot: common 5/7, uncommon 3/14, rare/mythic 1/14",
+  "sourceNotes": "Masters reprint set. Large set, normal size for its era. Every pack guarantees a foil. Marketing cards have tokens/emblems on front; backs carried Conspiracy: Take the Crown preview messages (Marchesa & Adriana). Printed in USA. 24 packs per box."
+}

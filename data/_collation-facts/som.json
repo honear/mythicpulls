@@ -1,0 +1,27 @@
+{
+  "code": "som",
+  "name": "Scars of Mirrodin",
+  "released": "2010-10-01",
+  "composition": { "common": 101, "uncommon": 60, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Pack is 10 commons, 3 uncommons, a rare, an ad card, and a basic land. If a foil appears it follows the land, displacing a common. The ad/marketing card front face usually carries a token or tip."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Large set. Printed in USA and Belgium. 36 packs per box. Booster has both a basic land and an ad card. Most marketing cards have a token or tip printed on the front face (token-on-ad-card), so the slot is recorded as adCard:true, token:false."
+}

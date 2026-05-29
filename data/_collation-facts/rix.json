@@ -1,0 +1,27 @@
+{
+  "code": "rix",
+  "name": "Rivals of Ixalan",
+  "released": "2018-01-19",
+  "composition": { "common": 70, "uncommon": 60, "rare": 42, "mythic": 12 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "If a foil appears it displaces a common. A double-faced card replaces the rare and appears in 1/8 of packs, always with a checklist instead of a land. Checklist rate (apart from DFC packs) at least 1/12. Land slot may be a basic land or checklist."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["double-faced"],
+  "statedRates": "Double-faced cards appear in 1/8 of packs.",
+  "sourceNotes": "Small set. 7 double-faced cards, one variation of each standard basic land (plus two classic Ixalan land variations). 36 packs per box. Printed in USA and Belgium."
+}

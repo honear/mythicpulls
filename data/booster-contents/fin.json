@@ -1,0 +1,185 @@
+{
+  "_doc": "Magic: The Gathering—FINAL FANTASY (FIN) Play + Collector recipes from Wizards' 'Collecting FINAL FANTASY' article (https://magic.wizards.com/en/news/feature/collecting-final-fantasy). FIN has Play + Collector Boosters and NO Draft Booster (authoritative). Set codes: FIN = main set, FCA = FINAL FANTASY Through the Ages bonus sheet, FIC = FINAL FANTASY Commander, TFIN = tokens, AFIN = Art Series. cardCount includes the token/art card. Approximations: 'borderless woodblock' and 'borderless character' treatments fold into the 'borderless' filter; FINAL FANTASY artist cards approximated with the main set + 'borderless' / plain rarity. Re-pointed to named finishes per the article: Surge Foil Borderless Character cards now use the 'surge_foil' filter (article: 'Surge foil ... borderless character cards'), the generic Surge Foil mythic chase uses 'surge_foil', and the Colorful Chocobo chase uses 'neon_ink' (article: 'colorful neon ink foil Traveling Chocobo cards'). The serialized golden chocobo stays on the 'serialized' filter (no distinct Scryfall finish predicate for it).",
+
+  "authoritative": true,
+
+  "play": {
+    "cardCount": 15,
+    "tagline": "14 cards + token · Through the Ages bonus sheet, Cid variants & borderless chase rates faithful to Wizards' spec",
+    "slots": [
+      {
+        "label": "Token / Art Card",
+        "token": true,
+        "outcomes": [
+          { "weight": 65, "set": "TFIN", "label": "Double-Sided Token" },
+          { "weight": 30, "set": "AFIN", "label": "Art Card" },
+          { "weight": 5,  "set": "AFIN", "filter": "gold_stamped", "label": "Stamped Art Card" }
+        ]
+      },
+      {
+        "label": "Common",
+        "count": 7,
+        "outcomes": [
+          { "weight": 66.6, "set": "FIN", "rarity": "common" },
+          { "weight": 33.3, "set": "FCA", "label": "Through the Ages" }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          { "weight": 99.7, "set": "FIN", "rarity": "uncommon" },
+          { "weight": 0.3,  "set": "FIN", "rarity": "uncommon", "filter": "borderless", "label": "Borderless Woodblock / Character" }
+        ]
+      },
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          { "weight": 16.7, "set": "FIN", "rarity": "common" },
+          { "weight": 58.3, "set": "FIN", "rarity": "uncommon" },
+          { "weight": 2.6,  "set": "FIN", "rarity": "common", "filter": "borderless", "label": "Borderless Woodblock" },
+          { "weight": 5.7,  "set": "FIN", "rarity": "uncommon", "filter": "borderless", "label": "Borderless Woodblock / Character" },
+          { "weight": 16.7, "set": "FIN", "rarity": "rare", "label": "Rare / Mythic" }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 80,  "set": "FIN", "rarity": "rare" },
+          { "weight": 10,  "set": "FIN", "rarity": "mythic" },
+          { "weight": 8,   "set": "FIN", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 1,   "set": "FIN", "rarity": "mythic", "filter": "borderless" },
+          { "weight": 0.5, "set": "FIN", "rarity": "rare",   "label": "FINAL FANTASY Artist" },
+          { "weight": 0.5, "set": "FIN", "rarity": "mythic", "label": "FINAL FANTASY Artist" }
+        ]
+      },
+      {
+        "label": "Foil",
+        "foil": true,
+        "outcomes": [
+          { "weight": 55.75, "set": "FIN", "rarity": "common" },
+          { "weight": 35.9,  "set": "FIN", "rarity": "uncommon" },
+          { "weight": 5.5,   "set": "FIN", "rarity": "rare" },
+          { "weight": 0.75,  "set": "FIN", "rarity": "mythic" },
+          { "weight": 0.1,   "set": "FIN", "rarity": "common",   "filter": "borderless", "label": "Booster Fun" },
+          { "weight": 0.5,   "set": "FIN", "rarity": "uncommon", "filter": "borderless", "label": "Booster Fun" },
+          { "weight": 1,     "set": "FIN", "rarity": "rare",     "filter": "borderless", "label": "Booster Fun" },
+          { "weight": 0.25,  "set": "FIN", "rarity": "mythic",   "filter": "borderless", "label": "Booster Fun" },
+          { "weight": 0.25,  "set": "FIN", "rarity": "uncommon", "label": "Cid, Timeless Artificer Variant" }
+        ]
+      },
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          { "weight": 44, "set": "FIN", "filter": "dual_land_common", "label": "Two-Color Land" },
+          { "weight": 36, "set": "FIN", "filter": "basic_land" },
+          { "weight": 11, "set": "FIN", "filter": "dual_land_common", "foil": true, "label": "Foil Two-Color Land" },
+          { "weight": 9,  "set": "FIN", "filter": "basic_land", "foil": true }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards + token · Through the Ages, Commander, chocobo & serialized chase slots",
+    "slots": [
+      {
+        "label": "Double-Sided Token",
+        "token": true,
+        "outcomes": [{ "weight": 1, "set": "TFIN" }]
+      },
+      {
+        "label": "Foil Common",
+        "count": 3,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "FIN", "rarity": "common" }]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "FIN", "rarity": "uncommon" }]
+      },
+      {
+        "label": "Booster Fun Common / Uncommon",
+        "outcomes": [
+          { "weight": 66.7, "set": "FIN", "rarity": "uncommon", "filter": "extended_art" },
+          { "weight": 5,    "set": "FIN", "rarity": "common" },
+          { "weight": 26.7, "set": "FIN", "rarity": "uncommon" },
+          { "weight": 1.6,  "set": "FIN", "rarity": "uncommon", "label": "Secret Rendezvous Alt-Art" }
+        ]
+      },
+      {
+        "label": "Foil Booster Fun Common / Uncommon",
+        "foil": true,
+        "outcomes": [
+          { "weight": 13.75, "set": "FIN", "rarity": "common" },
+          { "weight": 72.75, "set": "FIN", "rarity": "uncommon" },
+          { "weight": 4.5,   "set": "FIN", "rarity": "uncommon", "label": "Secret Rendezvous Alt-Art" },
+          { "weight": 9,     "set": "FIN", "rarity": "uncommon", "filter": "surge_foil", "label": "Surge Foil Borderless Character" }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 87.75, "set": "FIN", "rarity": "rare" },
+          { "weight": 12.25, "set": "FIN", "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Booster Fun Rare / Mythic",
+        "count": 3,
+        "outcomes": [
+          { "weight": 23.1, "set": "FIN", "rarity": "rare" },
+          { "weight": 3.8,  "set": "FIN", "rarity": "mythic" },
+          { "weight": 18.2, "set": "FIN", "rarity": "rare",   "filter": "extended_art", "label": "Legendary Extended-Art" },
+          { "weight": 2.9,  "set": "FIN", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 2.9,  "set": "FIC", "rarity": "rare",   "label": "Commander" },
+          { "weight": 3.3,  "set": "FIC", "rarity": "mythic", "label": "Commander" },
+          { "weight": 11.6, "set": "FIC", "rarity": "rare",   "filter": "extended_art", "label": "Commander Extended-Art" },
+          { "weight": 23.6, "set": "FIN", "rarity": "rare",   "filter": "extended_art", "label": "Legendary Extended-Art" },
+          { "weight": 1.6,  "set": "FIN", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 1.4,  "set": "FIN", "rarity": "rare",   "foil": true },
+          { "weight": 0.8,  "set": "FIN", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 1,    "set": "FIN", "rarity": "mythic", "foil": true, "filter": "surge_foil", "label": "Surge Foil" }
+        ]
+      },
+      {
+        "label": "Through the Ages Bonus Sheet",
+        "outcomes": [
+          { "weight": 34.15, "set": "FCA", "rarity": "uncommon" },
+          { "weight": 12.85, "set": "FCA", "rarity": "rare" },
+          { "weight": 3,     "set": "FCA", "rarity": "mythic" },
+          { "weight": 34.15, "set": "FCA", "rarity": "uncommon", "foil": true },
+          { "weight": 12.85, "set": "FCA", "rarity": "rare", "foil": true },
+          { "weight": 3,     "set": "FCA", "rarity": "mythic", "foil": true }
+        ]
+      },
+      {
+        "label": "Foil Basic Land",
+        "foil": true,
+        "basicLand": true,
+        "outcomes": [{ "weight": 1, "set": "FIN", "filter": "basic_land" }]
+      },
+      {
+        "label": "Chocobo Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 1.9,  "set": "FIN", "rarity": "rare",   "label": "FINAL FANTASY Artist" },
+          { "weight": 2.2,  "set": "FIN", "rarity": "mythic", "label": "FINAL FANTASY Artist" },
+          { "weight": 36.5, "set": "FIN", "rarity": "rare",   "filter": "borderless", "label": "Borderless Woodblock" },
+          { "weight": 3.8,  "set": "FIN", "rarity": "mythic", "filter": "borderless", "label": "Borderless Woodblock" },
+          { "weight": 31.6, "set": "FIN", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 5.6,  "set": "FIN", "rarity": "mythic", "filter": "borderless" },
+          { "weight": 15.1, "set": "FIN", "rarity": "rare",   "filter": "surge_foil", "label": "Surge Foil Borderless Character" },
+          { "weight": 3,    "set": "FIN", "rarity": "mythic", "filter": "surge_foil", "label": "Surge Foil Borderless Character" },
+          { "weight": 0.5,  "set": "FIN", "rarity": "mythic", "filter": "neon_ink", "label": "Colorful Chocobo" },
+          { "weight": 0.5,  "set": "FIN", "rarity": "mythic", "filter": "serialized", "label": "Serialized Golden Traveling Chocobo" }
+        ]
+      }
+    ]
+  }
+}

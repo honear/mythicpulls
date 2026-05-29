@@ -1,0 +1,27 @@
+{
+  "code": "6ed",
+  "name": "Classic Sixth Edition",
+  "released": "1999-04",
+  "composition": { "common": 110, "uncommon": 110, "rare": 110, "mythic": 0 },
+  "collationMethod": "US sequential, 10x11 sheets; Belgian striped",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "Basic lands do NOT appear in booster packs. US ordering common-rare-uncommon; Belgian uncommon-rare-common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Also known as Classic Sixth Edition. English printings from both USA and Belgium; both are 11C+3U+1R 15-card packs (36/box). No basic lands in boosters. Page does not mention foils in boosters, so foilOdds left null (note: 6ED released ~April 1999, around when foils were introduced in Urza's Legacy, but the page describes no foil slot). Four basic-land art variations. Sold with 60-card tournament packs rather than starter decks."
+}

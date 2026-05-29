@@ -1,0 +1,27 @@
+{
+  "code": "mbs",
+  "name": "Mirrodin Besieged",
+  "released": "2011-02-04",
+  "composition": { "common": 60, "uncommon": 40, "rare": 35, "mythic": 10 },
+  "collationMethod": "sequential; separated Mirran/Phyrexian print runs",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Foil appears after the land, displacing a common. 5 A (Mirran) commons + 5 B (Phyrexian) commons."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Small set with two basic-land variations. US printing uses non-standard sequential collation to support separated Mirran/Phyrexian print runs. Foil 1:67. 36 packs per box. Prerelease boxes contained 18 Mirran-faction and 18 Phyrexian-faction packs (not modelled)."
+}

@@ -1,0 +1,27 @@
+{
+  "code": "sth",
+  "name": "Stronghold",
+  "released": "1998-03-02",
+  "composition": { "common": 55, "uncommon": 44, "rare": 44, "mythic": 0 },
+  "collationMethod": "Belgian striped (10x11 and 12x11 sheets)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "Belgian pack order: 3 uncommons, 1 rare, 11 commons."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Small set printed in USA and Belgium (US openings not identified during research). 36 packs per box. Pre-1999, no foils. Only Belgian pack anatomy documented."
+}

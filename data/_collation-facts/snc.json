@@ -1,0 +1,27 @@
+{
+  "code": "snc",
+  "name": "Streets of New Capenna",
+  "released": "2022-04-29",
+  "composition": { "common": 101, "uncommon": 80, "rare": 60, "mythic": 20 },
+  "collationMethod": "sequential, two-run 101 common collation",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:45",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "10 commons + 3 uncommons + 1 rare + 1 land + ad card. If a foil appears it comes after the rare and displaces a common (becomes 9 commons). The ad/marketing card may carry a token or emblem; punch cards appear ~1 in 8 packs on a separate sheet."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["showcase"],
+  "statedRates": "Foil 1:45 cards. Half of packs have 3 A uncommons, half have 3 B uncommons. Punch cards ~1 in 8 packs.",
+  "sourceNotes": "Large set, normal size for era. Four variations of each basic land. Printed in USA and Belgium (Japanese existence uncertain); US printing modeled. 36 packs per box. Marketing cards mostly feature tokens/emblems; an MTG Arena ad card also appears."
+}

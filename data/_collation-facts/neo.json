@@ -1,0 +1,27 @@
+{
+  "code": "neo",
+  "name": "Kamigawa: Neon Dynasty",
+  "released": "2022-02-18",
+  "composition": { "common": 107, "uncommon": 88, "rare": 59, "mythic": 18 },
+  "collationMethod": "sequential, multi-run (A/B/C commons)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "33% of boosters",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "9 commons + 1 common-or-uncommon saga + 3 uncommons + 1 rare + 1 land + ad/placeholder card. The land slot is a basic land or one of ten common dual lands. If a foil appears it displaces a common (becomes 8 commons). The saga slot is an additional double-faced common or uncommon."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["showcase", "full-art basic land"],
+  "statedRates": "Foil rate 33% of boosters. Basic land appears in ~half of land slots (vs common dual land). Placeholder cards ~20% of the time (vs ad card).",
+  "sourceNotes": "Large set; 6 double-faced commons, 8 DFC uncommons, 6 DFC rares, 3 DFC mythics. Four variations of each basic land plus ten common dual lands in the land run. Printed in USA, Belgium, Japan; US printing modeled here. 36 packs per box. Each pack carries an extra double-faced saga (common or uncommon) on top of the standard structure."
+}

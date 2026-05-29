@@ -1,0 +1,27 @@
+{
+  "code": "exo",
+  "name": "Exodus",
+  "released": "1998-06-15",
+  "composition": { "common": 55, "uncommon": 44, "rare": 44, "mythic": 0 },
+  "collationMethod": "US sequential (10x11 sheets); Belgian striped",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "US pack order: 6 commons, 3 uncommons, 1 rare, 5 commons. Belgian: 3 uncommons, 1 rare, 11 commons."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Small set printed in USA and Belgium. 36 packs per box. Pre-1999, no foils."
+}

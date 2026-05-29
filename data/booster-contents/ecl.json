@@ -1,0 +1,141 @@
+{
+  "_doc": "Lorwyn Eclipsed (ECL) Play + Collector recipes from Wizards' 'Collecting Lorwyn Eclipsed' article (https://magic.wizards.com/en/news/feature/collecting-lorwyn-eclipsed). ECL has Play + Collector Boosters and NO Draft Booster (authoritative). Set codes: ECL = main set, ECC = Lorwyn Eclipsed Commander, TECL = tokens, AECL = Art Series. Approximations: Special Guests (20 cards) referenced via the 'special_guest' filter on the main set rather than a dedicated promo code. 'Fable frame' showcase cards approximated with the 'showcase' filter. Japan Showcase cards approximated with 'showcase' + 'japanese'. The 1% fracture-foil Japan Showcase chase now targets the named 'fracture_foil' finish precisely (the article calls it a 'fracture foil Japan Showcase card'); this trades the 'japanese' lang predicate for the distinct finish. The serialized Bitterbloom Bearer's 'double rainbow foil' has no Scryfall finish predicate, so it stays on the 'serialized' filter. Borderless nonland + borderless reversible shock lands fold into the 'borderless' filter.",
+
+  "authoritative": true,
+
+  "play": {
+    "cardCount": 14,
+    "tagline": "14 cards · 1 foil · fable-frame, Special Guest & borderless rates faithful to Wizards' spec",
+    "slots": [
+      {
+        "label": "Common",
+        "count": 7,
+        "outcomes": [
+          { "weight": 54, "set": "ECL", "rarity": "common" },
+          { "weight": 1,  "set": "ECL", "filter": "special_guest", "label": "Special Guest" }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          { "weight": 90, "set": "ECL", "rarity": "uncommon" },
+          { "weight": 10, "set": "ECL", "rarity": "uncommon", "filter": "showcase", "label": "Fable Frame" }
+        ]
+      },
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          { "weight": 18, "set": "ECL", "rarity": "common" },
+          { "weight": 58, "set": "ECL", "rarity": "uncommon" },
+          { "weight": 19, "set": "ECL", "rarity": "rare" },
+          { "weight": 2,  "set": "ECL", "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 78.2, "set": "ECL", "rarity": "rare" },
+          { "weight": 13.6, "set": "ECL", "rarity": "mythic" },
+          { "weight": 5.7,  "set": "ECL", "rarity": "rare",   "filter": "borderless", "label": "Booster Fun" },
+          { "weight": 2.5,  "set": "ECL", "rarity": "mythic", "filter": "borderless", "label": "Booster Fun" }
+        ]
+      },
+      {
+        "label": "Foil",
+        "foil": true,
+        "outcomes": [
+          { "weight": 60.4, "set": "ECL", "rarity": "common" },
+          { "weight": 29.8, "set": "ECL", "rarity": "uncommon" },
+          { "weight": 6.5,  "set": "ECL", "rarity": "rare" },
+          { "weight": 1.1,  "set": "ECL", "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          { "weight": 40, "set": "ECL", "filter": "basic_land" },
+          { "weight": 10, "set": "ECL", "filter": "basic_land", "foil": true }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 16,
+    "tagline": "Premium cards · fable-frame, Japan Showcase, Commander & serialized chase slots",
+    "slots": [
+      {
+        "label": "Foil Common",
+        "count": 5,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "ECL", "rarity": "common" }]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 4,
+        "foil": true,
+        "outcomes": [
+          { "weight": 63.6, "set": "ECL", "rarity": "uncommon" },
+          { "weight": 36.4, "set": "ECL", "rarity": "uncommon", "filter": "showcase", "label": "Fable Frame" }
+        ]
+      },
+      {
+        "label": "Foil Full-Art Basic Land",
+        "foil": true,
+        "basicLand": true,
+        "outcomes": [{ "weight": 1, "set": "ECL", "filter": "basic_land" }]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 85.5, "set": "ECL", "rarity": "rare" },
+          { "weight": 14.5, "set": "ECL", "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Commander Rare / Mythic",
+        "outcomes": [
+          { "weight": 9,  "set": "ECC", "rarity": "mythic", "filter": "borderless" },
+          { "weight": 91, "set": "ECC", "rarity": "rare",   "filter": "extended_art" }
+        ]
+      },
+      {
+        "label": "Booster Fun Rare / Mythic",
+        "count": 2,
+        "outcomes": [
+          { "weight": 37.7, "set": "ECL", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 4,    "set": "ECL", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 30,   "set": "ECL", "rarity": "rare",   "filter": "showcase", "label": "Fable Frame" },
+          { "weight": 4,    "set": "ECL", "rarity": "mythic", "filter": "showcase", "label": "Fable Frame" },
+          { "weight": 20,   "set": "ECL", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 4.3,  "set": "ECL", "rarity": "mythic", "filter": "borderless" }
+        ]
+      },
+      {
+        "label": "Foil Booster Fun Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 50,  "set": "ECL", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 5,   "set": "ECL", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 25,  "set": "ECL", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 5,   "set": "ECL", "rarity": "mythic", "filter": "borderless" },
+          { "weight": 9,   "set": "ECL", "rarity": "rare",   "filter": "japanese", "label": "Japan Showcase" },
+          { "weight": 1,   "set": "ECL", "rarity": "rare",   "filter": "fracture_foil", "label": "Fracture Foil Japan Showcase" },
+          { "weight": 4.5, "set": "ECL", "filter": "special_guest", "label": "Special Guest" },
+          { "weight": 0.5, "set": "ECL", "rarity": "mythic", "filter": "serialized", "label": "Serialized Bitterbloom Bearer" }
+        ]
+      },
+      {
+        "label": "Art Card / Token",
+        "token": true,
+        "outcomes": [
+          { "weight": 65, "set": "TECL", "label": "Foil Token" },
+          { "weight": 35, "set": "AECL", "label": "Art Card" }
+        ]
+      }
+    ]
+  }
+}

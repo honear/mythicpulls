@@ -1,0 +1,27 @@
+{
+  "code": "vow",
+  "name": "Innistrad: Crimson Vow",
+  "released": "2021-11-19",
+  "composition": { "common": 100, "uncommon": 83, "rare": 64, "mythic": 20 },
+  "collationMethod": "sequential, non-standard common collation",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "33% of boosters",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "10 commons, 3 uncommons, 1 rare, 1 basic land, 1 ad card, 1 placeholder card. The last common is always double-faced (never replaced by a foil). There is either one double-faced uncommon or the rare is double-faced. If a foil appears it displaces a common and appears after the basic land. Two variations of each basic land. Composition includes 10 DFC commons, 23 DFC uncommons, 11 DFC rares, 5 DFC mythics."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["showcase"],
+  "statedRates": "Foils in ~33% of boosters. Rare double-faced ~27/148 of the time.",
+  "sourceNotes": "Large set of the era, same numbers as Midnight Hunt. Printed US, Belgium, Japan. 36 packs per box. Separate ad card AND double-faced placeholder card both present."
+}

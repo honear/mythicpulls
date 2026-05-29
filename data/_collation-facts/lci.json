@@ -1,0 +1,40 @@
+{
+  "code": "lci",
+  "name": "The Lost Caverns of Ixalan",
+  "released": "2023-11-17",
+  "composition": {
+    "common": 101,
+    "uncommon": 92,
+    "rare": 64,
+    "mythic": 22
+  },
+  "collationMethod": "sequential, multi-run commons (US two-run A/B)",
+  "packTypes": [
+    "draft"
+  ],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:45",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "9 non-DFC commons + 1 double-faced common-or-uncommon + 3 non-DFC uncommons + 1 rare + 1 land + ad/placeholder card. The land is a basic land or one of 7 common cave lands. If a foil appears it comes after the rare and displaces a common (becomes 8 non-DFC commons)."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [
+    "showcase",
+    "borderless",
+    "full-art basic land"
+  ],
+  "statedRates": "Foil 1:45 cards. Cards with showcase/borderless treatment appear in common run C with ~1/3 of copies being the alternate treatment.",
+  "sourceNotes": "Premier set: 5 DFC commons, 12 DFC uncommons, 11 DFC rares, 7 DFC mythics. Three variations of each basic land plus 7 extra common cave lands. The DFC slot draws from a combined run where the included card may be common or uncommon. Printed in USA, Japan, Belgium; US printing modeled. 36 packs per box.",
+  "skip": true,
+  "skipReason": "Superseded by a hand-authored recipe derived from the official Wizards 'Collecting' article (more accurate odds + full product lineup). The generator must NOT overwrite data/booster-contents/lci.json."
+}

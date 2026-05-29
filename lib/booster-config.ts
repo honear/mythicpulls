@@ -6,7 +6,7 @@
  * keeps the Next.js client bundle free of the Node `fs` and `path` modules.
  */
 
-export type PackType = "play" | "draft" | "collector";
+export type PackType = "play" | "draft" | "collector" | "jumpstart";
 export type Rarity = "common" | "uncommon" | "rare" | "mythic";
 
 /**
@@ -51,6 +51,13 @@ export interface BoosterContents {
   play?: PackContent;
   draft?: PackContent;
   collector?: PackContent;
+  jumpstart?: PackContent;
+  /** When true, the pack types DEFINED in this file are the complete,
+   *  authoritative list for the set — `packsAvailableForSet` returns
+   *  exactly those and skips the date-based heuristic. Use it to hide a
+   *  pack type a set never had (e.g. a Play-Booster-only set with no
+   *  Collector Booster, or a single-product set like Mystery Booster). */
+  authoritative?: boolean;
   /** Hand-set MSRP per pack type, used as a fallback when Mana Pool
    *  doesn't carry the product. Resolution: Mana Pool live → set-
    *  specific costUsd → default costUsd → undefined ("Not available").

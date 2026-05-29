@@ -1,0 +1,27 @@
+{
+  "code": "mmq",
+  "name": "Mercadian Masques",
+  "released": "1999-10-04",
+  "composition": { "common": 110, "uncommon": 110, "rare": 110, "mythic": 0 },
+  "collationMethod": "striped collation, 10x11 sheets",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": "1:100",
+    "foilGuaranteed": false,
+    "foilReplaces": "same rarity",
+    "notes": "Foils inserted only between stripes, displacing a card of the same rarity. Possible to get multiple foils in one pack. Foil basic lands can appear instead of a foil common; non-foil basic lands do not appear in booster packs."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Large set; also has four variations of each basic land. US and Belgian printings use same collation. Pack order: 3 uncommons, 1 rare, 11 commons. Tournament packs (30 lands, 3 rares, 10 uncommons, 32 commons + rulebook) documented but not modelled. Foil 1:100 cards. 36 packs per box."
+}

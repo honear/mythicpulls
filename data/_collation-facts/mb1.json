@@ -1,0 +1,29 @@
+{
+  "code": "mb1",
+  "name": "Mystery Booster",
+  "released": "2019-11-07",
+  "skip": true,
+  "skipReason": "Mystery Booster has no standard rarity composition (each of 15 cards is from a different fixed 121-card list spanning all rarities) AND the original 'mb1' code is not an openable set in Scryfall's current data — the openable Mystery Booster is 'mb2' (Mystery Booster 2), which has a bespoke hand-authored recipe at data/booster-contents/mb2.json. This facts file is kept only as a record; no recipe is generated for mb1.",
+  "composition": { "common": 0, "uncommon": 0, "rare": 0, "mythic": 0 },
+  "collationMethod": "15 cards, each from a different 121-card list",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": null,
+    "uncommons": null,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": "guaranteed (normal edition)",
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "Each of the 15 cards is drawn from a different fixed list of 121 cards, spanning all rarities. Order: 2 white (A,B), 2 blue, 2 black, 2 red, 2 green, 1 multicolor, 1 colorless, 1 old-frame, 1 rare. Convention edition starts with a playtest card (no foil); normal edition ends with a foil card. Composition counts left at 0 because the page does not break the set into standard rarity composition."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["playtest cards", "old frame"],
+  "statedRates": null,
+  "sourceNotes": "Mystery Booster: 1694 cards, 121 foils, 121 playtest cards. Two editions: convention (playtest card, no foil) and normal (foil, no playtest). 15-card packs with each card from a different 121-card list, so the standard common/uncommon/rare/mythic composition is not applicable; left at 0. 24 packs per box. USA printing. Unusually high rate of duplicate-list packs noted."
+}

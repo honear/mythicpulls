@@ -1,0 +1,27 @@
+{
+  "code": "tor",
+  "name": "Torment",
+  "released": "2002-02-04",
+  "composition": { "common": 55, "uncommon": 44, "rare": 44, "mythic": 0 },
+  "collationMethod": "US: sequential collation, 10x11 sheets, two common runs (A 30 cards, B 25 cards); Belgian: striped collation",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": "1:70",
+    "foilGuaranteed": false,
+    "foilReplaces": "same rarity",
+    "notes": "US pack order: 11 commons, 3 uncommons, 1 rare; foil is last card, displaces same rarity (e.g. foil rare replaces the rare). Not possible to get more than one foil per pack. Belgian printing: 3 uncommons, 1 rare, 11 commons, striped collation."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Small set. Printed USA and Belgium. US booster commons: 6 from run A, 5 from run B. Foil 1:70 cards (note: higher rate than the 1:100 of surrounding sets). 36 packs per box."
+}

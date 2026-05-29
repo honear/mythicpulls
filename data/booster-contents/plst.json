@@ -1,0 +1,12 @@
+{
+  "_doc": "The List (PLST) — bespoke recipe. The List is not a real sealed product; it's a rotating pool of reprints inserted (one at a time) into Set/Play Boosters. There's no official 'List booster', so this is a novelty 'open a slice of The List' pack: 15 cards spanning every rarity drawn from the PLST pool. `authoritative` offers only this one pack (the date heuristic would otherwise show play/draft/collector that don't exist). Approximate by nature.",
+  "authoritative": true,
+  "draft": {
+    "cardCount": 15,
+    "tagline": "15 cards pulled from The List — reprints spanning the whole game, every rarity · a novelty slice",
+    "slots": [
+      { "label": "Card", "count": 14, "outcomes": [{ "weight": 1 }] },
+      { "label": "Foil", "foil": true, "outcomes": [{ "weight": 1 }] }
+    ]
+  }
+}

@@ -151,6 +151,16 @@ export async function packsAvailableForSet(
 ): Promise<PackType[]> {
   const released = releasedAt ?? "";
   const out = new Set<PackType>();
+  const order: PackType[] = ["play", "draft", "collector", "jumpstart"];
+
+  const setSpecific = await loadBoosterContents(setCode.toLowerCase());
+
+  // Authoritative file: the pack types it DEFINES are the complete list.
+  // Skip the date heuristic entirely so a set with no Collector Booster
+  // (or a single-product set like Mystery Booster) only shows what it has.
+  if (setSpecific?.authoritative) {
+    return order.filter((t) => setSpecific[t]);
+  }
 
   // Date-based heuristic: matches the legacy packsAvailableFor in
   // lib/pack-rules.ts so behaviour is identical for sets without a
@@ -159,11 +169,10 @@ export async function packsAvailableForSet(
   out.add("draft");
   if (released >= "2019-10-01") out.add("collector");
 
-  // If the set has its own content file, anything IT explicitly defines
-  // is available even if the date heuristic wouldn't have included it.
-  // (Use case: a one-off Universes-Beyond set that ships a custom Play
-  // Booster despite a pre-2024 release-equivalent code.)
-  const setSpecific = await loadBoosterContents(setCode.toLowerCase());
+  // If the set has its own (non-authoritative) content file, anything IT
+  // explicitly defines is also available even if the date heuristic
+  // wouldn't have included it (e.g. a pre-2024 set shipping a custom Play
+  // Booster).
   if (setSpecific) {
     if (setSpecific.play) out.add("play");
     if (setSpecific.draft) out.add("draft");
@@ -171,6 +180,5 @@ export async function packsAvailableForSet(
   }
 
   // Preserve a stable display order — matches PACK_ORDER from pack-rules.
-  const order: PackType[] = ["play", "draft", "collector"];
   return order.filter((t) => out.has(t));
 }

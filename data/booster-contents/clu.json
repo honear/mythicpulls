@@ -1,0 +1,46 @@
+{
+  "_doc": "Ravnica: Clue Edition (CLU) — standalone murder-mystery board-game product (released 2024-02-23). Source: https://magic.wizards.com/en/news/announcements/ravnica-clue-edition-ravnica-cluedo-edition-booster-contents . The box ships eight 20-card 'Ravnica: Clue Edition Boosters' (ten guild themes × two variations = 20 distinct lists) plus a separate Clue Booster of 21 Evidence cards and a foil borderless shock-land box topper. There is only ONE consumer booster product and it is a single draftable 20-card pack, so we map it onto our 'draft' type and set authoritative:true so no other pack types are offered. No Set, Play, or Collector Booster exists for this product. The guild boosters are fixed Jumpstart-style half-decks (each ready-to-play with all needed lands), so per-slot rarity is not truly randomized; we approximate a representative 20-card composition consistent with Wizards' spec: '20 non-foil cards including all the lands you need to play; 1 new Rare card and 1 reprint card of rarity Rare or higher per booster.' Set composition: 252 regular cards (129C / 68U / 29R / 11M / 20 basic lands); the 21 Evidence cards (CLU #1–21: 6 borderless legendary suspects, 5 artifact weapons, 10 location lands) are game pieces, not part of the random booster pool, and are excluded here. All cards are non-foil; the only foil in the box is the box-topper shock land, which is not opened from a booster.",
+
+  "authoritative": true,
+
+  "draft": {
+    "cardCount": 20,
+    "tagline": "20 cards · ready to play · 1 new rare + 1 reprint rare/mythic · all lands included · non-foil",
+    "slots": [
+      {
+        "label": "New Rare",
+        "outcomes": [
+          { "weight": 88, "set": "CLU", "rarity": "rare", "label": "New-to-Magic Rare" },
+          { "weight": 12, "set": "CLU", "rarity": "mythic", "label": "New-to-Magic Mythic" }
+        ]
+      },
+      {
+        "label": "Reprint Rare / Mythic",
+        "outcomes": [
+          { "weight": 73, "set": "CLU", "rarity": "rare" },
+          { "weight": 27, "set": "CLU", "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 4,
+        "outcomes": [{ "weight": 1, "set": "CLU", "rarity": "uncommon" }]
+      },
+      {
+        "label": "Common",
+        "count": 8,
+        "outcomes": [{ "weight": 1, "set": "CLU", "rarity": "common" }]
+      },
+      {
+        "label": "Guild Land",
+        "outcomes": [{ "weight": 1, "set": "CLU", "filter": "non_basic_land", "label": "Guild Dual / Gate Land" }]
+      },
+      {
+        "label": "Basic Land",
+        "count": 5,
+        "basicLand": true,
+        "outcomes": [{ "weight": 1, "set": "CLU", "filter": "basic_land" }]
+      }
+    ]
+  }
+}

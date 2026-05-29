@@ -1,0 +1,27 @@
+{
+  "code": "dbl",
+  "name": "Innistrad: Double Feature",
+  "released": "2022-01-28",
+  "composition": { "common": null, "uncommon": null, "rare": null, "mythic": null },
+  "collationMethod": "sequential, MID/VOW split runs",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 8,
+    "uncommons": 4,
+    "rares": 2,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "15-card pack: 8 commons (4 MID + 4 VOW), 4 uncommons (2 MID + 2 VOW), 2 rares (1 MID + 1 VOW), and 1 guaranteed foil (from either set). No basic land and no ad card. All cards have alternate art."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Special product combining every card from Innistrad: Midnight Hunt (MID) and Innistrad: Crimson Vow (VOW) except basic lands. Page does not state rarity composition counts (left null). 24 packs per box. Two rare slots (one per set). Printed in English in the USA."
+}

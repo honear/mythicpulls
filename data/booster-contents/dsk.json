@@ -1,0 +1,470 @@
+{
+  "_doc": "Duskmourn: House of Horror (DSK) Play + Collector recipes from Wizards' official 'Collecting Duskmourn' article (https://magic.wizards.com/en/news/feature/collecting-duskmourn). Duskmourn shipped Play + Collector boosters only \u2014 NO Draft Booster \u2014 so authoritative is true and draft is intentionally undefined. Sub-set codes: DSK = main set, SPG = Special Guests, DSC = Duskmourn Commander. Exact rates published for the Play rare/mythic slot, land slot, Special Guests replacement (1 in 64), and all Collector slots are used verbatim. Approximations: 'lurking evil' and 'paranormal frame' and 'mirror monster' and 'double exposure' and 'Japan Showcase' treatments have no dedicated filter \u2014 modeled with the nearest of showcase / borderless / extended_art (frame distinctions dropped); full-art manor lands via basic_land; the 1-in-4 lurking-evil/paranormal variants of specific commons/uncommons are folded into the common/uncommon slots as showcase-filtered outcomes. Specific finishes re-pointed to dedicated filters: in the Premium Foil Special Slot the 'Textured Foil Double Exposure' outcome now uses textured_foil, and both 'Fracture Foil Japan Showcase' outcomes now use fracture_foil, instead of the showcase stand-in.",
+  "authoritative": true,
+  "play": {
+    "cardCount": 14,
+    "tagline": "14 cards \u00b7 lurking evil & paranormal variants \u00b7 manor full-art lands \u00b7 Special Guest replaces a common in 1 of 64 packs",
+    "slots": [
+      {
+        "label": "Token / Art Card",
+        "token": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DSK",
+            "label": "Token / Art Card"
+          }
+        ]
+      },
+      {
+        "label": "Common",
+        "count": 6,
+        "outcomes": [
+          {
+            "weight": 92.4,
+            "set": "DSK",
+            "rarity": "common"
+          },
+          {
+            "weight": 6,
+            "set": "DSK",
+            "rarity": "common",
+            "filter": "showcase",
+            "label": "Lurking Evil Common"
+          },
+          {
+            "weight": 1.5625,
+            "set": "SPG",
+            "filter": "special_guest",
+            "label": "Special Guest"
+          }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          {
+            "weight": 80,
+            "set": "DSK",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 10,
+            "set": "DSK",
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Lurking Evil Uncommon"
+          },
+          {
+            "weight": 10,
+            "set": "DSK",
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Paranormal Frame Uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 75,
+            "set": "DSK",
+            "rarity": "rare"
+          },
+          {
+            "weight": 12.6,
+            "set": "DSK",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 8.2,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Booster Fun"
+          },
+          {
+            "weight": 1.4,
+            "set": "DSK",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Booster Fun"
+          },
+          {
+            "weight": 2.5,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Lurking Evil"
+          },
+          {
+            "weight": 0.3,
+            "set": "DSK",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Lurking Evil"
+          }
+        ]
+      },
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          {
+            "weight": 50,
+            "set": "DSK",
+            "rarity": "common"
+          },
+          {
+            "weight": 30,
+            "set": "DSK",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 13,
+            "set": "DSK",
+            "rarity": "rare"
+          },
+          {
+            "weight": 7,
+            "set": "DSK",
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Traditional Foil",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 50,
+            "set": "DSK",
+            "rarity": "common"
+          },
+          {
+            "weight": 30,
+            "set": "DSK",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 13,
+            "set": "DSK",
+            "rarity": "rare"
+          },
+          {
+            "weight": 7,
+            "set": "DSK",
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          {
+            "weight": 26.7,
+            "set": "DSK",
+            "filter": "basic_land"
+          },
+          {
+            "weight": 6.7,
+            "set": "DSK",
+            "filter": "basic_land",
+            "foil": true
+          },
+          {
+            "weight": 13.3,
+            "set": "DSK",
+            "filter": "basic_land",
+            "label": "Full-Art Manor Land"
+          },
+          {
+            "weight": 3.3,
+            "set": "DSK",
+            "filter": "basic_land",
+            "foil": true,
+            "label": "Full-Art Manor Land"
+          },
+          {
+            "weight": 40,
+            "set": "DSK",
+            "filter": "dual_land_common"
+          },
+          {
+            "weight": 10,
+            "set": "DSK",
+            "filter": "dual_land_common",
+            "foil": true
+          }
+        ]
+      }
+    ]
+  },
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards + foil token \u00b7 all foil commons & uncommons \u00b7 Commander borderless chase \u00b7 Japan Showcase & textured-foil premium slot",
+    "slots": [
+      {
+        "label": "Foil Double-Sided Token",
+        "token": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DSK",
+            "label": "Foil Token"
+          }
+        ]
+      },
+      {
+        "label": "Foil Common",
+        "count": 5,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 85,
+            "set": "DSK",
+            "rarity": "common"
+          },
+          {
+            "weight": 10,
+            "set": "DSK",
+            "filter": "dual_land_common",
+            "label": "Dual Land"
+          },
+          {
+            "weight": 5,
+            "set": "DSK",
+            "rarity": "common",
+            "filter": "showcase",
+            "label": "Lurking Evil Common"
+          }
+        ]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 4,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 88,
+            "set": "DSK",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 6,
+            "set": "DSK",
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Paranormal Frame"
+          },
+          {
+            "weight": 6,
+            "set": "DSK",
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Lurking Evil"
+          }
+        ]
+      },
+      {
+        "label": "Foil Full-Art Manor Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DSK",
+            "filter": "basic_land",
+            "label": "Full-Art Manor Land"
+          }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 76.9,
+            "set": "DSK",
+            "rarity": "rare"
+          },
+          {
+            "weight": 12.8,
+            "set": "DSK",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 9.0,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Lurking Evil"
+          },
+          {
+            "weight": 1.3,
+            "set": "DSK",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Lurking Evil"
+          }
+        ]
+      },
+      {
+        "label": "Commander Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 81.9,
+            "set": "DSC",
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "Extended-Art Commander Rare"
+          },
+          {
+            "weight": 12.1,
+            "set": "DSC",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Commander"
+          },
+          {
+            "weight": 6,
+            "set": "DSC",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "foil": true,
+            "label": "Foil Borderless Commander"
+          }
+        ]
+      },
+      {
+        "label": "Non-Foil Booster Fun Rare / Mythic",
+        "count": 2,
+        "outcomes": [
+          {
+            "weight": 29,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Paranormal Frame"
+          },
+          {
+            "weight": 1.5,
+            "set": "DSK",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Paranormal Frame"
+          },
+          {
+            "weight": 18.8,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 3.6,
+            "set": "DSK",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 17.4,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Double Exposure"
+          },
+          {
+            "weight": 3.3,
+            "set": "DSK",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Double Exposure"
+          },
+          {
+            "weight": 14.4,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 4,
+            "set": "DSK",
+            "rarity": "mythic",
+            "filter": "borderless"
+          },
+          {
+            "weight": 5.8,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Mirror Monster"
+          },
+          {
+            "weight": 2.2,
+            "set": "DSK",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Mirror Monster"
+          }
+        ]
+      },
+      {
+        "label": "Premium Foil Special Slot",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 85.9,
+            "set": "DSK",
+            "rarity": "rare",
+            "label": "Traditional Foil"
+          },
+          {
+            "weight": 6,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Japan Showcase (English)"
+          },
+          {
+            "weight": 3,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Japan Showcase (Japanese)"
+          },
+          {
+            "weight": 3.1,
+            "set": "SPG",
+            "rarity": "mythic",
+            "filter": "special_guest",
+            "label": "Special Guest"
+          },
+          {
+            "weight": 1,
+            "set": "DSK",
+            "rarity": "mythic",
+            "filter": "textured_foil",
+            "label": "Textured Foil Double Exposure"
+          },
+          {
+            "weight": 0.7,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "fracture_foil",
+            "label": "Fracture Foil Japan Showcase (English)"
+          },
+          {
+            "weight": 0.3,
+            "set": "DSK",
+            "rarity": "rare",
+            "filter": "fracture_foil",
+            "label": "Fracture Foil Japan Showcase (Japanese)"
+          }
+        ]
+      }
+    ]
+  }
+}

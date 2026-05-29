@@ -1,0 +1,129 @@
+{
+  "_doc": "Wilds of Eldraine (WOE) Draft + Collector recipes from Wizards' 'Collecting Wilds of Eldraine' article (https://magic.wizards.com/en/news/feature/collecting-wilds-of-eldraine). WOE (2023) had Draft + Set + Collector Boosters; we model Draft and Collector and intentionally skip Set Boosters. Set codes: WOE = main set, WOT = Enchanting Tales bonus sheet, TWOE = tokens, AWOE = Art Series. Authoritative. Approximations: Draft foil slot rarity split is not enumerated in the article (stated as 'any rarity'), so a standard foil split is used. Confetti/anime treatments are approximated with the 'borderless' filter (no distinct finish modeled).",
+
+  "authoritative": true,
+
+  "draft": {
+    "cardCount": 15,
+    "tagline": "15 cards · 10 commons · 1 rare/mythic · 1 traditional foil",
+    "slots": [
+      {
+        "label": "Common",
+        "count": 10,
+        "outcomes": [{ "weight": 1, "set": "WOE", "rarity": "common" }]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [{ "weight": 1, "set": "WOE", "rarity": "uncommon" }]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 85.7, "set": "WOE", "rarity": "rare" },
+          { "weight": 14.3, "set": "WOE", "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Foil",
+        "foil": true,
+        "outcomes": [
+          { "weight": 60, "set": "WOE", "rarity": "common" },
+          { "weight": 30, "set": "WOE", "rarity": "uncommon" },
+          { "weight": 8,  "set": "WOE", "rarity": "rare" },
+          { "weight": 2,  "set": "WOE", "rarity": "mythic" }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 16,
+    "tagline": "Enchanting Tales at every tier · Booster Fun, anime & confetti chase slots",
+    "slots": [
+      {
+        "label": "Foil Common",
+        "count": 4,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "WOE", "rarity": "common" }]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "WOE", "rarity": "uncommon" }]
+      },
+      {
+        "label": "Foil Full-Art Basic Land",
+        "foil": true,
+        "basicLand": true,
+        "outcomes": [{ "weight": 1, "set": "WOE", "filter": "basic_land" }]
+      },
+      {
+        "label": "Enchanting Tales Uncommon",
+        "outcomes": [{ "weight": 1, "set": "WOT", "rarity": "uncommon" }]
+      },
+      {
+        "label": "Foil Enchanting Tales Uncommon",
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "WOT", "rarity": "uncommon" }]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 85.7, "set": "WOE", "rarity": "rare" },
+          { "weight": 14.3, "set": "WOE", "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Extended-Art Rare / Mythic",
+        "outcomes": [
+          { "weight": 85.7, "set": "WOE", "rarity": "rare", "filter": "extended_art" },
+          { "weight": 14.3, "set": "WOE", "rarity": "mythic", "filter": "extended_art" }
+        ]
+      },
+      {
+        "label": "Showcase / Borderless Rare / Mythic",
+        "outcomes": [
+          { "weight": 54.2, "set": "WOE", "rarity": "rare",   "filter": "showcase" },
+          { "weight": 12.5, "set": "WOE", "rarity": "mythic", "filter": "showcase" },
+          { "weight": 20.8, "set": "WOE", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 10.4, "set": "WOE", "rarity": "mythic", "filter": "borderless" },
+          { "weight": 2.1,  "set": "WOE", "rarity": "mythic", "filter": "borderless", "label": "Kellan variant" }
+        ]
+      },
+      {
+        "label": "Enchanting Tales Rare / Mythic",
+        "outcomes": [
+          { "weight": 73.3, "set": "WOT", "rarity": "rare" },
+          { "weight": 10,   "set": "WOT", "rarity": "mythic" },
+          { "weight": 6.7,  "set": "WOT", "rarity": "rare",   "filter": "borderless", "label": "Anime Borderless" },
+          { "weight": 10,   "set": "WOT", "rarity": "mythic", "filter": "borderless", "label": "Anime Borderless" }
+        ]
+      },
+      {
+        "label": "Foil Booster Fun Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 38.8, "set": "WOE", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 4,    "set": "WOE", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 16.2, "set": "WOE", "rarity": "rare",   "filter": "showcase" },
+          { "weight": 7.7,  "set": "WOE", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 24.4, "set": "WOT", "rarity": "rare" },
+          { "weight": 3.3,  "set": "WOT", "rarity": "mythic" },
+          { "weight": 1.1,  "set": "WOT", "rarity": "rare",   "filter": "borderless", "label": "Anime Borderless" },
+          { "weight": 1.7,  "set": "WOT", "rarity": "mythic", "filter": "borderless", "label": "Anime Borderless" },
+          { "weight": 1.1,  "set": "WOT", "rarity": "rare",   "filter": "borderless", "label": "Confetti Foil Anime" },
+          { "weight": 1.7,  "set": "WOT", "rarity": "mythic", "filter": "borderless", "label": "Confetti Foil Anime" }
+        ]
+      },
+      {
+        "label": "Foil Double-Faced Token",
+        "token": true,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "TWOE" }]
+      }
+    ]
+  }
+}

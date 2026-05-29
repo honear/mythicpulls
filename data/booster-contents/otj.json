@@ -1,0 +1,459 @@
+{
+  "_doc": "Outlaws of Thunder Junction (OTJ) Play + Collector recipes from Wizards' official 'Collecting Outlaws of Thunder Junction' article (https://magic.wizards.com/en/news/feature/collecting-outlaws-of-thunder-junction). OTJ shipped Play + Collector boosters only \u2014 NO Draft Booster \u2014 so authoritative is true and draft is intentionally undefined. Sub-set codes: OTJ = main set, OTP = Breaking News (bonus sheet), BIG = The Big Score, OTC = OTJ Commander, SPG = Special Guests. Exact rates published for The List replacement (20%), the wildcard rare/mythic rate (1 in 12), Booster Fun rate (2.5%), the Breaking News rare/mythic rate (1 in 3), the land slot, the token/art slot, and the Collector premium-foil slot are used verbatim. Approximations: The List card modeled as a special_guest outcome against OTP (no dedicated List filter); rare-vs-mythic splits inside the wildcard, foil, Booster Fun, OTP, OTC, and premium slots are not published per-card and are estimated with standard splits; 'wanted poster' and 'vault frame' frame treatments have no dedicated filter and use the nearest of showcase / borderless / extended_art; western landscape & regular basics via basic_land. Specific finishes re-pointed to dedicated filters: in the Premium Foil Special Slot the 'Textured Foil Breaking News' outcome now uses textured_foil and the 'Raised Foil Vault Frame' outcome now uses raised_foil, instead of the showcase stand-in.",
+  "authoritative": true,
+  "play": {
+    "cardCount": 14,
+    "tagline": "14 cards \u00b7 Breaking News bonus slot \u00b7 The List replaces a common in 20% of packs \u00b7 western landscape lands",
+    "slots": [
+      {
+        "label": "Token / Art Card",
+        "token": true,
+        "outcomes": [
+          {
+            "weight": 65,
+            "set": "OTJ",
+            "label": "Token / Ad Card"
+          },
+          {
+            "weight": 30,
+            "set": "OTJ",
+            "label": "Art Card"
+          },
+          {
+            "weight": 5,
+            "set": "OTJ",
+            "filter": "gold_stamped",
+            "label": "Stamped Art Card"
+          }
+        ]
+      },
+      {
+        "label": "Common",
+        "count": 5,
+        "outcomes": [
+          {
+            "weight": 80,
+            "set": "OTJ",
+            "rarity": "common"
+          },
+          {
+            "weight": 20,
+            "set": "OTP",
+            "label": "The List"
+          }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "OTJ",
+            "rarity": "uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          {
+            "weight": 55,
+            "set": "OTJ",
+            "rarity": "common"
+          },
+          {
+            "weight": 36.67,
+            "set": "OTJ",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 6,
+            "set": "OTJ",
+            "rarity": "rare"
+          },
+          {
+            "weight": 2.33,
+            "set": "OTJ",
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 85,
+            "set": "OTJ",
+            "rarity": "rare"
+          },
+          {
+            "weight": 12.5,
+            "set": "OTJ",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 2,
+            "set": "OTJ",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Booster Fun"
+          },
+          {
+            "weight": 0.5,
+            "set": "OTJ",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Booster Fun"
+          }
+        ]
+      },
+      {
+        "label": "Breaking News",
+        "outcomes": [
+          {
+            "weight": 66.67,
+            "set": "OTP",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 28,
+            "set": "OTP",
+            "rarity": "rare"
+          },
+          {
+            "weight": 5.33,
+            "set": "OTP",
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Traditional Foil",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 50,
+            "set": "OTJ",
+            "rarity": "common"
+          },
+          {
+            "weight": 30,
+            "set": "OTJ",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 13,
+            "set": "OTJ",
+            "rarity": "rare"
+          },
+          {
+            "weight": 7,
+            "set": "OTJ",
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          {
+            "weight": 40,
+            "set": "OTJ",
+            "filter": "dual_land_common",
+            "label": "Common Dual Land"
+          },
+          {
+            "weight": 10,
+            "set": "OTJ",
+            "filter": "dual_land_common",
+            "foil": true,
+            "label": "Common Dual Land"
+          },
+          {
+            "weight": 13.33,
+            "set": "OTJ",
+            "filter": "basic_land",
+            "label": "Western Landscape Basic"
+          },
+          {
+            "weight": 3.33,
+            "set": "OTJ",
+            "filter": "basic_land",
+            "foil": true,
+            "label": "Western Landscape Basic"
+          },
+          {
+            "weight": 26.67,
+            "set": "OTJ",
+            "filter": "basic_land",
+            "label": "Regular Basic"
+          },
+          {
+            "weight": 6.67,
+            "set": "OTJ",
+            "filter": "basic_land",
+            "foil": true,
+            "label": "Regular Basic"
+          }
+        ]
+      }
+    ]
+  },
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards + foil token \u00b7 Big Score & Breaking News chases \u00b7 Commander extended-art \u00b7 stacked premium-foil slot",
+    "slots": [
+      {
+        "label": "Foil Double-Sided Token",
+        "token": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "OTJ",
+            "label": "Foil Token"
+          }
+        ]
+      },
+      {
+        "label": "Foil Common",
+        "count": 4,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "OTJ",
+            "rarity": "common"
+          }
+        ]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "OTJ",
+            "rarity": "uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Foil Full-Art Western Landscape Basic",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "OTJ",
+            "filter": "basic_land",
+            "label": "Western Landscape Basic"
+          }
+        ]
+      },
+      {
+        "label": "Breaking News Uncommon",
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "OTP",
+            "rarity": "uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Foil Breaking News Uncommon",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "OTP",
+            "rarity": "uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 80,
+            "set": "OTJ",
+            "rarity": "rare"
+          },
+          {
+            "weight": 13,
+            "set": "OTJ",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 6,
+            "set": "BIG",
+            "rarity": "rare",
+            "label": "The Big Score"
+          },
+          {
+            "weight": 1,
+            "set": "BIG",
+            "rarity": "mythic",
+            "label": "The Big Score"
+          }
+        ]
+      },
+      {
+        "label": "Non-Foil Booster Fun Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 55,
+            "set": "OTJ",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 8,
+            "set": "OTJ",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 22,
+            "set": "OTJ",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 5,
+            "set": "OTJ",
+            "rarity": "mythic",
+            "filter": "borderless"
+          },
+          {
+            "weight": 8,
+            "set": "OTJ",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Wanted Poster"
+          },
+          {
+            "weight": 2,
+            "set": "OTJ",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Wanted Poster"
+          }
+        ]
+      },
+      {
+        "label": "Commander Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 88,
+            "set": "OTC",
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "Extended-Art Commander Rare"
+          },
+          {
+            "weight": 8,
+            "set": "OTC",
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "Extended-Art Commander Mythic"
+          },
+          {
+            "weight": 4,
+            "set": "OTC",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Commander Face"
+          }
+        ]
+      },
+      {
+        "label": "Breaking News Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 85,
+            "set": "OTP",
+            "rarity": "rare"
+          },
+          {
+            "weight": 15,
+            "set": "OTP",
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Premium Foil Special Slot",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 42,
+            "set": "OTJ",
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "Extended-Art"
+          },
+          {
+            "weight": 29,
+            "set": "OTP",
+            "rarity": "rare",
+            "label": "Breaking News"
+          },
+          {
+            "weight": 6,
+            "set": "OTJ",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Wanted Poster"
+          },
+          {
+            "weight": 5,
+            "set": "BIG",
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "Big Score Extended-Art"
+          },
+          {
+            "weight": 5,
+            "set": "BIG",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Vault Frame"
+          },
+          {
+            "weight": 4,
+            "set": "OTJ",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 3,
+            "set": "SPG",
+            "rarity": "mythic",
+            "filter": "special_guest",
+            "label": "Special Guest"
+          },
+          {
+            "weight": 1,
+            "set": "OTP",
+            "rarity": "mythic",
+            "filter": "textured_foil",
+            "label": "Textured Foil Breaking News"
+          },
+          {
+            "weight": 0.5,
+            "set": "BIG",
+            "rarity": "mythic",
+            "filter": "raised_foil",
+            "label": "Raised Foil Vault Frame"
+          }
+        ]
+      }
+    ]
+  }
+}

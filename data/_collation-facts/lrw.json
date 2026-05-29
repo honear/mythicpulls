@@ -1,0 +1,27 @@
+{
+  "code": "lrw",
+  "name": "Lorwyn",
+  "released": "2007-10-12",
+  "composition": { "common": 121, "uncommon": 80, "rare": 80, "mythic": 0 },
+  "collationMethod": "sequential, four common runs",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:56",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Pack is 11 commons, 3 uncommons, an ad card, and a rare. If a foil appears it follows the rare, displacing a common. Foil odds 1:51 for tournament packs."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Large set. Printed in USA only (Belgian Lorwyn unknown). 36 packs per box. Booster has an ad card (counted separately from the 15 game cards). No basic land in booster. Tournament packs described but not modelled."
+}

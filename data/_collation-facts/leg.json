@@ -1,0 +1,27 @@
+{
+  "code": "leg",
+  "name": "Legends",
+  "released": "1994-06",
+  "composition": { "common": 75, "uncommon": 114, "rare": 121, "mythic": 0 },
+  "collationMethod": "striped, 11x11 sheets; common/uncommon/rare sheets",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "15-card booster: 11 commons, 3 uncommons, 1 rare. Ordering can be rare-uncommon-common or uncommon-rare-common. There is always a rule insert before the first card (non-collectible). Pre-foil era."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "uncommon sheet split into top-six-rows / bottom-five-rows halves; a box's uncommons usually all come from one half ('A boxes' vs 'B boxes')",
+  "sourceNotes": "Large set: 75 commons, 114 uncommons, 121 rares. Distinct common/uncommon/rare sheets. Rule insert is a non-collectible insert (not modelled as ad card here; recorded in notes). Printed Belgium. 36 packs per box."
+}

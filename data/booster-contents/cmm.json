@@ -1,0 +1,133 @@
+{
+  "_doc": "Commander Masters (CMM) booster recipes. Source: https://magic.wizards.com/en/news/feature/collecting-commander-masters . The set shipped Draft, Set, and Collector Boosters plus four Commander decks; we model only Draft + Collector (Set Boosters and Commander decks are outside our schema). authoritative=true so Play is hidden. Approximations: there is no 'legendary' or 'retro frame' filter in data/filters.json, so legendary vs. nonlegendary slots are modeled as plain cards of the stated rarity, and retro-frame basic lands are plain basic lands. The Draft variable slot (66% uncommon / 33% rare-or-mythic) and the 'every sixth booster' Prismatic Piper common are folded into weighted outcomes. Foil-etched uses the 'etched_foil' filter and textured foil uses the 'textured_foil' filter (the named premium finishes are targeted exactly); plain traditional foils stay as foil:true. Extended-art and borderless use the matching filters. The Collector foil basic land is in a retro frame per the article, but keeps the 'basic_land' filter to preserve the basic-land constraint (one filter per outcome, so retro_frame would drop it).",
+
+  "authoritative": true,
+
+  "draft": {
+    "cardCount": 18,
+    "tagline": "18 cards · legendary-rich Masters draft · 2 rare/mythic slots + flexible 19th-card slot",
+    "slots": [
+      {
+        "label": "Common",
+        "count": 10,
+        "outcomes": [{ "weight": 1, "rarity": "common" }]
+      },
+      {
+        "label": "Common / Prismatic Piper",
+        "outcomes": [
+          { "weight": 83, "rarity": "common" },
+          { "weight": 17, "rarity": "common", "label": "Prismatic Piper" }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 4,
+        "outcomes": [{ "weight": 1, "rarity": "uncommon" }]
+      },
+      {
+        "label": "Legendary Rare / Mythic",
+        "outcomes": [
+          { "weight": 86, "rarity": "rare" },
+          { "weight": 14, "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 86, "rarity": "rare" },
+          { "weight": 14, "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Wildcard (uncommon or rare/mythic)",
+        "outcomes": [
+          { "weight": 66, "rarity": "uncommon" },
+          { "weight": 29.2, "rarity": "rare" },
+          { "weight": 4.8, "rarity": "mythic" }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 14,
+    "tagline": "14 premium cards · foil-etched & textured-foil chases · borderless and extended-art rares",
+    "slots": [
+      {
+        "label": "Foil Common",
+        "count": 4,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "rarity": "common" }]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 2,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "rarity": "uncommon" }]
+      },
+      {
+        "label": "Foil Basic Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "filter": "basic_land" }]
+      },
+      {
+        "label": "Borderless Common / Uncommon",
+        "outcomes": [
+          { "weight": 50, "rarity": "common", "filter": "borderless" },
+          { "weight": 50, "rarity": "uncommon", "filter": "borderless" }
+        ]
+      },
+      {
+        "label": "Foil Borderless Common / Uncommon",
+        "foil": true,
+        "outcomes": [
+          { "weight": 50, "rarity": "common", "filter": "borderless" },
+          { "weight": 50, "rarity": "uncommon", "filter": "borderless" }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 86, "rarity": "rare" },
+          { "weight": 14, "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Foil-Etched Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 86, "rarity": "rare", "filter": "etched_foil" },
+          { "weight": 14, "rarity": "mythic", "filter": "etched_foil" }
+        ]
+      },
+      {
+        "label": "Extended-Art Rare / Mythic",
+        "outcomes": [
+          { "weight": 68.8, "rarity": "rare", "filter": "extended_art" },
+          { "weight": 11.2, "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 17.2, "rarity": "rare", "filter": "extended_art", "foil": true },
+          { "weight": 2.8, "rarity": "mythic", "filter": "extended_art", "foil": true }
+        ]
+      },
+      {
+        "label": "Borderless Rare / Mythic",
+        "outcomes": [
+          { "weight": 86, "rarity": "rare", "filter": "borderless" },
+          { "weight": 14, "rarity": "mythic", "filter": "borderless" }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic (4% textured foil)",
+        "foil": true,
+        "outcomes": [
+          { "weight": 82.6, "rarity": "rare" },
+          { "weight": 13.4, "rarity": "mythic" },
+          { "weight": 3.4, "rarity": "rare", "filter": "textured_foil", "label": "Textured Foil" },
+          { "weight": 0.6, "rarity": "mythic", "filter": "textured_foil", "label": "Textured Foil" }
+        ]
+      }
+    ]
+  }
+}

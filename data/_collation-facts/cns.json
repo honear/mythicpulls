@@ -1,0 +1,27 @@
+{
+  "code": "cns",
+  "name": "Conspiracy",
+  "released": "2014-06-06",
+  "composition": { "common": 80, "uncommon": 60, "rare": 35, "mythic": 10 },
+  "collationMethod": "sequential, A/B/C/D common runs",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "15-card pack plus an additional ad card. Pack: 10 commons, 3 uncommons, 1 rare, then either a conspiracy or a card with a draft-related ability, then an ad card. Foil conspiracy/draft cards displace the conspiracy/draft slot; otherwise a foil displaces a common and appears immediately after the rare. Probably not possible for two foils in one pack."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["conspiracy", "draft-matters"],
+  "statedRates": "foil common rate ~1/9; foil rare (plus mythic) rate ~1/28; conspiracy/draft foil common rate ~1/28",
+  "sourceNotes": "Draft-matters supplemental set. Composition also includes 13 conspiracy cards and 12 cards with draft-related abilities (collated in their own slot). Printed in USA. 36 packs per box."
+}

@@ -1,0 +1,27 @@
+{
+  "code": "akh",
+  "name": "Amonkhet",
+  "released": "2017-04-28",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "If a foil appears it displaces a common and appears after the rare. Common foils appear 1 in every 8 packs. Full-art lands appear in 1 of 4 packs; punch cards in 1 of 4 packs."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["masterpiece"],
+  "statedRates": "Masterpieces (Amonkhet Invocations) 1:1935 cards. Common foils 1 in 8 packs.",
+  "sourceNotes": "Large set. 30 masterpieces, four basic land variations. 36 packs per box. Printed in USA and Belgium."
+}

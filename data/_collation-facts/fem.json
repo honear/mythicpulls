@@ -1,0 +1,27 @@
+{
+  "code": "fem",
+  "name": "Fallen Empires",
+  "released": "1994-11",
+  "composition": { "common": null, "uncommon": null, "rare": 0, "mythic": 0 },
+  "collationMethod": "striped, 11x11 sheets; common sheet (C4/C3/C1) + uncommon sheet (U3/U2/U1)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 8,
+    "commons": 6,
+    "uncommons": 2,
+    "rares": 0,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "8-card booster: 6 from the common sheet, 2 from the uncommon sheet. No rare slot. Cards back-facing; sometimes commons first, sometimes uncommons first. Pre-foil era."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "no separate rares; common sheet has C4/C3/C1 cards (20 C3, 15 C4, 1 C1), uncommon sheet has U3/U2/U1 cards (25 U3, 5 U2, 36 U1)",
+  "sourceNotes": "Small set, 102 cards. Two print sheets only (common + uncommon); no distinct rare rarity. Many cards have multiple art variations per print. Page classes by print frequency so common/uncommon totals left null. Printed Belgium. 60 packs per box."
+}

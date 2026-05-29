@@ -1,0 +1,27 @@
+{
+  "code": "m15",
+  "name": "Magic 2015",
+  "released": "2014-07-18",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "US sequential, C1/C2 common collation",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "10 commons, 3 uncommons, 1 rare, 1 basic land, 1 ad card. If a foil appears it comes after the rare and displaces a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Core set. 15-card booster packs plus an additional ad card (36/box). Foil 1:67 cards. Printed in USA and Belgium. Uncommons split into four runs (A/B/C/D). The ad/marketing card carries tokens/tips/emblems on its front face (not a collectible token slot)."
+}

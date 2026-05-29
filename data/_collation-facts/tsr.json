@@ -1,0 +1,27 @@
+{
+  "code": "tsr",
+  "name": "Time Spiral Remastered",
+  "released": "2021-03-19",
+  "composition": { "common": 121, "uncommon": 100, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, A/B/C1/C2 common runs",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "33%",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "15-card pack: 10 commons, 3 uncommons, 1 rare, 1 timeshifted card, plus an ad card. The timeshifted slot is an old-border reprint. If a foil appears it displaces a common and comes after the timeshifted card. Marketing/ad cards all carry a token on the front face but are non-collectible."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["timeshifted", "retro frame"],
+  "statedRates": "Foil rate 33% of boosters.",
+  "sourceNotes": "Extra-large remastered set with 121 'timeshifted' old-border reprints occupying a dedicated slot in every pack. 36 packs per box. Printed in English in the USA; figures from US Pack Anatomy."
+}

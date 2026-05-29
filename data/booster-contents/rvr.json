@@ -1,0 +1,150 @@
+{
+  "_doc": "Ravnica Remastered (RVR) booster recipes. Source: https://magic.wizards.com/en/news/feature/collecting-ravnica-remastered . The set shipped Draft + Collector Boosters only (no Play Booster). authoritative=true. Retro-frame cards now use the 'retro_frame' filter (frame:1997) across both the Draft retro slot and the Collector retro common/uncommon/rare/mythic slots, including the Premium slot's Retro and Retro Exclusive outcomes. Borderless-anime cards use the 'borderless' filter (no anime-specific filter exists; borderless is the accurate border treatment). The Draft pack's '8-10 commons / 3-4 uncommons' range with a 33% foil is modeled as 8 fixed commons + 3 fixed uncommons + a 33%-foil wildcard-ish common slot, keeping the pack at 15 cards. The mana slot (Guildgate/Signet/shock land/Chromatic Lantern) is modeled via the non_basic_land filter since those treatments lack a dedicated filter. Serialized and Chromatic Lantern appear as labeled outcomes.",
+
+  "authoritative": true,
+
+  "draft": {
+    "cardCount": 15,
+    "tagline": "15 cards · retro-frame slot every pack · mana slot (Guildgate/Signet/shock) · 33% foil",
+    "slots": [
+      {
+        "label": "Token / Ad Card",
+        "token": true,
+        "outcomes": [{ "weight": 1, "set": "$tokens" }]
+      },
+      {
+        "label": "Common",
+        "count": 7,
+        "outcomes": [{ "weight": 1, "rarity": "common" }]
+      },
+      {
+        "label": "Common / Foil (33% foil)",
+        "outcomes": [
+          { "weight": 67, "rarity": "common" },
+          { "weight": 23, "rarity": "common", "foil": true },
+          { "weight": 7, "rarity": "uncommon", "foil": true },
+          { "weight": 2.7, "rarity": "rare", "foil": true },
+          { "weight": 0.3, "rarity": "mythic", "foil": true }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [{ "weight": 1, "rarity": "uncommon" }]
+      },
+      {
+        "label": "Mana Slot",
+        "outcomes": [
+          { "weight": 58, "rarity": "common", "filter": "non_basic_land", "label": "Guildgate" },
+          { "weight": 33, "rarity": "uncommon", "label": "Signet" },
+          { "weight": 9, "rarity": "rare", "label": "Shock Land / Chromatic Lantern" }
+        ]
+      },
+      {
+        "label": "Retro Frame (any rarity)",
+        "outcomes": [
+          { "weight": 64.2, "rarity": "common", "filter": "retro_frame" },
+          { "weight": 24, "rarity": "uncommon", "filter": "retro_frame" },
+          { "weight": 9.1, "rarity": "rare", "filter": "retro_frame" },
+          { "weight": 2.7, "rarity": "mythic", "filter": "retro_frame" }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 86, "rarity": "rare" },
+          { "weight": 14, "rarity": "mythic" }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 15,
+    "tagline": "15 premium cards · retro-frame & borderless-anime chases · shock lands · serialized 1-in-100",
+    "slots": [
+      {
+        "label": "Foil Common",
+        "count": 3,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "rarity": "common" }]
+      },
+      {
+        "label": "Foil Token",
+        "token": true,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "$tokens" }]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "rarity": "uncommon" }]
+      },
+      {
+        "label": "Foil Mana Slot",
+        "foil": true,
+        "outcomes": [
+          { "weight": 58, "rarity": "common", "filter": "non_basic_land", "label": "Guildgate" },
+          { "weight": 33, "rarity": "uncommon", "label": "Signet" },
+          { "weight": 9, "rarity": "rare", "label": "Shock Land" }
+        ]
+      },
+      {
+        "label": "Foil Retro Frame Common / Uncommon",
+        "foil": true,
+        "outcomes": [
+          { "weight": 58.14, "rarity": "common", "filter": "retro_frame" },
+          { "weight": 41.86, "rarity": "uncommon", "filter": "retro_frame" }
+        ]
+      },
+      {
+        "label": "Retro Frame Common / Uncommon",
+        "count": 2,
+        "outcomes": [
+          { "weight": 58.14, "rarity": "common", "filter": "retro_frame" },
+          { "weight": 41.86, "rarity": "uncommon", "filter": "retro_frame" }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 88, "rarity": "rare" },
+          { "weight": 12, "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Non-Foil Retro Frame Rare / Mythic",
+        "outcomes": [
+          { "weight": 89.7, "rarity": "rare", "filter": "retro_frame" },
+          { "weight": 10.3, "rarity": "mythic", "filter": "retro_frame" }
+        ]
+      },
+      {
+        "label": "Non-Foil Borderless Rare / Mythic / Shock Land",
+        "outcomes": [
+          { "weight": 52, "rarity": "rare", "filter": "borderless", "label": "Anime Rare" },
+          { "weight": 5.5, "rarity": "mythic", "filter": "planeswalker", "label": "Anime Planeswalker" },
+          { "weight": 15, "rarity": "mythic", "filter": "borderless", "label": "Anime Mythic" },
+          { "weight": 27.5, "rarity": "rare", "filter": "borderless", "label": "Shock Land" }
+        ]
+      },
+      {
+        "label": "Premium Foil Rare / Mythic / Serialized",
+        "foil": true,
+        "outcomes": [
+          { "weight": 55.2, "rarity": "rare", "filter": "retro_frame", "label": "Retro Rare" },
+          { "weight": 5.3, "rarity": "mythic", "filter": "retro_frame", "label": "Retro Mythic" },
+          { "weight": 10.6, "rarity": "rare", "filter": "retro_frame", "label": "Retro Exclusive Rare" },
+          { "weight": 2.1, "rarity": "mythic", "filter": "retro_frame", "label": "Retro Exclusive Mythic" },
+          { "weight": 13.4, "rarity": "rare", "filter": "borderless", "label": "Anime Rare" },
+          { "weight": 1.4, "rarity": "mythic", "filter": "planeswalker", "label": "Anime Planeswalker" },
+          { "weight": 4, "rarity": "mythic", "filter": "borderless", "label": "Anime Mythic" },
+          { "weight": 7, "rarity": "rare", "filter": "borderless", "label": "Shock Land" },
+          { "weight": 1, "rarity": "mythic", "filter": "serialized", "label": "Serialized" }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "code": "clb",
+  "name": "Commander Legends: Battle for Baldur's Gate",
+  "released": "2022-06-10",
+  "composition": { "common": 141, "uncommon": 120, "rare": 77, "mythic": 22 },
+  "collationMethod": "sequential, A/B/C common runs (Belgian)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 20,
+    "commons": 13,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": null,
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "20-card pack: 13 commons, 2-3 non-legendary uncommons, legendary/background slots, 1 non-legendary rare, 1 guaranteed foil, plus an ad card. Always exactly one background card (any rarity); 1-2 legendaries (uncommon/rare/mythic). If Faceless One (special rarity) appears, it is the last common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["showcase"],
+  "statedRates": null,
+  "sourceNotes": "Extra-large Commander draft set with 20-card boosters featuring a guaranteed background card plus legendary creatures/planeswalkers and a guaranteed foil. 24 packs per box. One card of special rarity (Faceless One). Showcase commons appear in the B common run (2 of 8 copies). Printed in Belgium; figures from Belgian Draft Booster Pack Anatomy."
+}

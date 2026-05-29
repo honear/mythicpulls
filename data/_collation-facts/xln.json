@@ -1,0 +1,27 @@
+{
+  "code": "xln",
+  "name": "Ixalan",
+  "released": "2017-09-29",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "If a foil appears it displaces a common. Common foils 1 in every 8 packs. A double-faced card can replace the rare and always comes with a checklist instead of a land; DFCs have the same rarity as other rares per MaRo. Land slot may be a basic land or checklist."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["double-faced"],
+  "statedRates": "Common foils 1 in 8 packs. DFCs share normal rare rarity (each rare 2/141, each mythic 1/141).",
+  "sourceNotes": "Large set. 10 double-faced cards, four basic land variations. 36 packs per box. Printed in USA and Belgium."
+}

@@ -1,0 +1,181 @@
+{
+  "_doc": "Marvel's Spider-Man (code SPM) — Universes Beyond set. Source: https://magic.wizards.com/en/news/feature/collecting-marvels-spider-man . Lineup is Play Boosters + Collector Boosters only (no Draft). Percentages taken verbatim from the article's odds tables. Approximations: the article cites separate printings (SPE 'Welcome Deck' reprints, scene cards, source material, web-slinger / panel / classic-comic Booster Fun frames, textured-foil costume-change, borderless Gauntlet Soul Stone, textless cosmic-foil Soul Stone) that have no dedicated Scryfall sub-set code we model, so they are approximated against the main SPM pool with the nearest available filter: web-slinger/panel/scene/classic-comic -> 'showcase', extended-art -> 'extended_art', borderless/source-material chases -> 'borderless'. The borderless costume-change cards are a specifically-named premium finish, so that chase is targeted exactly via promo_types -> 'textured_foil' instead of the 'borderless' stand-in. The textless 'cosmic foil' Soul Stone stays on 'serialized' as a quantity stand-in — Scryfall's cosmic-foil promo_type has no dedicated filter here and is NOT the same as galaxy_foil, so it is left as-is. The borderless Gauntlet Soul Stone appears only in traditional foil (no named premium finish) so it stays 'borderless'. Sub-percentages reported as 'less than 1%' are entered as 0.5; the 'extremely low quantity' serialized Soul Stone is 0.1.",
+
+  "authoritative": true,
+
+  "play": {
+    "cardCount": 14,
+    "tagline": "14 cards · 1 rare/mythic · 1 foil · 1 land · web-slinger & panel rates faithful to Wizards' spec",
+    "slots": [
+      { "label": "Token", "token": true, "outcomes": [{ "weight": 1, "set": "$tokens" }] },
+
+      {
+        "label": "Common",
+        "count": 6,
+        "outcomes": [
+          { "weight": 95.8, "set": "SPM", "rarity": "common" },
+          { "weight": 4.2,  "set": "SPM", "rarity": "common", "filter": "borderless", "label": "Source Material" }
+        ]
+      },
+
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          { "weight": 96.4, "set": "SPM", "rarity": "uncommon" },
+          { "weight": 3.6,  "set": "SPM", "rarity": "uncommon", "filter": "showcase", "label": "Scene Card" }
+        ]
+      },
+
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          { "weight": 70.8, "set": "SPM", "rarity": "common" },
+          { "weight": 4.1,  "set": "SPM", "rarity": "uncommon" },
+          { "weight": 20.9, "set": "SPM", "rarity": "rare" },
+          { "weight": 2.9,  "set": "SPM", "rarity": "mythic" },
+          { "weight": 0.5,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Web-Slinger / Panel" },
+          { "weight": 0.5,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Scene" }
+        ]
+      },
+
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 83.7, "set": "SPM", "rarity": "rare" },
+          { "weight": 11.7, "set": "SPM", "rarity": "mythic" },
+          { "weight": 1.2,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Web-Slinger" },
+          { "weight": 0.5,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Web-Slinger" },
+          { "weight": 2.1,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Panel" },
+          { "weight": 0.5,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Panel" },
+          { "weight": 1,    "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Scene" }
+        ]
+      },
+
+      {
+        "label": "Foil",
+        "foil": true,
+        "outcomes": [
+          { "weight": 65.8, "set": "SPM", "rarity": "common" },
+          { "weight": 24.1, "set": "SPM", "rarity": "uncommon" },
+          { "weight": 7.8,  "set": "SPM", "rarity": "rare" },
+          { "weight": 1.1,  "set": "SPM", "rarity": "mythic" },
+          { "weight": 0.5,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Booster Fun" },
+          { "weight": 0.5,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Booster Fun" }
+        ]
+      },
+
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          { "weight": 40, "set": "SPM", "filter": "dual_land_common" },
+          { "weight": 20, "set": "SPM", "filter": "basic_land", "label": "Spiderweb" },
+          { "weight": 20, "set": "SPM", "filter": "basic_land" },
+          { "weight": 10, "set": "SPM", "filter": "dual_land_common", "foil": true },
+          { "weight": 5,  "set": "SPM", "filter": "basic_land", "foil": true, "label": "Spiderweb" },
+          { "weight": 5,  "set": "SPM", "filter": "basic_land", "foil": true }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards · all-foil core · extended-art, panel, classic-comic & Soul Stone chases",
+    "slots": [
+      {
+        "label": "Art Card / Token",
+        "token": true,
+        "outcomes": [
+          { "weight": 65, "set": "$tokens", "foil": true, "label": "Foil Double-Sided Token" },
+          { "weight": 30, "set": "$tokens", "label": "Art Card" },
+          { "weight": 5,  "set": "$tokens", "filter": "gold_stamped", "label": "Gold-Stamped Art Card" }
+        ]
+      },
+
+      {
+        "label": "Foil Common",
+        "count": 5,
+        "foil": true,
+        "outcomes": [
+          { "weight": 85.8, "set": "SPM", "rarity": "common" },
+          { "weight": 7.1,  "set": "SPM", "filter": "dual_land_common", "label": "Two-Color Land" },
+          { "weight": 7.1,  "set": "SPM", "rarity": "common", "label": "SPE Reprint" }
+        ]
+      },
+
+      {
+        "label": "Foil Uncommon",
+        "count": 4,
+        "foil": true,
+        "outcomes": [
+          { "weight": 87.3, "set": "SPM", "rarity": "uncommon" },
+          { "weight": 7.9,  "set": "SPM", "rarity": "uncommon", "label": "SPE Reprint" },
+          { "weight": 4.8,  "set": "SPM", "rarity": "uncommon", "filter": "showcase", "label": "Scene Card" }
+        ]
+      },
+
+      {
+        "label": "Foil Spiderweb Basic Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "SPM", "filter": "basic_land", "label": "Spiderweb" }]
+      },
+
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 77.9, "set": "SPM", "rarity": "rare" },
+          { "weight": 11,   "set": "SPM", "rarity": "mythic" },
+          { "weight": 7.4,  "set": "SPM", "rarity": "rare",   "label": "Welcome Deck Reprint" },
+          { "weight": 3.7,  "set": "SPM", "rarity": "mythic", "label": "Welcome Deck Reprint" }
+        ]
+      },
+
+      {
+        "label": "Non-Foil Booster Fun",
+        "count": 2,
+        "outcomes": [
+          { "weight": 50.8, "set": "SPM", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 5.4,  "set": "SPM", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 9.2,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Web-Slinger" },
+          { "weight": 1.5,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Web-Slinger" },
+          { "weight": 15.4, "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Panel" },
+          { "weight": 3.1,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Panel" },
+          { "weight": 4.6,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Scene" },
+          { "weight": 0.8,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Scene" },
+          { "weight": 9.2,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Scene Box" }
+        ]
+      },
+
+      {
+        "label": "Borderless Source Material",
+        "outcomes": [
+          { "weight": 75, "set": "SPM", "filter": "borderless", "label": "Source Material" },
+          { "weight": 25, "set": "SPM", "filter": "borderless", "foil": true, "label": "Source Material Foil" }
+        ]
+      },
+
+      {
+        "label": "Foil Booster Fun",
+        "foil": true,
+        "outcomes": [
+          { "weight": 54,   "set": "SPM", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 5.7,  "set": "SPM", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 9.8,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Web-Slinger" },
+          { "weight": 1.6,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Web-Slinger" },
+          { "weight": 16.4, "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Panel" },
+          { "weight": 3.2,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Panel" },
+          { "weight": 4.9,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Scene" },
+          { "weight": 0.5,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Scene" },
+          { "weight": 2.5,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Classic Comic" },
+          { "weight": 0.5,  "set": "SPM", "rarity": "mythic", "filter": "textured_foil", "label": "Textured Foil Costume Change" },
+          { "weight": 0.5,  "set": "SPM", "rarity": "mythic", "filter": "borderless", "label": "Gauntlet Soul Stone" },
+          { "weight": 0.1,  "set": "SPM", "rarity": "mythic", "filter": "serialized", "label": "Textless Cosmic Foil Soul Stone" }
+        ]
+      }
+    ]
+  }
+}

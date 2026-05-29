@@ -1,0 +1,27 @@
+{
+  "code": "bbd",
+  "name": "Battlebond",
+  "released": "2018-06-08",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, Japanese 112-card sheets",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "ad card + basic land + rare + 3 uncommons + 10 commons. Foil (if present) appears between land and rare, displacing a common. Partner pairs always appear together: a rare/mythic partner pair fills both rare slots and drops an uncommon to 2; a foil partner adds a second foil and displaces a second common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": "Foil 1:67 cards. Chance of a rare/mythic partner pair ~1/10; uncommon partner pair ~29/139 (~1/5). Mythic rate probably 1/8 or 7/55.",
+  "sourceNotes": "Two-player set with partner mechanic. Includes one variation of each basic land in packs. Printed in Japan, 112-card sheets, front-facing. 36 packs per box."
+}

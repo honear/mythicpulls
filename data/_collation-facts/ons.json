@@ -1,0 +1,27 @@
+{
+  "code": "ons",
+  "name": "Onslaught",
+  "released": "2002-10-07",
+  "composition": { "common": 110, "uncommon": 110, "rare": 110, "mythic": 0 },
+  "collationMethod": "sequential (US); striped (Belgian)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": "1:70",
+    "foilGuaranteed": false,
+    "foilReplaces": "same rarity",
+    "notes": "Foil appears at end of pack, displacing a card of the same rarity. Foil basic lands displace a common (basic lands otherwise do not appear in booster packs)."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Large set. Printed in USA (sequential) and Belgium. 36 packs per box. No basic land or ad card in booster. Tournament packs (30 lands, 3 rares, 10 uncommons, 32 commons) described but not modelled."
+}

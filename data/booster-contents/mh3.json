@@ -1,0 +1,397 @@
+{
+  "_doc": "Modern Horizons 3 (MH3) Play + Collector recipes. Source: Wizards 'Collecting Modern Horizons 3' (https://magic.wizards.com/en/news/feature/collecting-modern-horizons-3). MH3 had NO standard Draft Booster \u2014 Play Boosters are the draftable product \u2014 so only play + collector are defined and authoritative is true (draft is hidden). The 'New-to-Modern' bonus-sheet slot pulls cards from the MH3 Commander set; we approximate it with the MH3 Commander code M3C. Retro frame (classic 1997-style framing, 58 MH3 cards) now uses the dedicated retro_frame filter instead of a showcase stand-in, across the Play rare/mythic + New-to-Modern slots and the Collector retro-frame / rare-mythic / Booster Fun slots. Full-art Eldrazi lands and full-art Snow-Covered Wastes now use the full_art filter instead of basic_land. Remaining Booster Fun treatments (frame break, profile) have no dedicated filter and stay folded into borderless, noted inline. Textured-foil Special Guests / ripple-foil chases stay on special_guest / serialized as before. Special Guests reference the SPG promo set. Jumpstart, Commander decks, Prerelease, and Bundles are intentionally omitted.",
+  "authoritative": true,
+  "play": {
+    "cardCount": 14,
+    "tagline": "14 cards \u00b7 1 New-to-Modern card \u00b7 1 traditional foil \u00b7 Special Guest 1-in-64 \u00b7 rates per Wizards' spec",
+    "slots": [
+      {
+        "label": "Common",
+        "count": 6,
+        "outcomes": [
+          {
+            "weight": 98.4,
+            "rarity": "common"
+          },
+          {
+            "weight": 1.6,
+            "set": "SPG",
+            "filter": "special_guest",
+            "label": "Special Guest"
+          }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          {
+            "weight": 80,
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 20,
+            "rarity": "uncommon",
+            "filter": "double_faced",
+            "label": "DFC Uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 79.8,
+            "rarity": "rare"
+          },
+          {
+            "weight": 13.0,
+            "rarity": "mythic"
+          },
+          {
+            "weight": 5.1,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless"
+          },
+          {
+            "weight": 2.1,
+            "rarity": "rare",
+            "filter": "retro_frame",
+            "label": "Retro Frame"
+          }
+        ]
+      },
+      {
+        "label": "New-to-Modern",
+        "outcomes": [
+          {
+            "weight": 75,
+            "set": "M3C",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 21.3,
+            "set": "M3C",
+            "rarity": "rare"
+          },
+          {
+            "weight": 2.3,
+            "set": "M3C",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 0.8,
+            "set": "M3C",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Frame Break"
+          },
+          {
+            "weight": 0.3,
+            "set": "M3C",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Profile"
+          },
+          {
+            "weight": 0.2,
+            "set": "M3C",
+            "rarity": "rare",
+            "filter": "retro_frame",
+            "label": "Retro Frame"
+          }
+        ]
+      },
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          {
+            "weight": 41.7,
+            "rarity": "common"
+          },
+          {
+            "weight": 41.7,
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 6.7,
+            "rarity": "rare"
+          },
+          {
+            "weight": 1.1,
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Traditional Foil",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 67,
+            "rarity": "common"
+          },
+          {
+            "weight": 20,
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 10,
+            "rarity": "rare"
+          },
+          {
+            "weight": 3,
+            "rarity": "mythic"
+          }
+        ]
+      },
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          {
+            "weight": 50,
+            "rarity": "common",
+            "label": "Common"
+          },
+          {
+            "weight": 20,
+            "filter": "basic_land",
+            "label": "Basic Land"
+          },
+          {
+            "weight": 23.3,
+            "filter": "full_art_land",
+            "label": "Full-Art Eldrazi Land"
+          },
+          {
+            "weight": 6.7,
+            "filter": "full_art_land",
+            "foil": true,
+            "label": "Foil Full-Art Eldrazi Land"
+          }
+        ]
+      }
+    ]
+  },
+  "collector": {
+    "cardCount": 16,
+    "tagline": "16 cards \u00b7 all-foil core \u00b7 retro-frame, borderless & extended-art chases \u00b7 Special Guest ~1-in-15.5",
+    "slots": [
+      {
+        "label": "Foil Token",
+        "token": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "$tokens"
+          }
+        ]
+      },
+      {
+        "label": "Foil Common",
+        "count": 4,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "common"
+          }
+        ]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "uncommon"
+          }
+        ]
+      },
+      {
+        "label": "Foil Full-Art Eldrazi Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "filter": "full_art_land"
+          }
+        ]
+      },
+      {
+        "label": "Retro Frame Common / Uncommon",
+        "outcomes": [
+          {
+            "weight": 48.7,
+            "rarity": "common",
+            "filter": "retro_frame",
+            "label": "Retro Frame Common"
+          },
+          {
+            "weight": 48.7,
+            "rarity": "uncommon",
+            "filter": "retro_frame",
+            "label": "Retro Frame Uncommon"
+          },
+          {
+            "weight": 2.6,
+            "filter": "full_art",
+            "label": "Full-Art Snow-Covered Wastes"
+          }
+        ]
+      },
+      {
+        "label": "Foil Retro Frame Common / Uncommon",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 48.7,
+            "rarity": "common",
+            "filter": "retro_frame",
+            "label": "Foil Retro Frame Common"
+          },
+          {
+            "weight": 48.7,
+            "rarity": "uncommon",
+            "filter": "retro_frame",
+            "label": "Foil Retro Frame Uncommon"
+          },
+          {
+            "weight": 2.6,
+            "filter": "full_art",
+            "foil": true,
+            "label": "Foil Full-Art Snow-Covered Wastes"
+          }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 79.8,
+            "rarity": "rare"
+          },
+          {
+            "weight": 13.0,
+            "rarity": "mythic"
+          },
+          {
+            "weight": 7.2,
+            "rarity": "rare",
+            "filter": "retro_frame",
+            "label": "Retro Frame"
+          }
+        ]
+      },
+      {
+        "label": "Booster Fun Commander",
+        "outcomes": [
+          {
+            "weight": 30,
+            "set": "M3C",
+            "rarity": "mythic",
+            "filter": "etched_foil",
+            "label": "Foil-Etched Commander Mythic"
+          },
+          {
+            "weight": 70,
+            "set": "M3C",
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "Booster Fun Commander"
+          }
+        ]
+      },
+      {
+        "label": "Non-Foil Booster Fun Rare / Mythic",
+        "count": 2,
+        "outcomes": [
+          {
+            "weight": 60,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless"
+          },
+          {
+            "weight": 25,
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "Extended Art"
+          },
+          {
+            "weight": 8,
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Mythic"
+          },
+          {
+            "weight": 4,
+            "rarity": "rare",
+            "filter": "retro_frame",
+            "label": "Retro Frame"
+          },
+          {
+            "weight": 3,
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "Extended Art Mythic"
+          }
+        ]
+      },
+      {
+        "label": "Foil Booster Fun Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 50,
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "Foil Extended Art"
+          },
+          {
+            "weight": 25,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Foil Borderless"
+          },
+          {
+            "weight": 10,
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "Foil Extended Art Mythic"
+          },
+          {
+            "weight": 6,
+            "rarity": "rare",
+            "filter": "retro_frame",
+            "label": "Foil Retro Frame"
+          },
+          {
+            "weight": 4,
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Foil Borderless Mythic"
+          },
+          {
+            "weight": 1.9,
+            "set": "SPG",
+            "filter": "special_guest",
+            "label": "Special Guest"
+          },
+          {
+            "weight": 0.1,
+            "rarity": "mythic",
+            "filter": "serialized",
+            "label": "Serialized Concept Eldrazi"
+          }
+        ]
+      }
+    ]
+  }
+}

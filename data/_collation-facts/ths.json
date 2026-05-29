@@ -1,0 +1,27 @@
+{
+  "code": "ths",
+  "name": "Theros",
+  "released": "2013-09-27",
+  "composition": { "common": 101, "uncommon": 60, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Foil appears after the rare, displacing a common."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Large set, four basic-land variations. Marketing/ad cards bear tokens/tips/emblems on front but counted as ad card. Foil 1:67. 36 packs per box."
+}

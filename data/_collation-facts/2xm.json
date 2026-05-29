@@ -1,0 +1,28 @@
+{
+  "code": "2xm",
+  "name": "Double Masters",
+  "released": "2020-08-07",
+  "composition": { "common": 91, "uncommon": 80, "rare": 121, "mythic": 40 },
+  "collationMethod": "sequential, 121-card sheets (US)",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 8,
+    "uncommons": 3,
+    "rares": 2,
+    "foils": 2,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "guaranteed",
+    "foilGuaranteed": true,
+    "foilReplaces": null,
+    "notes": "Two rares AND two foils per pack: 8 commons + 3 uncommons + 2 rares + 2 foils + ad card. Two foils come from different sheets in fixed order; cannot get two rare or two mythic foils, but a rare+mythic foil is possible. Empirical foil rarity (both slots): 1108/1534 common, 350 uncommon, 69 rare, 7 mythic."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["showcase"],
+  "statedRates": "Empirical foil rarity across both foil slots: 1108/1534 common, 350/1534 uncommon, 69/1534 rare, 7/1534 mythic.",
+  "sourceNotes": "Double Masters: unusual structure with 2 rare slots and 2 foil slots per pack. Printed USA and Belgium. 24 packs per box. Showcase variants seeded into uncommon runs. Sheet arrangement shared with VIP edition."
+}

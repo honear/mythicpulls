@@ -1,0 +1,168 @@
+{
+  "_doc": "Innistrad Remastered (INR) booster recipes. Source: https://magic.wizards.com/en/news/feature/collecting-innistrad-remastered . The set shipped Play + Collector Boosters only (no Draft Booster). authoritative=true. Retro-frame cards now use the 'retro_frame' filter (frame:1997) in both the Play retro slot and the Collector retro common/uncommon/rare/mythic outcomes. Generic 'Booster Fun' rare/mythic and common/uncommon outcomes now use the 'booster_fun' filter (promo_types:boosterfun) instead of standing in as borderless. Equinox and Fang are named showcase treatments kept on the 'showcase' filter (no dedicated filter exists). Movie Poster has no dedicated filter and stays on 'borderless' (its closest accurate border treatment). The double-faced common slot uses the 'double_faced' filter; serialized Edgar Markov uses the 'serialized' filter. The Collector foil retro-frame basic land keeps the 'basic_land' filter to preserve the basic-land constraint (one filter per outcome). cardCount includes the token/art-card slot.",
+
+  "authoritative": true,
+
+  "play": {
+    "cardCount": 15,
+    "tagline": "14 cards + token · dedicated double-faced common · retro-frame slot every pack · 1 foil",
+    "slots": [
+      {
+        "label": "Token / Art Card",
+        "token": true,
+        "outcomes": [{ "weight": 1, "set": "$tokens" }]
+      },
+      {
+        "label": "Single-Faced Common",
+        "count": 5,
+        "outcomes": [{ "weight": 1, "rarity": "common" }]
+      },
+      {
+        "label": "Double-Faced Common",
+        "outcomes": [{ "weight": 1, "rarity": "common", "filter": "double_faced" }]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          { "weight": 99.4, "rarity": "uncommon" },
+          { "weight": 0.6, "rarity": "uncommon", "filter": "showcase", "label": "Equinox" }
+        ]
+      },
+      {
+        "label": "Wildcard (any rarity)",
+        "outcomes": [
+          { "weight": 50, "rarity": "common" },
+          { "weight": 30, "rarity": "uncommon" },
+          { "weight": 13, "rarity": "rare" },
+          { "weight": 3, "rarity": "mythic" },
+          { "weight": 3, "rarity": "common", "filter": "borderless", "label": "Borderless Common" },
+          { "weight": 0.7, "rarity": "uncommon", "filter": "borderless", "label": "Borderless Uncommon" },
+          { "weight": 0.3, "rarity": "uncommon", "filter": "showcase", "label": "Fang Showcase" }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 82.9, "rarity": "rare" },
+          { "weight": 13.8, "rarity": "mythic" },
+          { "weight": 2.8, "rarity": "rare", "filter": "booster_fun", "label": "Booster Fun Rare" },
+          { "weight": 0.5, "rarity": "mythic", "filter": "booster_fun", "label": "Booster Fun Mythic" }
+        ]
+      },
+      {
+        "label": "Retro Frame (any rarity)",
+        "outcomes": [
+          { "weight": 64.2, "rarity": "common", "filter": "retro_frame" },
+          { "weight": 24, "rarity": "uncommon", "filter": "retro_frame" },
+          { "weight": 9.1, "rarity": "rare", "filter": "retro_frame" },
+          { "weight": 2.7, "rarity": "mythic", "filter": "retro_frame" }
+        ]
+      },
+      {
+        "label": "Foil (any rarity)",
+        "foil": true,
+        "outcomes": [
+          { "weight": 67, "rarity": "common" },
+          { "weight": 19.2, "rarity": "uncommon" },
+          { "weight": 9, "rarity": "rare" },
+          { "weight": 1, "rarity": "mythic" },
+          { "weight": 2.7, "rarity": "common", "filter": "booster_fun", "label": "Booster Fun Foil Common" },
+          { "weight": 0.1, "rarity": "uncommon", "filter": "booster_fun", "label": "Booster Fun Foil Uncommon" },
+          { "weight": 0.9, "rarity": "rare", "filter": "booster_fun", "label": "Booster Fun Foil Rare" },
+          { "weight": 0.1, "rarity": "mythic", "filter": "booster_fun", "label": "Booster Fun Foil Mythic" }
+        ]
+      },
+      {
+        "label": "Basic Land (20% foil)",
+        "basicLand": true,
+        "outcomes": [
+          { "weight": 80, "filter": "basic_land" },
+          { "weight": 20, "filter": "basic_land", "foil": true }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 15,
+    "tagline": "15 premium cards · Booster Fun every slot · movie-poster & serialized Edgar Markov chases",
+    "slots": [
+      {
+        "label": "Foil Common",
+        "count": 3,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "rarity": "common" }]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "rarity": "uncommon" }]
+      },
+      {
+        "label": "Foil Retro Frame Basic Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "filter": "basic_land" }]
+      },
+      {
+        "label": "Booster Fun Common / Uncommon",
+        "count": 2,
+        "outcomes": [
+          { "weight": 44.3, "rarity": "common", "filter": "retro_frame", "label": "Retro Common" },
+          { "weight": 48.1, "rarity": "uncommon", "filter": "retro_frame", "label": "Retro Uncommon" },
+          { "weight": 5.1, "rarity": "common", "filter": "booster_fun", "label": "Booster Fun Common" },
+          { "weight": 2.5, "rarity": "uncommon", "filter": "booster_fun", "label": "Booster Fun Uncommon" }
+        ]
+      },
+      {
+        "label": "Foil Booster Fun Common / Uncommon",
+        "foil": true,
+        "outcomes": [
+          { "weight": 44.3, "rarity": "common", "filter": "retro_frame", "label": "Retro Common" },
+          { "weight": 48.1, "rarity": "uncommon", "filter": "retro_frame", "label": "Retro Uncommon" },
+          { "weight": 5.1, "rarity": "common", "filter": "booster_fun", "label": "Booster Fun Common" },
+          { "weight": 2.5, "rarity": "uncommon", "filter": "booster_fun", "label": "Booster Fun Uncommon" }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 86.2, "rarity": "rare" },
+          { "weight": 13.8, "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Booster Fun Rare / Mythic",
+        "count": 2,
+        "outcomes": [
+          { "weight": 8.7, "rarity": "rare", "filter": "borderless", "label": "Movie Poster" },
+          { "weight": 41.7, "rarity": "rare", "filter": "retro_frame", "label": "Retro Rare" },
+          { "weight": 14.8, "rarity": "mythic", "filter": "retro_frame", "label": "Retro Mythic" },
+          { "weight": 29.6, "rarity": "rare", "filter": "booster_fun", "label": "Booster Fun Rare" },
+          { "weight": 5.2, "rarity": "mythic", "filter": "booster_fun", "label": "Booster Fun Mythic" }
+        ]
+      },
+      {
+        "label": "Foil Booster Fun Rare / Mythic / Serialized",
+        "foil": true,
+        "outcomes": [
+          { "weight": 10, "rarity": "rare", "filter": "borderless", "label": "Movie Poster" },
+          { "weight": 41.1, "rarity": "rare", "filter": "retro_frame", "label": "Retro Rare" },
+          { "weight": 14.6, "rarity": "mythic", "filter": "retro_frame", "label": "Retro Mythic" },
+          { "weight": 29.2, "rarity": "rare", "filter": "booster_fun", "label": "Booster Fun Rare" },
+          { "weight": 5.1, "rarity": "mythic", "filter": "booster_fun", "label": "Booster Fun Mythic" },
+          { "weight": 0.1, "rarity": "mythic", "filter": "serialized", "label": "Serialized Edgar Markov" }
+        ]
+      },
+      {
+        "label": "Foil Double-Sided Token",
+        "token": true,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "$tokens" }]
+      }
+    ]
+  }
+}

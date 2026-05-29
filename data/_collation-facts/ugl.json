@@ -1,0 +1,27 @@
+{
+  "code": "ugl",
+  "name": "Unglued",
+  "released": "1998-08-11",
+  "composition": { "common": 38, "uncommon": 22, "rare": 28, "mythic": 0 },
+  "collationMethod": "sequential, 10x11 sheets",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 10,
+    "commons": 6,
+    "uncommons": 2,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "10-card pack: 6 commons, 2 uncommons, 1 rare, 1 basic land. The 6 token cards are treated as uncommons for collation (so a token can appear in the uncommon slots). One variation of each standard basic land."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Silver-border 'Un-' set. Small set (smaller than a normal small set). 6 token cards collated as uncommons. Printed in USA. No foils (pre-1999). 48 packs per box."
+}

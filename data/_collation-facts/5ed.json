@@ -1,0 +1,27 @@
+{
+  "code": "5ed",
+  "name": "Fifth Edition",
+  "released": "1997-03",
+  "composition": { "common": 165, "uncommon": 132, "rare": 132, "mythic": 0 },
+  "collationMethod": "US sequential, 10x11 sheets; Belgian striped",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "Basic lands do NOT appear in booster packs. Commons split into three runs (A/B/C, US) or two sheets (Belgian)."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "English printings from both USA and Belgium; both are 11C+3U+1R 15-card packs (36/box). US uses sequential collation, Belgian uses striped. No basic lands in boosters. No foils (pre-1999). Four basic-land art variations."
+}

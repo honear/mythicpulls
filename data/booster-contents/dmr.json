@@ -1,0 +1,141 @@
+{
+  "_doc": "Dominaria Remastered (DMR) Draft + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-dominaria-remastered-and-product-overview . Lineup is Draft Booster + Collector Booster only (no Set Booster). Authoritative. Draft Booster = 12 cards: 9 commons (a traditional foil of any rarity replaces a common 33% of the time, modeled as a foil/common slot), 3 uncommons, 1 rare/mythic, 1 retro frame card of any rarity (retro mythic in 3% of packs, traditional foil retro mythic <1%), 1 retro frame basic land, 1 token/ad card. Collector Booster = 15 cards (14 game cards + 1 traditional-foil double-sided token). DMR has NO serialized cards. Retro frame card pool: 24 C / 36 U / 60 R / 20 M. Sub-set codes: DMR main, TDMR tokens. Retro frame card outcomes now target the retro_frame filter (frame=1997) exactly — previously approximated as showcase. Borderless rares/mythics use the borderless filter (correct). The retro-frame basic-land slots keep the basic_land filter as the load-bearing land constraint (no composite retro+basic filter exists); traditional-foil-retro-mythic 9% Collector rate folded into the chase slot.",
+
+  "authoritative": true,
+
+  "draft": {
+    "cardCount": 16,
+    "tagline": "15 cards + token · 1 retro frame card · retro basic land · 33% foil",
+    "slots": [
+      {
+        "label": "Token / Ad Card",
+        "token": true,
+        "outcomes": [{ "weight": 1, "set": "TDMR" }]
+      },
+      {
+        "label": "Retro Frame Basic Land",
+        "basicLand": true,
+        "outcomes": [{ "weight": 1, "set": "DMR", "filter": "basic_land", "label": "Retro Frame Basic" }]
+      },
+      {
+        "label": "Common",
+        "count": 8,
+        "outcomes": [{ "weight": 1, "set": "DMR", "rarity": "common" }]
+      },
+      {
+        "label": "Foil / Common (33% foil)",
+        "outcomes": [
+          { "weight": 67,  "set": "DMR", "rarity": "common" },
+          { "weight": 18,  "set": "DMR", "rarity": "common",   "foil": true },
+          { "weight": 8,   "set": "DMR", "rarity": "uncommon", "foil": true },
+          { "weight": 5,   "set": "DMR", "rarity": "rare",     "foil": true },
+          { "weight": 2,   "set": "DMR", "rarity": "mythic",   "foil": true }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [{ "weight": 1, "set": "DMR", "rarity": "uncommon" }]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 86, "set": "DMR", "rarity": "rare" },
+          { "weight": 14, "set": "DMR", "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Retro Frame Card",
+        "outcomes": [
+          { "weight": 17, "set": "DMR", "rarity": "common",   "filter": "retro_frame", "label": "Retro Frame" },
+          { "weight": 25, "set": "DMR", "rarity": "uncommon", "filter": "retro_frame", "label": "Retro Frame" },
+          { "weight": 41, "set": "DMR", "rarity": "rare",     "filter": "retro_frame", "label": "Retro Frame" },
+          { "weight": 3,  "set": "DMR", "rarity": "mythic",   "filter": "retro_frame", "label": "Retro Frame Mythic" }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards + token · all-foil bulk · retro & borderless rare chases · foil token",
+    "slots": [
+      {
+        "label": "Foil Double-Sided Token",
+        "token": true,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "TDMR", "label": "Foil Token" }]
+      },
+      {
+        "label": "Foil Common",
+        "count": 5,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "DMR", "rarity": "common" }]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 2,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "DMR", "rarity": "uncommon" }]
+      },
+      {
+        "label": "Foil Retro Frame Basic Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "DMR", "filter": "basic_land", "label": "Retro Frame Basic" }]
+      },
+      {
+        "label": "Non-foil Retro / Borderless Common or Uncommon",
+        "count": 2,
+        "outcomes": [
+          { "weight": 30, "set": "DMR", "rarity": "common",   "filter": "retro_frame", "label": "Retro Frame" },
+          { "weight": 25, "set": "DMR", "rarity": "uncommon", "filter": "retro_frame", "label": "Retro Frame" },
+          { "weight": 25, "set": "DMR", "rarity": "common",   "filter": "borderless" },
+          { "weight": 20, "set": "DMR", "rarity": "uncommon", "filter": "borderless" }
+        ]
+      },
+      {
+        "label": "Foil Retro / Borderless Common or Uncommon",
+        "foil": true,
+        "outcomes": [
+          { "weight": 30, "set": "DMR", "rarity": "common",   "filter": "retro_frame", "label": "Retro Frame" },
+          { "weight": 25, "set": "DMR", "rarity": "uncommon", "filter": "retro_frame", "label": "Retro Frame" },
+          { "weight": 25, "set": "DMR", "rarity": "common",   "filter": "borderless" },
+          { "weight": 20, "set": "DMR", "rarity": "uncommon", "filter": "borderless" }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 86, "set": "DMR", "rarity": "rare" },
+          { "weight": 14, "set": "DMR", "rarity": "mythic" }
+        ]
+      },
+      {
+        "label": "Non-foil Retro Frame Rare / Mythic",
+        "outcomes": [
+          { "weight": 86, "set": "DMR", "rarity": "rare",   "filter": "retro_frame", "label": "Retro Frame" },
+          { "weight": 14, "set": "DMR", "rarity": "mythic", "filter": "retro_frame", "label": "Retro Frame" }
+        ]
+      },
+      {
+        "label": "Non-foil Borderless Rare / Mythic",
+        "outcomes": [
+          { "weight": 86, "set": "DMR", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 14, "set": "DMR", "rarity": "mythic", "filter": "borderless" }
+        ]
+      },
+      {
+        "label": "Foil Retro / Borderless Rare or Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 38, "set": "DMR", "rarity": "rare",   "filter": "retro_frame", "label": "Retro Frame" },
+          { "weight": 9,  "set": "DMR", "rarity": "mythic", "filter": "retro_frame", "label": "Foil Retro Frame Mythic" },
+          { "weight": 41, "set": "DMR", "rarity": "rare",   "filter": "borderless" },
+          { "weight": 12, "set": "DMR", "rarity": "mythic", "filter": "borderless" }
+        ]
+      }
+    ]
+  }
+}

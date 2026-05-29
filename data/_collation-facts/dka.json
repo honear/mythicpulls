@@ -1,0 +1,63 @@
+{
+  "code": "dka",
+  "name": "Dark Ascension",
+  "released": "2012-02-03",
+  "composition": {
+    "common": 60,
+    "uncommon": 40,
+    "rare": 35,
+    "mythic": 10
+  },
+  "collationMethod": "sequential",
+  "packTypes": [
+    "draft"
+  ],
+  "draft": {
+    "cardCount": 15,
+    "commons": 9,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Only 9 commons; pack also includes 1 double-faced card and either a basic land (1/4) or a checklist (3/4). Foil is the last card and displaces a common (unlike Innistrad, foil DFCs also displace commons). Innistrad basic lands appear in packs. [Refined: added dedicated DFC slot (filter: double_faced) so the pack totals 15.]",
+    "extraSlots": [
+      {
+        "label": "Double-Faced Card",
+        "outcomes": [
+          {
+            "weight": 60,
+            "rarity": "common",
+            "filter": "double_faced"
+          },
+          {
+            "weight": 27.5,
+            "rarity": "uncommon",
+            "filter": "double_faced"
+          },
+          {
+            "weight": 10.5,
+            "rarity": "rare",
+            "filter": "double_faced"
+          },
+          {
+            "weight": 2,
+            "rarity": "mythic",
+            "filter": "double_faced"
+          }
+        ]
+      }
+    ]
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [
+    "double-faced cards"
+  ],
+  "statedRates": "basic land appears in 1/4 of packs, checklist in 3/4",
+  "sourceNotes": "Small set with 13 double-faced cards; 9 commons per pack to make room for the DFC slot. Uses Innistrad basic lands (not part of the set). Marketing/ad cards bear tokens/emblems on the front but counted as ad card. Foil 1:67. 36 packs per box."
+}

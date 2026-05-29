@@ -1,0 +1,17 @@
+{
+  "_doc": "Jumpstart 2022 (J22, 2022-12-02) — sold ONLY as Jumpstart Boosters, so `authoritative` offers just the Jumpstart pack (no play/draft/collector). APPROXIMATE recipe: no official 'Collecting' drop-rate article was processed, so a representative 20-card Jumpstart structure is used (two themed half-decks + lands, ~1 rare/mythic). Refine from an official source when available.",
+  "authoritative": true,
+  "jumpstart": {
+    "cardCount": 20,
+    "tagline": "20 cards · two themed half-decks + lands · shuffle together and play",
+    "slots": [
+      { "label": "Common", "count": 13, "outcomes": [{ "weight": 1, "rarity": "common" }] },
+      { "label": "Uncommon", "count": 4, "outcomes": [{ "weight": 1, "rarity": "uncommon" }] },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [{ "weight": 86, "rarity": "rare" }, { "weight": 14, "rarity": "mythic" }]
+      },
+      { "label": "Land", "count": 2, "basicLand": true, "outcomes": [{ "weight": 1, "filter": "basic_land" }] }
+    ]
+  }
+}

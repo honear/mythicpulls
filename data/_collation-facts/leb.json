@@ -1,0 +1,27 @@
+{
+  "code": "leb",
+  "name": "Limited Edition Beta",
+  "released": "1993-10",
+  "composition": { "common": 75, "uncommon": 95, "rare": 117, "mythic": 0 },
+  "collationMethod": "striped, 11x11 sheets",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "Basic lands appear on all print sheets, so a land can take the place of a common, uncommon, or rare. No dedicated land slot."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Second printing of the original Limited Edition. Sold in 15-card booster packs (36/box) and 60-card starter decks. Striped collation, 11x11 sheets, common-uncommon-rare ordering. Three basic-land art variations. No foils (pre-1999). Rare sheet filler is Islands."
+}

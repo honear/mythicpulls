@@ -1,0 +1,27 @@
+{
+  "code": "ogw",
+  "name": "Oath of the Gatewatch",
+  "released": "2016-01-22",
+  "composition": { "common": 69, "uncommon": 60, "rare": 42, "mythic": 12 },
+  "collationMethod": "sequential",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Land slot is a basic land or checklist. If a foil appears it displaces a common (this includes expeditions). Basic land variations from Battle for Zendikar can appear (including as foils)."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["expeditions"],
+  "statedRates": "20 Zendikar Expeditions.",
+  "sourceNotes": "Small set; 69 commons but collated as 70 because there are two versions of Wastes. Five variations of each standard basic land plus 20 expeditions. US printing sequential collation. 36 packs per box. Land/checklist sheet shared with Battle for Zendikar."
+}

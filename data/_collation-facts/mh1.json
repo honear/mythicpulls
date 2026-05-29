@@ -1,0 +1,27 @@
+{
+  "code": "mh1",
+  "name": "Modern Horizons",
+  "released": "2019-06-14",
+  "composition": { "common": 101, "uncommon": 80, "rare": 53, "mythic": 15 },
+  "collationMethod": "sequential, C1/C2 commons",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 10,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": true,
+    "token": false,
+    "adCard": true,
+    "foilOdds": "1:67",
+    "foilGuaranteed": false,
+    "foilReplaces": "common",
+    "notes": "Pack includes a basic snow land plus an art card (separate from the ad/token card). New US format: ad/token + art card + land + rare + 3 uncommons + 10 commons. Foil (if present) appears before the rare, displacing a common. Common foils appear ~1 in 8 packs; uncommon/rare foil rates not exact."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": ["art series"],
+  "statedRates": "Foil 1:67 cards. Common foils ~1 in 8 packs.",
+  "sourceNotes": "Large supplemental set. Pack contains an extra art card AND a token/ad card. Includes five basic snow lands (one in each pack). Printed USA (two formats: classic and 'new'; 'new' is more common) and Belgium. 36 packs per box. Modeled on the 'new' US 15-card draft format."
+}

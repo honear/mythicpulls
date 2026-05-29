@@ -1,0 +1,27 @@
+{
+  "code": "4ed",
+  "name": "Fourth Edition",
+  "released": "1995-04-01",
+  "composition": { "common": 121, "uncommon": 121, "rare": 121, "mythic": 0 },
+  "collationMethod": "striped, 11x11 sheets",
+  "packTypes": ["draft"],
+  "draft": {
+    "cardCount": 15,
+    "commons": 11,
+    "uncommons": 3,
+    "rares": 1,
+    "wildcard": false,
+    "land": false,
+    "token": false,
+    "adCard": false,
+    "foilOdds": null,
+    "foilGuaranteed": false,
+    "foilReplaces": null,
+    "notes": "Basic lands do not appear in booster packs. Uncommon-rare-common ordering."
+  },
+  "play": null,
+  "collector": null,
+  "specialTreatments": [],
+  "statedRates": null,
+  "sourceNotes": "Belgian printing, striped collation 11x11 sheets. No foils (pre-1999). Also sold in 60-card starter decks."
+}

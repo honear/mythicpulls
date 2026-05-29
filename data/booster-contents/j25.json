@@ -1,0 +1,32 @@
+{
+  "_doc": "Foundations Jumpstart (J25, 2024-11-15) — bespoke recipe from the official 'Collecting Foundations' article (magic.wizards.com/en/news/feature/collecting-foundations). Foundations Jumpstart is sold ONLY as Jumpstart Boosters, so `authoritative` offers just the Jumpstart pack. Each 20-card pack is two themed half-decks: per the article, 1–2 rare/mythic (33% chance of a second), 1 of 51 anime-style art cards, plus lands. Approximations: the exact common/uncommon/land split per theme varies and isn't published, so a representative split is used; the anime art card is modelled with a showcase filter.",
+  "authoritative": true,
+  "jumpstart": {
+    "cardCount": 20,
+    "tagline": "20 cards · two themed half-decks · 1–2 rares + an anime art card · shuffle together and play",
+    "slots": [
+      { "label": "Common", "count": 12, "outcomes": [{ "weight": 1, "rarity": "common" }] },
+      { "label": "Uncommon", "count": 3, "outcomes": [{ "weight": 1, "rarity": "uncommon" }] },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [{ "weight": 86, "rarity": "rare" }, { "weight": 14, "rarity": "mythic" }]
+      },
+      {
+        "label": "Bonus Rare / Mythic (33%)",
+        "outcomes": [
+          { "weight": 28.4, "rarity": "rare" },
+          { "weight": 4.6, "rarity": "mythic" },
+          { "weight": 67, "rarity": "common" }
+        ]
+      },
+      {
+        "label": "Anime Art Card",
+        "outcomes": [
+          { "weight": 80, "rarity": "rare", "filter": "showcase" },
+          { "weight": 20, "rarity": "mythic", "filter": "showcase" }
+        ]
+      },
+      { "label": "Land", "count": 2, "basicLand": true, "outcomes": [{ "weight": 1, "filter": "basic_land" }] }
+    ]
+  }
+}
