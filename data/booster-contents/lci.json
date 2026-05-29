@@ -1,5 +1,5 @@
 {
-  "_doc": "The Lost Caverns of Ixalan (LCI) recipes. Source: https://magic.wizards.com/en/news/feature/collecting-the-lost-caverns-of-ixalan . Lineup is Set + Draft + Collector (pre-Play-Booster era). The Set Booster is mapped to our 'play' slot since that is the consumer product type we render; Draft and Collector modeled directly. Set codes: LCI = main set, TLCI = tokens, ALCI = Art Series, SPG = Special Guests, REX = Jurassic World Collection bonus sheet, CLCI = LCI Commander. Finish filters: the neon-ink Booster Fun chase uses the neon_ink filter (verified: LCI carries promo_type neonink on 6 mythic borderless Cavern of Souls prints, all foil). Approximations that remain: showcase 'Legends of Ixalan' uses the showcase filter and borderless dinosaur uses the borderless filter; Cave nonbasic lands use non_basic_land; The List in the Set Booster token slot approximated via PLST; LCI has no raised/special-foil finish in the modeled products (only neon ink), so other foils stay plain foil:true. 33% common-replacement foil in Draft modeled as a dedicated foil-of-any-rarity slot reflecting the stated rate. [Integration: removed the Set-Booster-as-play slot \u2014 Set boosters are not a modelled product; LCI now offers Draft + Collector.]",
+  "_doc": "The Lost Caverns of Ixalan (LCI) recipes. Source: https://magic.wizards.com/en/news/feature/collecting-the-lost-caverns-of-ixalan . Lineup is Set + Draft + Collector (pre-Play-Booster era). The Set Booster is mapped to our 'play' slot since that is the consumer product type we render; Draft and Collector modeled directly. Set codes: LCI = main set, TLCI = tokens, ALCI = Art Series, SPG = Special Guests, REX = Jurassic World Collection bonus sheet, CLCI = LCI Commander. Finish filters: the neon-ink Booster Fun chase uses the neon_ink filter (verified: LCI carries promo_type neonink on 6 mythic borderless Cavern of Souls prints, all foil). Approximations that remain: showcase 'Legends of Ixalan' uses the showcase filter and borderless dinosaur uses the borderless filter; Cave nonbasic lands use non_basic_land; The List in the Set Booster token slot approximated via PLST; LCI has no raised/special-foil finish in the modeled products (only neon ink), so other foils stay plain foil:true. 33% common-replacement foil in Draft modeled as a dedicated foil-of-any-rarity slot reflecting the stated rate. [Integration: removed the Set-Booster-as-play slot \u2014 Set boosters are not a modelled product; LCI now offers Draft + Collector.] [Commander-slot fix: corrected CLCI -> LCC.]",
   "authoritative": true,
   "draft": {
     "cardCount": 16,
@@ -230,14 +230,14 @@
         "outcomes": [
           {
             "weight": 12.5,
-            "set": "CLCI",
+            "set": "lcc",
             "rarity": "rare",
             "filter": "extended_art",
             "foil": true
           },
           {
             "weight": 87.5,
-            "set": "CLCI",
+            "set": "lcc",
             "rarity": "rare",
             "filter": "extended_art"
           }

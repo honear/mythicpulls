@@ -1,178 +1,378 @@
 {
-  "_doc": "March of the Machine (MOM) Draft + Collector recipes from Wizards' 'Collecting March of the Machine' article (https://magic.wizards.com/en/news/feature/collecting-march-of-the-machine). Product lineup: Set, Draft, Collector, Jumpstart, Bundle, Commander, Prerelease — we model only Draft + Collector (authoritative). The Multiverse Legends bonus sheet is its own Scryfall set, code MUL, referenced via set:\"MUL\". Battle cards and non-battle double-faced cards are part of the MOM main set; modeled with the double_faced filter where the article calls them out as a dedicated slot. Finish filters: 'foil etched' Multiverse Legends use the etched_foil filter; 'halo foil' Multiverse Legends use the halo_foil filter (verified: all 65 MUL cards carry promo_type halofoil); 'serialized double rainbow' cards (MUL legends + the five MOM main-set Praetors) use the serialized filter (they carry promo_types serialized+doublerainbow). Approximations that remain: Commander/Jumpstart extended-art rares in Collector are approximated as MOM extended_art since those secondary sets aren't modeled; planar Booster Fun rares use showcase/borderless filters. Percentages match the article where stated.",
-
+  "_doc": "March of the Machine (MOM) Draft + Collector recipes from Wizards' 'Collecting March of the Machine' article (https://magic.wizards.com/en/news/feature/collecting-march-of-the-machine). Product lineup: Set, Draft, Collector, Jumpstart, Bundle, Commander, Prerelease \u2014 we model only Draft + Collector (authoritative). The Multiverse Legends bonus sheet is its own Scryfall set, code MUL, referenced via set:\"MUL\". Battle cards and non-battle double-faced cards are part of the MOM main set; modeled with the double_faced filter where the article calls them out as a dedicated slot. Finish filters: 'foil etched' Multiverse Legends use the etched_foil filter; 'halo foil' Multiverse Legends use the halo_foil filter (verified: all 65 MUL cards carry promo_type halofoil); 'serialized double rainbow' cards (MUL legends + the five MOM main-set Praetors) use the serialized filter (they carry promo_types serialized+doublerainbow). Approximations that remain: Commander/Jumpstart extended-art rares in Collector are approximated as MOM extended_art since those secondary sets aren't modeled; planar Booster Fun rares use showcase/borderless filters. Percentages match the article where stated. [Commander-slot fix: now references MOC (the MOM Commander set) so collector packs include Commander-deck cards.]",
   "authoritative": true,
-
   "draft": {
     "cardCount": 16,
-    "tagline": "15 cards + token · 1 Multiverse Legends · battle & double-faced slots · 1-in-3 traditional foil",
+    "tagline": "15 cards + token \u00b7 1 Multiverse Legends \u00b7 battle & double-faced slots \u00b7 1-in-3 traditional foil",
     "slots": [
       {
         "label": "Token / Ad Card",
         "token": true,
-        "outcomes": [{ "weight": 1, "label": "Token / Ad Card" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "label": "Token / Ad Card"
+          }
+        ]
       },
-
       {
         "label": "Common",
         "count": 6,
-        "outcomes": [{ "weight": 1, "rarity": "common" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "common"
+          }
+        ]
       },
-
       {
         "label": "Common / Traditional Foil",
         "outcomes": [
-          { "weight": 67, "rarity": "common", "label": "Common" },
-          { "weight": 18.4, "rarity": "common", "foil": true, "label": "Foil Common" },
-          { "weight": 9.2, "rarity": "uncommon", "foil": true, "label": "Foil Uncommon" },
-          { "weight": 3.4, "rarity": "rare", "foil": true, "label": "Foil Rare" },
-          { "weight": 1, "rarity": "mythic", "foil": true, "label": "Foil Mythic" },
-          { "weight": 1, "set": "MUL", "foil": true, "label": "Foil Multiverse Legends" }
+          {
+            "weight": 67,
+            "rarity": "common",
+            "label": "Common"
+          },
+          {
+            "weight": 18.4,
+            "rarity": "common",
+            "foil": true,
+            "label": "Foil Common"
+          },
+          {
+            "weight": 9.2,
+            "rarity": "uncommon",
+            "foil": true,
+            "label": "Foil Uncommon"
+          },
+          {
+            "weight": 3.4,
+            "rarity": "rare",
+            "foil": true,
+            "label": "Foil Rare"
+          },
+          {
+            "weight": 1,
+            "rarity": "mythic",
+            "foil": true,
+            "label": "Foil Mythic"
+          },
+          {
+            "weight": 1,
+            "set": "MUL",
+            "foil": true,
+            "label": "Foil Multiverse Legends"
+          }
         ]
       },
-
       {
         "label": "Uncommon",
         "count": 3,
-        "outcomes": [{ "weight": 1, "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "uncommon"
+          }
+        ]
       },
-
       {
         "label": "Battle",
         "outcomes": [
-          { "weight": 80, "rarity": "uncommon", "filter": "double_faced", "label": "Battle (Uncommon)" },
-          { "weight": 20, "rarity": "rare", "filter": "double_faced", "label": "Battle (Rare/Mythic)" }
+          {
+            "weight": 80,
+            "rarity": "uncommon",
+            "filter": "double_faced",
+            "label": "Battle (Uncommon)"
+          },
+          {
+            "weight": 20,
+            "rarity": "rare",
+            "filter": "double_faced",
+            "label": "Battle (Rare/Mythic)"
+          }
         ]
       },
-
       {
         "label": "Non-Battle Double-Faced Card",
         "outcomes": [
-          { "weight": 70, "rarity": "common", "filter": "double_faced", "label": "Common DFC" },
-          { "weight": 30, "rarity": "uncommon", "filter": "double_faced", "label": "Uncommon DFC" }
+          {
+            "weight": 70,
+            "rarity": "common",
+            "filter": "double_faced",
+            "label": "Common DFC"
+          },
+          {
+            "weight": 30,
+            "rarity": "uncommon",
+            "filter": "double_faced",
+            "label": "Uncommon DFC"
+          }
         ]
       },
-
       {
         "label": "Multiverse Legends",
         "outcomes": [
-          { "weight": 78, "set": "MUL", "rarity": "uncommon" },
-          { "weight": 18, "set": "MUL", "rarity": "rare" },
-          { "weight": 4, "set": "MUL", "rarity": "mythic" }
+          {
+            "weight": 78,
+            "set": "MUL",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 18,
+            "set": "MUL",
+            "rarity": "rare"
+          },
+          {
+            "weight": 4,
+            "set": "MUL",
+            "rarity": "mythic"
+          }
         ]
       },
-
       {
         "label": "Rare / Mythic",
         "outcomes": [
-          { "weight": 86, "rarity": "rare" },
-          { "weight": 14, "rarity": "mythic" }
+          {
+            "weight": 86,
+            "rarity": "rare"
+          },
+          {
+            "weight": 14,
+            "rarity": "mythic"
+          }
         ]
       },
-
       {
         "label": "Basic Land",
         "basicLand": true,
         "outcomes": [
-          { "weight": 67, "filter": "basic_land" },
-          { "weight": 33, "filter": "basic_land", "label": "Full-Art Basic Land" }
+          {
+            "weight": 67,
+            "filter": "basic_land"
+          },
+          {
+            "weight": 33,
+            "filter": "basic_land",
+            "label": "Full-Art Basic Land"
+          }
         ]
       }
     ]
   },
-
   "collector": {
     "cardCount": 16,
-    "tagline": "15 premium cards + art card · Multiverse Legends in every Collector · halo & serialized chases",
+    "tagline": "15 premium cards + art card \u00b7 Multiverse Legends in every Collector \u00b7 halo & serialized chases",
     "slots": [
       {
         "label": "Art Card / Token",
         "token": true,
-        "outcomes": [{ "weight": 1, "label": "Art Card / Token" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "label": "Art Card / Token"
+          }
+        ]
       },
-
       {
         "label": "Foil Common",
         "count": 5,
         "foil": true,
-        "outcomes": [{ "weight": 1, "rarity": "common" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "common"
+          }
+        ]
       },
-
       {
         "label": "Foil Uncommon",
         "count": 2,
         "foil": true,
-        "outcomes": [{ "weight": 1, "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "uncommon"
+          }
+        ]
       },
-
       {
         "label": "Traditional Foil Full-Art Basic Land",
         "basicLand": true,
         "foil": true,
-        "outcomes": [{ "weight": 1, "filter": "basic_land", "label": "Full-Art Basic Land" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "filter": "basic_land",
+            "label": "Full-Art Basic Land"
+          }
+        ]
       },
-
       {
         "label": "Foil Uncommon Multiverse Legends",
         "outcomes": [
-          { "weight": 75, "set": "MUL", "rarity": "uncommon", "foil": true, "filter": "etched_foil", "label": "Etched Foil Multiverse Legends" },
-          { "weight": 24, "set": "MUL", "rarity": "uncommon", "foil": true, "filter": "halo_foil", "label": "Halo Foil Multiverse Legends" },
-          { "weight": 1, "set": "MUL", "rarity": "uncommon", "foil": true, "filter": "serialized", "label": "Serialized Multiverse Legends" }
+          {
+            "weight": 75,
+            "set": "MUL",
+            "rarity": "uncommon",
+            "foil": true,
+            "filter": "etched_foil",
+            "label": "Etched Foil Multiverse Legends"
+          },
+          {
+            "weight": 24,
+            "set": "MUL",
+            "rarity": "uncommon",
+            "foil": true,
+            "filter": "halo_foil",
+            "label": "Halo Foil Multiverse Legends"
+          },
+          {
+            "weight": 1,
+            "set": "MUL",
+            "rarity": "uncommon",
+            "foil": true,
+            "filter": "serialized",
+            "label": "Serialized Multiverse Legends"
+          }
         ]
       },
-
       {
         "label": "Traditional Foil Uncommon Multiverse Legends",
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "MUL", "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "MUL",
+            "rarity": "uncommon"
+          }
+        ]
       },
-
       {
         "label": "Multiverse Legends Rare / Mythic",
         "outcomes": [
-          { "weight": 75, "set": "MUL", "rarity": "rare", "foil": true, "label": "Traditional Foil Multiverse Legends" },
-          { "weight": 14, "set": "MUL", "rarity": "rare", "foil": true, "filter": "etched_foil", "label": "Etched Foil Multiverse Legends" },
-          { "weight": 10, "set": "MUL", "rarity": "mythic", "foil": true, "filter": "halo_foil", "label": "Halo Foil Multiverse Legends" },
-          { "weight": 1, "set": "MUL", "rarity": "mythic", "foil": true, "filter": "serialized", "label": "Serialized Double Rainbow Multiverse Legends" }
+          {
+            "weight": 75,
+            "set": "MUL",
+            "rarity": "rare",
+            "foil": true,
+            "label": "Traditional Foil Multiverse Legends"
+          },
+          {
+            "weight": 14,
+            "set": "MUL",
+            "rarity": "rare",
+            "foil": true,
+            "filter": "etched_foil",
+            "label": "Etched Foil Multiverse Legends"
+          },
+          {
+            "weight": 10,
+            "set": "MUL",
+            "rarity": "mythic",
+            "foil": true,
+            "filter": "halo_foil",
+            "label": "Halo Foil Multiverse Legends"
+          },
+          {
+            "weight": 1,
+            "set": "MUL",
+            "rarity": "mythic",
+            "foil": true,
+            "filter": "serialized",
+            "label": "Serialized Double Rainbow Multiverse Legends"
+          }
         ]
       },
-
       {
         "label": "Foil Booster Fun Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 70, "rarity": "rare", "filter": "showcase", "label": "Planar Booster Fun Rare" },
-          { "weight": 8, "rarity": "mythic", "filter": "showcase", "label": "Planar Booster Fun Mythic" },
-          { "weight": 16, "rarity": "rare", "filter": "extended_art" },
-          { "weight": 5, "rarity": "mythic", "filter": "extended_art" },
-          { "weight": 1, "rarity": "mythic", "filter": "serialized", "label": "Serialized Praetor" }
+          {
+            "weight": 70,
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Planar Booster Fun Rare"
+          },
+          {
+            "weight": 8,
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Planar Booster Fun Mythic"
+          },
+          {
+            "weight": 16,
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 5,
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 1,
+            "rarity": "mythic",
+            "filter": "serialized",
+            "label": "Serialized Praetor"
+          }
         ]
       },
-
       {
-        "label": "Extended-Art Rare / Mythic",
+        "label": "Extended-Art Commander Rare / Mythic",
         "outcomes": [
-          { "weight": 85, "rarity": "rare", "filter": "extended_art" },
-          { "weight": 15, "rarity": "mythic", "filter": "extended_art" }
+          {
+            "weight": 85,
+            "rarity": "rare",
+            "filter": "extended_art",
+            "set": "moc"
+          },
+          {
+            "weight": 15,
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "set": "moc"
+          }
         ]
       },
-
       {
         "label": "Booster Fun Rare / Mythic",
         "outcomes": [
-          { "weight": 60, "rarity": "rare", "filter": "showcase", "label": "Planar Booster Fun Rare" },
-          { "weight": 8, "rarity": "mythic", "filter": "showcase", "label": "Planar Booster Fun Mythic" },
-          { "weight": 22, "rarity": "rare", "filter": "borderless" },
-          { "weight": 10, "rarity": "mythic", "filter": "borderless" }
+          {
+            "weight": 60,
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Planar Booster Fun Rare"
+          },
+          {
+            "weight": 8,
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Planar Booster Fun Mythic"
+          },
+          {
+            "weight": 22,
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 10,
+            "rarity": "mythic",
+            "filter": "borderless"
+          }
         ]
       },
-
       {
         "label": "Foil Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 86, "rarity": "rare" },
-          { "weight": 14, "rarity": "mythic" }
+          {
+            "weight": 86,
+            "rarity": "rare"
+          },
+          {
+            "weight": 14,
+            "rarity": "mythic"
+          }
         ]
       }
     ]

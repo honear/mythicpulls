@@ -1,164 +1,318 @@
 {
-  "_doc": "Phyrexia: All Will Be One (ONE) Draft + Collector recipes from Wizards' 'Collecting Phyrexia: All Will Be One' article (https://magic.wizards.com/en/news/feature/collecting-phyrexia-all-will-be-one). Product lineup: Set, Draft, Collector, Jumpstart, Bundle (Compleat Edition), Commander, Prerelease — we model only Draft + Collector (authoritative). Finish filters: 'step-and-compleat foil' outcomes use the step_and_compleat filter (verified: ONE carries promo_type stepandcompleat at common/uncommon/rare/mythic). Approximations that remain: 'ichor' is an alternate brushstroke art style, not a foil finish and has no Scryfall promo_type of its own, so ichor cards stay as plain cards of their rarity (noted in slot labels) and borderless ichor uses the borderless filter; 'oil slick raised foil' is exclusive to the Bundle: Compleat Edition Booster, which we don't model (Draft + Collector only), so it has no slot here; borderless fast-land / borderless manga / borderless concept-praetor Booster Fun variants are collapsed to the borderless filter; Commander/Jumpstart extended-art rares are approximated with the ONE main-set extended_art filter (those secondary sets aren't modeled). Percentages match the article where stated.",
-
+  "_doc": "Phyrexia: All Will Be One (ONE) Draft + Collector recipes from Wizards' 'Collecting Phyrexia: All Will Be One' article (https://magic.wizards.com/en/news/feature/collecting-phyrexia-all-will-be-one). Product lineup: Set, Draft, Collector, Jumpstart, Bundle (Compleat Edition), Commander, Prerelease \u2014 we model only Draft + Collector (authoritative). Finish filters: 'step-and-compleat foil' outcomes use the step_and_compleat filter (verified: ONE carries promo_type stepandcompleat at common/uncommon/rare/mythic). Approximations that remain: 'ichor' is an alternate brushstroke art style, not a foil finish and has no Scryfall promo_type of its own, so ichor cards stay as plain cards of their rarity (noted in slot labels) and borderless ichor uses the borderless filter; 'oil slick raised foil' is exclusive to the Bundle: Compleat Edition Booster, which we don't model (Draft + Collector only), so it has no slot here; borderless fast-land / borderless manga / borderless concept-praetor Booster Fun variants are collapsed to the borderless filter; Commander/Jumpstart extended-art rares are approximated with the ONE main-set extended_art filter (those secondary sets aren't modeled). Percentages match the article where stated. [Commander-slot fix: now references ONC (the ONE Commander set) so collector packs include Commander-deck cards.]",
   "authoritative": true,
-
   "draft": {
     "cardCount": 16,
-    "tagline": "15 cards + token · 1-in-3 traditional foil · full-art panorama/Phyrexianized lands",
+    "tagline": "15 cards + token \u00b7 1-in-3 traditional foil \u00b7 full-art panorama/Phyrexianized lands",
     "slots": [
       {
         "label": "Token / Ad Card",
         "token": true,
-        "outcomes": [{ "weight": 1, "label": "Token / Ad Card" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "label": "Token / Ad Card"
+          }
+        ]
       },
-
       {
         "label": "Common",
         "count": 9,
-        "outcomes": [{ "weight": 1, "rarity": "common" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "common"
+          }
+        ]
       },
-
       {
         "label": "Common / Traditional Foil",
         "outcomes": [
-          { "weight": 67, "rarity": "common", "label": "Common" },
-          { "weight": 18.4, "rarity": "common", "foil": true, "label": "Foil Common" },
-          { "weight": 9.2, "rarity": "uncommon", "foil": true, "label": "Foil Uncommon" },
-          { "weight": 3.4, "rarity": "rare", "foil": true, "label": "Foil Rare" },
-          { "weight": 1, "rarity": "mythic", "foil": true, "label": "Foil Mythic" }
+          {
+            "weight": 67,
+            "rarity": "common",
+            "label": "Common"
+          },
+          {
+            "weight": 18.4,
+            "rarity": "common",
+            "foil": true,
+            "label": "Foil Common"
+          },
+          {
+            "weight": 9.2,
+            "rarity": "uncommon",
+            "foil": true,
+            "label": "Foil Uncommon"
+          },
+          {
+            "weight": 3.4,
+            "rarity": "rare",
+            "foil": true,
+            "label": "Foil Rare"
+          },
+          {
+            "weight": 1,
+            "rarity": "mythic",
+            "foil": true,
+            "label": "Foil Mythic"
+          }
         ]
       },
-
       {
         "label": "Uncommon",
         "count": 3,
-        "outcomes": [{ "weight": 1, "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "uncommon"
+          }
+        ]
       },
-
       {
         "label": "Rare / Mythic",
         "outcomes": [
-          { "weight": 86, "rarity": "rare" },
-          { "weight": 13, "rarity": "mythic" },
-          { "weight": 1, "rarity": "mythic", "foil": true, "filter": "borderless", "label": "Foil Borderless Mythic Planeswalker" }
+          {
+            "weight": 86,
+            "rarity": "rare"
+          },
+          {
+            "weight": 13,
+            "rarity": "mythic"
+          },
+          {
+            "weight": 1,
+            "rarity": "mythic",
+            "foil": true,
+            "filter": "borderless",
+            "label": "Foil Borderless Mythic Planeswalker"
+          }
         ]
       },
-
       {
         "label": "Basic Land",
         "basicLand": true,
         "outcomes": [
-          { "weight": 50, "filter": "basic_land", "label": "Panorama Full-Art Land" },
-          { "weight": 50, "filter": "basic_land", "label": "Phyrexianized Full-Art Land" }
+          {
+            "weight": 50,
+            "filter": "basic_land",
+            "label": "Panorama Full-Art Land"
+          },
+          {
+            "weight": 50,
+            "filter": "basic_land",
+            "label": "Phyrexianized Full-Art Land"
+          }
         ]
       }
     ]
   },
-
   "collector": {
     "cardCount": 16,
-    "tagline": "15 premium cards + art card · step-and-compleat foil chase · ichor & oil-slick Booster Fun",
+    "tagline": "15 premium cards + art card \u00b7 step-and-compleat foil chase \u00b7 ichor & oil-slick Booster Fun",
     "slots": [
       {
         "label": "Art Card / Token",
         "token": true,
-        "outcomes": [{ "weight": 1, "label": "Art Card / Token" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "label": "Art Card / Token"
+          }
+        ]
       },
-
       {
         "label": "Foil Common",
         "count": 4,
         "foil": true,
-        "outcomes": [{ "weight": 1, "rarity": "common" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "common"
+          }
+        ]
       },
-
       {
         "label": "Foil Uncommon",
         "count": 2,
         "foil": true,
-        "outcomes": [{ "weight": 1, "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "rarity": "uncommon"
+          }
+        ]
       },
-
       {
         "label": "Traditional Foil Basic Land",
         "basicLand": true,
         "foil": true,
         "outcomes": [
-          { "weight": 50, "filter": "basic_land", "label": "Panorama Full-Art Land" },
-          { "weight": 50, "filter": "basic_land", "label": "Phyrexianized Full-Art Land" }
+          {
+            "weight": 50,
+            "filter": "basic_land",
+            "label": "Panorama Full-Art Land"
+          },
+          {
+            "weight": 50,
+            "filter": "basic_land",
+            "label": "Phyrexianized Full-Art Land"
+          }
         ]
       },
-
       {
         "label": "Ichor Common / Uncommon",
         "outcomes": [
-          { "weight": 63, "rarity": "common", "label": "Ichor Common" },
-          { "weight": 37, "rarity": "uncommon", "label": "Ichor Uncommon" }
+          {
+            "weight": 63,
+            "rarity": "common",
+            "label": "Ichor Common"
+          },
+          {
+            "weight": 37,
+            "rarity": "uncommon",
+            "label": "Ichor Uncommon"
+          }
         ]
       },
-
       {
         "label": "Foil Ichor Common / Uncommon",
         "foil": true,
         "outcomes": [
-          { "weight": 63, "rarity": "common", "label": "Foil Ichor Common" },
-          { "weight": 37, "rarity": "uncommon", "label": "Foil Ichor Uncommon" }
+          {
+            "weight": 63,
+            "rarity": "common",
+            "label": "Foil Ichor Common"
+          },
+          {
+            "weight": 37,
+            "rarity": "uncommon",
+            "label": "Foil Ichor Uncommon"
+          }
         ]
       },
-
       {
         "label": "Step-and-Compleat Foil",
         "foil": true,
         "outcomes": [
-          { "weight": 38, "rarity": "common", "filter": "step_and_compleat", "label": "Step-and-Compleat Common" },
-          { "weight": 29, "rarity": "uncommon", "filter": "step_and_compleat", "label": "Step-and-Compleat Uncommon" },
-          { "weight": 22, "rarity": "rare", "filter": "step_and_compleat", "label": "Step-and-Compleat Rare" },
-          { "weight": 11, "rarity": "mythic", "filter": "step_and_compleat", "label": "Step-and-Compleat Mythic" }
+          {
+            "weight": 38,
+            "rarity": "common",
+            "filter": "step_and_compleat",
+            "label": "Step-and-Compleat Common"
+          },
+          {
+            "weight": 29,
+            "rarity": "uncommon",
+            "filter": "step_and_compleat",
+            "label": "Step-and-Compleat Uncommon"
+          },
+          {
+            "weight": 22,
+            "rarity": "rare",
+            "filter": "step_and_compleat",
+            "label": "Step-and-Compleat Rare"
+          },
+          {
+            "weight": 11,
+            "rarity": "mythic",
+            "filter": "step_and_compleat",
+            "label": "Step-and-Compleat Mythic"
+          }
         ]
       },
-
       {
         "label": "Traditional Foil Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 86, "rarity": "rare" },
-          { "weight": 14, "rarity": "mythic" }
+          {
+            "weight": 86,
+            "rarity": "rare"
+          },
+          {
+            "weight": 14,
+            "rarity": "mythic"
+          }
         ]
       },
-
       {
         "label": "Extended-Art Rare",
         "outcomes": [
-          { "weight": 1, "rarity": "rare", "filter": "extended_art" }
+          {
+            "weight": 1,
+            "rarity": "rare",
+            "filter": "extended_art"
+          }
         ]
       },
-
       {
-        "label": "Commander / Jumpstart Extended-Art Rare / Mythic",
+        "label": "Commander Extended-Art Rare / Mythic",
         "outcomes": [
-          { "weight": 92, "rarity": "rare", "filter": "extended_art" },
-          { "weight": 8, "rarity": "mythic", "filter": "extended_art" }
+          {
+            "weight": 92,
+            "rarity": "rare",
+            "filter": "extended_art",
+            "set": "onc"
+          },
+          {
+            "weight": 8,
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "set": "onc"
+          }
         ]
       },
-
       {
         "label": "Booster Fun Rare / Mythic",
         "outcomes": [
-          { "weight": 13, "rarity": "rare", "filter": "borderless", "label": "Borderless Fast Land" },
-          { "weight": 41, "rarity": "rare", "filter": "borderless", "label": "Borderless Ichor" },
-          { "weight": 25, "rarity": "rare", "filter": "borderless", "label": "Borderless Manga" },
-          { "weight": 21, "rarity": "mythic", "filter": "borderless", "label": "Borderless Mythic / Praetor" }
+          {
+            "weight": 13,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Fast Land"
+          },
+          {
+            "weight": 41,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Ichor"
+          },
+          {
+            "weight": 25,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Manga"
+          },
+          {
+            "weight": 21,
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Mythic / Praetor"
+          }
         ]
       },
-
       {
         "label": "Foil Booster Fun / Extended-Art Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 49, "rarity": "rare", "filter": "extended_art", "label": "Extended-Art Rare/Mythic" },
-          { "weight": 27, "rarity": "rare", "filter": "borderless", "label": "Borderless Booster Fun Rare" },
-          { "weight": 24, "rarity": "mythic", "filter": "borderless", "label": "Borderless Booster Fun Mythic" }
+          {
+            "weight": 49,
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "Extended-Art Rare/Mythic"
+          },
+          {
+            "weight": 27,
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Booster Fun Rare"
+          },
+          {
+            "weight": 24,
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Booster Fun Mythic"
+          }
         ]
       }
     ]
