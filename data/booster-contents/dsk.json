@@ -1,9 +1,9 @@
 {
-  "_doc": "Duskmourn: House of Horror (DSK) Play + Collector recipes from Wizards' official 'Collecting Duskmourn' article (https://magic.wizards.com/en/news/feature/collecting-duskmourn). Duskmourn shipped Play + Collector boosters only \u2014 NO Draft Booster \u2014 so authoritative is true and draft is intentionally undefined. Sub-set codes: DSK = main set, SPG = Special Guests, DSC = Duskmourn Commander. Exact rates published for the Play rare/mythic slot, land slot, Special Guests replacement (1 in 64), and all Collector slots are used verbatim. Approximations: 'lurking evil' and 'paranormal frame' and 'mirror monster' and 'double exposure' and 'Japan Showcase' treatments have no dedicated filter \u2014 modeled with the nearest of showcase / borderless / extended_art (frame distinctions dropped); full-art manor lands via basic_land; the 1-in-4 lurking-evil/paranormal variants of specific commons/uncommons are folded into the common/uncommon slots as showcase-filtered outcomes. Specific finishes re-pointed to dedicated filters: in the Premium Foil Special Slot the 'Textured Foil Double Exposure' outcome now uses textured_foil, and both 'Fracture Foil Japan Showcase' outcomes now use fracture_foil, instead of the showcase stand-in.",
+  "_doc": "Duskmourn: House of Horror (DSK) Play + Collector recipes from Wizards' official 'Collecting Duskmourn' article (https://magic.wizards.com/en/news/feature/collecting-duskmourn). Duskmourn shipped Play + Collector boosters only — NO Draft Booster — so authoritative is true and draft is intentionally undefined. Sub-set codes: DSK = main set, SPG = Special Guests, DSC = Duskmourn Commander. Exact rates published for the Play rare/mythic slot, land slot, Special Guests replacement (1 in 64), and all Collector slots are used verbatim. Approximations: 'lurking evil' and 'paranormal frame' and 'mirror monster' and 'double exposure' and 'Japan Showcase' treatments have no dedicated filter — modeled with the nearest of showcase / borderless / extended_art (frame distinctions dropped); full-art manor lands via basic_land; the 1-in-4 lurking-evil/paranormal variants of specific commons/uncommons are folded into the common/uncommon slots as showcase-filtered outcomes. Specific finishes re-pointed to dedicated filters: in the Premium Foil Special Slot the 'Textured Foil Double Exposure' outcome now uses textured_foil, and both 'Fracture Foil Japan Showcase' outcomes now use fracture_foil, instead of the showcase stand-in. AUDIT 2026-06 (article re-verification): commons slot — SPG was 1.5625 per common sub-pull (×6 ≈ 9% of packs); article says 1 in 64 PLAY BOOSTERS → 0.26 per slot. Lurking Evil common rate corrected from 6%/slot to ~0.7%/slot (article: 2 of 81 commons substitute to LE 1-in-4 times pulled); uncommon LE from 10% to ~1%/slot (4 of ~100 uncommons, same conditional). NOTE: Lurking Evil prints are standard-frame variant printings (same card, new collector number) that Scryfall files as variations — excluded by include_variations=false at fetch, so these outcomes currently fall back to the regular print of the same rarity (economically identical, art-variant only). Collector slots verified verbatim against the article — no changes.",
   "authoritative": true,
   "play": {
     "cardCount": 14,
-    "tagline": "14 cards \u00b7 lurking evil & paranormal variants \u00b7 manor full-art lands \u00b7 Special Guest replaces a common in 1 of 64 packs",
+    "tagline": "14 cards · lurking evil & paranormal variants · manor full-art lands · Special Guest replaces a common in 1 of 64 packs",
     "slots": [
       {
         "label": "Token / Art Card",
@@ -21,19 +21,19 @@
         "count": 6,
         "outcomes": [
           {
-            "weight": 92.4,
+            "weight": 99.04,
             "set": "DSK",
             "rarity": "common"
           },
           {
-            "weight": 6,
+            "weight": 0.7,
             "set": "DSK",
             "rarity": "common",
             "filter": "showcase",
             "label": "Lurking Evil Common"
           },
           {
-            "weight": 1.5625,
+            "weight": 0.26,
             "set": "SPG",
             "filter": "special_guest",
             "label": "Special Guest"
@@ -45,12 +45,12 @@
         "count": 3,
         "outcomes": [
           {
-            "weight": 80,
+            "weight": 89,
             "set": "DSK",
             "rarity": "uncommon"
           },
           {
-            "weight": 10,
+            "weight": 1,
             "set": "DSK",
             "rarity": "uncommon",
             "filter": "showcase",
@@ -204,7 +204,7 @@
   },
   "collector": {
     "cardCount": 16,
-    "tagline": "15 premium cards + foil token \u00b7 all foil commons & uncommons \u00b7 Commander borderless chase \u00b7 Japan Showcase & textured-foil premium slot",
+    "tagline": "15 premium cards + foil token · all foil commons & uncommons · Commander borderless chase · Japan Showcase & textured-foil premium slot",
     "slots": [
       {
         "label": "Foil Double-Sided Token",
@@ -297,7 +297,7 @@
             "rarity": "mythic"
           },
           {
-            "weight": 9.0,
+            "weight": 9,
             "set": "DSK",
             "rarity": "rare",
             "filter": "showcase",

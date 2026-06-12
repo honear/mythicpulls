@@ -182,11 +182,45 @@ export function predicateMentionsLand(
   p: FilterPredicate | undefined,
 ): boolean {
   if (!p) return false;
-  if (p.type_line_includes && p.type_line_includes.toLowerCase().includes("land")) return true;
+  if (p.type_line_includes) {
+    const t = p.type_line_includes.toLowerCase();
+    // "land" catches every explicit land filter (dual_land_common,
+    // non_basic_land, spellcraft_land, …). "basic" catches the
+    // basic_land filter itself, which matches on the bare word "Basic"
+    // so it can include "Basic Snow Land" type lines — without this
+    // branch, a NON-land slot using filter:"basic_land" (e.g. a mixed
+    // "common / uncommon / basic" collector slot) had the implicit
+    // basic-land exclusion applied ON TOP of its own basics-only
+    // filter and could never match anything.
+    if (t.includes("land") || t.includes("basic")) return true;
+  }
   if (p.all && p.all.some(predicateMentionsLand)) return true;
   if (p.any && p.any.some(predicateMentionsLand)) return true;
   if (p.not && predicateMentionsLand(p.not)) return true;
   return false;
+}
+
+/**
+ * Collect every language code a predicate explicitly mentions, at any
+ * nesting level. Used by the route layer to decide which non-English
+ * printings the client pool actually needs: a set whose recipes never
+ * reference a language filter ships English-only, cutting the page's
+ * serialized pool by 60-75% (Scryfall returns de/es/fr/it/ja… prints
+ * with include_multilingual, but the engine's English-by-default pass
+ * makes them unreachable unless a filter opts in via `lang`).
+ */
+export function collectPredicateLangs(
+  p: FilterPredicate | undefined,
+  out: Set<string> = new Set(),
+): Set<string> {
+  if (!p) return out;
+  if (p.lang !== undefined) {
+    for (const l of Array.isArray(p.lang) ? p.lang : [p.lang]) out.add(l);
+  }
+  if (p.all) for (const q of p.all) collectPredicateLangs(q, out);
+  if (p.any) for (const q of p.any) collectPredicateLangs(q, out);
+  if (p.not) collectPredicateLangs(p.not, out);
+  return out;
 }
 
 /**

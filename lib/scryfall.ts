@@ -481,6 +481,39 @@ export function trimCardPool(
   return out;
 }
 
+/**
+ * Drop non-English printings the client engine can never select. The
+ * pools come back from Scryfall with include_multilingual=true (needed
+ * so Japanese-alt-art outcomes have candidates), but the engine's
+ * English-by-default pass makes every other-language print unreachable
+ * UNLESS some outcome's filter mentions that language. For a typical set
+ * page this is 60-75% of the serialized pool — multi-megabyte HTML on
+ * mobile for cards that cannot ever be rolled.
+ *
+ * `extraLangs` comes from collectRecipeLanguages(recipes, filters) —
+ * usually empty (ship English only) or {"ja"} for sets with Japanese
+ * alt-art outcomes (SOS, DSK, ECL, …).
+ *
+ * Safety valve: if trimming would empty a set's list entirely (a pool
+ * that only exists in non-English printings — not known to happen, but
+ * cheap to guard), the untrimmed list is kept so the engine's own
+ * fallbacks still have candidates.
+ */
+export function trimPoolLanguages(
+  pool: Record<string, ScryfallCard[]>,
+  extraLangs: ReadonlySet<string>,
+): Record<string, ScryfallCard[]> {
+  const out: Record<string, ScryfallCard[]> = {};
+  for (const setCode of Object.keys(pool)) {
+    const cards = pool[setCode];
+    const kept = cards.filter(
+      (c) => !c.lang || c.lang.toLowerCase() === "en" || extraLangs.has(c.lang.toLowerCase()),
+    );
+    out[setCode] = kept.length > 0 ? kept : cards;
+  }
+  return out;
+}
+
 /* ---------------- Card image helpers ---------------- */
 
 export function getCardImage(

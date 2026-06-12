@@ -1,9 +1,9 @@
 {
-  "_doc": "Outlaws of Thunder Junction (OTJ) Play + Collector recipes from Wizards' official 'Collecting Outlaws of Thunder Junction' article (https://magic.wizards.com/en/news/feature/collecting-outlaws-of-thunder-junction). OTJ shipped Play + Collector boosters only \u2014 NO Draft Booster \u2014 so authoritative is true and draft is intentionally undefined. Sub-set codes: OTJ = main set, OTP = Breaking News (bonus sheet), BIG = The Big Score, OTC = OTJ Commander, SPG = Special Guests. Exact rates published for The List replacement (20%), the wildcard rare/mythic rate (1 in 12), Booster Fun rate (2.5%), the Breaking News rare/mythic rate (1 in 3), the land slot, the token/art slot, and the Collector premium-foil slot are used verbatim. Approximations: The List card modeled as a special_guest outcome against OTP (no dedicated List filter); rare-vs-mythic splits inside the wildcard, foil, Booster Fun, OTP, OTC, and premium slots are not published per-card and are estimated with standard splits; 'wanted poster' and 'vault frame' frame treatments have no dedicated filter and use the nearest of showcase / borderless / extended_art; western landscape & regular basics via basic_land. Specific finishes re-pointed to dedicated filters: in the Premium Foil Special Slot the 'Textured Foil Breaking News' outcome now uses textured_foil and the 'Raised Foil Vault Frame' outcome now uses raised_foil, instead of the showcase stand-in.",
+  "_doc": "Outlaws of Thunder Junction (OTJ) Play + Collector recipes from Wizards' official 'Collecting Outlaws of Thunder Junction' article (https://magic.wizards.com/en/news/feature/collecting-outlaws-of-thunder-junction). OTJ shipped Play + Collector boosters only — NO Draft Booster — so authoritative is true and draft is intentionally undefined. Sub-set codes: OTJ = main set, OTP = Breaking News (bonus sheet), BIG = The Big Score, OTC = OTJ Commander, SPG = Special Guests. Exact rates published for The List replacement (20%), the wildcard rare/mythic rate (1 in 12), Booster Fun rate (2.5%), the Breaking News rare/mythic rate (1 in 3), the land slot, the token/art slot, and the Collector premium-foil slot are used verbatim. Approximations: The List card modeled as a special_guest outcome against OTP (no dedicated List filter); rare-vs-mythic splits inside the wildcard, foil, Booster Fun, OTP, OTC, and premium slots are not published per-card and are estimated with standard splits; 'wanted poster' and 'vault frame' frame treatments have no dedicated filter and use the nearest of showcase / borderless / extended_art; western landscape & regular basics via basic_land. Specific finishes re-pointed to dedicated filters: in the Premium Foil Special Slot the 'Textured Foil Breaking News' outcome now uses textured_foil and the 'Raised Foil Vault Frame' outcome now uses raised_foil, instead of the showcase stand-in. AUDIT 2026-06 (article re-verification): the commons slot previously gave EVERY one of the 5 common sub-pulls a 20% List chance (≈63% of packs with a List card, ~1 per pack on average) and pointed the outcome at OTP (Breaking News). The article says 20% of PLAY BOOSTERS contain one List card, and OTJ-era “The List” comprises The Big Score (BIG) + Special Guests (SPG). Re-modeled per-slot: 96% common / 3% BIG / 1% SPG (20%/5 slots, split ~3:1 by sheet size 30 BIG : 10 SPG).",
   "authoritative": true,
   "play": {
     "cardCount": 14,
-    "tagline": "14 cards \u00b7 Breaking News bonus slot \u00b7 The List replaces a common in 20% of packs \u00b7 western landscape lands",
+    "tagline": "14 cards · Breaking News bonus slot · The List replaces a common in 20% of packs · western landscape lands",
     "slots": [
       {
         "label": "Token / Art Card",
@@ -32,14 +32,19 @@
         "count": 5,
         "outcomes": [
           {
-            "weight": 80,
+            "weight": 96,
             "set": "OTJ",
             "rarity": "common"
           },
           {
-            "weight": 20,
-            "set": "OTP",
-            "label": "The List"
+            "weight": 3,
+            "set": "BIG",
+            "label": "The List — Big Score"
+          },
+          {
+            "weight": 1,
+            "set": "SPG",
+            "label": "The List — Special Guest"
           }
         ]
       },
@@ -203,7 +208,7 @@
   },
   "collector": {
     "cardCount": 16,
-    "tagline": "15 premium cards + foil token \u00b7 Big Score & Breaking News chases \u00b7 Commander extended-art \u00b7 stacked premium-foil slot",
+    "tagline": "15 premium cards + foil token · Big Score & Breaking News chases · Commander extended-art · stacked premium-foil slot",
     "slots": [
       {
         "label": "Foil Double-Sided Token",

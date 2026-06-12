@@ -6,6 +6,11 @@
  * keeps the Next.js client bundle free of the Node `fs` and `path` modules.
  */
 
+import {
+  collectPredicateLangs,
+  type FilterPredicate,
+} from "./booster-filters";
+
 export type PackType = "play" | "draft" | "collector" | "jumpstart";
 export type Rarity = "common" | "uncommon" | "rare" | "mythic";
 
@@ -74,6 +79,29 @@ export function resolveSetSentinel(
   if (!raw) return undefined;
   if (raw === "$tokens") return `t${ownSetCode.toLowerCase()}`;
   return raw.toLowerCase();
+}
+
+/**
+ * Walk one or more pack contents and collect every language code any
+ * outcome's filter mentions. The route layer uses this to language-trim
+ * the client pool: English always ships; other languages ship only when
+ * a recipe's filter can actually select them (e.g. SOS's Japanese
+ * Mystical Archive outcomes via the `japanese` filter). Pure.
+ */
+export function collectRecipeLanguages(
+  contents: ReadonlyArray<PackContent | undefined>,
+  filters: Record<string, FilterPredicate>,
+): Set<string> {
+  const langs = new Set<string>();
+  for (const content of contents) {
+    for (const slot of content?.slots ?? []) {
+      for (const o of slot.outcomes) {
+        if (!o.filter) continue;
+        collectPredicateLangs(filters[o.filter], langs);
+      }
+    }
+  }
+  return langs;
 }
 
 /**

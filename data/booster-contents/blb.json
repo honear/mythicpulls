@@ -1,9 +1,9 @@
 {
-  "_doc": "Bloomburrow (BLB) Play + Collector recipes from Wizards' official 'Collecting Bloomburrow' article (https://magic.wizards.com/en/news/feature/collecting-bloomburrow). Bloomburrow shipped Play + Collector boosters only \u2014 NO Draft Booster \u2014 so authoritative is true and draft is intentionally undefined. Sub-set codes: BLB = main set, SPG = Special Guests, BLC = Bloomburrow Commander. The article publishes exact rates for the seasonal land, token/art slot, Collector foil rare/mythic, and Collector Commander slot; it does NOT publish a rare-vs-mythic split for the Play rare/mythic, wildcard, or foil slots, nor a consolidated per-treatment split for the Collector alternate-border slots, so those use the standard Play Booster splits (spec defaults) with Booster Fun folded in, and are approximated. Approximations: seasonal full-art basics modeled via basic_land filter (season distribution captured as land-slot weights); Imagine treatments modeled with borderless filter (frame approximation); Special Guests via the special_guest filter against SPG. Specific finishes re-pointed to dedicated filters: the Collector slot-7 'Raised Foil Anime' outcome (3.66% per the article) now uses the raised_foil filter instead of the borderless stand-in.",
+  "_doc": "Bloomburrow (BLB) Play + Collector recipes from Wizards' official 'Collecting Bloomburrow' article (https://magic.wizards.com/en/news/feature/collecting-bloomburrow). Bloomburrow shipped Play + Collector boosters only — NO Draft Booster — so authoritative is true and draft is intentionally undefined. Sub-set codes: BLB = main set, SPG = Special Guests, BLC = Bloomburrow Commander. The article publishes exact rates for the seasonal land, token/art slot, Collector foil rare/mythic, and Collector Commander slot; it does NOT publish a rare-vs-mythic split for the Play rare/mythic, wildcard, or foil slots, nor a consolidated per-treatment split for the Collector alternate-border slots, so those use the standard Play Booster splits (spec defaults) with Booster Fun folded in, and are approximated. Approximations: seasonal full-art basics modeled via basic_land filter (season distribution captured as land-slot weights); Imagine treatments modeled with borderless filter (frame approximation); Special Guests via the special_guest filter against SPG. Specific finishes re-pointed to dedicated filters: the Collector slot-7 'Raised Foil Anime' outcome (3.66% per the article) now uses the raised_foil filter instead of the borderless stand-in. AUDIT 2026-06 (article re-verification): (1) Special Guests rate was applied per common sub-pull (6 × 1.5% ≈ 9% of packs); the article says 1.5% of PLAY BOOSTERS — now 0.25% per slot. (2) The seasonal land slot lacked its published foil shares (Spring 32/8, Summer 24/6, Autumn 16/4, Winter 8/2) — each season now splits 80/20 non-foil/foil. AUDIT 2026-06 part 2: both Collector alternate-border slots rebuilt verbatim from the article tables. The non-foil table’s percentages sum to ~200 because the slot appears TWICE per booster — per-slot weights are the published values halved. Extended-art mythic outcomes removed (article: no EA mythics exist in BLB; only 13 rares). Field Notes is a real BLB borderless treatment (8 cards) — modeled in the borderless family. Foil slot gains the previously-missing 3.07% borderless Special Guests outcome. Raised-foil anime at the published 3.66%.",
   "authoritative": true,
   "play": {
     "cardCount": 14,
-    "tagline": "14 cards \u00b7 seasonal full-art land \u00b7 1 foil \u00b7 Special Guest from The List replaces a common in 1.5% of packs",
+    "tagline": "14 cards · seasonal full-art land · 1 foil · Special Guest from The List replaces a common in 1.5% of packs",
     "slots": [
       {
         "label": "Token / Art Card",
@@ -31,12 +31,12 @@
         "count": 6,
         "outcomes": [
           {
-            "weight": 98.5,
+            "weight": 99.75,
             "set": "BLB",
             "rarity": "common"
           },
           {
-            "weight": 1.5,
+            "weight": 0.25,
             "set": "SPG",
             "filter": "special_guest",
             "label": "Special Guest"
@@ -125,28 +125,56 @@
         "basicLand": true,
         "outcomes": [
           {
-            "weight": 40,
+            "weight": 32,
             "set": "BLB",
             "filter": "basic_land",
             "label": "Spring"
           },
           {
-            "weight": 30,
+            "weight": 8,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Spring (foil)",
+            "foil": true
+          },
+          {
+            "weight": 24,
             "set": "BLB",
             "filter": "basic_land",
             "label": "Summer"
           },
           {
-            "weight": 20,
+            "weight": 6,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Summer (foil)",
+            "foil": true
+          },
+          {
+            "weight": 16,
             "set": "BLB",
             "filter": "basic_land",
             "label": "Autumn"
           },
           {
-            "weight": 10,
+            "weight": 4,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Autumn (foil)",
+            "foil": true
+          },
+          {
+            "weight": 8,
             "set": "BLB",
             "filter": "basic_land",
             "label": "Winter"
+          },
+          {
+            "weight": 2,
+            "set": "BLB",
+            "filter": "basic_land",
+            "label": "Winter (foil)",
+            "foil": true
           }
         ]
       }
@@ -154,7 +182,7 @@
   },
   "collector": {
     "cardCount": 16,
-    "tagline": "15 premium cards + foil token \u00b7 all foil commons & uncommons \u00b7 Commander extended-art chase \u00b7 raised-foil anime alternate-border slot",
+    "tagline": "15 premium cards + foil token · all foil commons & uncommons · Commander extended-art chase · raised-foil anime alternate-border slot",
     "slots": [
       {
         "label": "Foil Double-Sided Token",
@@ -291,54 +319,79 @@
         "count": 2,
         "outcomes": [
           {
-            "weight": 60,
+            "weight": 46.05,
             "set": "BLB",
             "rarity": "rare",
             "filter": "showcase",
             "label": "Showcase Woodland"
           },
           {
-            "weight": 8,
+            "weight": 4.6,
             "set": "BLB",
             "rarity": "mythic",
             "filter": "showcase",
             "label": "Showcase Woodland"
           },
           {
-            "weight": 13,
+            "weight": 17.1,
             "set": "BLB",
             "rarity": "rare",
             "filter": "extended_art"
           },
           {
-            "weight": 4,
-            "set": "BLB",
-            "rarity": "mythic",
-            "filter": "extended_art"
-          },
-          {
-            "weight": 8,
+            "weight": 15.75,
             "set": "BLB",
             "rarity": "rare",
+            "filter": "borderless",
+            "label": "Imagine: Courageous Critters"
+          },
+          {
+            "weight": 5.27,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Imagine: Courageous Critters"
+          },
+          {
+            "weight": 3.29,
+            "set": "BLB",
+            "rarity": "mythic",
             "filter": "borderless"
           },
           {
-            "weight": 3,
-            "set": "BLB",
-            "rarity": "mythic",
-            "filter": "borderless"
-          },
-          {
-            "weight": 3,
+            "weight": 1.32,
             "set": "BLB",
             "rarity": "rare",
-            "filter": "field_notes"
+            "filter": "borderless",
+            "label": "Field Notes"
           },
           {
-            "weight": 1,
+            "weight": 4.25,
             "set": "BLB",
             "rarity": "mythic",
-            "filter": "field_notes"
+            "filter": "borderless",
+            "label": "Field Notes"
+          },
+          {
+            "weight": 0.66,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Planeswalker"
+          },
+          {
+            "weight": 1.32,
+            "set": "BLB",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Three Tree City"
+          },
+          {
+            "weight": 0.3,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Arita Lumra"
           }
         ]
       },
@@ -347,42 +400,84 @@
         "foil": true,
         "outcomes": [
           {
-            "weight": 60,
+            "weight": 42.95,
             "set": "BLB",
             "rarity": "rare",
             "filter": "showcase",
             "label": "Foil Showcase Woodland"
           },
           {
-            "weight": 8,
+            "weight": 4.3,
             "set": "BLB",
             "rarity": "mythic",
             "filter": "showcase",
             "label": "Foil Showcase Woodland"
           },
           {
-            "weight": 13,
+            "weight": 15.95,
             "set": "BLB",
             "rarity": "rare",
             "filter": "extended_art"
           },
           {
-            "weight": 4,
-            "set": "BLB",
-            "rarity": "mythic",
-            "filter": "extended_art"
-          },
-          {
-            "weight": 8,
+            "weight": 14.73,
             "set": "BLB",
             "rarity": "rare",
-            "filter": "borderless"
+            "filter": "borderless",
+            "label": "Imagine: Courageous Critters"
           },
           {
-            "weight": 3.34,
+            "weight": 4.91,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Imagine: Courageous Critters"
+          },
+          {
+            "weight": 3.07,
             "set": "BLB",
             "rarity": "mythic",
             "filter": "borderless"
+          },
+          {
+            "weight": 1.23,
+            "set": "BLB",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Field Notes"
+          },
+          {
+            "weight": 3.99,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Field Notes"
+          },
+          {
+            "weight": 0.61,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Planeswalker"
+          },
+          {
+            "weight": 1.23,
+            "set": "BLB",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Three Tree City"
+          },
+          {
+            "weight": 0.31,
+            "set": "BLB",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Arita Lumra"
+          },
+          {
+            "weight": 3.07,
+            "set": "SPG",
+            "label": "Borderless Special Guest"
           },
           {
             "weight": 3.66,

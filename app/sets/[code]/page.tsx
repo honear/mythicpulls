@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSet, getSetCards, getSetTokens, trimCardPool } from "@/lib/scryfall";
+import { getSet, getSetCards, getSetTokens, trimCardPool, trimPoolLanguages } from "@/lib/scryfall";
 import type { ScryfallCard } from "@/lib/scryfall";
 import { recommendedPackType, type PackType } from "@/lib/pack-rules";
-import { collectReferencedSets, type PackContent } from "@/lib/booster-config";
+import { collectRecipeLanguages, collectReferencedSets, type PackContent } from "@/lib/booster-config";
 import {
   loadFilters,
   packsAvailableForSet,
@@ -166,11 +166,17 @@ export default async function SetPage({ params, searchParams }: Props) {
           iconUri: set.icon_svg_uri,
           heroArtCrops,
         }}
-        // Trim the multi-set pool right at the server/client boundary
-        // so we ship ~150–250 KB of essential fields instead of the
-        // ~450–800 KB raw Scryfall JSON. See `trimCardForClient` for
-        // the exact field set.
-        pool={trimCardPool(pool)}
+        // Two-stage trim at the server/client boundary: (1) drop every
+        // non-English printing the recipes' filters can't select —
+        // 60-75% of a multilingual pool, multi-MB of HTML on mobile —
+        // then (2) strip each surviving card to the fields the client
+        // reads. See trimPoolLanguages + trimCardForClient.
+        pool={trimCardPool(
+          trimPoolLanguages(
+            pool,
+            collectRecipeLanguages(Object.values(recipesByType), filters),
+          ),
+        )}
         recipes={recipesByType}
         costs={costsByType}
         filters={filters}

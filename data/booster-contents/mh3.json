@@ -1,20 +1,20 @@
 {
-  "_doc": "Modern Horizons 3 (MH3) Play + Collector recipes. Source: Wizards 'Collecting Modern Horizons 3' (https://magic.wizards.com/en/news/feature/collecting-modern-horizons-3). MH3 had NO standard Draft Booster \u2014 Play Boosters are the draftable product \u2014 so only play + collector are defined and authoritative is true (draft is hidden). The 'New-to-Modern' bonus-sheet slot pulls cards from the MH3 Commander set; we approximate it with the MH3 Commander code M3C. Retro frame (classic 1997-style framing, 58 MH3 cards) now uses the dedicated retro_frame filter instead of a showcase stand-in, across the Play rare/mythic + New-to-Modern slots and the Collector retro-frame / rare-mythic / Booster Fun slots. Full-art Eldrazi lands and full-art Snow-Covered Wastes now use the full_art filter instead of basic_land. Remaining Booster Fun treatments (frame break, profile) have no dedicated filter and stay folded into borderless, noted inline. Textured-foil Special Guests / ripple-foil chases stay on special_guest / serialized as before. Special Guests reference the SPG promo set. Jumpstart, Commander decks, Prerelease, and Bundles are intentionally omitted. [Chase fix: added textured-foil outcomes so MH3 textured foils are reachable.]",
+  "_doc": "Modern Horizons 3 (MH3) Play + Collector recipes. Source: Wizards 'Collecting Modern Horizons 3' (https://magic.wizards.com/en/news/feature/collecting-modern-horizons-3). MH3 had NO standard Draft Booster — Play Boosters are the draftable product — so only play + collector are defined and authoritative is true (draft is hidden). The 'New-to-Modern' bonus-sheet slot pulls cards from the MH3 Commander set; we approximate it with the MH3 Commander code M3C. Retro frame (classic 1997-style framing, 58 MH3 cards) now uses the dedicated retro_frame filter instead of a showcase stand-in, across the Play rare/mythic + New-to-Modern slots and the Collector retro-frame / rare-mythic / Booster Fun slots. Full-art Eldrazi lands and full-art Snow-Covered Wastes now use the full_art filter instead of basic_land. Remaining Booster Fun treatments (frame break, profile) have no dedicated filter and stay folded into borderless, noted inline. Textured-foil Special Guests / ripple-foil chases stay on special_guest / serialized as before. Special Guests reference the SPG promo set. Jumpstart, Commander decks, Prerelease, and Bundles are intentionally omitted. [Chase fix: added textured-foil outcomes so MH3 textured foils are reachable.] AUDIT 2026-06: SPG rate was per common sub-pull (×6 overpull); articles state it per PLAY BOOSTER — now 0.267 per slot (1.6/6).",
   "authoritative": true,
   "play": {
     "cardCount": 14,
-    "tagline": "14 cards \u00b7 1 New-to-Modern card \u00b7 1 traditional foil \u00b7 Special Guest 1-in-64 \u00b7 rates per Wizards' spec",
+    "tagline": "14 cards · 1 New-to-Modern card · 1 traditional foil · Special Guest 1-in-64 · rates per Wizards' spec",
     "slots": [
       {
         "label": "Common",
         "count": 6,
         "outcomes": [
           {
-            "weight": 98.4,
+            "weight": 99.733,
             "rarity": "common"
           },
           {
-            "weight": 1.6,
+            "weight": 0.267,
             "set": "SPG",
             "filter": "special_guest",
             "label": "Special Guest"
@@ -45,7 +45,7 @@
             "rarity": "rare"
           },
           {
-            "weight": 13.0,
+            "weight": 13,
             "rarity": "mythic"
           },
           {
@@ -177,7 +177,7 @@
   },
   "collector": {
     "cardCount": 16,
-    "tagline": "16 cards \u00b7 all-foil core \u00b7 retro-frame, borderless & extended-art chases \u00b7 Special Guest ~1-in-15.5",
+    "tagline": "16 cards · all-foil core · retro-frame, borderless & extended-art chases · Special Guest ~1-in-15.5",
     "slots": [
       {
         "label": "Foil Token",
@@ -278,7 +278,7 @@
             "rarity": "rare"
           },
           {
-            "weight": 13.0,
+            "weight": 13,
             "rarity": "mythic"
           },
           {

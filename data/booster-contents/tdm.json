@@ -1,90 +1,346 @@
 {
-  "_doc": "Tarkir: Dragonstorm (TDM) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-tarkir-dragonstorm . Lineup is authoritative: TDM had Play Boosters + Collector Boosters and NO Draft Boosters. Sub-set codes: TDM = main set, SPG = Special Guests, TDC = TDM Commander, TTDM = tokens. Percentages match Wizards' verbatim odds. Re-pointing: the 'Halo Foil Ghostfire' outcome now uses the halo_foil filter (article: 'we've brought back the halo foil treatment on ghostfire cards'). Remaining approximations: 'showcase draconic frame' -> showcase filter; 'borderless clan card', 'borderless Sagas/Sieges/lands', 'borderless reversible dragon', 'borderless legendary creature' all collapsed to the borderless filter (engine can't distinguish these sub-treatments); 'ghostfire' showcase treatment -> showcase filter; dragonscale-foil (Special Guest fetch lands) and double-rainbow-foil (serialized Mox Jasper) finishes have no dedicated filter, so dragonscale stays plain and the Mox stays on the serialized filter; full-art Dragon's Presence / Dragon's Eye basics stay on basic_land to keep them in their land slots. Serialized Mox Jasper modeled with the serialized filter.",
-
+  "_doc": "Tarkir: Dragonstorm (TDM) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-tarkir-dragonstorm . Lineup is authoritative: TDM had Play Boosters + Collector Boosters and NO Draft Boosters. Sub-set codes: TDM = main set, SPG = Special Guests, TDC = TDM Commander, TTDM = tokens. Percentages match Wizards' verbatim odds. Re-pointing: the 'Halo Foil Ghostfire' outcome now uses the halo_foil filter (article: 'we've brought back the halo foil treatment on ghostfire cards'). Remaining approximations: 'showcase draconic frame' -> showcase filter; 'borderless clan card', 'borderless Sagas/Sieges/lands', 'borderless reversible dragon', 'borderless legendary creature' all collapsed to the borderless filter (engine can't distinguish these sub-treatments); 'ghostfire' showcase treatment -> showcase filter; dragonscale-foil (Special Guest fetch lands) and double-rainbow-foil (serialized Mox Jasper) finishes have no dedicated filter, so dragonscale stays plain and the Mox stays on the serialized filter; full-art Dragon's Presence / Dragon's Eye basics stay on basic_land to keep them in their land slots. Serialized Mox Jasper modeled with the serialized filter. AUDIT 2026-06: SPG rate was per common sub-pull (×6 overpull); articles state it per PLAY BOOSTER — now 0.25 per slot (1.5/6).",
   "authoritative": true,
-
   "play": {
     "cardCount": 14,
     "tagline": "13 cards + token · showcase draconic & borderless clan rates faithful to Wizards' spec",
     "slots": [
-      { "label": "Token", "token": true, "outcomes": [{ "weight": 1, "set": "TTDM" }] },
+      {
+        "label": "Token",
+        "token": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TTDM"
+          }
+        ]
+      },
       {
         "label": "Common",
         "count": 6,
         "outcomes": [
-          { "weight": 98.5, "set": "TDM", "rarity": "common" },
-          { "weight": 1.5,  "set": "SPG", "filter": "special_guest", "label": "Special Guest" }
+          {
+            "weight": 99.75,
+            "set": "TDM",
+            "rarity": "common"
+          },
+          {
+            "weight": 0.25,
+            "set": "SPG",
+            "filter": "special_guest",
+            "label": "Special Guest"
+          }
         ]
       },
-      { "label": "Uncommon", "count": 3, "outcomes": [{ "weight": 1, "set": "TDM", "rarity": "uncommon" }] },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TDM",
+            "rarity": "uncommon"
+          }
+        ]
+      },
       {
         "label": "Wildcard",
         "outcomes": [
-          { "weight": 12.5, "set": "TDM", "rarity": "common" },
-          { "weight": 58.3, "set": "TDM", "rarity": "uncommon" },
-          { "weight": 15.6, "set": "TDM", "rarity": "rare" },
-          { "weight": 2.6,  "set": "TDM", "rarity": "mythic" },
-          { "weight": 4.6,  "set": "TDM", "rarity": "common",   "filter": "showcase", "label": "Showcase Draconic" },
-          { "weight": 3.8,  "set": "TDM", "rarity": "uncommon", "filter": "showcase", "label": "Showcase Draconic" },
-          { "weight": 0.2,  "set": "TDM", "rarity": "rare",     "filter": "showcase", "label": "Showcase Draconic" },
-          { "weight": 0.1,  "set": "TDM", "rarity": "mythic",   "filter": "showcase", "label": "Showcase Draconic" },
-          { "weight": 1.3,  "set": "TDM", "rarity": "rare",     "filter": "borderless", "label": "Borderless Clan" },
-          { "weight": 0.2,  "set": "TDM", "rarity": "mythic",   "filter": "borderless", "label": "Borderless Clan" },
-          { "weight": 0.6,  "set": "TDM", "rarity": "rare",     "filter": "borderless", "label": "Borderless Saga / Siege / Land" },
-          { "weight": 0.1,  "set": "TDM", "rarity": "mythic",   "filter": "borderless", "label": "Borderless Elspeth, Storm Slayer" },
-          { "weight": 0.2,  "set": "TDM", "rarity": "rare",     "filter": "borderless", "label": "Borderless Reversible Dragon" },
-          { "weight": 0.1,  "set": "TDM", "rarity": "mythic",   "filter": "borderless", "label": "Borderless Reversible Dragon" }
+          {
+            "weight": 12.5,
+            "set": "TDM",
+            "rarity": "common"
+          },
+          {
+            "weight": 58.3,
+            "set": "TDM",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 15.6,
+            "set": "TDM",
+            "rarity": "rare"
+          },
+          {
+            "weight": 2.6,
+            "set": "TDM",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 4.6,
+            "set": "TDM",
+            "rarity": "common",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 3.8,
+            "set": "TDM",
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 0.2,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 0.1,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 1.3,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Clan"
+          },
+          {
+            "weight": 0.2,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Clan"
+          },
+          {
+            "weight": 0.6,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Saga / Siege / Land"
+          },
+          {
+            "weight": 0.1,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Elspeth, Storm Slayer"
+          },
+          {
+            "weight": 0.2,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Reversible Dragon"
+          },
+          {
+            "weight": 0.1,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Reversible Dragon"
+          }
         ]
       },
       {
         "label": "Rare / Mythic",
         "outcomes": [
-          { "weight": 75,   "set": "TDM", "rarity": "rare" },
-          { "weight": 12.5, "set": "TDM", "rarity": "mythic" },
-          { "weight": 0.8,  "set": "TDM", "rarity": "rare",   "filter": "showcase", "label": "Showcase Draconic" },
-          { "weight": 0.6,  "set": "TDM", "rarity": "mythic", "filter": "showcase", "label": "Showcase Draconic" },
-          { "weight": 6.4,  "set": "TDM", "rarity": "rare",   "filter": "borderless", "label": "Borderless Clan" },
-          { "weight": 1.2,  "set": "TDM", "rarity": "mythic", "filter": "borderless", "label": "Borderless Clan" },
-          { "weight": 2.7,  "set": "TDM", "rarity": "rare",   "filter": "borderless", "label": "Borderless Saga / Siege / Land" },
-          { "weight": 0.1,  "set": "TDM", "rarity": "mythic", "filter": "borderless", "label": "Borderless Elspeth, Storm Slayer" },
-          { "weight": 0.8,  "set": "TDM", "rarity": "rare",   "filter": "borderless", "label": "Borderless Reversible Dragon" },
-          { "weight": 0.9,  "set": "TDM", "rarity": "mythic", "filter": "borderless", "label": "Borderless Reversible Dragon" }
+          {
+            "weight": 75,
+            "set": "TDM",
+            "rarity": "rare"
+          },
+          {
+            "weight": 12.5,
+            "set": "TDM",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 0.8,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 0.6,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 6.4,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Clan"
+          },
+          {
+            "weight": 1.2,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Clan"
+          },
+          {
+            "weight": 2.7,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Saga / Siege / Land"
+          },
+          {
+            "weight": 0.1,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Elspeth, Storm Slayer"
+          },
+          {
+            "weight": 0.8,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Reversible Dragon"
+          },
+          {
+            "weight": 0.9,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Reversible Dragon"
+          }
         ]
       },
       {
         "label": "Foil",
         "foil": true,
         "outcomes": [
-          { "weight": 56.5, "set": "TDM", "rarity": "common" },
-          { "weight": 32,   "set": "TDM", "rarity": "uncommon" },
-          { "weight": 6.4,  "set": "TDM", "rarity": "rare" },
-          { "weight": 1.1,  "set": "TDM", "rarity": "mythic" },
-          { "weight": 1.6,  "set": "TDM", "rarity": "common",   "filter": "showcase", "label": "Showcase Draconic" },
-          { "weight": 1.4,  "set": "TDM", "rarity": "uncommon", "filter": "showcase", "label": "Showcase Draconic" },
-          { "weight": 0.1,  "set": "TDM", "rarity": "rare",     "filter": "showcase", "label": "Showcase Draconic" },
-          { "weight": 0.1,  "set": "TDM", "rarity": "mythic",   "filter": "showcase", "label": "Showcase Draconic" },
-          { "weight": 0.5,  "set": "TDM", "rarity": "rare",     "filter": "borderless", "label": "Borderless Clan" },
-          { "weight": 0.1,  "set": "TDM", "rarity": "mythic",   "filter": "borderless", "label": "Borderless Clan" },
-          { "weight": 0.2,  "set": "TDM", "rarity": "rare",     "filter": "borderless", "label": "Borderless Saga / Siege / Land" },
-          { "weight": 0.1,  "set": "TDM", "rarity": "mythic",   "filter": "borderless", "label": "Borderless Elspeth, Storm Slayer" },
-          { "weight": 0.1,  "set": "TDM", "rarity": "rare",     "filter": "borderless", "label": "Borderless Reversible Dragon" }
+          {
+            "weight": 56.5,
+            "set": "TDM",
+            "rarity": "common"
+          },
+          {
+            "weight": 32,
+            "set": "TDM",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 6.4,
+            "set": "TDM",
+            "rarity": "rare"
+          },
+          {
+            "weight": 1.1,
+            "set": "TDM",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 1.6,
+            "set": "TDM",
+            "rarity": "common",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 1.4,
+            "set": "TDM",
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 0.1,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 0.1,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 0.5,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Clan"
+          },
+          {
+            "weight": 0.1,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Clan"
+          },
+          {
+            "weight": 0.2,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Saga / Siege / Land"
+          },
+          {
+            "weight": 0.1,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Elspeth, Storm Slayer"
+          },
+          {
+            "weight": 0.1,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Reversible Dragon"
+          }
         ]
       },
       {
         "label": "Land",
         "basicLand": true,
         "outcomes": [
-          { "weight": 7.0,  "set": "TDM", "filter": "basic_land" },
-          { "weight": 3.5,  "set": "TDM", "filter": "basic_land", "label": "Dragon's Presence Full-Art" },
-          { "weight": 1.7,  "set": "TDM", "filter": "basic_land", "foil": true },
-          { "weight": 0.9,  "set": "TDM", "filter": "basic_land", "foil": true, "label": "Dragon's Presence Full-Art" },
-          { "weight": 70.0, "set": "TDM", "filter": "dual_land_common" },
-          { "weight": 17.4, "set": "TDM", "filter": "dual_land_common", "foil": true }
+          {
+            "weight": 7,
+            "set": "TDM",
+            "filter": "basic_land"
+          },
+          {
+            "weight": 3.5,
+            "set": "TDM",
+            "filter": "basic_land",
+            "label": "Dragon's Presence Full-Art"
+          },
+          {
+            "weight": 1.7,
+            "set": "TDM",
+            "filter": "basic_land",
+            "foil": true
+          },
+          {
+            "weight": 0.9,
+            "set": "TDM",
+            "filter": "basic_land",
+            "foil": true,
+            "label": "Dragon's Presence Full-Art"
+          },
+          {
+            "weight": 70,
+            "set": "TDM",
+            "filter": "dual_land_common"
+          },
+          {
+            "weight": 17.4,
+            "set": "TDM",
+            "filter": "dual_land_common",
+            "foil": true
+          }
         ]
       }
     ]
   },
-
   "collector": {
     "cardCount": 16,
     "tagline": "15 premium cards + foil token · showcase draconic, borderless clan & Commander chases",
@@ -93,80 +349,287 @@
         "label": "Foil Token",
         "token": true,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "TTDM" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TTDM"
+          }
+        ]
       },
-      { "label": "Foil Common", "count": 4, "foil": true, "outcomes": [{ "weight": 1, "set": "TDM", "rarity": "common" }] },
-      { "label": "Foil Uncommon", "count": 3, "foil": true, "outcomes": [{ "weight": 1, "set": "TDM", "rarity": "uncommon" }] },
+      {
+        "label": "Foil Common",
+        "count": 4,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TDM",
+            "rarity": "common"
+          }
+        ]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TDM",
+            "rarity": "uncommon"
+          }
+        ]
+      },
       {
         "label": "Showcase Draconic",
         "outcomes": [
-          { "weight": 54.6, "set": "TDM", "rarity": "common",   "filter": "showcase" },
-          { "weight": 45.4, "set": "TDM", "rarity": "uncommon", "filter": "showcase" }
+          {
+            "weight": 54.6,
+            "set": "TDM",
+            "rarity": "common",
+            "filter": "showcase"
+          },
+          {
+            "weight": 45.4,
+            "set": "TDM",
+            "rarity": "uncommon",
+            "filter": "showcase"
+          }
         ]
       },
       {
         "label": "Foil Showcase Draconic",
         "foil": true,
         "outcomes": [
-          { "weight": 54.6, "set": "TDM", "rarity": "common",   "filter": "showcase" },
-          { "weight": 45.4, "set": "TDM", "rarity": "uncommon", "filter": "showcase" }
+          {
+            "weight": 54.6,
+            "set": "TDM",
+            "rarity": "common",
+            "filter": "showcase"
+          },
+          {
+            "weight": 45.4,
+            "set": "TDM",
+            "rarity": "uncommon",
+            "filter": "showcase"
+          }
         ]
       },
       {
         "label": "Booster Fun Land",
         "basicLand": true,
         "outcomes": [
-          { "weight": 16.7, "set": "TDM", "filter": "basic_land", "label": "Dragon's Eye" },
-          { "weight": 8.3,  "set": "TDM", "filter": "basic_land", "foil": true, "label": "Dragon's Eye" },
-          { "weight": 75.0, "set": "TDM", "filter": "basic_land", "foil": true, "label": "Dragon's Presence" }
+          {
+            "weight": 16.7,
+            "set": "TDM",
+            "filter": "basic_land",
+            "label": "Dragon's Eye"
+          },
+          {
+            "weight": 8.3,
+            "set": "TDM",
+            "filter": "basic_land",
+            "foil": true,
+            "label": "Dragon's Eye"
+          },
+          {
+            "weight": 75,
+            "set": "TDM",
+            "filter": "basic_land",
+            "foil": true,
+            "label": "Dragon's Presence"
+          }
         ]
       },
       {
         "label": "Foil Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 85.7, "set": "TDM", "rarity": "rare" },
-          { "weight": 14.3, "set": "TDM", "rarity": "mythic" }
+          {
+            "weight": 85.7,
+            "set": "TDM",
+            "rarity": "rare"
+          },
+          {
+            "weight": 14.3,
+            "set": "TDM",
+            "rarity": "mythic"
+          }
         ]
       },
       {
         "label": "Commander Rare / Mythic",
         "outcomes": [
-          { "weight": 11.1, "set": "TDC", "rarity": "mythic", "filter": "borderless", "label": "Borderless Legendary" },
-          { "weight": 88.9, "set": "TDC", "rarity": "rare",   "filter": "extended_art" }
+          {
+            "weight": 11.1,
+            "set": "TDC",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Legendary"
+          },
+          {
+            "weight": 88.9,
+            "set": "TDC",
+            "rarity": "rare",
+            "filter": "extended_art"
+          }
         ]
       },
       {
         "label": "Booster Fun Rare / Mythic",
         "count": 2,
         "outcomes": [
-          { "weight": 6.4,  "set": "TDM", "rarity": "rare",   "filter": "showcase",   "label": "Showcase Draconic" },
-          { "weight": 4.6,  "set": "TDM", "rarity": "mythic", "filter": "showcase",   "label": "Showcase Draconic" },
-          { "weight": 51.5, "set": "TDM", "rarity": "rare",   "filter": "borderless", "label": "Borderless Clan" },
-          { "weight": 8.2,  "set": "TDM", "rarity": "mythic", "filter": "borderless", "label": "Borderless Clan" },
-          { "weight": 21.5, "set": "TDM", "rarity": "rare",   "filter": "borderless", "label": "Borderless Saga / Siege / Land" },
-          { "weight": 0.7,  "set": "TDM", "rarity": "mythic", "filter": "borderless", "label": "Borderless Elspeth, Storm Slayer" },
-          { "weight": 6.4,  "set": "TDM", "rarity": "rare",   "filter": "borderless", "label": "Borderless Reversible Dragon" },
-          { "weight": 0.7,  "set": "TDM", "rarity": "mythic", "filter": "borderless", "label": "Borderless Reversible Dragon" }
+          {
+            "weight": 6.4,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 4.6,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 51.5,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Clan"
+          },
+          {
+            "weight": 8.2,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Clan"
+          },
+          {
+            "weight": 21.5,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Saga / Siege / Land"
+          },
+          {
+            "weight": 0.7,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Elspeth, Storm Slayer"
+          },
+          {
+            "weight": 6.4,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Reversible Dragon"
+          },
+          {
+            "weight": 0.7,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Reversible Dragon"
+          }
         ]
       },
       {
         "label": "Foil Booster Fun Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 5.3,  "set": "TDM", "rarity": "rare",   "filter": "showcase",   "label": "Showcase Draconic" },
-          { "weight": 3.9,  "set": "TDM", "rarity": "mythic", "filter": "showcase",   "label": "Showcase Draconic" },
-          { "weight": 42.7, "set": "TDM", "rarity": "rare",   "filter": "borderless", "label": "Borderless Clan" },
-          { "weight": 6.8,  "set": "TDM", "rarity": "mythic", "filter": "borderless", "label": "Borderless Clan" },
-          { "weight": 17.8, "set": "TDM", "rarity": "rare",   "filter": "borderless", "label": "Borderless Saga / Siege / Land" },
-          { "weight": 0.6,  "set": "TDM", "rarity": "mythic", "filter": "borderless", "label": "Borderless Elspeth, Storm Slayer" },
-          { "weight": 5.3,  "set": "TDM", "rarity": "rare",   "filter": "borderless", "label": "Borderless Reversible Dragon" },
-          { "weight": 0.6,  "set": "TDM", "rarity": "mythic", "filter": "borderless", "label": "Borderless Reversible Dragon" },
-          { "weight": 9,    "set": "TDM", "rarity": "rare",   "filter": "showcase", "label": "Ghostfire" },
-          { "weight": 1,    "set": "TDM", "rarity": "rare",   "filter": "halo_foil", "label": "Halo Foil Ghostfire" },
-          { "weight": 6,    "set": "SPG", "filter": "special_guest", "label": "Special Guest" },
-          { "weight": 1,    "set": "SPG", "filter": "special_guest", "label": "Dragonscale Foil Special Guest Fetch Land" },
-          { "weight": 0.1,  "set": "TDM", "rarity": "mythic", "filter": "serialized", "label": "Serialized Mox Jasper" }
+          {
+            "weight": 5.3,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 3.9,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Showcase Draconic"
+          },
+          {
+            "weight": 42.7,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Clan"
+          },
+          {
+            "weight": 6.8,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Clan"
+          },
+          {
+            "weight": 17.8,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Saga / Siege / Land"
+          },
+          {
+            "weight": 0.6,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Elspeth, Storm Slayer"
+          },
+          {
+            "weight": 5.3,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Reversible Dragon"
+          },
+          {
+            "weight": 0.6,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Reversible Dragon"
+          },
+          {
+            "weight": 9,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Ghostfire"
+          },
+          {
+            "weight": 1,
+            "set": "TDM",
+            "rarity": "rare",
+            "filter": "halo_foil",
+            "label": "Halo Foil Ghostfire"
+          },
+          {
+            "weight": 6,
+            "set": "SPG",
+            "filter": "special_guest",
+            "label": "Special Guest"
+          },
+          {
+            "weight": 1,
+            "set": "SPG",
+            "filter": "special_guest",
+            "label": "Dragonscale Foil Special Guest Fetch Land"
+          },
+          {
+            "weight": 0.1,
+            "set": "TDM",
+            "rarity": "mythic",
+            "filter": "serialized",
+            "label": "Serialized Mox Jasper"
+          }
         ]
       }
     ]

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSet, getSetCards, getSetTokens, trimCardPool } from "@/lib/scryfall";
+import { getSet, getSetCards, getSetTokens, trimCardPool, trimPoolLanguages } from "@/lib/scryfall";
 import type { ScryfallCard } from "@/lib/scryfall";
 import { recommendedPackType, type PackType } from "@/lib/pack-rules";
-import { collectReferencedSets } from "@/lib/booster-config";
+import { collectRecipeLanguages, collectReferencedSets } from "@/lib/booster-config";
 import {
   loadFilters,
   packsAvailableForSet,
@@ -149,8 +149,12 @@ export default async function SealedSetPage({ params }: Props) {
           name: set.name,
           iconUri: set.icon_svg_uri,
         }}
-        // Trim before hydration — see `trimCardForClient` in lib/scryfall.ts.
-        pool={trimCardPool(pool)}
+        // Language-trim (drop printings no filter can select), then
+        // field-trim before hydration — see trimPoolLanguages +
+        // trimCardForClient in lib/scryfall.ts.
+        pool={trimCardPool(
+          trimPoolLanguages(pool, collectRecipeLanguages([recipe.content], filters)),
+        )}
         recipe={recipe.content}
         sealedType={sealedType}
         filters={filters}

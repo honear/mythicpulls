@@ -1,71 +1,213 @@
 {
-  "_doc": "Aetherdrift (DFT) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-aetherdrift . Lineup is authoritative: DFT had Play Boosters + Collector Boosters and NO Draft Boosters. Sub-set codes: DFT = main set, SPG = Special Guests, DRC = DFT Commander, TDFT = tokens. Percentages match Wizards' verbatim odds. Re-pointing: the 'Japan Showcase Fracture Foil' outcome now uses the fracture_foil filter (article: 'a fracture foil Japan Showcase card appears 1% of the time'). Remaining approximations: 'borderless' booster-fun and 'extended-art/borderless' rare-mythic treatments collapsed to borderless/extended_art filters; 'revved up' showcase common/uncommon -> showcase filter; 'driver's seat' full-art basic -> basic_land (kept in its land slot); plain (non-fracture) Japan Showcase modeled with the japanese filter; the double-rainbow-foil serialized headliner has no dedicated filter. Serialized The Aetherspark headliner modeled with the serialized filter. The wildcard 'borderless common/uncommon (8.3%)' is split evenly across common/uncommon. AUDIT 2026-06: the 'Revved Up' common/uncommon outcomes moved from 'showcase' to 'borderless' — DFT's Revved Up cards carry frame_effects:inverted + border_color:borderless on Scryfall (no showcase frame effect), so the showcase filter matched zero cards and both Revved Up slots silently degraded to fallback pulls.",
-
+  "_doc": "Aetherdrift (DFT) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-aetherdrift . Lineup is authoritative: DFT had Play Boosters + Collector Boosters and NO Draft Boosters. Sub-set codes: DFT = main set, SPG = Special Guests, DRC = DFT Commander, TDFT = tokens. Percentages match Wizards' verbatim odds. Re-pointing: the 'Japan Showcase Fracture Foil' outcome now uses the fracture_foil filter (article: 'a fracture foil Japan Showcase card appears 1% of the time'). Remaining approximations: 'borderless' booster-fun and 'extended-art/borderless' rare-mythic treatments collapsed to borderless/extended_art filters; 'revved up' showcase common/uncommon -> showcase filter; 'driver's seat' full-art basic -> basic_land (kept in its land slot); plain (non-fracture) Japan Showcase modeled with the japanese filter; the double-rainbow-foil serialized headliner has no dedicated filter. Serialized The Aetherspark headliner modeled with the serialized filter. The wildcard 'borderless common/uncommon (8.3%)' is split evenly across common/uncommon. AUDIT 2026-06: the 'Revved Up' common/uncommon outcomes moved from 'showcase' to 'borderless' — DFT's Revved Up cards carry frame_effects:inverted + border_color:borderless on Scryfall (no showcase frame effect), so the showcase filter matched zero cards and both Revved Up slots silently degraded to fallback pulls. AUDIT 2026-06: SPG rate was per common sub-pull (×6 overpull); articles state it per PLAY BOOSTER — now 0.25 per slot (1.5/6).",
   "authoritative": true,
-
   "play": {
     "cardCount": 14,
     "tagline": "13 cards + token · borderless & Special Guest rates faithful to Wizards' spec",
     "slots": [
-      { "label": "Token", "token": true, "outcomes": [{ "weight": 1, "set": "TDFT" }] },
+      {
+        "label": "Token",
+        "token": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TDFT"
+          }
+        ]
+      },
       {
         "label": "Common",
         "count": 6,
         "outcomes": [
-          { "weight": 98.5, "set": "DFT", "rarity": "common" },
-          { "weight": 1.5,  "set": "SPG", "filter": "special_guest", "label": "Special Guest" }
+          {
+            "weight": 99.75,
+            "set": "DFT",
+            "rarity": "common"
+          },
+          {
+            "weight": 0.25,
+            "set": "SPG",
+            "filter": "special_guest",
+            "label": "Special Guest"
+          }
         ]
       },
-      { "label": "Uncommon", "count": 3, "outcomes": [{ "weight": 1, "set": "DFT", "rarity": "uncommon" }] },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DFT",
+            "rarity": "uncommon"
+          }
+        ]
+      },
       {
         "label": "Wildcard",
         "outcomes": [
-          { "weight": 8.3,  "set": "DFT", "rarity": "common" },
-          { "weight": 62.5, "set": "DFT", "rarity": "uncommon" },
-          { "weight": 10.4, "set": "DFT", "rarity": "rare" },
-          { "weight": 10.4, "set": "DFT", "rarity": "mythic" },
-          { "weight": 4.15, "set": "DFT", "rarity": "common",   "filter": "borderless", "label": "Borderless" },
-          { "weight": 4.15, "set": "DFT", "rarity": "uncommon", "filter": "borderless", "label": "Borderless" }
+          {
+            "weight": 8.3,
+            "set": "DFT",
+            "rarity": "common"
+          },
+          {
+            "weight": 62.5,
+            "set": "DFT",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 10.4,
+            "set": "DFT",
+            "rarity": "rare"
+          },
+          {
+            "weight": 10.4,
+            "set": "DFT",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 4.15,
+            "set": "DFT",
+            "rarity": "common",
+            "filter": "borderless",
+            "label": "Borderless"
+          },
+          {
+            "weight": 4.15,
+            "set": "DFT",
+            "rarity": "uncommon",
+            "filter": "borderless",
+            "label": "Borderless"
+          }
         ]
       },
       {
         "label": "Rare / Mythic",
         "outcomes": [
-          { "weight": 78, "set": "DFT", "rarity": "rare" },
-          { "weight": 13, "set": "DFT", "rarity": "mythic" },
-          { "weight": 8,  "set": "DFT", "rarity": "rare",   "filter": "borderless", "label": "Borderless" },
-          { "weight": 1,  "set": "DFT", "rarity": "mythic", "filter": "borderless", "label": "Borderless" }
+          {
+            "weight": 78,
+            "set": "DFT",
+            "rarity": "rare"
+          },
+          {
+            "weight": 13,
+            "set": "DFT",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 8,
+            "set": "DFT",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless"
+          },
+          {
+            "weight": 1,
+            "set": "DFT",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless"
+          }
         ]
       },
       {
         "label": "Foil",
         "foil": true,
         "outcomes": [
-          { "weight": 60.5, "set": "DFT", "rarity": "common" },
-          { "weight": 30,   "set": "DFT", "rarity": "uncommon" },
-          { "weight": 6.4,  "set": "DFT", "rarity": "rare" },
-          { "weight": 1.1,  "set": "DFT", "rarity": "mythic" },
-          { "weight": 0.5,  "set": "DFT", "rarity": "common",   "filter": "borderless", "label": "Borderless" },
-          { "weight": 0.5,  "set": "DFT", "rarity": "uncommon", "filter": "borderless", "label": "Borderless" },
-          { "weight": 0.9,  "set": "DFT", "rarity": "rare",     "filter": "borderless", "label": "Borderless" },
-          { "weight": 0.1,  "set": "DFT", "rarity": "mythic",   "filter": "borderless", "label": "Borderless" }
+          {
+            "weight": 60.5,
+            "set": "DFT",
+            "rarity": "common"
+          },
+          {
+            "weight": 30,
+            "set": "DFT",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 6.4,
+            "set": "DFT",
+            "rarity": "rare"
+          },
+          {
+            "weight": 1.1,
+            "set": "DFT",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 0.5,
+            "set": "DFT",
+            "rarity": "common",
+            "filter": "borderless",
+            "label": "Borderless"
+          },
+          {
+            "weight": 0.5,
+            "set": "DFT",
+            "rarity": "uncommon",
+            "filter": "borderless",
+            "label": "Borderless"
+          },
+          {
+            "weight": 0.9,
+            "set": "DFT",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless"
+          },
+          {
+            "weight": 0.1,
+            "set": "DFT",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless"
+          }
         ]
       },
       {
         "label": "Land",
         "basicLand": true,
         "outcomes": [
-          { "weight": 40,   "set": "DFT", "filter": "dual_land_common" },
-          { "weight": 30,   "set": "DFT", "filter": "basic_land" },
-          { "weight": 10,   "set": "DFT", "filter": "basic_land", "label": "Driver's Seat Full-Art" },
-          { "weight": 10,   "set": "DFT", "filter": "dual_land_common", "foil": true },
-          { "weight": 7.5,  "set": "DFT", "filter": "basic_land", "foil": true },
-          { "weight": 2.5,  "set": "DFT", "filter": "basic_land", "foil": true, "label": "Driver's Seat Full-Art" }
+          {
+            "weight": 40,
+            "set": "DFT",
+            "filter": "dual_land_common"
+          },
+          {
+            "weight": 30,
+            "set": "DFT",
+            "filter": "basic_land"
+          },
+          {
+            "weight": 10,
+            "set": "DFT",
+            "filter": "basic_land",
+            "label": "Driver's Seat Full-Art"
+          },
+          {
+            "weight": 10,
+            "set": "DFT",
+            "filter": "dual_land_common",
+            "foil": true
+          },
+          {
+            "weight": 7.5,
+            "set": "DFT",
+            "filter": "basic_land",
+            "foil": true
+          },
+          {
+            "weight": 2.5,
+            "set": "DFT",
+            "filter": "basic_land",
+            "foil": true,
+            "label": "Driver's Seat Full-Art"
+          }
         ]
       }
     ]
   },
-
   "collector": {
     "cardCount": 16,
     "tagline": "15 premium cards + foil token · Booster Fun, Japan Showcase & Commander chases",
@@ -74,65 +216,188 @@
         "label": "Foil Token",
         "token": true,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "TDFT" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TDFT"
+          }
+        ]
       },
-      { "label": "Foil Common", "count": 4, "foil": true, "outcomes": [{ "weight": 1, "set": "DFT", "rarity": "common" }] },
-      { "label": "Foil Uncommon", "count": 3, "foil": true, "outcomes": [{ "weight": 1, "set": "DFT", "rarity": "uncommon" }] },
+      {
+        "label": "Foil Common",
+        "count": 4,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DFT",
+            "rarity": "common"
+          }
+        ]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DFT",
+            "rarity": "uncommon"
+          }
+        ]
+      },
       {
         "label": "Foil Full-Art Land",
         "basicLand": true,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "DFT", "filter": "basic_land", "label": "Driver's Seat" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DFT",
+            "filter": "basic_land",
+            "label": "Driver's Seat"
+          }
+        ]
       },
       {
         "label": "Revved Up Common / Uncommon",
         "outcomes": [
-          { "weight": 46.9, "set": "DFT", "rarity": "common",   "filter": "borderless" },
-          { "weight": 53.1, "set": "DFT", "rarity": "uncommon", "filter": "borderless" }
+          {
+            "weight": 46.9,
+            "set": "DFT",
+            "rarity": "common",
+            "filter": "borderless"
+          },
+          {
+            "weight": 53.1,
+            "set": "DFT",
+            "rarity": "uncommon",
+            "filter": "borderless"
+          }
         ]
       },
       {
         "label": "Foil Revved Up Common / Uncommon",
         "foil": true,
         "outcomes": [
-          { "weight": 46.9, "set": "DFT", "rarity": "common",   "filter": "borderless" },
-          { "weight": 53.1, "set": "DFT", "rarity": "uncommon", "filter": "borderless" }
+          {
+            "weight": 46.9,
+            "set": "DFT",
+            "rarity": "common",
+            "filter": "borderless"
+          },
+          {
+            "weight": 53.1,
+            "set": "DFT",
+            "rarity": "uncommon",
+            "filter": "borderless"
+          }
         ]
       },
       {
         "label": "Foil Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 85.7, "set": "DFT", "rarity": "rare" },
-          { "weight": 14.3, "set": "DFT", "rarity": "mythic" }
+          {
+            "weight": 85.7,
+            "set": "DFT",
+            "rarity": "rare"
+          },
+          {
+            "weight": 14.3,
+            "set": "DFT",
+            "rarity": "mythic"
+          }
         ]
       },
       {
         "label": "Commander Card",
         "outcomes": [
-          { "weight": 84.25, "set": "DRC", "rarity": "rare",   "filter": "extended_art" },
-          { "weight": 10.5,  "set": "DRC", "rarity": "mythic", "filter": "borderless", "label": "Borderless Legendary" },
-          { "weight": 5.25,  "set": "DRC", "rarity": "mythic", "filter": "borderless", "foil": true, "label": "Borderless Legendary" }
+          {
+            "weight": 84.25,
+            "set": "DRC",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 10.5,
+            "set": "DRC",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Legendary"
+          },
+          {
+            "weight": 5.25,
+            "set": "DRC",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "foil": true,
+            "label": "Borderless Legendary"
+          }
         ]
       },
       {
         "label": "Booster Fun Rare / Mythic",
         "count": 2,
         "outcomes": [
-          { "weight": 87, "set": "DFT", "rarity": "rare",   "filter": "extended_art" },
-          { "weight": 13, "set": "DFT", "rarity": "mythic", "filter": "extended_art" }
+          {
+            "weight": 87,
+            "set": "DFT",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 13,
+            "set": "DFT",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          }
         ]
       },
       {
         "label": "Foil Booster Fun Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 74.6, "set": "DFT", "rarity": "rare",   "filter": "extended_art" },
-          { "weight": 11.2, "set": "DFT", "rarity": "mythic", "filter": "extended_art" },
-          { "weight": 9,    "set": "DFT", "rarity": "rare",   "filter": "japanese", "label": "Japan Showcase" },
-          { "weight": 1,    "set": "DFT", "rarity": "rare",   "filter": "fracture_foil", "label": "Japan Showcase Fracture Foil" },
-          { "weight": 4.2,  "set": "SPG", "filter": "special_guest", "label": "Special Guest" },
-          { "weight": 0.1,  "set": "DFT", "rarity": "mythic", "filter": "serialized", "label": "Serialized The Aetherspark" }
+          {
+            "weight": 74.6,
+            "set": "DFT",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 11.2,
+            "set": "DFT",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 9,
+            "set": "DFT",
+            "rarity": "rare",
+            "filter": "japanese",
+            "label": "Japan Showcase"
+          },
+          {
+            "weight": 1,
+            "set": "DFT",
+            "rarity": "rare",
+            "filter": "fracture_foil",
+            "label": "Japan Showcase Fracture Foil"
+          },
+          {
+            "weight": 4.2,
+            "set": "SPG",
+            "filter": "special_guest",
+            "label": "Special Guest"
+          },
+          {
+            "weight": 0.1,
+            "set": "DFT",
+            "rarity": "mythic",
+            "filter": "serialized",
+            "label": "Serialized The Aetherspark"
+          }
         ]
       }
     ]
