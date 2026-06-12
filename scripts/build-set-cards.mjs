@@ -232,11 +232,18 @@ async function fetchWithRetry(url) {
  *  pool is byte-equivalent to what the live runtime would have produced.
  *  No per-page sleep here — `paced()` inside `fetchWithRetry` handles
  *  the global rate limit, and an extra sleep would just slow us down
- *  unnecessarily without making Scryfall any happier. */
-async function fetchSetCards(code) {
-  const q = encodeURIComponent(`set:${code} game:paper`);
+ *  unnecessarily without making Scryfall any happier.
+ *
+ *  Token sub-sets drop the `game:paper` term and turn extras on: art
+ *  cards and helper cards are not game pieces, so `game:paper` filters
+ *  them out (tmsh: 6 cards with the term vs 27 without). Collector
+ *  recipes' "Art Card / Token" slots (gold_stamped filter etc.) need
+ *  those art cards in the pool. */
+async function fetchSetCards(code, isTokenSet = false) {
+  const q = encodeURIComponent(isTokenSet ? `set:${code}` : `set:${code} game:paper`);
+  const extras = isTokenSet ? "true" : "false";
   const out = [];
-  let url = `${SCRYFALL}/cards/search?q=${q}&unique=prints&order=set&include_extras=false&include_variations=false&include_multilingual=true`;
+  let url = `${SCRYFALL}/cards/search?q=${q}&unique=prints&order=set&include_extras=${extras}&include_variations=false&include_multilingual=true`;
   while (url) {
     const res = await fetchWithRetry(url);
     if (res.notFound) return out; // genuinely no cards (e.g. tokens for a set with no token sub-set)
@@ -321,6 +328,15 @@ function trimCard(c) {
       : undefined,
     artist: c.artist,
     frame_effects: c.frame_effects,
+    // `frame` + `full_art` power the retro_frame / future_frame /
+    // full_art / full_art_basic / non_full_art_basic filters. They were
+    // missing from this mirror for a while (lib/scryfall.ts had them,
+    // this copy didn't), which silently emptied every retro-frame and
+    // full-art-land outcome rolled against baked pools — the engine
+    // fell back to regular prints with no error. Keep this list in
+    // EXACT sync with trimCardForClient in lib/scryfall.ts.
+    frame: c.frame,
+    full_art: c.full_art,
     border_color: c.border_color,
     promo_types: c.promo_types,
     produced_mana: c.produced_mana,
@@ -381,6 +397,19 @@ async function main() {
   if (explicitCodes.length) {
     codes = explicitCodes;
     console.log(`Using ${codes.length} explicit set codes from argv`);
+    // Token-set classification for explicit codes: discover only learns
+    // t-prefixes from the set-art map, so a not-yet-released set's token
+    // sub-set (e.g. `tmsh` passed alongside `msh` before street date)
+    // would be misclassified as a main set and the token-only filter
+    // inverted — yielding an empty write. Treat an explicit `t<code>`
+    // as a token set when its remainder is itself a known main-set code
+    // (from the explicit list, the art map, or recipe references).
+    // Real sets whose codes merely start with t (tmt, tla, tsp, …) are
+    // unaffected: their remainders (mt, la, sp) aren't known set codes.
+    const known = new Set([...codes, ...discovered.codes]);
+    for (const c of codes) {
+      if (c.startsWith("t") && known.has(c.slice(1))) tokenCodes.add(c);
+    }
   } else {
     codes = discovered.codes;
     console.log(`Discovered ${codes.length} set codes (openable + tokens + recipe references)`);
@@ -419,7 +448,7 @@ async function main() {
       const isTokenSet = tokenCodes.has(code);
       const tag = `[${(idx + 1).toString().padStart(3)}/${codes.length}]`;
       try {
-        const raw = await fetchSetCards(code);
+        const raw = await fetchSetCards(code, isTokenSet);
         const filtered = isTokenSet ? filterTokens(raw) : filterPool(raw);
         if (filtered.length === 0) {
           stats.empty++;

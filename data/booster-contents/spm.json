@@ -1,5 +1,5 @@
 {
-  "_doc": "Marvel's Spider-Man (code SPM) — Universes Beyond set. Source: https://magic.wizards.com/en/news/feature/collecting-marvels-spider-man . Lineup is Play Boosters + Collector Boosters only (no Draft). Percentages taken verbatim from the article's odds tables. Approximations: the article cites separate printings (SPE 'Welcome Deck' reprints, scene cards, source material, web-slinger / panel / classic-comic Booster Fun frames, textured-foil costume-change, borderless Gauntlet Soul Stone, textless cosmic-foil Soul Stone) that have no dedicated Scryfall sub-set code we model, so they are approximated against the main SPM pool with the nearest available filter: web-slinger/panel/scene/classic-comic -> 'showcase', extended-art -> 'extended_art', borderless/source-material chases -> 'borderless'. The borderless costume-change cards are a specifically-named premium finish, so that chase is targeted exactly via promo_types -> 'textured_foil' instead of the 'borderless' stand-in. The textless 'cosmic foil' Soul Stone stays on 'serialized' as a quantity stand-in — Scryfall's cosmic-foil promo_type has no dedicated filter here and is NOT the same as galaxy_foil, so it is left as-is. The borderless Gauntlet Soul Stone appears only in traditional foil (no named premium finish) so it stays 'borderless'. Sub-percentages reported as 'less than 1%' are entered as 0.5; the 'extremely low quantity' serialized Soul Stone is 0.1.",
+  "_doc": "Marvel's Spider-Man (code SPM) — Universes Beyond set. Source: https://magic.wizards.com/en/news/feature/collecting-marvels-spider-man . Lineup is Play Boosters + Collector Boosters only (no Draft). Percentages taken verbatim from the article's odds tables. Approximations: the article cites separate printings (SPE 'Welcome Deck' reprints, scene cards, source material, web-slinger / panel / classic-comic Booster Fun frames, textured-foil costume-change, borderless Gauntlet Soul Stone, textless cosmic-foil Soul Stone) that have no dedicated Scryfall sub-set code we model, so they are approximated against the main SPM pool with the nearest available filter: web-slinger/panel/scene/classic-comic -> 'showcase', extended-art -> 'extended_art', borderless/source-material chases -> 'borderless'. The borderless costume-change cards are a specifically-named premium finish, so that chase is targeted exactly via promo_types -> 'textured_foil' instead of the 'borderless' stand-in. The textless 'cosmic foil' Soul Stone stays on 'serialized' as a quantity stand-in — Scryfall's cosmic-foil promo_type has no dedicated filter here and is NOT the same as galaxy_foil, so it is left as-is. The borderless Gauntlet Soul Stone appears only in traditional foil (no named premium finish) so it stays 'borderless'. Sub-percentages reported as 'less than 1%' are entered as 0.5; the 'extremely low quantity' serialized Soul Stone is 0.1. AUDIT 2026-06: two filter mappings upgraded after the recipe audit found them matching zero cards: (1) scene-card outcomes moved from the 'showcase' stand-in to 'scene_card' (promo_types:poster — the actual Scryfall tag; scene commons/uncommons never carry the showcase frame effect, so those outcomes silently re-rolled); (2) Source Material outcomes moved from 'borderless on SPM' to the exact sheet: set MAR (Marvel Universe) + 'spm_source_material' (collector 1-40 — the SPM-era half; 41-100 belong to MSH). Web-slinger / panel / classic-comic stay on 'showcase' (they genuinely carry that frame effect). Gold-stamped art cards keep their outcome even though Scryfall doesn't model the stamp as a separate print — it falls through to a plain art card by design.",
 
   "authoritative": true,
 
@@ -14,7 +14,7 @@
         "count": 6,
         "outcomes": [
           { "weight": 95.8, "set": "SPM", "rarity": "common" },
-          { "weight": 4.2,  "set": "SPM", "rarity": "common", "filter": "borderless", "label": "Source Material" }
+          { "weight": 4.2,  "set": "MAR", "filter": "spm_source_material", "label": "Source Material" }
         ]
       },
 
@@ -23,7 +23,7 @@
         "count": 3,
         "outcomes": [
           { "weight": 96.4, "set": "SPM", "rarity": "uncommon" },
-          { "weight": 3.6,  "set": "SPM", "rarity": "uncommon", "filter": "showcase", "label": "Scene Card" }
+          { "weight": 3.6,  "set": "SPM", "rarity": "uncommon", "filter": "scene_card", "label": "Scene Card" }
         ]
       },
 
@@ -35,7 +35,7 @@
           { "weight": 20.9, "set": "SPM", "rarity": "rare" },
           { "weight": 2.9,  "set": "SPM", "rarity": "mythic" },
           { "weight": 0.5,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Web-Slinger / Panel" },
-          { "weight": 0.5,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Scene" }
+          { "weight": 0.5,  "set": "SPM", "rarity": "rare",   "filter": "scene_card", "label": "Scene" }
         ]
       },
 
@@ -48,7 +48,7 @@
           { "weight": 0.5,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Web-Slinger" },
           { "weight": 2.1,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Panel" },
           { "weight": 0.5,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Panel" },
-          { "weight": 1,    "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Scene" }
+          { "weight": 1,    "set": "SPM", "rarity": "rare",   "filter": "scene_card", "label": "Scene" }
         ]
       },
 
@@ -112,7 +112,7 @@
         "outcomes": [
           { "weight": 87.3, "set": "SPM", "rarity": "uncommon" },
           { "weight": 7.9,  "set": "SPM", "rarity": "uncommon", "label": "SPE Reprint" },
-          { "weight": 4.8,  "set": "SPM", "rarity": "uncommon", "filter": "showcase", "label": "Scene Card" }
+          { "weight": 4.8,  "set": "SPM", "rarity": "uncommon", "filter": "scene_card", "label": "Scene Card" }
         ]
       },
 
@@ -144,17 +144,17 @@
           { "weight": 1.5,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Web-Slinger" },
           { "weight": 15.4, "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Panel" },
           { "weight": 3.1,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Panel" },
-          { "weight": 4.6,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Scene" },
-          { "weight": 0.8,  "set": "SPM", "rarity": "mythic", "filter": "showcase", "label": "Scene" },
-          { "weight": 9.2,  "set": "SPM", "rarity": "rare",   "filter": "showcase", "label": "Scene Box" }
+          { "weight": 4.6,  "set": "SPM", "rarity": "rare",   "filter": "scene_card", "label": "Scene" },
+          { "weight": 0.8,  "set": "SPM", "rarity": "mythic", "filter": "scene_card", "label": "Scene" },
+          { "weight": 9.2,  "set": "SPM", "rarity": "rare",   "filter": "scene_card", "label": "Scene Box" }
         ]
       },
 
       {
         "label": "Borderless Source Material",
         "outcomes": [
-          { "weight": 75, "set": "SPM", "filter": "borderless", "label": "Source Material" },
-          { "weight": 25, "set": "SPM", "filter": "borderless", "foil": true, "label": "Source Material Foil" }
+          { "weight": 75, "set": "MAR", "filter": "spm_source_material", "label": "Source Material" },
+          { "weight": 25, "set": "MAR", "filter": "spm_source_material", "foil": true, "label": "Source Material Foil" }
         ]
       },
 

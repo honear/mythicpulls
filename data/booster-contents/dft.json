@@ -1,5 +1,5 @@
 {
-  "_doc": "Aetherdrift (DFT) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-aetherdrift . Lineup is authoritative: DFT had Play Boosters + Collector Boosters and NO Draft Boosters. Sub-set codes: DFT = main set, SPG = Special Guests, DRC = DFT Commander, TDFT = tokens. Percentages match Wizards' verbatim odds. Re-pointing: the 'Japan Showcase Fracture Foil' outcome now uses the fracture_foil filter (article: 'a fracture foil Japan Showcase card appears 1% of the time'). Remaining approximations: 'borderless' booster-fun and 'extended-art/borderless' rare-mythic treatments collapsed to borderless/extended_art filters; 'revved up' showcase common/uncommon -> showcase filter; 'driver's seat' full-art basic -> basic_land (kept in its land slot); plain (non-fracture) Japan Showcase modeled with the japanese filter; the double-rainbow-foil serialized headliner has no dedicated filter. Serialized The Aetherspark headliner modeled with the serialized filter. The wildcard 'borderless common/uncommon (8.3%)' is split evenly across common/uncommon.",
+  "_doc": "Aetherdrift (DFT) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-aetherdrift . Lineup is authoritative: DFT had Play Boosters + Collector Boosters and NO Draft Boosters. Sub-set codes: DFT = main set, SPG = Special Guests, DRC = DFT Commander, TDFT = tokens. Percentages match Wizards' verbatim odds. Re-pointing: the 'Japan Showcase Fracture Foil' outcome now uses the fracture_foil filter (article: 'a fracture foil Japan Showcase card appears 1% of the time'). Remaining approximations: 'borderless' booster-fun and 'extended-art/borderless' rare-mythic treatments collapsed to borderless/extended_art filters; 'revved up' showcase common/uncommon -> showcase filter; 'driver's seat' full-art basic -> basic_land (kept in its land slot); plain (non-fracture) Japan Showcase modeled with the japanese filter; the double-rainbow-foil serialized headliner has no dedicated filter. Serialized The Aetherspark headliner modeled with the serialized filter. The wildcard 'borderless common/uncommon (8.3%)' is split evenly across common/uncommon. AUDIT 2026-06: the 'Revved Up' common/uncommon outcomes moved from 'showcase' to 'borderless' — DFT's Revved Up cards carry frame_effects:inverted + border_color:borderless on Scryfall (no showcase frame effect), so the showcase filter matched zero cards and both Revved Up slots silently degraded to fallback pulls.",
 
   "authoritative": true,
 
@@ -87,16 +87,16 @@
       {
         "label": "Revved Up Common / Uncommon",
         "outcomes": [
-          { "weight": 46.9, "set": "DFT", "rarity": "common",   "filter": "showcase" },
-          { "weight": 53.1, "set": "DFT", "rarity": "uncommon", "filter": "showcase" }
+          { "weight": 46.9, "set": "DFT", "rarity": "common",   "filter": "borderless" },
+          { "weight": 53.1, "set": "DFT", "rarity": "uncommon", "filter": "borderless" }
         ]
       },
       {
         "label": "Foil Revved Up Common / Uncommon",
         "foil": true,
         "outcomes": [
-          { "weight": 46.9, "set": "DFT", "rarity": "common",   "filter": "showcase" },
-          { "weight": 53.1, "set": "DFT", "rarity": "uncommon", "filter": "showcase" }
+          { "weight": 46.9, "set": "DFT", "rarity": "common",   "filter": "borderless" },
+          { "weight": 53.1, "set": "DFT", "rarity": "uncommon", "filter": "borderless" }
         ]
       },
       {

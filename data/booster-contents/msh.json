@@ -1,0 +1,226 @@
+{
+  "_doc": "Magic: The Gathering | Marvel Super Heroes (code MSH) — Universes Beyond set, released 2026-06-26. Source: https://magic.wizards.com/en/news/feature/collecting-marvel-super-heroes . Lineup is Play Boosters + Collector Boosters (plus Jumpstart/Commander products we don't model as packs) — no Draft Boosters, hence authoritative:true. Percentages are taken verbatim from the article's odds tables, which give per-slot shares; the two per-PACK phrasings are converted to per-slot weights: scene commons '8.6% of boosters' -> 8.6/7 = 1.2 per common slot, source material '1 out of 24 Play Boosters' -> (100/24)/7 = 0.6 per common slot, scene uncommons '12%' -> 12/3 = 4 per uncommon slot. Filter mappings: scene cards -> 'scene_card' (promo_types:poster, the verified Scryfall tag on SPM's fully-catalogued scene murals; MSH previews already carry it); logo / panel / classic-comic frames -> 'showcase' stand-in until Scryfall finishes cataloguing the Booster Fun sheets at release (only ~10 of the variant prints are indexed during previews — re-bake msh after street date and the chase outcomes fill in automatically); Source Material -> exact: set MAR (Marvel Universe) + 'msh_source_material' (collector 41-100, the 60-card MSH-era sheet; 1-40 belong to SPM); city calm & chaos full-art basics -> 'full_art_basic' merged into one pool because Scryfall doesn't distinguish calm from chaos and both appear at identical rates, so aggregate odds are unchanged (their article rates are summed: 10+10 nonfoil, 2.5+2.5 foil in the Play land slot); regular basics -> 'non_full_art_basic' so the land slot's basic share can never pull a city land; MSC reprint vs new-to-Magic Jumpstart sub-splits are merged into single MSC outcomes at the combined rate (both halves live in the same Scryfall set, indistinguishable by filter); 'Welcome Deck mythic' folded into the MSC mythic share. Sub-percentages reported as 'less than 1%' are entered as 0.5; the 'extremely low quantity' textless cosmic-foil Mind Stone is 0.1, mirroring spm.json's Soul Stone convention.",
+
+  "authoritative": true,
+
+  "play": {
+    "cardCount": 15,
+    "tagline": "14 cards + token · 1 rare/mythic · 1 foil · 1 land · scene, logo & panel rates faithful to Wizards' spec",
+    "slots": [
+      { "label": "Helper / Token", "token": true, "outcomes": [{ "weight": 1, "set": "$tokens" }] },
+
+      {
+        "label": "Common",
+        "count": 7,
+        "outcomes": [
+          { "weight": 98.2, "set": "MSH", "rarity": "common" },
+          { "weight": 1.2,  "set": "MSH", "rarity": "common", "filter": "scene_card", "label": "Scene Card" },
+          { "weight": 0.6,  "set": "MAR", "filter": "msh_source_material", "label": "Source Material" }
+        ]
+      },
+
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          { "weight": 96, "set": "MSH", "rarity": "uncommon" },
+          { "weight": 4,  "set": "MSH", "rarity": "uncommon", "filter": "scene_card", "label": "Scene Card" }
+        ]
+      },
+
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          { "weight": 12.4, "set": "MSH", "rarity": "common" },
+          { "weight": 64,   "set": "MSH", "rarity": "uncommon" },
+          { "weight": 16.8, "set": "MSH", "rarity": "rare" },
+          { "weight": 2.1,  "set": "MSH", "rarity": "mythic" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "common",   "filter": "scene_card", "label": "Scene" },
+          { "weight": 2.7,  "set": "MSH", "rarity": "uncommon", "filter": "scene_card", "label": "Scene" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "rare",     "filter": "scene_card", "label": "Scene" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "mythic",   "filter": "scene_card", "label": "Scene" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "rare",     "filter": "showcase", "label": "Logo" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "mythic",   "filter": "showcase", "label": "Logo" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "rare",     "filter": "showcase", "label": "Panel" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "mythic",   "filter": "showcase", "label": "Panel" },
+          { "weight": 1,    "set": "MSH", "rarity": "rare",     "filter": "borderless_land", "label": "Borderless Land" }
+        ]
+      },
+
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          { "weight": 76.1, "set": "MSH", "rarity": "rare" },
+          { "weight": 16.6, "set": "MSH", "rarity": "mythic" },
+          { "weight": 1,    "set": "MSH", "rarity": "rare",   "filter": "scene_card", "label": "Scene" },
+          { "weight": 0.8,  "set": "MSH", "rarity": "mythic", "filter": "scene_card", "label": "Scene" },
+          { "weight": 2.4,  "set": "MSH", "rarity": "rare",   "filter": "showcase", "label": "Logo" },
+          { "weight": 0.7,  "set": "MSH", "rarity": "mythic", "filter": "showcase", "label": "Logo" },
+          { "weight": 1.9,  "set": "MSH", "rarity": "rare",   "filter": "showcase", "label": "Panel" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "mythic", "filter": "showcase", "label": "Panel" }
+        ]
+      },
+
+      {
+        "label": "Foil",
+        "foil": true,
+        "outcomes": [
+          { "weight": 59.9, "set": "MSH", "rarity": "common" },
+          { "weight": 29.6, "set": "MSH", "rarity": "uncommon" },
+          { "weight": 5.9,  "set": "MSH", "rarity": "rare" },
+          { "weight": 1.2,  "set": "MSH", "rarity": "mythic" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "common",   "filter": "scene_card", "label": "Scene" },
+          { "weight": 1.2,  "set": "MSH", "rarity": "uncommon", "filter": "scene_card", "label": "Scene" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "rare",     "filter": "scene_card", "label": "Scene" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "mythic",   "filter": "scene_card", "label": "Scene" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "rare",     "filter": "showcase", "label": "Logo" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "mythic",   "filter": "showcase", "label": "Logo" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "rare",     "filter": "showcase", "label": "Panel" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "mythic",   "filter": "showcase", "label": "Panel" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "rare",     "filter": "borderless_land", "label": "Borderless Land" }
+        ]
+      },
+
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          { "weight": 40, "set": "MSH", "filter": "dual_land_common" },
+          { "weight": 10, "set": "MSH", "filter": "dual_land_common", "foil": true },
+          { "weight": 20, "set": "MSH", "filter": "non_full_art_basic" },
+          { "weight": 5,  "set": "MSH", "filter": "non_full_art_basic", "foil": true },
+          { "weight": 20, "set": "MSH", "filter": "full_art_basic", "label": "City Calm / Chaos" },
+          { "weight": 5,  "set": "MSH", "filter": "full_art_basic", "foil": true, "label": "City Calm / Chaos" }
+        ]
+      }
+    ]
+  },
+
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards · all-foil core · scene, logo, panel & Mind Stone chases · Commander extras",
+    "slots": [
+      {
+        "label": "Art Card / Token",
+        "token": true,
+        "outcomes": [
+          { "weight": 64, "set": "$tokens", "foil": true, "label": "Foil Double-Sided Token" },
+          { "weight": 32, "set": "$tokens", "label": "Art Card" },
+          { "weight": 4,  "set": "$tokens", "filter": "gold_stamped", "label": "Gold-Stamped Art Card" }
+        ]
+      },
+
+      {
+        "label": "Foil Common",
+        "count": 3,
+        "foil": true,
+        "outcomes": [
+          { "weight": 89, "set": "MSH", "rarity": "common" },
+          { "weight": 11, "set": "MSH", "filter": "dual_land_common", "label": "Dual Land" }
+        ]
+      },
+
+      {
+        "label": "Foil Uncommon",
+        "count": 2,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "MSH", "rarity": "uncommon" }]
+      },
+
+      {
+        "label": "Foil Commander Common",
+        "count": 2,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "MSC", "rarity": "common", "label": "Commander / Jumpstart" }]
+      },
+
+      {
+        "label": "Foil Commander Uncommon",
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "MSC", "rarity": "uncommon", "label": "Commander / Jumpstart" }]
+      },
+
+      {
+        "label": "Foil Scene Card",
+        "foil": true,
+        "outcomes": [
+          { "weight": 20, "set": "MSH", "rarity": "common",   "filter": "scene_card", "label": "Scene" },
+          { "weight": 80, "set": "MSH", "rarity": "uncommon", "filter": "scene_card", "label": "Scene" }
+        ]
+      },
+
+      {
+        "label": "Foil City Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [{ "weight": 1, "set": "MSH", "filter": "full_art_basic", "label": "City Calm / Chaos" }]
+      },
+
+      {
+        "label": "Foil Rare / Mythic",
+        "foil": true,
+        "outcomes": [
+          { "weight": 45,   "set": "MSH", "rarity": "rare" },
+          { "weight": 9.4,  "set": "MSH", "rarity": "mythic" },
+          { "weight": 1.4,  "set": "MSH", "rarity": "mythic", "filter": "scene_card", "label": "Double-Faced Scene" },
+          { "weight": 1.4,  "set": "MSH", "rarity": "mythic", "filter": "showcase", "label": "Double-Faced Logo" },
+          { "weight": 36.8, "set": "MSC", "rarity": "rare",   "label": "Commander / Jumpstart" },
+          { "weight": 6,    "set": "MSC", "rarity": "mythic", "label": "Commander / Jumpstart" }
+        ]
+      },
+
+      {
+        "label": "Commander Booster Fun",
+        "outcomes": [
+          { "weight": 93.6, "set": "MSC", "rarity": "rare",   "filter": "extended_art", "label": "Extended Art" },
+          { "weight": 3.2,  "set": "MSC", "rarity": "mythic", "filter": "extended_art", "label": "Extended Art" },
+          { "weight": 3.2,  "set": "MSC", "filter": "borderless", "label": "Borderless Face Commander" }
+        ]
+      },
+
+      {
+        "label": "Non-Foil Booster Fun",
+        "outcomes": [
+          { "weight": 27.8, "set": "MSH", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 2.3,  "set": "MSH", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 6.4,  "set": "MSH", "rarity": "rare",   "filter": "scene_card", "label": "Scene" },
+          { "weight": 4.9,  "set": "MSH", "rarity": "mythic", "filter": "scene_card", "label": "Scene" },
+          { "weight": 15.1, "set": "MSH", "rarity": "rare",   "filter": "showcase", "label": "Logo" },
+          { "weight": 4.6,  "set": "MSH", "rarity": "mythic", "filter": "showcase", "label": "Logo" },
+          { "weight": 12.1, "set": "MSH", "rarity": "rare",   "filter": "showcase", "label": "Panel" },
+          { "weight": 2.6,  "set": "MSH", "rarity": "mythic", "filter": "showcase", "label": "Panel" },
+          { "weight": 13.9, "set": "MSH", "rarity": "rare",   "filter": "borderless", "label": "Scene Box Borderless" },
+          { "weight": 5.8,  "set": "MSH", "filter": "borderless_land", "label": "Borderless Land" },
+          { "weight": 4.5,  "set": "MAR", "filter": "msh_source_material", "label": "Source Material" }
+        ]
+      },
+
+      {
+        "label": "Source Material",
+        "outcomes": [
+          { "weight": 75, "set": "MAR", "filter": "msh_source_material", "label": "Source Material" },
+          { "weight": 25, "set": "MAR", "filter": "msh_source_material", "foil": true, "label": "Source Material Foil" }
+        ]
+      },
+
+      {
+        "label": "Foil Booster Fun",
+        "foil": true,
+        "outcomes": [
+          { "weight": 31.8, "set": "MSH", "rarity": "rare",   "filter": "extended_art" },
+          { "weight": 2.7,  "set": "MSH", "rarity": "mythic", "filter": "extended_art" },
+          { "weight": 7.3,  "set": "MSH", "rarity": "rare",   "filter": "scene_card", "label": "Scene" },
+          { "weight": 4,    "set": "MSH", "rarity": "mythic", "filter": "scene_card", "label": "Scene" },
+          { "weight": 17.2, "set": "MSH", "rarity": "rare",   "filter": "showcase", "label": "Logo" },
+          { "weight": 3.6,  "set": "MSH", "rarity": "mythic", "filter": "showcase", "label": "Logo" },
+          { "weight": 13.9, "set": "MSH", "rarity": "rare",   "filter": "showcase", "label": "Panel" },
+          { "weight": 3,    "set": "MSH", "rarity": "mythic", "filter": "showcase", "label": "Panel" },
+          { "weight": 6.6,  "set": "MSH", "filter": "borderless_land", "label": "Borderless Land" },
+          { "weight": 9.9,  "set": "MSH", "rarity": "mythic", "filter": "showcase", "label": "Classic Comic" },
+          { "weight": 0.5,  "set": "MSH", "rarity": "mythic", "filter": "borderless", "label": "Gauntlet Mind Stone" },
+          { "weight": 0.1,  "set": "MSH", "rarity": "mythic", "filter": "serialized", "label": "Textless Cosmic Foil Mind Stone" }
+        ]
+      }
+    ]
+  }
+}

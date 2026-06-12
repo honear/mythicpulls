@@ -90,6 +90,14 @@
   "_doc_full_art_land": "Full-art LANDS only (basic or nonbasic). Use this in basic-land slots instead of bare full_art, which would also match full-art creatures/scenes and leak non-lands into the land slot.",
   "full_art_land": { "all": [{ "type_line_includes": "Land" }, { "full_art": true }] },
 
+  "_doc_marvel": "Marvel Universes Beyond treatments. 'scene_card' matches the multi-card mural scenes — Scryfall tags them promo_types:'poster' (verified on SPM's fully-catalogued pool; MSH previews carry the same tag). 'full_art_basic' = the full-art basic-land cycles (SPM spiderweb, MSH city calm/chaos) excluding borderless variants; 'non_full_art_basic' is its complement for the regular-basic share of land slots. 'msh_source_material' selects the MSH-era Source Material sheet: Marvel Universe (MAR) collector numbers 41-100, released alongside MSH — numbers 1-40 are the SPM-era sheet. 'borderless_land' = borderless-frame lands for the wildcard/foil borderless-land outcomes, with the standard ultra-finish exclusion.",
+  "scene_card": { "promo_types": "poster" },
+  "full_art_basic": { "all": [ { "type_line_includes": "Basic" }, { "full_art": true }, { "not": { "border_color": "borderless" } } ] },
+  "non_full_art_basic": { "all": [ { "type_line_includes": "Basic" }, { "full_art": false } ] },
+  "msh_source_material": { "collector_number_range": [41, 100] },
+  "spm_source_material": { "collector_number_range": [1, 40] },
+  "borderless_land": { "all": [ { "type_line_includes": "Land" }, { "border_color": "borderless" }, { "not": { "promo_types": ["raisedfoil", "serialized", "halofoil", "textured", "gilded", "galaxyfoil", "fracturefoil", "manafoil", "neonink", "oilslick", "stepandcompleat", "surgefoil"] } } ] },
+
   "serialized": { "promo_types": "serialized" },
 
   "japanese": { "lang": "ja" },

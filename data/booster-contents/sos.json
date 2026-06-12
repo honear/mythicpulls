@@ -1,5 +1,5 @@
 {
-  "_doc": "Secrets of Strixhaven Play + Collector recipes from Wizards' product page. File is auto-discovered by lowercase set code (sos) — see lib/booster-loader.ts::resolveRecipe. Pack types not defined here (draft) fall through to data/booster-contents/default.json. Set codes: SOS = main set, SOA = Mystical Archive, PSOS = Special Guests / promos, TSOS = tokens, SOC = SOS Commander, ASOS = Art Series. Percentages match the official rates verbatim.",
+  "_doc": "Secrets of Strixhaven Play + Collector recipes from Wizards' product page. File is auto-discovered by lowercase set code (sos) — see lib/booster-loader.ts::resolveRecipe. Pack types not defined here (draft) fall through to data/booster-contents/default.json. Set codes: SOS = main set, SOA = Mystical Archive, PSOS = Special Guests / promos, TSOS = tokens, SOC = SOS Commander, ASOS = Art Series. Percentages match the official rates verbatim. AUDIT 2026-06: the PSOS outcomes previously carried filter:'special_guest' (promo_types:specialguests), but PSOS prints don't carry that promo type on Scryfall — the filter matched zero cards and the engine silently re-rolled past the Special Guest hits. PSOS is wholly the Special Guests sheet, so the outcomes are now unfiltered set pulls.",
 
   "costUsd": {
     "play": 5.99,
@@ -22,7 +22,7 @@
         "count": 6,
         "outcomes": [
           { "weight": 54, "set": "SOS", "rarity": "common" },
-          { "weight": 1, "set": "PSOS", "filter": "special_guest", "label": "Special Guest" }
+          { "weight": 1, "set": "PSOS", "label": "Special Guest" }
         ]
       },
 
@@ -188,7 +188,7 @@
           { "weight": 3.7,  "set": "SOS", "rarity": "mythic", "filter": "field_notes" },
           { "weight": 7.7,  "set": "SOA", "rarity": "rare",   "filter": "japanese", "label": "Silver Scroll Foil Japanese" },
           { "weight": 2.3,  "set": "SOA", "rarity": "mythic", "filter": "japanese", "label": "Silver Scroll Foil Japanese" },
-          { "weight": 4.5,  "set": "PSOS", "filter": "special_guest", "label": "Special Guest" },
+          { "weight": 4.5,  "set": "PSOS", "label": "Special Guest" },
           { "weight": 0.1,  "set": "SOS", "rarity": "mythic", "filter": "serialized", "label": "Serialized Emeritus of Ideation" }
         ]
       }
