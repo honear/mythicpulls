@@ -1,5 +1,5 @@
 {
-  "_doc": "Modern Horizons 3 (MH3) Play + Collector recipes. Source: Wizards 'Collecting Modern Horizons 3' (https://magic.wizards.com/en/news/feature/collecting-modern-horizons-3). MH3 had NO standard Draft Booster — Play Boosters are the draftable product — so only play + collector are defined and authoritative is true (draft is hidden). The 'New-to-Modern' bonus-sheet slot pulls cards from the MH3 Commander set; we approximate it with the MH3 Commander code M3C. Retro frame (classic 1997-style framing, 58 MH3 cards) now uses the dedicated retro_frame filter instead of a showcase stand-in, across the Play rare/mythic + New-to-Modern slots and the Collector retro-frame / rare-mythic / Booster Fun slots. Full-art Eldrazi lands and full-art Snow-Covered Wastes now use the full_art filter instead of basic_land. Remaining Booster Fun treatments (frame break, profile) have no dedicated filter and stay folded into borderless, noted inline. Textured-foil Special Guests / ripple-foil chases stay on special_guest / serialized as before. Special Guests reference the SPG promo set. Jumpstart, Commander decks, Prerelease, and Bundles are intentionally omitted. [Chase fix: added textured-foil outcomes so MH3 textured foils are reachable.] AUDIT 2026-06: SPG rate was per common sub-pull (×6 overpull); articles state it per PLAY BOOSTER — now 0.267 per slot (1.6/6).",
+  "_doc": "Modern Horizons 3 (MH3) Play + Collector recipes. Source: Wizards 'Collecting Modern Horizons 3' (https://magic.wizards.com/en/news/feature/collecting-modern-horizons-3). MH3 had NO standard Draft Booster — Play Boosters are the draftable product — so only play + collector are defined and authoritative is true (draft is hidden). The 'New-to-Modern' bonus-sheet slot pulls cards from the MH3 Commander set; we approximate it with the MH3 Commander code M3C. Retro frame (classic 1997-style framing, 58 MH3 cards) now uses the dedicated retro_frame filter instead of a showcase stand-in, across the Play rare/mythic + New-to-Modern slots and the Collector retro-frame / rare-mythic / Booster Fun slots. Full-art Eldrazi lands and full-art Snow-Covered Wastes now use the full_art filter instead of basic_land. Remaining Booster Fun treatments (frame break, profile) have no dedicated filter and stay folded into borderless, noted inline. Textured-foil Special Guests / ripple-foil chases stay on special_guest / serialized as before. Special Guests reference the SPG promo set. Jumpstart, Commander decks, Prerelease, and Bundles are intentionally omitted. [Chase fix: added textured-foil outcomes so MH3 textured foils are reachable.] AUDIT 2026-06: SPG rate was per common sub-pull (×6 overpull); articles state it per PLAY BOOSTER — now 0.267 per slot (1.6/6). AUDIT 2026-06: Special Guests outcomes re-pointed to set SPG + spg_mh3 (collector range — sheets verified by release date). The previous special_guest promo filter matched zero prints, and unranged SPG pulls would leak other sets’ guests. AUDIT 2026-06: special-finish outcome rarities corrected to match the actual printed sheets (pool-verified): textured_foil->mythic. AUDIT 2026-06 (article re-verification, full rebuild): land slot matched to published 50/20/13.3/10/6.7 (was over-weighting full-art Eldrazi 23.3 and missing foil basics); wildcard gained the published retro (4.2) and Commander-mythic (4.2) outcomes and the explicit DFC split; impossible M3C retro outcomes removed (M3C prints no 1997 frames — the retro new-to-Modern prints live under MH3 numbering); Collector foil R/M gained its 22.2% new-to-Modern share; Commander slot rebuilt to the published 6-way split incl. foil-etched at 3.3%; Booster Fun ×2 rebuilt from the ~200% family table (halved per slot); the foil chase slot rebuilt with published etched (9.3/3.9), Special Guests (4.4), and textured (1.9+1.9) rates.",
   "authoritative": true,
   "play": {
     "cardCount": 14,
@@ -16,7 +16,7 @@
           {
             "weight": 0.267,
             "set": "SPG",
-            "filter": "special_guest",
+            "filter": "spg_mh3",
             "label": "Special Guest"
           }
         ]
@@ -83,23 +83,16 @@
           {
             "weight": 0.8,
             "set": "M3C",
-            "rarity": "rare",
+            "rarity": "mythic",
             "filter": "borderless",
             "label": "Borderless Frame Break"
           },
           {
             "weight": 0.3,
             "set": "M3C",
-            "rarity": "rare",
+            "rarity": "mythic",
             "filter": "borderless",
             "label": "Borderless Profile"
-          },
-          {
-            "weight": 0.2,
-            "set": "M3C",
-            "rarity": "rare",
-            "filter": "retro_frame",
-            "label": "Retro Frame"
           }
         ]
       },
@@ -108,19 +101,42 @@
         "outcomes": [
           {
             "weight": 41.7,
+            "set": "MH3",
             "rarity": "common"
           },
           {
-            "weight": 41.7,
+            "weight": 33.4,
+            "set": "MH3",
             "rarity": "uncommon"
           },
           {
+            "weight": 8.3,
+            "set": "MH3",
+            "rarity": "uncommon",
+            "filter": "double_faced",
+            "label": "DFC Uncommon"
+          },
+          {
             "weight": 6.7,
+            "set": "MH3",
             "rarity": "rare"
           },
           {
             "weight": 1.1,
+            "set": "MH3",
             "rarity": "mythic"
+          },
+          {
+            "weight": 4.2,
+            "set": "MH3",
+            "filter": "retro_frame",
+            "label": "Retro Frame"
+          },
+          {
+            "weight": 4.2,
+            "set": "M3C",
+            "rarity": "mythic",
+            "label": "Commander Mythic"
           }
         ]
       },
@@ -152,21 +168,32 @@
         "outcomes": [
           {
             "weight": 50,
+            "set": "MH3",
             "rarity": "common",
             "label": "Common"
           },
           {
             "weight": 20,
-            "filter": "basic_land",
+            "set": "MH3",
+            "filter": "non_full_art_basic",
             "label": "Basic Land"
           },
           {
-            "weight": 23.3,
+            "weight": 13.3,
+            "set": "MH3",
+            "filter": "non_full_art_basic",
+            "foil": true,
+            "label": "Foil Basic Land"
+          },
+          {
+            "weight": 10,
+            "set": "MH3",
             "filter": "full_art_land",
             "label": "Full-Art Eldrazi Land"
           },
           {
             "weight": 6.7,
+            "set": "MH3",
             "filter": "full_art_land",
             "foil": true,
             "label": "Foil Full-Art Eldrazi Land"
@@ -227,19 +254,22 @@
         "label": "Retro Frame Common / Uncommon",
         "outcomes": [
           {
-            "weight": 48.7,
+            "weight": 39.5,
+            "set": "MH3",
             "rarity": "common",
             "filter": "retro_frame",
             "label": "Retro Frame Common"
           },
           {
-            "weight": 48.7,
+            "weight": 57.9,
+            "set": "MH3",
             "rarity": "uncommon",
             "filter": "retro_frame",
             "label": "Retro Frame Uncommon"
           },
           {
             "weight": 2.6,
+            "set": "MH3",
             "filter": "full_art",
             "label": "Full-Art Snow-Covered Wastes"
           }
@@ -250,22 +280,25 @@
         "foil": true,
         "outcomes": [
           {
-            "weight": 48.7,
+            "weight": 39.5,
+            "set": "MH3",
             "rarity": "common",
             "filter": "retro_frame",
             "label": "Foil Retro Frame Common"
           },
           {
-            "weight": 48.7,
+            "weight": 57.9,
+            "set": "MH3",
             "rarity": "uncommon",
             "filter": "retro_frame",
             "label": "Foil Retro Frame Uncommon"
           },
           {
             "weight": 2.6,
+            "set": "MH3",
             "filter": "full_art",
-            "foil": true,
-            "label": "Foil Full-Art Snow-Covered Wastes"
+            "label": "Foil Full-Art Snow-Covered Wastes",
+            "foil": true
           }
         ]
       },
@@ -274,18 +307,33 @@
         "foil": true,
         "outcomes": [
           {
-            "weight": 79.8,
+            "weight": 66.7,
+            "set": "MH3",
             "rarity": "rare"
           },
           {
-            "weight": 13,
+            "weight": 8.3,
+            "set": "MH3",
             "rarity": "mythic"
           },
           {
-            "weight": 7.2,
+            "weight": 2.8,
+            "set": "MH3",
+            "rarity": "mythic",
+            "filter": "double_faced",
+            "label": "DFC Mythic"
+          },
+          {
+            "weight": 20,
+            "set": "M3C",
             "rarity": "rare",
-            "filter": "retro_frame",
-            "label": "Retro Frame"
+            "label": "New-to-Modern"
+          },
+          {
+            "weight": 2.2,
+            "set": "M3C",
+            "rarity": "mythic",
+            "label": "New-to-Modern"
           }
         ]
       },
@@ -293,18 +341,49 @@
         "label": "Booster Fun Commander",
         "outcomes": [
           {
-            "weight": 30,
-            "set": "M3C",
-            "rarity": "mythic",
-            "filter": "etched_foil",
-            "label": "Foil-Etched Commander Mythic"
-          },
-          {
-            "weight": 70,
+            "weight": 78.9,
             "set": "M3C",
             "rarity": "rare",
             "filter": "extended_art",
-            "label": "Booster Fun Commander"
+            "label": "Extended-Art Commander Rare"
+          },
+          {
+            "weight": 5.3,
+            "set": "M3C",
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "Extended-Art Commander Mythic"
+          },
+          {
+            "weight": 3,
+            "set": "M3C",
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "foil": true,
+            "label": "Foil Extended-Art Commander Mythic"
+          },
+          {
+            "weight": 6.1,
+            "set": "M3C",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Profile Commander"
+          },
+          {
+            "weight": 3.5,
+            "set": "M3C",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "foil": true,
+            "label": "Foil Borderless Profile Commander"
+          },
+          {
+            "weight": 3.3,
+            "set": "M3C",
+            "rarity": "mythic",
+            "filter": "etched_foil",
+            "foil": true,
+            "label": "Foil-Etched Commander Mythic"
           }
         ]
       },
@@ -313,34 +392,44 @@
         "count": 2,
         "outcomes": [
           {
-            "weight": 60,
+            "weight": 22.7,
+            "set": "MH3",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 0.55,
+            "set": "MH3",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 41.55,
+            "set": "MH3",
             "rarity": "rare",
             "filter": "borderless",
-            "label": "Borderless"
+            "label": "Borderless (Frame Break / Profile / Lands / Fetch)"
           },
           {
-            "weight": 25,
-            "rarity": "rare",
-            "filter": "extended_art",
-            "label": "Extended Art"
-          },
-          {
-            "weight": 8,
+            "weight": 9.65,
+            "set": "MH3",
             "rarity": "mythic",
             "filter": "borderless",
-            "label": "Borderless Mythic"
+            "label": "Borderless (Profile / Concept / DFC Planeswalker)"
           },
           {
-            "weight": 4,
+            "weight": 18.75,
+            "set": "MH3",
             "rarity": "rare",
             "filter": "retro_frame",
             "label": "Retro Frame"
           },
           {
-            "weight": 3,
+            "weight": 6.8,
+            "set": "MH3",
             "rarity": "mythic",
-            "filter": "extended_art",
-            "label": "Extended Art Mythic"
+            "filter": "retro_frame",
+            "label": "Retro Frame"
           }
         ]
       },
@@ -349,62 +438,81 @@
         "foil": true,
         "outcomes": [
           {
-            "weight": 50,
+            "weight": 35,
+            "set": "MH3",
             "rarity": "rare",
-            "filter": "extended_art",
-            "label": "Foil Extended Art"
+            "filter": "extended_art"
+          },
+          {
+            "weight": 2,
+            "set": "MH3",
+            "rarity": "mythic",
+            "filter": "extended_art"
           },
           {
             "weight": 25,
+            "set": "MH3",
             "rarity": "rare",
-            "filter": "borderless",
-            "label": "Foil Borderless"
-          },
-          {
-            "weight": 10,
-            "rarity": "mythic",
-            "filter": "extended_art",
-            "label": "Foil Extended Art Mythic"
+            "filter": "borderless"
           },
           {
             "weight": 6,
-            "rarity": "rare",
-            "filter": "retro_frame",
-            "label": "Foil Retro Frame"
-          },
-          {
-            "weight": 4,
+            "set": "MH3",
             "rarity": "mythic",
-            "filter": "borderless",
-            "label": "Foil Borderless Mythic"
+            "filter": "borderless"
           },
           {
-            "weight": 1.9,
+            "weight": 8,
+            "set": "MH3",
+            "rarity": "rare",
+            "filter": "retro_frame"
+          },
+          {
+            "weight": 2,
+            "set": "MH3",
+            "rarity": "mythic",
+            "filter": "retro_frame"
+          },
+          {
+            "weight": 9.3,
+            "set": "MH3",
+            "rarity": "rare",
+            "filter": "etched_foil",
+            "label": "Foil-Etched"
+          },
+          {
+            "weight": 3.9,
+            "set": "MH3",
+            "rarity": "mythic",
+            "filter": "etched_foil",
+            "label": "Foil-Etched"
+          },
+          {
+            "weight": 4.4,
             "set": "SPG",
-            "filter": "special_guest",
+            "filter": "spg_mh3",
             "label": "Special Guest"
           },
           {
+            "weight": 1.9,
+            "set": "MH3",
+            "rarity": "mythic",
+            "filter": "textured_foil",
+            "label": "Textured Foil Elemental"
+          },
+          {
+            "weight": 1.9,
+            "set": "MH3",
+            "rarity": "mythic",
+            "filter": "textured_foil",
+            "label": "Textured Foil DFC Planeswalker"
+          },
+          {
             "weight": 0.1,
+            "set": "MH3",
             "rarity": "mythic",
             "filter": "serialized",
             "label": "Serialized Concept Eldrazi"
-          },
-          {
-            "weight": 1.5,
-            "set": "mh3",
-            "rarity": "rare",
-            "filter": "textured_foil",
-            "foil": true,
-            "label": "Textured Foil"
-          },
-          {
-            "weight": 0.6,
-            "set": "mh3",
-            "rarity": "mythic",
-            "filter": "textured_foil",
-            "foil": true,
-            "label": "Textured Foil"
           }
         ]
       }

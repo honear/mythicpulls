@@ -451,6 +451,11 @@ export function trimCardForClient(c: ScryfallCard): ScryfallCard {
     frame_effects: c.frame_effects,
     frame: c.frame,
     full_art: c.full_art,
+    // Variation prints (alternate printings of in-set cards: DSK Lurking
+    // Evil, DMU etched Legends Retold, J25 anime). regular_print excludes
+    // them implicitly; variation_print targets them. Keep in sync with
+    // trimCard in scripts/build-set-cards.mjs.
+    variation: c.variation,
     border_color: c.border_color,
     promo_types: c.promo_types,
     produced_mana: c.produced_mana,

@@ -1,5 +1,5 @@
 {
-  "_doc": "Bloomburrow (BLB) Play + Collector recipes from Wizards' official 'Collecting Bloomburrow' article (https://magic.wizards.com/en/news/feature/collecting-bloomburrow). Bloomburrow shipped Play + Collector boosters only — NO Draft Booster — so authoritative is true and draft is intentionally undefined. Sub-set codes: BLB = main set, SPG = Special Guests, BLC = Bloomburrow Commander. The article publishes exact rates for the seasonal land, token/art slot, Collector foil rare/mythic, and Collector Commander slot; it does NOT publish a rare-vs-mythic split for the Play rare/mythic, wildcard, or foil slots, nor a consolidated per-treatment split for the Collector alternate-border slots, so those use the standard Play Booster splits (spec defaults) with Booster Fun folded in, and are approximated. Approximations: seasonal full-art basics modeled via basic_land filter (season distribution captured as land-slot weights); Imagine treatments modeled with borderless filter (frame approximation); Special Guests via the special_guest filter against SPG. Specific finishes re-pointed to dedicated filters: the Collector slot-7 'Raised Foil Anime' outcome (3.66% per the article) now uses the raised_foil filter instead of the borderless stand-in. AUDIT 2026-06 (article re-verification): (1) Special Guests rate was applied per common sub-pull (6 × 1.5% ≈ 9% of packs); the article says 1.5% of PLAY BOOSTERS — now 0.25% per slot. (2) The seasonal land slot lacked its published foil shares (Spring 32/8, Summer 24/6, Autumn 16/4, Winter 8/2) — each season now splits 80/20 non-foil/foil. AUDIT 2026-06 part 2: both Collector alternate-border slots rebuilt verbatim from the article tables. The non-foil table’s percentages sum to ~200 because the slot appears TWICE per booster — per-slot weights are the published values halved. Extended-art mythic outcomes removed (article: no EA mythics exist in BLB; only 13 rares). Field Notes is a real BLB borderless treatment (8 cards) — modeled in the borderless family. Foil slot gains the previously-missing 3.07% borderless Special Guests outcome. Raised-foil anime at the published 3.66%.",
+  "_doc": "Bloomburrow (BLB) Play + Collector recipes from Wizards' official 'Collecting Bloomburrow' article (https://magic.wizards.com/en/news/feature/collecting-bloomburrow). Bloomburrow shipped Play + Collector boosters only — NO Draft Booster — so authoritative is true and draft is intentionally undefined. Sub-set codes: BLB = main set, SPG = Special Guests, BLC = Bloomburrow Commander. The article publishes exact rates for the seasonal land, token/art slot, Collector foil rare/mythic, and Collector Commander slot; it does NOT publish a rare-vs-mythic split for the Play rare/mythic, wildcard, or foil slots, nor a consolidated per-treatment split for the Collector alternate-border slots, so those use the standard Play Booster splits (spec defaults) with Booster Fun folded in, and are approximated. Approximations: seasonal full-art basics modeled via basic_land filter (season distribution captured as land-slot weights); Imagine treatments modeled with borderless filter (frame approximation); Special Guests via the special_guest filter against SPG. Specific finishes re-pointed to dedicated filters: the Collector slot-7 'Raised Foil Anime' outcome (3.66% per the article) now uses the raised_foil filter instead of the borderless stand-in. AUDIT 2026-06 (article re-verification): (1) Special Guests rate was applied per common sub-pull (6 × 1.5% ≈ 9% of packs); the article says 1.5% of PLAY BOOSTERS — now 0.25% per slot. (2) The seasonal land slot lacked its published foil shares (Spring 32/8, Summer 24/6, Autumn 16/4, Winter 8/2) — each season now splits 80/20 non-foil/foil. AUDIT 2026-06 part 2: both Collector alternate-border slots rebuilt verbatim from the article tables. The non-foil table’s percentages sum to ~200 because the slot appears TWICE per booster — per-slot weights are the published values halved. Extended-art mythic outcomes removed (article: no EA mythics exist in BLB; only 13 rares). Field Notes is a real BLB borderless treatment (8 cards) — modeled in the borderless family. Foil slot gains the previously-missing 3.07% borderless Special Guests outcome. Raised-foil anime at the published 3.66%. AUDIT 2026-06: Special Guests outcomes re-pointed to set SPG + spg_blb (collector range — sheets verified by release date). The previous special_guest promo filter matched zero prints, and unranged SPG pulls would leak other sets’ guests.",
   "authoritative": true,
   "play": {
     "cardCount": 14,
@@ -38,7 +38,7 @@
           {
             "weight": 0.25,
             "set": "SPG",
-            "filter": "special_guest",
+            "filter": "spg_blb",
             "label": "Special Guest"
           }
         ]
@@ -477,7 +477,8 @@
           {
             "weight": 3.07,
             "set": "SPG",
-            "label": "Borderless Special Guest"
+            "label": "Borderless Special Guest",
+            "filter": "spg_blb"
           },
           {
             "weight": 3.66,

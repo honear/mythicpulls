@@ -45,9 +45,19 @@ set still missing (covers brand-new releases between script runs).
 
 ## Scryfall rate limit
 
-Hard cap is **10 req/sec**. The build scripts use `concurrency=2` with
-`PER_WORKER_THROTTLE_MS=250` → ~8 req/sec sustained. Anything more
-aggressive 429s on long runs. See `lib/concurrency.ts` for the helper.
+Per the official docs (https://scryfall.com/docs/api/rate-limits), the
+limits are **per endpoint class**: `/cards/search`, `/cards/named`,
+`/cards/random`, `/cards/collection` are capped at **2 req/sec (500ms)**;
+all other endpoints at 10 req/sec. A 429 locks you out for 30 seconds and
+repeat offenders risk a ban. The earlier "10 req/sec flat" note here was
+wrong for search — long crawls at 4-8 req/sec drew sustained 429 streaks.
+
+For anything bulk, Scryfall says you **must use the daily bulk data
+files** (`/bulk-data` → `*.scryfall.io` download, NO rate limit on the
+file origin). `scripts/build-set-cards.mjs` does this by default: one
+~2.4 GB `all_cards` download, stream-parsed locally into every pool.
+Its API mode (explicit codes / `--missing-only`) paces `/cards/search`
+at 600ms and is for small refreshes only.
 
 ## 17Lands attribution requirements
 

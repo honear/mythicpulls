@@ -1,8 +1,6 @@
 {
-  "_doc": "Kaldheim (KHM) Draft + Collector recipes. The `draft` block is the original collation-derived recipe from data/_collation-facts/khm.json (The Collation Project) and is kept verbatim. The `collector` block was added from Wizards' official 'Collecting Kaldheim' article (https://magic.wizards.com/en/news/feature/collecting-kaldheim-2021-01-07). KHM (Jan 2021) is pre-Play-Booster, so there is intentionally NO play booster; Set Boosters are skipped per assignment. authoritative=true. Set composition: 101C / 80U / 64R / 20M. Sub-set codes: KHM = main set, KHC = Kaldheim Commander (the 'Commander rare/mythic' that can appear in the rare-saga slot), TKHM = tokens, AKHM = art series (not used; Collector ships a foil token, not an art card, in the token slot). Collector Booster = 16 (15 cards + 1 foil double-sided token): 1 rare saga/exclusive/Commander card, 1 foil snow basic land, 1 non-foil extended-art rare/mythic, 1 foil rare/mythic, 1 non-foil showcase uncommon, 1 foil showcase uncommon, 2 foil uncommons, 5 foil commons, 1 non-foil showcase/borderless rare/mythic, 1 foil showcase/borderless/extended-art rare/mythic, 1 foil token. Article pool sizes used to DERIVE weights (exact percentages were not published): extended-art 36 rares / 4 mythics with 'each rare shows up twice as often as each mythic rare' -> 36*2 : 4*1 = 72 : 4 = 94.7% rare / 5.3% mythic. Showcase/borderless non-foil slot pool '18 rares and 16 mythic rares', applying the same rare=2x-mythic frequency rule -> 36 : 16 = 69.2% rare / 30.8% mythic. Foil alt-frame final slot pool '54 rares and 20 mythic rares' (showcase + borderless + extended-art combined); split derived as 108 : 20 = 84.4% rare / 15.6% mythic, then apportioned across the three treatments by their relative pool sizes (extended-art 40 of 90 booster-fun = ~44%, showcase/borderless 50 of 90 = ~56%). Approximations: no dedicated 'snow basic land' filter exists, so the foil snow land uses basic_land (KHM's only basics are snow basics, so the pool is correct); showcase Viking-frame and borderless legends are modeled with showcase/borderless filters; the Commander-card variant of the rare-saga slot references KHC.",
-
+  "_doc": "Kaldheim (KHM) Draft + Collector recipes. The `draft` block is the original collation-derived recipe from data/_collation-facts/khm.json (The Collation Project) and is kept verbatim. The `collector` block was added from Wizards' official 'Collecting Kaldheim' article (https://magic.wizards.com/en/news/feature/collecting-kaldheim-2021-01-07). KHM (Jan 2021) is pre-Play-Booster, so there is intentionally NO play booster; Set Boosters are skipped per assignment. authoritative=true. Set composition: 101C / 80U / 64R / 20M. Sub-set codes: KHM = main set, KHC = Kaldheim Commander (the 'Commander rare/mythic' that can appear in the rare-saga slot), TKHM = tokens, AKHM = art series (not used; Collector ships a foil token, not an art card, in the token slot). Collector Booster = 16 (15 cards + 1 foil double-sided token): 1 rare saga/exclusive/Commander card, 1 foil snow basic land, 1 non-foil extended-art rare/mythic, 1 foil rare/mythic, 1 non-foil showcase uncommon, 1 foil showcase uncommon, 2 foil uncommons, 5 foil commons, 1 non-foil showcase/borderless rare/mythic, 1 foil showcase/borderless/extended-art rare/mythic, 1 foil token. Article pool sizes used to DERIVE weights (exact percentages were not published): extended-art 36 rares / 4 mythics with 'each rare shows up twice as often as each mythic rare' -> 36*2 : 4*1 = 72 : 4 = 94.7% rare / 5.3% mythic. Showcase/borderless non-foil slot pool '18 rares and 16 mythic rares', applying the same rare=2x-mythic frequency rule -> 36 : 16 = 69.2% rare / 30.8% mythic. Foil alt-frame final slot pool '54 rares and 20 mythic rares' (showcase + borderless + extended-art combined); split derived as 108 : 20 = 84.4% rare / 15.6% mythic, then apportioned across the three treatments by their relative pool sizes (extended-art 40 of 90 booster-fun = ~44%, showcase/borderless 50 of 90 = ~56%). Approximations: no dedicated 'snow basic land' filter exists, so the foil snow land uses basic_land (KHM's only basics are snow basics, so the pool is correct); showcase Viking-frame and borderless legends are modeled with showcase/borderless filters; the Commander-card variant of the rare-saga slot references KHC. AUDIT 2026-06: KHC outcomes unfiltered — Kaldheim Commander prints carry no extended-art frames (pool-verified); the deck exclusives are regular frame.",
   "authoritative": true,
-
   "draft": {
     "cardCount": 15,
     "tagline": "10 commons · 3 uncommons · 1× rare/mythic · 1 basic land · foil 33% of boosters",
@@ -81,7 +79,6 @@
       }
     ]
   },
-
   "collector": {
     "cardCount": 16,
     "tagline": "15 premium cards + foil token · foil snow land · showcase Viking legends · extended-art chase",
@@ -89,88 +86,207 @@
       {
         "label": "Foil Token",
         "token": true,
-        "outcomes": [{ "weight": 1, "set": "TKHM", "label": "Foil Double-Sided Token" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TKHM",
+            "label": "Foil Double-Sided Token"
+          }
+        ]
       },
-
       {
         "label": "Foil Common",
         "count": 5,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "KHM", "rarity": "common" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "KHM",
+            "rarity": "common"
+          }
+        ]
       },
-
       {
         "label": "Foil Uncommon",
         "count": 2,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "KHM", "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "KHM",
+            "rarity": "uncommon"
+          }
+        ]
       },
-
       {
         "label": "Non-Foil Showcase Uncommon Legend",
-        "outcomes": [{ "weight": 1, "set": "KHM", "rarity": "uncommon", "filter": "showcase", "label": "Showcase Viking Legend" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "KHM",
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Showcase Viking Legend"
+          }
+        ]
       },
-
       {
         "label": "Foil Showcase Uncommon Legend",
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "KHM", "rarity": "uncommon", "filter": "showcase", "label": "Showcase Viking Legend" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "KHM",
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Showcase Viking Legend"
+          }
+        ]
       },
-
       {
         "label": "Foil Snow Basic Land",
         "basicLand": true,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "KHM", "filter": "basic_land", "label": "Foil Snow Basic Land" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "KHM",
+            "filter": "basic_land",
+            "label": "Foil Snow Basic Land"
+          }
+        ]
       },
-
       {
         "label": "Rare Saga / Exclusive / Commander",
         "outcomes": [
-          { "weight": 80, "set": "KHM", "rarity": "rare", "label": "Rare Saga / Set-Exclusive Rare" },
-          { "weight": 8,  "set": "KHM", "rarity": "mythic", "label": "Set-Exclusive Mythic" },
-          { "weight": 10, "set": "KHC", "rarity": "rare", "filter": "extended_art", "label": "Kaldheim Commander Rare" },
-          { "weight": 2,  "set": "KHC", "rarity": "mythic", "filter": "extended_art", "label": "Kaldheim Commander Mythic" }
+          {
+            "weight": 80,
+            "set": "KHM",
+            "rarity": "rare",
+            "label": "Rare Saga / Set-Exclusive Rare"
+          },
+          {
+            "weight": 8,
+            "set": "KHM",
+            "rarity": "mythic",
+            "label": "Set-Exclusive Mythic"
+          },
+          {
+            "weight": 10,
+            "set": "KHC",
+            "rarity": "rare",
+            "label": "Kaldheim Commander Rare"
+          },
+          {
+            "weight": 2,
+            "set": "KHC",
+            "rarity": "mythic",
+            "label": "Kaldheim Commander Mythic"
+          }
         ]
       },
-
       {
         "label": "Non-Foil Extended-Art Rare / Mythic",
         "outcomes": [
-          { "weight": 94.7, "set": "KHM", "rarity": "rare",   "filter": "extended_art" },
-          { "weight": 5.3,  "set": "KHM", "rarity": "mythic", "filter": "extended_art" }
+          {
+            "weight": 94.7,
+            "set": "KHM",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 5.3,
+            "set": "KHM",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          }
         ]
       },
-
       {
         "label": "Foil Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 86, "set": "KHM", "rarity": "rare" },
-          { "weight": 14, "set": "KHM", "rarity": "mythic" }
+          {
+            "weight": 86,
+            "set": "KHM",
+            "rarity": "rare"
+          },
+          {
+            "weight": 14,
+            "set": "KHM",
+            "rarity": "mythic"
+          }
         ]
       },
-
       {
         "label": "Non-Foil Showcase / Borderless Rare / Mythic",
         "outcomes": [
-          { "weight": 34.6, "set": "KHM", "rarity": "rare",   "filter": "showcase" },
-          { "weight": 15.4, "set": "KHM", "rarity": "mythic", "filter": "showcase" },
-          { "weight": 34.6, "set": "KHM", "rarity": "rare",   "filter": "borderless" },
-          { "weight": 15.4, "set": "KHM", "rarity": "mythic", "filter": "borderless" }
+          {
+            "weight": 34.6,
+            "set": "KHM",
+            "rarity": "rare",
+            "filter": "showcase"
+          },
+          {
+            "weight": 15.4,
+            "set": "KHM",
+            "rarity": "mythic",
+            "filter": "showcase"
+          },
+          {
+            "weight": 34.6,
+            "set": "KHM",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 15.4,
+            "set": "KHM",
+            "rarity": "mythic",
+            "filter": "borderless"
+          }
         ]
       },
-
       {
         "label": "Foil Showcase / Borderless / Extended-Art Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 37.3, "set": "KHM", "rarity": "rare",   "filter": "extended_art" },
-          { "weight": 6.9,  "set": "KHM", "rarity": "mythic", "filter": "extended_art" },
-          { "weight": 23.6, "set": "KHM", "rarity": "rare",   "filter": "showcase" },
-          { "weight": 4.4,  "set": "KHM", "rarity": "mythic", "filter": "showcase" },
-          { "weight": 23.6, "set": "KHM", "rarity": "rare",   "filter": "borderless" },
-          { "weight": 4.4,  "set": "KHM", "rarity": "mythic", "filter": "borderless" }
+          {
+            "weight": 37.3,
+            "set": "KHM",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 6.9,
+            "set": "KHM",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 23.6,
+            "set": "KHM",
+            "rarity": "rare",
+            "filter": "showcase"
+          },
+          {
+            "weight": 4.4,
+            "set": "KHM",
+            "rarity": "mythic",
+            "filter": "showcase"
+          },
+          {
+            "weight": 23.6,
+            "set": "KHM",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 4.4,
+            "set": "KHM",
+            "rarity": "mythic",
+            "filter": "borderless"
+          }
         ]
       }
     ]

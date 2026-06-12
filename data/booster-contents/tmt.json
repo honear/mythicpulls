@@ -1,9 +1,9 @@
 {
-  "_doc": "Teenage Mutant Ninja Turtles (code TMT) \u2014 Universes Beyond set. Source: https://magic.wizards.com/en/news/feature/collecting-teenage-mutant-ninja-turtles . Lineup is Play Boosters + Collector Boosters only (no Draft). Percentages taken verbatim from the article's odds tables. TMT Play Boosters have a distinctive 'Legendary Turtle' slot plus the usual wildcard / rare-mythic / foil / land slots. Approximations: separate printings and Booster Fun frames (scene cards, sewer cards, silhouette cards, source material, pizza/rooftop lands, surge-foil 'pixel'/new-to-Magic, Japan Showcase, Commander-deck 'TMC' reprints, Kevin Eastman headliners) have no dedicated Scryfall sub-set code we model, so they are approximated against the main TMT pool with the nearest available filter: scene/sewer/silhouette/source-material/pizza/rooftop/new-to-Magic -> 'showcase', Japan Showcase -> 'japanese', extended-art -> 'extended_art', borderless mythic & Eastman headliners -> 'borderless'. The article names 'surge foil' as the specific finish on the Surge Foil Commander-deck (TMC) reprints, Surge Foil New-to-Magic, and Surge Foil Pixel chases, so those outcomes target it exactly via promo_types -> 'surge_foil' instead of plain foil / the 'showcase' frame stand-in. Surge-foil pizza/rooftop lands stay on basicLand + basic_land (the structural land filter takes precedence in the land slot). The Japan Showcase fracture-foil cards stay on 'japanese' because the lang=ja constraint is the load-bearing distinction the article emphasizes; we don't trade it for the finish filter. Full-art/pizza/rooftop lands use basicLand + basic_land. Sub-percentages reported as 'less than 1%' are entered as 0.5. The Legendary Turtle slot's main-set rarities (64.1/13.1/6.9/3.4) are listed verbatim and do not sum to 100 in the article (the remainder is the scene/silhouette riders, also listed). [Chase fix: added fracture-foil outcomes so TMNT fracture foils are reachable.]",
+  "_doc": "Teenage Mutant Ninja Turtles (code TMT) — Universes Beyond set. Source: https://magic.wizards.com/en/news/feature/collecting-teenage-mutant-ninja-turtles . Lineup is Play Boosters + Collector Boosters only (no Draft). Percentages taken verbatim from the article's odds tables. TMT Play Boosters have a distinctive 'Legendary Turtle' slot plus the usual wildcard / rare-mythic / foil / land slots. Approximations: separate printings and Booster Fun frames (scene cards, sewer cards, silhouette cards, source material, pizza/rooftop lands, surge-foil 'pixel'/new-to-Magic, Japan Showcase, Commander-deck 'TMC' reprints, Kevin Eastman headliners) have no dedicated Scryfall sub-set code we model, so they are approximated against the main TMT pool with the nearest available filter: scene/sewer/silhouette/source-material/pizza/rooftop/new-to-Magic -> 'showcase', Japan Showcase -> 'japanese', extended-art -> 'extended_art', borderless mythic & Eastman headliners -> 'borderless'. The article names 'surge foil' as the specific finish on the Surge Foil Commander-deck (TMC) reprints, Surge Foil New-to-Magic, and Surge Foil Pixel chases, so those outcomes target it exactly via promo_types -> 'surge_foil' instead of plain foil / the 'showcase' frame stand-in. Surge-foil pizza/rooftop lands stay on basicLand + basic_land (the structural land filter takes precedence in the land slot). The Japan Showcase fracture-foil cards stay on 'japanese' because the lang=ja constraint is the load-bearing distinction the article emphasizes; we don't trade it for the finish filter. Full-art/pizza/rooftop lands use basicLand + basic_land. Sub-percentages reported as 'less than 1%' are entered as 0.5. The Legendary Turtle slot's main-set rarities (64.1/13.1/6.9/3.4) are listed verbatim and do not sum to 100 in the article (the remainder is the scene/silhouette riders, also listed). [Chase fix: added fracture-foil outcomes so TMNT fracture foils are reachable.] AUDIT 2026-06: special-finish outcome rarities corrected to match the actual printed sheets (pool-verified): surge_foil->common. AUDIT 2026-06: Source Material outcomes re-mapped showcase->source_material (Scryfall promo_types:sourcematerial, introduced with TMT) and Scene outcomes showcase->borderless (TMT scenes carry inverted/borderless). AUDIT 2026-06 part 2: fracture-foil outcomes corrected to mythic (pool-verified); surge-foil pixel outcomes re-pointed to surge_pixel_land (the pixels are basic lands — a bare promo filter in a non-land slot gets the implicit basic-land exclusion and matched nothing).",
   "authoritative": true,
   "play": {
     "cardCount": 15,
-    "tagline": "14 cards + token \u00b7 1 Legendary Turtle \u00b7 1 rare/mythic \u00b7 1 foil \u00b7 scene & sewer rates faithful to Wizards' spec",
+    "tagline": "14 cards + token · 1 Legendary Turtle · 1 rare/mythic · 1 foil · scene & sewer rates faithful to Wizards' spec",
     "slots": [
       {
         "label": "Token",
@@ -28,14 +28,14 @@
             "weight": 4.2,
             "set": "TMT",
             "rarity": "common",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene Card"
           },
           {
             "weight": 3.5,
             "set": "TMT",
             "rarity": "common",
-            "filter": "showcase",
+            "filter": "source_material",
             "label": "Source Material"
           }
         ]
@@ -53,7 +53,7 @@
             "weight": 3.9,
             "set": "TMT",
             "rarity": "uncommon",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene Card"
           },
           {
@@ -92,21 +92,21 @@
             "weight": 4.6,
             "set": "TMT",
             "rarity": "common",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene"
           },
           {
             "weight": 6.5,
             "set": "TMT",
             "rarity": "uncommon",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene"
           },
           {
             "weight": 1,
             "set": "TMT",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene"
           },
           {
@@ -145,21 +145,21 @@
             "weight": 0.5,
             "set": "TMT",
             "rarity": "common",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene"
           },
           {
             "weight": 1.3,
             "set": "TMT",
             "rarity": "uncommon",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene"
           },
           {
             "weight": 0.5,
             "set": "TMT",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene"
           },
           {
@@ -202,7 +202,7 @@
             "weight": 0.5,
             "set": "TMT",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene"
           },
           {
@@ -256,14 +256,14 @@
             "weight": 0.5,
             "set": "TMT",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene / Sewer / Silhouette"
           },
           {
             "weight": 0.5,
             "set": "TMT",
             "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene / Sewer / Silhouette"
           }
         ]
@@ -302,7 +302,7 @@
   },
   "collector": {
     "cardCount": 16,
-    "tagline": "15 premium cards \u00b7 all-foil core \u00b7 Commander reprints, sewer & silhouette chases",
+    "tagline": "15 premium cards · all-foil core · Commander reprints, sewer & silhouette chases",
     "slots": [
       {
         "label": "Art Card / Token",
@@ -347,7 +347,7 @@
             "weight": 2.9,
             "set": "TMT",
             "rarity": "common",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene Card"
           }
         ]
@@ -366,7 +366,7 @@
             "weight": 10.3,
             "set": "TMT",
             "rarity": "uncommon",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene Card"
           },
           {
@@ -396,17 +396,15 @@
           {
             "weight": 23.1,
             "set": "TMT",
-            "rarity": "common",
             "foil": true,
-            "filter": "surge_foil",
+            "filter": "surge_pixel_land",
             "label": "Surge Foil TMC"
           },
           {
             "weight": 7.7,
             "set": "TMT",
-            "rarity": "uncommon",
             "foil": true,
-            "filter": "surge_foil",
+            "filter": "surge_pixel_land",
             "label": "Surge Foil TMC"
           }
         ]
@@ -467,7 +465,7 @@
             "weight": 5.8,
             "set": "TMT",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene"
           },
           {
@@ -505,17 +503,15 @@
           {
             "weight": 6.1,
             "set": "TMT",
-            "rarity": "rare",
             "foil": true,
-            "filter": "surge_foil",
+            "filter": "surge_pixel_land",
             "label": "Surge Foil New-to-Magic"
           },
           {
             "weight": 1.9,
             "set": "TMT",
-            "rarity": "rare",
             "foil": true,
-            "filter": "surge_foil",
+            "filter": "surge_pixel_land",
             "label": "Surge Foil Pixel"
           }
         ]
@@ -527,14 +523,14 @@
             "weight": 75,
             "set": "TMT",
             "rarity": "common",
-            "filter": "showcase",
+            "filter": "source_material",
             "label": "Source Material"
           },
           {
             "weight": 25,
             "set": "TMT",
             "rarity": "common",
-            "filter": "showcase",
+            "filter": "source_material",
             "foil": true,
             "label": "Source Material Foil"
           }
@@ -548,7 +544,7 @@
             "weight": 13.2,
             "set": "TMT",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "borderless",
             "label": "Scene"
           },
           {
@@ -586,9 +582,9 @@
             "label": "Kevin Eastman Headliner"
           },
           {
-            "weight": 2.0,
+            "weight": 2,
             "set": "tmt",
-            "rarity": "rare",
+            "rarity": "mythic",
             "filter": "fracture_foil",
             "foil": true,
             "label": "Fracture Foil"

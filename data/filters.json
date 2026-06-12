@@ -1,123 +1,351 @@
 {
   "_doc": "Named card-pool predicates used by outcome.filter in booster-contents JSON. Composition keywords: all (AND), any (OR), not (NOT). Leaves match Scryfall fields. See lib/booster-filters.ts for the full grammar.",
-
   "_doc_basic_land": "Matches both 'Basic Land — X' and 'Basic Snow Land — X'. The engine also uses this filter at the candidate stage to *exclude* basic lands from non-land slots so a common slot doesn't accidentally pull a Plains.",
-  "basic_land": { "type_line_includes": "Basic" },
-
+  "basic_land": {
+    "type_line_includes": "Basic"
+  },
   "_doc_chase_exclusion": "The broad frame treatments (showcase / extended_art / borderless) describe the FRAME only. They deliberately EXCLUDE the dedicated ultra-chase FINISHES (raised-foil anime, serialized, halo/textured/gilded/etc.) — those carry their own promo_types AND have their own dedicated, low-rate slots in the recipes. Without this exclusion a card like Bloomburrow's raised-foil Lumra ($600+) is BOTH showcase AND borderless, so the ordinary 'Showcase Woodland' slot would pull it at full rate and massively inflate pack value. Keep the exclusion list in sync with the dedicated finish filters below.",
-  "showcase": { "all": [ { "frame_effects": "showcase" }, { "not": { "promo_types": ["raisedfoil", "serialized", "halofoil", "textured", "gilded", "galaxyfoil", "fracturefoil", "manafoil", "neonink", "oilslick", "stepandcompleat", "surgefoil"] } } ] },
-  "extended_art": { "all": [ { "frame_effects": "extendedart" }, { "not": { "promo_types": ["raisedfoil", "serialized", "halofoil", "textured", "gilded", "galaxyfoil", "fracturefoil", "manafoil", "neonink", "oilslick", "stepandcompleat", "surgefoil"] } } ] },
-  "borderless": { "all": [ { "border_color": "borderless" }, { "not": { "promo_types": ["raisedfoil", "serialized", "halofoil", "textured", "gilded", "galaxyfoil", "fracturefoil", "manafoil", "neonink", "oilslick", "stepandcompleat", "surgefoil"] } } ] },
-
+  "showcase": {
+    "all": [
+      {
+        "frame_effects": "showcase"
+      },
+      {
+        "not": {
+          "promo_types": [
+            "raisedfoil",
+            "serialized",
+            "halofoil",
+            "textured",
+            "gilded",
+            "galaxyfoil",
+            "fracturefoil",
+            "manafoil",
+            "neonink",
+            "oilslick",
+            "stepandcompleat",
+            "surgefoil"
+          ]
+        }
+      }
+    ]
+  },
+  "extended_art": {
+    "all": [
+      {
+        "frame_effects": "extendedart"
+      },
+      {
+        "not": {
+          "promo_types": [
+            "raisedfoil",
+            "serialized",
+            "halofoil",
+            "textured",
+            "gilded",
+            "galaxyfoil",
+            "fracturefoil",
+            "manafoil",
+            "neonink",
+            "oilslick",
+            "stepandcompleat",
+            "surgefoil"
+          ]
+        }
+      }
+    ]
+  },
+  "borderless": {
+    "all": [
+      {
+        "border_color": "borderless"
+      },
+      {
+        "not": {
+          "promo_types": [
+            "raisedfoil",
+            "serialized",
+            "halofoil",
+            "textured",
+            "gilded",
+            "galaxyfoil",
+            "fracturefoil",
+            "manafoil",
+            "neonink",
+            "oilslick",
+            "stepandcompleat",
+            "surgefoil"
+          ]
+        }
+      }
+    ]
+  },
   "_doc_borderless_edp_dual": "Borderless Elder Dragon, Planeswalker, or non-basic Land — the SOS Collector's chase 'Booster Fun' subtype. Match conditions: border_color is borderless AND the type_line contains (Elder + Dragon) OR Planeswalker OR (Land but not Basic). Subtypes are matched individually so 'Legendary Creature — Dragon Elder' and 'Legendary Creature — Elder Dragon' both qualify.",
   "borderless_edp_dual": {
     "all": [
-      { "border_color": "borderless" },
+      {
+        "border_color": "borderless"
+      },
       {
         "any": [
-          { "all": [
-            { "type_line_includes": "Elder" },
-            { "type_line_includes": "Dragon" }
-          ]},
-          { "type_line_includes": "Planeswalker" },
-          { "all": [
-            { "type_line_includes": "Land" },
-            { "type_line_excludes": "Basic" }
-          ]}
+          {
+            "all": [
+              {
+                "type_line_includes": "Elder"
+              },
+              {
+                "type_line_includes": "Dragon"
+              }
+            ]
+          },
+          {
+            "type_line_includes": "Planeswalker"
+          },
+          {
+            "all": [
+              {
+                "type_line_includes": "Land"
+              },
+              {
+                "type_line_excludes": "Basic"
+              }
+            ]
+          }
         ]
       }
     ]
   },
-
   "elder_dragon": {
     "all": [
-      { "type_line_includes": "Elder" },
-      { "type_line_includes": "Dragon" }
+      {
+        "type_line_includes": "Elder"
+      },
+      {
+        "type_line_includes": "Dragon"
+      }
     ]
   },
-  "planeswalker": { "type_line_includes": "Planeswalker" },
+  "planeswalker": {
+    "type_line_includes": "Planeswalker"
+  },
   "non_basic_land": {
     "all": [
-      { "type_line_includes": "Land" },
-      { "type_line_excludes": "Basic" }
+      {
+        "type_line_includes": "Land"
+      },
+      {
+        "type_line_excludes": "Basic"
+      }
     ]
   },
-
-  "field_notes": { "frame_effects": "fieldnotes" },
-
-  "special_guest": { "promo_types": "specialguests" },
-
+  "field_notes": {
+    "frame_effects": "showcase"
+  },
+  "special_guest": {
+    "promo_types": "specialguests"
+  },
   "spellcraft_land": {
     "all": [
-      { "type_line_includes": "Land" },
-      { "frame_effects": "spellcraft" }
+      {
+        "type_line_includes": "Land"
+      },
+      {
+        "type_line_excludes": "Basic"
+      },
+      {
+        "frame_effects": "inverted"
+      }
     ]
   },
-
   "dual_land_common": {
     "all": [
-      { "type_line_includes": "Land" },
-      { "type_line_excludes": "Basic" },
-      { "rarity": "common" }
+      {
+        "type_line_includes": "Land"
+      },
+      {
+        "type_line_excludes": "Basic"
+      },
+      {
+        "rarity": "common"
+      }
     ]
   },
-
   "_doc_double_faced": "Transforming / modal double-faced / meld cards — used by the dedicated DFC slot in Innistrad-era draft boosters (ISD, DKA, SOI, EMN).",
-  "double_faced": { "layout": ["transform", "modal_dfc", "meld"] },
-
-  "lesson": { "type_line_includes": "Lesson" },
-
+  "double_faced": {
+    "layout": [
+      "transform",
+      "modal_dfc",
+      "meld"
+    ]
+  },
+  "lesson": {
+    "type_line_includes": "Lesson"
+  },
   "_doc_special_foils": "Specific premium foil finishes Scryfall records in card.promo_types (verified values, lowercase, no separators). Recipes can target these exactly instead of approximating them as plain foil. Add more as new sets introduce them.",
-  "raised_foil": { "promo_types": "raisedfoil" },
-  "surge_foil": { "promo_types": "surgefoil" },
-  "textured_foil": { "promo_types": "textured" },
-  "halo_foil": { "promo_types": "halofoil" },
-  "gilded_foil": { "promo_types": "gilded" },
-  "galaxy_foil": { "promo_types": "galaxyfoil" },
-  "fracture_foil": { "promo_types": "fracturefoil" },
-  "mana_foil": { "promo_types": "manafoil" },
-  "neon_ink": { "promo_types": "neonink" },
-  "oil_slick": { "promo_types": "oilslick" },
-  "step_and_compleat": { "promo_types": "stepandcompleat" },
-  "booster_fun": { "promo_types": "boosterfun" },
-
+  "raised_foil": {
+    "promo_types": "raisedfoil"
+  },
+  "surge_foil": {
+    "promo_types": "surgefoil"
+  },
+  "textured_foil": {
+    "promo_types": "textured"
+  },
+  "halo_foil": {
+    "promo_types": "halofoil"
+  },
+  "gilded_foil": {
+    "promo_types": "gilded"
+  },
+  "galaxy_foil": {
+    "promo_types": "galaxyfoil"
+  },
+  "fracture_foil": {
+    "promo_types": "fracturefoil"
+  },
+  "mana_foil": {
+    "promo_types": "manafoil"
+  },
+  "neon_ink": {
+    "promo_types": "neonink"
+  },
+  "oil_slick": {
+    "promo_types": "oilslick"
+  },
+  "step_and_compleat": {
+    "promo_types": "stepandcompleat"
+  },
+  "booster_fun": {
+    "promo_types": "boosterfun"
+  },
   "_doc_retro_frame": "Old-border (1997 frame) retro treatment, e.g. The Brothers' War retro artifacts, Dominaria Remastered retro frame. Matches card.frame.",
-  "retro_frame": { "frame": "1997" },
-  "future_frame": { "frame": "future" },
-  "white_border": { "border_color": "white" },
-  "playtest_card": { "promo_types": "playtest" },
-  "full_art": { "full_art": true },
+  "retro_frame": {
+    "frame": "1997"
+  },
+  "future_frame": {
+    "frame": "future"
+  },
+  "white_border": {
+    "border_color": "white"
+  },
+  "playtest_card": {
+    "promo_types": "playtest"
+  },
+  "full_art": {
+    "full_art": true
+  },
   "_doc_full_art_land": "Full-art LANDS only (basic or nonbasic). Use this in basic-land slots instead of bare full_art, which would also match full-art creatures/scenes and leak non-lands into the land slot.",
-  "full_art_land": { "all": [{ "type_line_includes": "Land" }, { "full_art": true }] },
-
+  "full_art_land": {
+    "all": [
+      {
+        "type_line_includes": "Land"
+      },
+      {
+        "full_art": true
+      }
+    ]
+  },
   "_doc_marvel": "Marvel Universes Beyond treatments. 'scene_card' matches the multi-card mural scenes — Scryfall tags them promo_types:'poster' (verified on SPM's fully-catalogued pool; MSH previews carry the same tag). 'full_art_basic' = the full-art basic-land cycles (SPM spiderweb, MSH city calm/chaos) excluding borderless variants; 'non_full_art_basic' is its complement for the regular-basic share of land slots. 'msh_source_material' selects the MSH-era Source Material sheet: Marvel Universe (MAR) collector numbers 41-100, released alongside MSH — numbers 1-40 are the SPM-era sheet. 'borderless_land' = borderless-frame lands for the wildcard/foil borderless-land outcomes, with the standard ultra-finish exclusion.",
-  "scene_card": { "promo_types": "poster" },
-  "full_art_basic": { "all": [ { "type_line_includes": "Basic" }, { "full_art": true }, { "not": { "border_color": "borderless" } } ] },
-  "non_full_art_basic": { "all": [ { "type_line_includes": "Basic" }, { "full_art": false } ] },
-  "msh_source_material": { "collector_number_range": [41, 100] },
-  "spm_source_material": { "collector_number_range": [1, 40] },
-  "borderless_land": { "all": [ { "type_line_includes": "Land" }, { "border_color": "borderless" }, { "not": { "promo_types": ["raisedfoil", "serialized", "halofoil", "textured", "gilded", "galaxyfoil", "fracturefoil", "manafoil", "neonink", "oilslick", "stepandcompleat", "surgefoil"] } } ] },
-
-  "serialized": { "promo_types": "serialized" },
-
-  "japanese": { "lang": "ja" },
-
+  "scene_card": {
+    "promo_types": "poster"
+  },
+  "full_art_basic": {
+    "all": [
+      {
+        "type_line_includes": "Basic"
+      },
+      {
+        "full_art": true
+      },
+      {
+        "not": {
+          "border_color": "borderless"
+        }
+      }
+    ]
+  },
+  "non_full_art_basic": {
+    "all": [
+      {
+        "type_line_includes": "Basic"
+      },
+      {
+        "full_art": false
+      }
+    ]
+  },
+  "msh_source_material": {
+    "collector_number_range": [
+      41,
+      100
+    ]
+  },
+  "spm_source_material": {
+    "collector_number_range": [
+      1,
+      40
+    ]
+  },
+  "borderless_land": {
+    "all": [
+      {
+        "type_line_includes": "Land"
+      },
+      {
+        "border_color": "borderless"
+      },
+      {
+        "not": {
+          "promo_types": [
+            "raisedfoil",
+            "serialized",
+            "halofoil",
+            "textured",
+            "gilded",
+            "galaxyfoil",
+            "fracturefoil",
+            "manafoil",
+            "neonink",
+            "oilslick",
+            "stepandcompleat",
+            "surgefoil"
+          ]
+        }
+      }
+    ]
+  },
+  "serialized": {
+    "promo_types": "serialized"
+  },
+  "japanese": {
+    "lang": "ja"
+  },
   "japanese_alt_art": {
     "all": [
-      { "lang": "ja" },
-      { "any": [
-        { "frame_effects": "showcase" },
-        { "frame_effects": "extendedart" }
-      ]}
+      {
+        "lang": "ja"
+      },
+      {
+        "any": [
+          {
+            "frame_effects": "showcase"
+          },
+          {
+            "frame_effects": "extendedart"
+          }
+        ]
+      }
     ]
   },
-
-  "available_in_foil": { "finishes": "foil" },
-
-  "etched_foil": { "finishes": "etched" },
-
-  "gold_stamped": { "promo_types": "stamped" },
-
+  "available_in_foil": {
+    "finishes": "foil"
+  },
+  "etched_foil": {
+    "finishes": "etched"
+  },
+  "gold_stamped": {
+    "promo_types": "stamped"
+  },
   "_doc_regular_print": "Baseline 'looks like the regular printing of this card' filter. The engine applies this implicitly to any outcome whose explicit filter doesn't already declare alt-art intent — so default draft commons come out in their normal art instead of randomly grabbing extended-art / showcase variants. Excludes every Scryfall treatment that signals an alt-art printing: frame_effects (showcase, extendedart, inverted, borderless, companion, shatteredglass, etched, fullart), borderless border_color, and the common alt-art promo_types.",
   "regular_print": {
     "all": [
@@ -135,7 +363,11 @@
           ]
         }
       },
-      { "not": { "border_color": "borderless" } },
+      {
+        "not": {
+          "border_color": "borderless"
+        }
+      },
       {
         "not": {
           "promo_types": [
@@ -159,7 +391,105 @@
             "surgefoil"
           ]
         }
+      },
+      {
+        "variation": false
       }
     ]
+  },
+  "_doc_spg_sheets": "Per-set Special Guests sheets within the global SPG set, mapped by collector-number range (each sheet released alongside its parent set — ranges verified against per-print release dates 2026-06). Without these, an SPG outcome could leak another set’s guests; the old special_guest promo filter matched nothing (SPG prints don’t carry promo_types:specialguests).",
+  "spg_lci": {
+    "collector_number_range": [
+      1,
+      18
+    ]
+  },
+  "spg_mkm": {
+    "collector_number_range": [
+      19,
+      28
+    ]
+  },
+  "spg_otj": {
+    "collector_number_range": [
+      29,
+      38
+    ]
+  },
+  "spg_mh3": {
+    "collector_number_range": [
+      39,
+      53
+    ]
+  },
+  "spg_blb": {
+    "collector_number_range": [
+      54,
+      63
+    ]
+  },
+  "spg_dsk": {
+    "collector_number_range": [
+      64,
+      73
+    ]
+  },
+  "spg_fdn": {
+    "collector_number_range": [
+      74,
+      83
+    ]
+  },
+  "spg_dft": {
+    "collector_number_range": [
+      84,
+      103
+    ]
+  },
+  "spg_tdm": {
+    "collector_number_range": [
+      104,
+      118
+    ]
+  },
+  "spg_eoe": {
+    "collector_number_range": [
+      119,
+      128
+    ]
+  },
+  "spg_ecl": {
+    "collector_number_range": [
+      129,
+      148
+    ]
+  },
+  "_doc_source_material": "UB source-material sheets. Scryfall introduced promo_types:sourcematerial with TMT (2026); earlier UB sets file source material elsewhere (SPM/MSH -> the MAR set; TLA -> its boosterfun-promo commons).",
+  "source_material": {
+    "promo_types": "sourcematerial"
+  },
+  "_doc_field_notes": "SOS Field Notes — Scryfall tags these prints frame_effects:showcase (no dedicated fieldnotes effect exists). Filter renamed in meaning, kept in name for recipe stability.",
+  "_doc_spellcraft_land": "SOS Spellcraft lands — nonbasic lands with the inverted frame effect (no dedicated spellcraft effect exists on Scryfall).",
+  "surge_pixel_land": {
+    "all": [
+      {
+        "type_line_includes": "Land"
+      },
+      {
+        "promo_types": "surgefoil"
+      }
+    ]
+  },
+  "_doc_surge_pixel_land": "TMT pixel-art surge-foil basic lands. The land-mentioning shape matters: a bare surge_foil filter in a non-land slot gets the implicit basic-land exclusion applied and can never match these.",
+  "dmu_legends_retold": {
+    "collector_number_range": [
+      332,
+      434
+    ]
+  },
+  "_doc_dmu_legends_retold": "DMU Legends Retold sheet by collector range — the prints do not carry finishes:etched on Scryfall (the foil-etched variants are separate non-pool prints), so the old etched_foil filter matched nothing.",
+  "_doc_variation": "Variation prints — Scryfall card.variation=true marks alternate printings of cards already in the set (DSK Lurking Evil, DMU foil-etched Legends Retold variants, J25 anime alt-arts). The bake keeps them; regular_print excludes them from base outcomes; variation_print targets them.",
+  "variation_print": {
+    "variation": true
   }
 }

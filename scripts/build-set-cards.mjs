@@ -13,9 +13,20 @@
  * cadence (~monthly, or whenever a new set drops).
  *
  * Usage:
- *   node scripts/build-set-cards.mjs                  # refresh every set
- *   node scripts/build-set-cards.mjs sos blb tsos     # refresh specific codes
- *   node scripts/build-set-cards.mjs --missing-only   # only fetch codes we don't have yet
+ *   node scripts/build-set-cards.mjs                  # BULK mode: download Scryfall's
+ *                                                     # daily all-cards bulk file once
+ *                                                     # (unlimited *.scryfall.io origin)
+ *                                                     # and build every pool locally
+ *   node scripts/build-set-cards.mjs sos blb tsos     # API mode: refresh specific codes
+ *                                                     # via /cards/search (paced 600ms —
+ *                                                     # the endpoint's hard limit is 2/s)
+ *   node scripts/build-set-cards.mjs --missing-only   # API mode, only missing codes
+ *   node scripts/build-set-cards.mjs --resume-after X # API mode, resume a crashed run
+ *
+ * Scryfall's rate-limit docs are explicit that bulk pulls "must use the
+ * bulk data files" — full-catalog runs against /cards/search burned the
+ * 2/s budget (≈1,200 paginated calls) and drew 429 streaks. Bulk mode is
+ * one ~2.4 GB download + a few minutes of local stream-parse.
  *
  * The script auto-discovers which sets to fetch:
  *   1. Every openable set (keys of data/set-art.json)
@@ -31,9 +42,13 @@
  * the live fetch from the runtime's perspective.
  */
 
-import { readFile, writeFile, mkdir, readdir, stat } from "node:fs/promises";
+import { readFile, writeFile, mkdir, readdir, stat, unlink } from "node:fs/promises";
+import { createReadStream, createWriteStream } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { pipeline } from "node:stream/promises";
+import { Readable } from "node:stream";
 import { gzipSync } from "node:zlib";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -43,18 +58,16 @@ const SET_ART_PATH = join(ROOT, "data", "set-art.json");
 const BOOSTER_CONTENTS_DIR = join(ROOT, "data", "booster-contents");
 
 const SCRYFALL = "https://api.scryfall.com";
-// Single-threaded with a global pacer. Earlier we used concurrency=2
-// with per-worker throttling, but each set fetch paginates 2-3 times
-// and the per-worker accounting meant we could legitimately burst
-// 4-6 requests/second above the supposed ceiling on long runs —
-// Scryfall 429'd around the ninth set. The global pacer below
-// guarantees `MIN_INTERVAL_MS` between EVERY Scryfall request,
-// pagination pages included. 200ms ≈ 5 req/sec, well under
-// Scryfall's 10 req/sec hard cap with comfortable headroom for
-// jitter. ~225 sets × ~3 pages avg × 200ms = ~2.5 minutes minimum,
-// realistically 25-40 minutes once you add response latency.
+// Single-threaded with a global pacer. Scryfall's documented limits
+// (https://scryfall.com/docs/api/rate-limits) are 2/second (500ms) for
+// /cards/search — which is the ONLY endpoint this script's API mode
+// hits — and 10/second for everything else. We pace at 600ms for
+// headroom. NOTE: per those same docs, large pulls "must use the bulk
+// data files" — which is what the default bulk mode below does; API
+// mode exists only for quick single-set refreshes (a handful of
+// requests).
 const CONCURRENCY = 1;
-const MIN_INTERVAL_MS = 200;
+const MIN_INTERVAL_MS = 600;
 // On 429s without a Retry-After header, fall back to this delay
 // before retrying. Scryfall almost always sends Retry-After in
 // seconds; this is just the safety net.
@@ -62,7 +75,14 @@ const RATE_LIMIT_FALLBACK_MS = 5000;
 
 const args = process.argv.slice(2);
 const missingOnly = args.includes("--missing-only");
-const explicitCodes = args.filter((a) => !a.startsWith("--")).map((a) => a.toLowerCase());
+// --resume-after <code>: skip every code at or before <code> in the
+// discover-sorted order. For resuming a crashed/hung full run without
+// re-fetching what already completed (codes process alphabetically).
+const resumeIdx = args.indexOf("--resume-after");
+const resumeAfter = resumeIdx >= 0 ? (args[resumeIdx + 1] ?? "").toLowerCase() : null;
+const explicitCodes = args
+  .filter((a, i) => !a.startsWith("--") && i !== resumeIdx + 1)
+  .map((a) => a.toLowerCase());
 
 /* ============================================================
    Set discovery
@@ -115,10 +135,21 @@ async function discoverSetCodes() {
 
   // Literal set codes referenced in any recipe. Sentinels like
   // "$tokens", "$primary-set", "$own" are skipped — they resolve to
-  // codes already covered by the openable-sets pass above.
+  // codes already covered by the openable-sets pass above. The recipe
+  // FILENAME is also a code: a set below the openable threshold (ARN)
+  // or excluded by set_type (UGL/UST) can still have a recipe whose
+  // outcomes reference their own set implicitly — without this, those
+  // pools never bake and the recipes silently fall back.
   const files = await readdir(BOOSTER_CONTENTS_DIR);
   for (const f of files) {
     if (!f.endsWith(".json")) continue;
+    if (f !== "default.json") {
+      const own = f.replace(".json", "").toLowerCase();
+      codes.add(own);
+      const tokenCode = `t${own}`;
+      codes.add(tokenCode);
+      tokenCodes.add(tokenCode);
+    }
     const raw = await readFile(join(BOOSTER_CONTENTS_DIR, f), "utf8");
     const data = JSON.parse(raw);
     walkOutcomes(data, (outcome) => {
@@ -175,9 +206,20 @@ function paced(fn) {
  * the caller can handle 404 (legitimately-empty token sub-set, etc.).
  */
 const MAX_RETRIES_PER_URL = 8;
+// Hard cap on consecutive 429 retries per URL. 429s are normally worth
+// waiting out (Retry-After), but a network-level block answers EVERY
+// request with 429 — without a cap the run waits forever on one URL.
+const MAX_RATE_LIMIT_RETRIES = 10;
+// Per-request hard timeout. Native fetch has NO default timeout, so a
+// dead TCP connection (server silently dropping us mid-handshake) left
+// the promise pending forever and wedged the global pacer chain behind
+// it — a 6-hour hang in production. Aborts surface as retryable
+// network errors below.
+const REQUEST_TIMEOUT_MS = 30_000;
 
 async function fetchWithRetry(url) {
   let attempt = 0;
+  let rateLimitHits = 0;
   let backoffMs = 600;
   while (true) {
     attempt++;
@@ -187,6 +229,7 @@ async function fetchWithRetry(url) {
           accept: "application/json",
           "user-agent": "threetreecity-build-set-cards/1.0",
         },
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       }),
     ).catch((err) => ({ networkError: err }));
 
@@ -198,17 +241,17 @@ async function fetchWithRetry(url) {
     }
 
     if (res.status === 429) {
+      rateLimitHits++;
+      if (rateLimitHits > MAX_RATE_LIMIT_RETRIES) {
+        throw new Error(`429 persisted through ${MAX_RATE_LIMIT_RETRIES} retries — likely a network-level block; failing this set so the run can continue`);
+      }
       const retryAfterRaw = res.headers.get("retry-after");
       const retryAfterSec = retryAfterRaw ? Number(retryAfterRaw) : NaN;
       const waitMs = Number.isFinite(retryAfterSec) && retryAfterSec > 0
         ? Math.ceil(retryAfterSec * 1000) + 250 // +250ms jitter
         : RATE_LIMIT_FALLBACK_MS;
-      console.warn(`  rate-limited, sleeping ${(waitMs / 1000).toFixed(1)}s before retry…`);
+      console.warn(`  rate-limited (${rateLimitHits}/${MAX_RATE_LIMIT_RETRIES}), sleeping ${(waitMs / 1000).toFixed(1)}s before retry…`);
       await new Promise((r) => setTimeout(r, waitMs));
-      // 429 retries don't count against MAX_RETRIES — Scryfall is
-      // telling us to back off, not that the request is permanently
-      // broken. If they keep 429ing forever that's a wider problem
-      // that the user should see, but a 60-second wait is fine.
       continue;
     }
 
@@ -337,6 +380,7 @@ function trimCard(c) {
     // EXACT sync with trimCardForClient in lib/scryfall.ts.
     frame: c.frame,
     full_art: c.full_art,
+    variation: c.variation,
     border_color: c.border_color,
     promo_types: c.promo_types,
     produced_mana: c.produced_mana,
@@ -346,6 +390,145 @@ function trimCard(c) {
     oversized: false,
     booster: c.booster,
   };
+}
+
+/* ============================================================
+   Bulk-data pipeline (default mode)
+   ============================================================ */
+
+/**
+ * Stream-parse a multi-GB JSON file shaped as one top-level array of
+ * objects, invoking `onObject(parsed)` per element without ever holding
+ * the whole file in memory. A simple scanner tracks string/escape state
+ * and brace depth; each depth-1 object is sliced and JSON.parsed.
+ */
+async function streamJsonArray(filePath, onObject) {
+  const stream = createReadStream(filePath, { encoding: "utf8", highWaterMark: 8 * 1024 * 1024 });
+  let buf = "";
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  let objStart = -1;
+  let count = 0;
+  for await (const chunk of stream) {
+    buf += chunk;
+    let i = objStart >= 0 ? Math.max(objStart, buf.length - chunk.length) : buf.length - chunk.length;
+    for (; i < buf.length; i++) {
+      const ch = buf[i];
+      if (inString) {
+        if (escape) escape = false;
+        else if (ch === "\\") escape = true;
+        else if (ch === '"') inString = false;
+        continue;
+      }
+      if (ch === '"') { inString = true; continue; }
+      if (ch === "{") {
+        if (depth === 0) objStart = i;
+        depth++;
+      } else if (ch === "}") {
+        depth--;
+        if (depth === 0 && objStart >= 0) {
+          onObject(JSON.parse(buf.slice(objStart, i + 1)));
+          count++;
+          objStart = -1;
+        }
+      }
+    }
+    // Trim consumed prefix to keep the buffer small. Keep from the start
+    // of any in-flight object; otherwise drop everything scanned.
+    if (objStart >= 0) {
+      buf = buf.slice(objStart);
+      objStart = 0;
+    } else {
+      buf = "";
+    }
+  }
+  return count;
+}
+
+/** Mirror of the API mode's per-class gates, applied to bulk card objects.
+ *  Main sets: paper-only, no variation prints (parity with the search
+ *  query's game:paper + include_variations=false), then filterPool.
+ *  Token sets: everything (art/helper cards aren't paper "game" objects),
+ *  then filterTokens. */
+function bulkKeep(card, isTokenSet) {
+  if (isTokenSet) {
+    return (
+      !card.digital &&
+      (card.layout === "token" || card.layout === "double_faced_token" || card.layout === "emblem")
+    );
+  }
+  if (!Array.isArray(card.games) || !card.games.includes("paper")) return false;
+  // Variation prints (same card, alternate printing — DSK Lurking Evil,
+  // DMU etched Legends Retold, J25 anime variants) ARE kept: recipes
+  // target them via the variation_print filter and the implicit
+  // regular_print baseline excludes them from base outcomes.
+  return (
+    !card.digital &&
+    !card.oversized &&
+    card.layout !== "token" &&
+    card.layout !== "double_faced_token" &&
+    card.layout !== "emblem" &&
+    card.layout !== "scheme"
+  );
+}
+
+async function runBulk(codes, tokenCodes) {
+  const wanted = new Set(codes);
+  console.log(`BULK mode: building ${wanted.size} set pools from Scryfall's all-cards bulk file`);
+
+  // 1. Locate today's all-cards file (one API request — the 10/s class).
+  const metaRes = await fetch(`${SCRYFALL}/bulk-data`, {
+    headers: { accept: "application/json", "user-agent": "threetreecity-build-set-cards/2.0" },
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
+  if (!metaRes.ok) throw new Error(`bulk-data listing failed: ${metaRes.status}`);
+  const meta = await metaRes.json();
+  const all = meta.data.find((b) => b.type === "all_cards");
+  if (!all) throw new Error("no all_cards bulk entry");
+  console.log(`all_cards: ${(all.size / 1024 / 1024).toFixed(0)} MB, updated ${all.updated_at}`);
+
+  // 2. Download from the file origin (*.scryfall.io — explicitly no rate
+  //    limits per the docs). Streamed straight to disk.
+  const tmpFile = join(tmpdir(), "scryfall-all-cards.json");
+  console.log(`downloading → ${tmpFile} …`);
+  const t0 = Date.now();
+  const dl = await fetch(all.download_uri, {
+    headers: { "user-agent": "threetreecity-build-set-cards/2.0" },
+  });
+  if (!dl.ok || !dl.body) throw new Error(`bulk download failed: ${dl.status}`);
+  await pipeline(Readable.fromWeb(dl.body), createWriteStream(tmpFile));
+  console.log(`downloaded in ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+
+  // 3. Stream-parse, bucket, trim.
+  const buckets = new Map();
+  for (const c of wanted) buckets.set(c, []);
+  let scanned = 0;
+  const t1 = Date.now();
+  await streamJsonArray(tmpFile, (card) => {
+    scanned++;
+    if (scanned % 200000 === 0) console.log(`  …scanned ${scanned.toLocaleString()} cards`);
+    const setCode = (card.set ?? "").toLowerCase();
+    if (!wanted.has(setCode)) return;
+    const isTokenSet = tokenCodes.has(setCode);
+    if (!bulkKeep(card, isTokenSet)) return;
+    buckets.get(setCode).push(trimCard(card));
+  });
+  console.log(`scanned ${scanned.toLocaleString()} cards in ${((Date.now() - t1) / 1000).toFixed(0)}s`);
+
+  // 4. Write per-set gz files, preserving the API mode's sort (set order
+  //    comes from Scryfall's bulk ordering, already collector-sorted).
+  const stats = { ok: 0, empty: 0, totalCards: 0, totalBytes: 0 };
+  for (const [code, cards] of [...buckets.entries()].sort()) {
+    if (cards.length === 0) { stats.empty++; continue; }
+    const gz = gzipSync(JSON.stringify(cards), { level: 9 });
+    await writeFile(join(OUT_DIR, `${code}.json.gz`), gz);
+    stats.ok++;
+    stats.totalCards += cards.length;
+    stats.totalBytes += gz.length;
+  }
+  await unlink(tmpFile).catch(() => {});
+  console.log(`\nDone — ${stats.ok} pools written, ${stats.empty} empty, ${stats.totalCards.toLocaleString()} cards, ${(stats.totalBytes / 1024 / 1024).toFixed(1)} MB gz`);
 }
 
 /* ============================================================
@@ -413,6 +596,15 @@ async function main() {
   } else {
     codes = discovered.codes;
     console.log(`Discovered ${codes.length} set codes (openable + tokens + recipe references)`);
+    // Full-catalog runs go through the bulk data file — Scryfall's docs
+    // require it ("you must use the bulk data files") and it's one
+    // unlimited download instead of ~1,200 rate-capped search calls.
+    // --missing-only / --resume-after stay on the API path since they
+    // touch few codes.
+    if (!missingOnly && !resumeAfter) {
+      await runBulk(codes, tokenCodes);
+      return;
+    }
   }
 
   if (missingOnly) {
@@ -424,6 +616,12 @@ async function main() {
     }
     codes = filtered;
     console.log(`--missing-only: ${codes.length} of ${before} codes need fetching`);
+  }
+
+  if (resumeAfter) {
+    const before = codes.length;
+    codes = codes.filter((c) => c > resumeAfter);
+    console.log(`--resume-after ${resumeAfter}: ${codes.length} of ${before} codes remain`);
   }
 
   if (codes.length === 0) {

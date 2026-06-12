@@ -1,5 +1,5 @@
 {
-  "_doc": "Outlaws of Thunder Junction (OTJ) Play + Collector recipes from Wizards' official 'Collecting Outlaws of Thunder Junction' article (https://magic.wizards.com/en/news/feature/collecting-outlaws-of-thunder-junction). OTJ shipped Play + Collector boosters only — NO Draft Booster — so authoritative is true and draft is intentionally undefined. Sub-set codes: OTJ = main set, OTP = Breaking News (bonus sheet), BIG = The Big Score, OTC = OTJ Commander, SPG = Special Guests. Exact rates published for The List replacement (20%), the wildcard rare/mythic rate (1 in 12), Booster Fun rate (2.5%), the Breaking News rare/mythic rate (1 in 3), the land slot, the token/art slot, and the Collector premium-foil slot are used verbatim. Approximations: The List card modeled as a special_guest outcome against OTP (no dedicated List filter); rare-vs-mythic splits inside the wildcard, foil, Booster Fun, OTP, OTC, and premium slots are not published per-card and are estimated with standard splits; 'wanted poster' and 'vault frame' frame treatments have no dedicated filter and use the nearest of showcase / borderless / extended_art; western landscape & regular basics via basic_land. Specific finishes re-pointed to dedicated filters: in the Premium Foil Special Slot the 'Textured Foil Breaking News' outcome now uses textured_foil and the 'Raised Foil Vault Frame' outcome now uses raised_foil, instead of the showcase stand-in. AUDIT 2026-06 (article re-verification): the commons slot previously gave EVERY one of the 5 common sub-pulls a 20% List chance (≈63% of packs with a List card, ~1 per pack on average) and pointed the outcome at OTP (Breaking News). The article says 20% of PLAY BOOSTERS contain one List card, and OTJ-era “The List” comprises The Big Score (BIG) + Special Guests (SPG). Re-modeled per-slot: 96% common / 3% BIG / 1% SPG (20%/5 slots, split ~3:1 by sheet size 30 BIG : 10 SPG).",
+  "_doc": "Outlaws of Thunder Junction (OTJ) Play + Collector recipes from Wizards' official 'Collecting Outlaws of Thunder Junction' article (https://magic.wizards.com/en/news/feature/collecting-outlaws-of-thunder-junction). OTJ shipped Play + Collector boosters only — NO Draft Booster — so authoritative is true and draft is intentionally undefined. Sub-set codes: OTJ = main set, OTP = Breaking News (bonus sheet), BIG = The Big Score, OTC = OTJ Commander, SPG = Special Guests. Exact rates published for The List replacement (20%), the wildcard rare/mythic rate (1 in 12), Booster Fun rate (2.5%), the Breaking News rare/mythic rate (1 in 3), the land slot, the token/art slot, and the Collector premium-foil slot are used verbatim. Approximations: The List card modeled as a special_guest outcome against OTP (no dedicated List filter); rare-vs-mythic splits inside the wildcard, foil, Booster Fun, OTP, OTC, and premium slots are not published per-card and are estimated with standard splits; 'wanted poster' and 'vault frame' frame treatments have no dedicated filter and use the nearest of showcase / borderless / extended_art; western landscape & regular basics via basic_land. Specific finishes re-pointed to dedicated filters: in the Premium Foil Special Slot the 'Textured Foil Breaking News' outcome now uses textured_foil and the 'Raised Foil Vault Frame' outcome now uses raised_foil, instead of the showcase stand-in. AUDIT 2026-06 (article re-verification): the commons slot previously gave EVERY one of the 5 common sub-pulls a 20% List chance (≈63% of packs with a List card, ~1 per pack on average) and pointed the outcome at OTP (Breaking News). The article says 20% of PLAY BOOSTERS contain one List card, and OTJ-era “The List” comprises The Big Score (BIG) + Special Guests (SPG). Re-modeled per-slot: 96% common / 3% BIG / 1% SPG (20%/5 slots, split ~3:1 by sheet size 30 BIG : 10 SPG). AUDIT 2026-06: Special Guests outcomes re-pointed to set SPG + spg_otj (collector range — sheets verified by release date). The previous special_guest promo filter matched zero prints, and unranged SPG pulls would leak other sets’ guests. AUDIT 2026-06: Big Score collector outcome re-raritied to mythic (every BIG print is mythic — pool-verified).",
   "authoritative": true,
   "play": {
     "cardCount": 14,
@@ -44,7 +44,8 @@
           {
             "weight": 1,
             "set": "SPG",
-            "label": "The List — Special Guest"
+            "label": "The List — Special Guest",
+            "filter": "spg_otj"
           }
         ]
       },
@@ -297,7 +298,7 @@
           {
             "weight": 6,
             "set": "BIG",
-            "rarity": "rare",
+            "rarity": "mythic",
             "label": "The Big Score"
           },
           {
@@ -440,7 +441,7 @@
             "weight": 3,
             "set": "SPG",
             "rarity": "mythic",
-            "filter": "special_guest",
+            "filter": "spg_otj",
             "label": "Special Guest"
           },
           {

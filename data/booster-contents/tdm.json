@@ -1,5 +1,5 @@
 {
-  "_doc": "Tarkir: Dragonstorm (TDM) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-tarkir-dragonstorm . Lineup is authoritative: TDM had Play Boosters + Collector Boosters and NO Draft Boosters. Sub-set codes: TDM = main set, SPG = Special Guests, TDC = TDM Commander, TTDM = tokens. Percentages match Wizards' verbatim odds. Re-pointing: the 'Halo Foil Ghostfire' outcome now uses the halo_foil filter (article: 'we've brought back the halo foil treatment on ghostfire cards'). Remaining approximations: 'showcase draconic frame' -> showcase filter; 'borderless clan card', 'borderless Sagas/Sieges/lands', 'borderless reversible dragon', 'borderless legendary creature' all collapsed to the borderless filter (engine can't distinguish these sub-treatments); 'ghostfire' showcase treatment -> showcase filter; dragonscale-foil (Special Guest fetch lands) and double-rainbow-foil (serialized Mox Jasper) finishes have no dedicated filter, so dragonscale stays plain and the Mox stays on the serialized filter; full-art Dragon's Presence / Dragon's Eye basics stay on basic_land to keep them in their land slots. Serialized Mox Jasper modeled with the serialized filter. AUDIT 2026-06: SPG rate was per common sub-pull (×6 overpull); articles state it per PLAY BOOSTER — now 0.25 per slot (1.5/6).",
+  "_doc": "Tarkir: Dragonstorm (TDM) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-tarkir-dragonstorm . Lineup is authoritative: TDM had Play Boosters + Collector Boosters and NO Draft Boosters. Sub-set codes: TDM = main set, SPG = Special Guests, TDC = TDM Commander, TTDM = tokens. Percentages match Wizards' verbatim odds. Re-pointing: the 'Halo Foil Ghostfire' outcome now uses the halo_foil filter (article: 'we've brought back the halo foil treatment on ghostfire cards'). Remaining approximations: 'showcase draconic frame' -> showcase filter; 'borderless clan card', 'borderless Sagas/Sieges/lands', 'borderless reversible dragon', 'borderless legendary creature' all collapsed to the borderless filter (engine can't distinguish these sub-treatments); 'ghostfire' showcase treatment -> showcase filter; dragonscale-foil (Special Guest fetch lands) and double-rainbow-foil (serialized Mox Jasper) finishes have no dedicated filter, so dragonscale stays plain and the Mox stays on the serialized filter; full-art Dragon's Presence / Dragon's Eye basics stay on basic_land to keep them in their land slots. Serialized Mox Jasper modeled with the serialized filter. AUDIT 2026-06: SPG rate was per common sub-pull (×6 overpull); articles state it per PLAY BOOSTER — now 0.25 per slot (1.5/6). AUDIT 2026-06: Special Guests outcomes re-pointed to set SPG + spg_tdm (collector range — sheets verified by release date). The previous special_guest promo filter matched zero prints, and unranged SPG pulls would leak other sets’ guests. AUDIT 2026-06: special-finish outcome rarities corrected to match the actual printed sheets (pool-verified): halo_foil->mythic.",
   "authoritative": true,
   "play": {
     "cardCount": 14,
@@ -27,7 +27,7 @@
           {
             "weight": 0.25,
             "set": "SPG",
-            "filter": "special_guest",
+            "filter": "spg_tdm",
             "label": "Special Guest"
           }
         ]
@@ -607,20 +607,20 @@
           {
             "weight": 1,
             "set": "TDM",
-            "rarity": "rare",
+            "rarity": "mythic",
             "filter": "halo_foil",
             "label": "Halo Foil Ghostfire"
           },
           {
             "weight": 6,
             "set": "SPG",
-            "filter": "special_guest",
+            "filter": "spg_tdm",
             "label": "Special Guest"
           },
           {
             "weight": 1,
             "set": "SPG",
-            "filter": "special_guest",
+            "filter": "spg_tdm",
             "label": "Dragonscale Foil Special Guest Fetch Land"
           },
           {

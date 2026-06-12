@@ -1,9 +1,9 @@
 {
-  "_doc": "The Lost Caverns of Ixalan (LCI) recipes. Source: https://magic.wizards.com/en/news/feature/collecting-the-lost-caverns-of-ixalan . Lineup is Set + Draft + Collector (pre-Play-Booster era). The Set Booster is mapped to our 'play' slot since that is the consumer product type we render; Draft and Collector modeled directly. Set codes: LCI = main set, TLCI = tokens, ALCI = Art Series, SPG = Special Guests, REX = Jurassic World Collection bonus sheet, CLCI = LCI Commander. Finish filters: the neon-ink Booster Fun chase uses the neon_ink filter (verified: LCI carries promo_type neonink on 6 mythic borderless Cavern of Souls prints, all foil). Approximations that remain: showcase 'Legends of Ixalan' uses the showcase filter and borderless dinosaur uses the borderless filter; Cave nonbasic lands use non_basic_land; The List in the Set Booster token slot approximated via PLST; LCI has no raised/special-foil finish in the modeled products (only neon ink), so other foils stay plain foil:true. 33% common-replacement foil in Draft modeled as a dedicated foil-of-any-rarity slot reflecting the stated rate. [Integration: removed the Set-Booster-as-play slot \u2014 Set boosters are not a modelled product; LCI now offers Draft + Collector.] [Commander-slot fix: corrected CLCI -> LCC.]",
+  "_doc": "The Lost Caverns of Ixalan (LCI) recipes. Source: https://magic.wizards.com/en/news/feature/collecting-the-lost-caverns-of-ixalan . Lineup is Set + Draft + Collector (pre-Play-Booster era). The Set Booster is mapped to our 'play' slot since that is the consumer product type we render; Draft and Collector modeled directly. Set codes: LCI = main set, TLCI = tokens, ALCI = Art Series, SPG = Special Guests, REX = Jurassic World Collection bonus sheet, CLCI = LCI Commander. Finish filters: the neon-ink Booster Fun chase uses the neon_ink filter (verified: LCI carries promo_type neonink on 6 mythic borderless Cavern of Souls prints, all foil). Approximations that remain: showcase 'Legends of Ixalan' uses the showcase filter and borderless dinosaur uses the borderless filter; Cave nonbasic lands use non_basic_land; The List in the Set Booster token slot approximated via PLST; LCI has no raised/special-foil finish in the modeled products (only neon ink), so other foils stay plain foil:true. 33% common-replacement foil in Draft modeled as a dedicated foil-of-any-rarity slot reflecting the stated rate. [Integration: removed the Set-Booster-as-play slot — Set boosters are not a modelled product; LCI now offers Draft + Collector.] [Commander-slot fix: corrected CLCI -> LCC.] AUDIT 2026-06: Special Guests outcomes re-pointed to set SPG + spg_lci (collector range — sheets verified by release date). The previous special_guest promo filter matched zero prints, and unranged SPG pulls would leak other sets’ guests.",
   "authoritative": true,
   "draft": {
     "cardCount": 16,
-    "tagline": "16 cards \u00b7 1 rare/mythic \u00b7 double-faced slot \u00b7 1-in-3 foil replacement \u00b7 Cave / full-art land",
+    "tagline": "16 cards · 1 rare/mythic · double-faced slot · 1-in-3 foil replacement · Cave / full-art land",
     "slots": [
       {
         "label": "Rare / Mythic",
@@ -115,7 +115,7 @@
   },
   "collector": {
     "cardCount": 16,
-    "tagline": "15 premium cards + double-faced token \u00b7 extended-art Commander, Jurassic World & Booster Fun chase slots \u00b7 rates faithful to Wizards' spec",
+    "tagline": "15 premium cards + double-faced token · extended-art Commander, Jurassic World & Booster Fun chase slots · rates faithful to Wizards' spec",
     "slots": [
       {
         "label": "Double-Faced Token",
@@ -187,7 +187,7 @@
           {
             "weight": 3,
             "set": "SPG",
-            "filter": "special_guest",
+            "filter": "spg_lci",
             "label": "Special Guest"
           }
         ]
@@ -356,7 +356,7 @@
           {
             "weight": 8,
             "set": "SPG",
-            "filter": "special_guest",
+            "filter": "spg_lci",
             "label": "Special Guest"
           },
           {

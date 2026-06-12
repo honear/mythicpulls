@@ -1,92 +1,275 @@
 {
-  "_doc": "Avatar: The Last Airbender (code TLA) — Universes Beyond set. Source: https://magic.wizards.com/en/news/feature/collecting-avatar-the-last-airbender . Lineup is Play Boosters + Collector Boosters only (no Draft). Percentages taken verbatim from the article's odds tables. Approximations: Wizards distinguishes many 'Booster Fun' frames (scene, field notes, battle pose, elemental frame, Saga, raised-foil) and separate printings (source material, Jumpstart/Beginner-Box 'TLE' reprints) that have no dedicated Scryfall sub-set code we model here, so those are approximated against the main TLA pool with the nearest available filter: scene/battle-pose/elemental-frame/source-material -> 'showcase', field notes -> 'showcase' (no field_notes art exists for this set), extended-art -> 'extended_art'. Two specifically-named premium finishes are targeted exactly via promo_types instead of the borderless/showcase stand-in: the borderless raised-foil Avatar Aang chase -> 'raised_foil', and the textless neon-ink-foil borderless battle-pose card -> 'neon_ink'. Full-art lands use basicLand + basic_land. Sub-percentages the article reports as 'less than 1%' are entered as 0.5.",
-
+  "_doc": "Avatar: The Last Airbender (code TLA) — Universes Beyond set. Source: https://magic.wizards.com/en/news/feature/collecting-avatar-the-last-airbender . Lineup is Play Boosters + Collector Boosters only (no Draft). Percentages taken verbatim from the article's odds tables. Approximations: Wizards distinguishes many 'Booster Fun' frames (scene, field notes, battle pose, elemental frame, Saga, raised-foil) and separate printings (source material, Jumpstart/Beginner-Box 'TLE' reprints) that have no dedicated Scryfall sub-set code we model here, so those are approximated against the main TLA pool with the nearest available filter: scene/battle-pose/elemental-frame/source-material -> 'showcase', field notes -> 'showcase' (no field_notes art exists for this set), extended-art -> 'extended_art'. Two specifically-named premium finishes are targeted exactly via promo_types instead of the borderless/showcase stand-in: the borderless raised-foil Avatar Aang chase -> 'raised_foil', and the textless neon-ink-foil borderless battle-pose card -> 'neon_ink'. Full-art lands use basicLand + basic_land. Sub-percentages the article reports as 'less than 1%' are entered as 0.5. AUDIT 2026-06: special-finish outcome rarities corrected to match the actual printed sheets (pool-verified): neon_ink->rare. AUDIT 2026-06: Source Material outcomes re-mapped showcase->booster_fun (TLA source material = the 10 boosterfun-promo commons) and Scene outcomes showcase->borderless (TLA scenes carry inverted+borderless, no showcase effect). AUDIT 2026-06 part 2: Source Material outcomes re-mapped to the borderless filter (the article names them ‘Borderless Source Material Cards’; 61-card sheet) and the commons-slot rate converted from per-pack (1 in 26 boosters) to per-slot (0.64% across 6 commons). The earlier booster_fun remap was wrong — TLA’s boosterfun-promo commons are its full-art basic lands.",
   "authoritative": true,
-
   "play": {
     "cardCount": 14,
     "tagline": "14 cards · 1 rare/mythic · 1 foil · 1 land · scene & elemental-frame rates faithful to Wizards' spec",
     "slots": [
-      { "label": "Token", "token": true, "outcomes": [{ "weight": 1, "set": "$tokens" }] },
-
+      {
+        "label": "Token",
+        "token": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "$tokens"
+          }
+        ]
+      },
       {
         "label": "Common",
         "count": 6,
         "outcomes": [
-          { "weight": 96.2, "set": "TLA", "rarity": "common" },
-          { "weight": 3.8,  "set": "TLA", "rarity": "common", "filter": "showcase", "label": "Source Material" }
+          {
+            "weight": 99.36,
+            "set": "TLA",
+            "rarity": "common"
+          },
+          {
+            "weight": 0.64,
+            "set": "TLA",
+            "filter": "borderless",
+            "label": "Source Material"
+          }
         ]
       },
-
       {
         "label": "Uncommon",
         "count": 3,
         "outcomes": [
-          { "weight": 96.4, "set": "TLA", "rarity": "uncommon" },
-          { "weight": 3.6,  "set": "TLA", "rarity": "uncommon", "filter": "showcase", "label": "Scene Card" }
+          {
+            "weight": 96.4,
+            "set": "TLA",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 3.6,
+            "set": "TLA",
+            "rarity": "uncommon",
+            "filter": "borderless",
+            "label": "Scene Card"
+          }
         ]
       },
-
       {
         "label": "Wildcard",
         "outcomes": [
-          { "weight": 4.2,  "set": "TLA", "rarity": "common" },
-          { "weight": 74.1, "set": "TLA", "rarity": "uncommon" },
-          { "weight": 16.7, "set": "TLA", "rarity": "rare" },
-          { "weight": 2.6,  "set": "TLA", "rarity": "mythic" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "uncommon", "filter": "showcase", "label": "Scene Card" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Scene / Battle Pose / Elemental Frame" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Scene / Battle Pose / Elemental Frame / Saga" }
+          {
+            "weight": 4.2,
+            "set": "TLA",
+            "rarity": "common"
+          },
+          {
+            "weight": 74.1,
+            "set": "TLA",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 16.7,
+            "set": "TLA",
+            "rarity": "rare"
+          },
+          {
+            "weight": 2.6,
+            "set": "TLA",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "uncommon",
+            "filter": "borderless",
+            "label": "Scene Card"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Scene / Battle Pose / Elemental Frame"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Scene / Battle Pose / Elemental Frame / Saga"
+          }
         ]
       },
-
       {
         "label": "Rare / Mythic",
         "outcomes": [
-          { "weight": 80,   "set": "TLA", "rarity": "rare" },
-          { "weight": 12.6, "set": "TLA", "rarity": "mythic" },
-          { "weight": 1.6,  "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Scene Card" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Scene Card" },
-          { "weight": 1.4,  "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Field Notes" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Field Notes" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Battle Pose" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Battle Pose" },
-          { "weight": 2.4,  "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Elemental Frame" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Elemental Frame" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Saga" }
+          {
+            "weight": 80,
+            "set": "TLA",
+            "rarity": "rare"
+          },
+          {
+            "weight": 12.6,
+            "set": "TLA",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 1.6,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Scene Card"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Scene Card"
+          },
+          {
+            "weight": 1.4,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Field Notes"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Field Notes"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Battle Pose"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Battle Pose"
+          },
+          {
+            "weight": 2.4,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Elemental Frame"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Elemental Frame"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Saga"
+          }
         ]
       },
-
       {
         "label": "Foil",
         "foil": true,
         "outcomes": [
-          { "weight": 53.9, "set": "TLA", "rarity": "common" },
-          { "weight": 36.7, "set": "TLA", "rarity": "uncommon" },
-          { "weight": 6.7,  "set": "TLA", "rarity": "rare" },
-          { "weight": 1.2,  "set": "TLA", "rarity": "mythic" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Booster Fun" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Booster Fun" }
+          {
+            "weight": 53.9,
+            "set": "TLA",
+            "rarity": "common"
+          },
+          {
+            "weight": 36.7,
+            "set": "TLA",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 6.7,
+            "set": "TLA",
+            "rarity": "rare"
+          },
+          {
+            "weight": 1.2,
+            "set": "TLA",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Booster Fun"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Booster Fun"
+          }
         ]
       },
-
       {
         "label": "Land",
         "basicLand": true,
         "outcomes": [
-          { "weight": 40, "set": "TLA", "filter": "dual_land_common" },
-          { "weight": 20, "set": "TLA", "filter": "basic_land" },
-          { "weight": 10, "set": "TLA", "filter": "basic_land", "label": "Avatar's Journey" },
-          { "weight": 10, "set": "TLA", "filter": "basic_land", "label": "Appa" },
-          { "weight": 10, "set": "TLA", "filter": "dual_land_common", "foil": true },
-          { "weight": 5,  "set": "TLA", "filter": "basic_land", "foil": true },
-          { "weight": 2.5, "set": "TLA", "filter": "basic_land", "foil": true, "label": "Avatar's Journey" },
-          { "weight": 2.5, "set": "TLA", "filter": "basic_land", "foil": true, "label": "Appa" }
+          {
+            "weight": 40,
+            "set": "TLA",
+            "filter": "dual_land_common"
+          },
+          {
+            "weight": 20,
+            "set": "TLA",
+            "filter": "basic_land"
+          },
+          {
+            "weight": 10,
+            "set": "TLA",
+            "filter": "basic_land",
+            "label": "Avatar's Journey"
+          },
+          {
+            "weight": 10,
+            "set": "TLA",
+            "filter": "basic_land",
+            "label": "Appa"
+          },
+          {
+            "weight": 10,
+            "set": "TLA",
+            "filter": "dual_land_common",
+            "foil": true
+          },
+          {
+            "weight": 5,
+            "set": "TLA",
+            "filter": "basic_land",
+            "foil": true
+          },
+          {
+            "weight": 2.5,
+            "set": "TLA",
+            "filter": "basic_land",
+            "foil": true,
+            "label": "Avatar's Journey"
+          },
+          {
+            "weight": 2.5,
+            "set": "TLA",
+            "filter": "basic_land",
+            "foil": true,
+            "label": "Appa"
+          }
         ]
       }
     ]
   },
-
   "collector": {
     "cardCount": 16,
     "tagline": "15 premium cards · all-foil core · TLE reprints, scene & elemental-frame chases",
@@ -95,107 +278,360 @@
         "label": "Art Card / Token",
         "token": true,
         "outcomes": [
-          { "weight": 65, "set": "$tokens", "foil": true, "label": "Foil Token" },
-          { "weight": 30, "set": "$tokens", "label": "Art Card" },
-          { "weight": 5,  "set": "$tokens", "filter": "gold_stamped", "label": "Gold-Stamped Art Card" }
+          {
+            "weight": 65,
+            "set": "$tokens",
+            "foil": true,
+            "label": "Foil Token"
+          },
+          {
+            "weight": 30,
+            "set": "$tokens",
+            "label": "Art Card"
+          },
+          {
+            "weight": 5,
+            "set": "$tokens",
+            "filter": "gold_stamped",
+            "label": "Gold-Stamped Art Card"
+          }
         ]
       },
-
-      { "label": "Foil Common", "count": 3, "foil": true, "outcomes": [{ "weight": 1, "set": "TLA", "rarity": "common" }] },
-
-      { "label": "Foil Uncommon", "count": 3, "foil": true, "outcomes": [{ "weight": 1, "set": "TLA", "rarity": "uncommon" }] },
-
+      {
+        "label": "Foil Common",
+        "count": 3,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TLA",
+            "rarity": "common"
+          }
+        ]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 3,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TLA",
+            "rarity": "uncommon"
+          }
+        ]
+      },
       {
         "label": "Foil TLE Common",
         "count": 2,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "TLA", "rarity": "common", "label": "Jumpstart / Beginner Box reprint" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TLA",
+            "rarity": "common",
+            "label": "Jumpstart / Beginner Box reprint"
+          }
+        ]
       },
-
       {
         "label": "Foil TLE / Scene Uncommon",
         "foil": true,
         "outcomes": [
-          { "weight": 92, "set": "TLA", "rarity": "uncommon", "label": "TLE Uncommon" },
-          { "weight": 8,  "set": "TLA", "rarity": "uncommon", "filter": "showcase", "label": "Scene Card" }
+          {
+            "weight": 92,
+            "set": "TLA",
+            "rarity": "uncommon",
+            "label": "TLE Uncommon"
+          },
+          {
+            "weight": 8,
+            "set": "TLA",
+            "rarity": "uncommon",
+            "filter": "borderless",
+            "label": "Scene Card"
+          }
         ]
       },
-
       {
         "label": "Foil Full-Art Land",
         "basicLand": true,
         "foil": true,
         "outcomes": [
-          { "weight": 50, "set": "TLA", "filter": "basic_land", "label": "Appa" },
-          { "weight": 50, "set": "TLA", "filter": "basic_land", "label": "Avatar's Journey" }
+          {
+            "weight": 50,
+            "set": "TLA",
+            "filter": "basic_land",
+            "label": "Appa"
+          },
+          {
+            "weight": 50,
+            "set": "TLA",
+            "filter": "basic_land",
+            "label": "Avatar's Journey"
+          }
         ]
       },
-
       {
         "label": "Foil Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 85.7, "set": "TLA", "rarity": "rare" },
-          { "weight": 14.3, "set": "TLA", "rarity": "mythic" }
+          {
+            "weight": 85.7,
+            "set": "TLA",
+            "rarity": "rare"
+          },
+          {
+            "weight": 14.3,
+            "set": "TLA",
+            "rarity": "mythic"
+          }
         ]
       },
-
       {
         "label": "Foil TLE Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 37,   "set": "TLA", "rarity": "rare",   "label": "TLE Rare" },
-          { "weight": 6.4,  "set": "TLA", "rarity": "mythic", "label": "TLE Mythic" },
-          { "weight": 32.4, "set": "TLA", "rarity": "rare",   "filter": "extended_art", "label": "TLE Extended-Art" },
-          { "weight": 12.7, "set": "TLA", "rarity": "mythic", "filter": "extended_art", "label": "TLE Extended-Art" }
+          {
+            "weight": 37,
+            "set": "TLA",
+            "rarity": "rare",
+            "label": "TLE Rare"
+          },
+          {
+            "weight": 6.4,
+            "set": "TLA",
+            "rarity": "mythic",
+            "label": "TLE Mythic"
+          },
+          {
+            "weight": 32.4,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "TLE Extended-Art"
+          },
+          {
+            "weight": 12.7,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "TLE Extended-Art"
+          }
         ]
       },
-
       {
         "label": "Non-Foil Booster Fun",
         "outcomes": [
-          { "weight": 7.8,  "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Scene" },
-          { "weight": 1.1,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Scene" },
-          { "weight": 6.9,  "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Field Notes" },
-          { "weight": 3,    "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Field Notes" },
-          { "weight": 1.3,  "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Battle Pose" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Battle Pose" },
-          { "weight": 11.7, "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Elemental Frame" },
-          { "weight": 1.1,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Elemental Frame" },
-          { "weight": 2.2,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Saga" },
-          { "weight": 24.2, "set": "TLA", "rarity": "rare",   "filter": "extended_art" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "extended_art" },
-          { "weight": 24.2, "set": "TLA", "rarity": "rare",   "filter": "extended_art", "label": "TLE Extended" },
-          { "weight": 4.8,  "set": "TLA", "rarity": "mythic", "filter": "extended_art", "label": "TLE Extended" },
-          { "weight": 10.4, "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Scene Box New" }
+          {
+            "weight": 7.8,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Scene"
+          },
+          {
+            "weight": 1.1,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Scene"
+          },
+          {
+            "weight": 6.9,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Field Notes"
+          },
+          {
+            "weight": 3,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Field Notes"
+          },
+          {
+            "weight": 1.3,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Battle Pose"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Battle Pose"
+          },
+          {
+            "weight": 11.7,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Elemental Frame"
+          },
+          {
+            "weight": 1.1,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Elemental Frame"
+          },
+          {
+            "weight": 2.2,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Saga"
+          },
+          {
+            "weight": 24.2,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 24.2,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "TLE Extended"
+          },
+          {
+            "weight": 4.8,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "TLE Extended"
+          },
+          {
+            "weight": 10.4,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Scene Box New"
+          }
         ]
       },
-
       {
         "label": "Source Material",
         "outcomes": [
-          { "weight": 75, "set": "TLA", "rarity": "common", "filter": "showcase", "label": "Source Material" },
-          { "weight": 25, "set": "TLA", "rarity": "common", "filter": "showcase", "foil": true, "label": "Source Material Foil" }
+          {
+            "weight": 75,
+            "set": "TLA",
+            "filter": "borderless",
+            "label": "Source Material"
+          },
+          {
+            "weight": 25,
+            "set": "TLA",
+            "filter": "borderless",
+            "foil": true,
+            "label": "Source Material Foil"
+          }
         ]
       },
-
       {
         "label": "Foil Booster Fun",
         "foil": true,
         "outcomes": [
-          { "weight": 12.8, "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Scene" },
-          { "weight": 1.8,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Scene" },
-          { "weight": 11.4, "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Field Notes" },
-          { "weight": 5,    "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Field Notes" },
-          { "weight": 2.1,  "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Battle Pose" },
-          { "weight": 1.4,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Battle Pose" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "neon_ink", "label": "Neon Battle Pose" },
-          { "weight": 19.2, "set": "TLA", "rarity": "rare",   "filter": "showcase", "label": "Elemental Frame" },
-          { "weight": 1.8,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Elemental Frame" },
-          { "weight": 3.6,  "set": "TLA", "rarity": "mythic", "filter": "showcase", "label": "Saga" },
-          { "weight": 39.9, "set": "TLA", "rarity": "rare",   "filter": "extended_art" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "extended_art" },
-          { "weight": 0.5,  "set": "TLA", "rarity": "mythic", "filter": "raised_foil", "label": "Raised Foil Aang" }
+          {
+            "weight": 12.8,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Scene"
+          },
+          {
+            "weight": 1.8,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Scene"
+          },
+          {
+            "weight": 11.4,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Field Notes"
+          },
+          {
+            "weight": 5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Field Notes"
+          },
+          {
+            "weight": 2.1,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Battle Pose"
+          },
+          {
+            "weight": 1.4,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Battle Pose"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "neon_ink",
+            "label": "Neon Battle Pose"
+          },
+          {
+            "weight": 19.2,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Elemental Frame"
+          },
+          {
+            "weight": 1.8,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Elemental Frame"
+          },
+          {
+            "weight": 3.6,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Saga"
+          },
+          {
+            "weight": 39.9,
+            "set": "TLA",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 0.5,
+            "set": "TLA",
+            "rarity": "mythic",
+            "filter": "raised_foil",
+            "label": "Raised Foil Aang"
+          }
         ]
       }
     ]

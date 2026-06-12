@@ -1,8 +1,6 @@
 {
-  "_doc": "Dominaria United (DMU) Draft + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-dominaria-united-2022-08-18 . Full lineup is Set + Draft + Collector Booster; per assignment we model only Draft + Collector and set authoritative:true. Ignored: Set Booster, Jumpstart, Commander, Bundle, Prerelease. Draft Booster = 15 cards (10 common, 3 uncommon, 1 rare/mythic, 1 basic land); a traditional foil of any rarity replaces a common 33% of the time; every pack has a guaranteed legendary creature and ~1-in-3 legends carry the showcase stained-glass treatment (approximated as 'showcase' filter on a portion of the rare/mythic + foil outcomes). Collector Booster = 15 cards. Sub-set codes: DMU main, PDMU promos/Lost Legends approximation, TDMU tokens, ADMU art series. Legends Retold box toppers live in a separate Scryfall set (DMU Commander box toppers); since the exact code isn't confidently known they are approximated as DMU cards with the etched_foil filter and noted here. The Collector textured-foil slot now targets the textured_foil filter (promo_types=textured) exactly rather than plain foil. DMU has no retro frame cards — the Legends Retold treatment is foil-etched (etched_foil filter), not retro. Remaining approximations: Phyrexian-language alt-art approximated as borderless; Lost Legends (3% of Collector Boosters) approximated via the special_guest filter on PDMU; serialized Hidetsugu/Ajani ultra-rare drops omitted as sub-1% noise.",
-
+  "_doc": "Dominaria United (DMU) Draft + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-dominaria-united-2022-08-18 . Full lineup is Set + Draft + Collector Booster; per assignment we model only Draft + Collector and set authoritative:true. Ignored: Set Booster, Jumpstart, Commander, Bundle, Prerelease. Draft Booster = 15 cards (10 common, 3 uncommon, 1 rare/mythic, 1 basic land); a traditional foil of any rarity replaces a common 33% of the time; every pack has a guaranteed legendary creature and ~1-in-3 legends carry the showcase stained-glass treatment (approximated as 'showcase' filter on a portion of the rare/mythic + foil outcomes). Collector Booster = 15 cards. Sub-set codes: DMU main, PDMU promos/Lost Legends approximation, TDMU tokens, ADMU art series. Legends Retold box toppers live in a separate Scryfall set (DMU Commander box toppers); since the exact code isn't confidently known they are approximated as DMU cards with the etched_foil filter and noted here. The Collector textured-foil slot now targets the textured_foil filter (promo_types=textured) exactly rather than plain foil. DMU has no retro frame cards — the Legends Retold treatment is foil-etched (etched_foil filter), not retro. Remaining approximations: Phyrexian-language alt-art approximated as borderless; Lost Legends (3% of Collector Boosters) approximated via the special_guest filter on PDMU; serialized Hidetsugu/Ajani ultra-rare drops omitted as sub-1% noise. AUDIT 2026-06: Legends Retold outcomes re-pointed from etched_foil (matched nothing — prints lack the etched flag) to the dmu_legends_retold collector range; PDMU Lost Legends outcome unfiltered (the promo set IS the sheet; specialguests promo tag absent).",
   "authoritative": true,
-
   "draft": {
     "cardCount": 16,
     "tagline": "15 cards + token · guaranteed legendary creature · showcase stained-glass shot · 33% foil",
@@ -10,50 +8,132 @@
       {
         "label": "Token / Ad Card",
         "token": true,
-        "outcomes": [{ "weight": 1, "set": "TDMU" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TDMU"
+          }
+        ]
       },
       {
         "label": "Common",
         "count": 9,
-        "outcomes": [{ "weight": 1, "set": "DMU", "rarity": "common" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DMU",
+            "rarity": "common"
+          }
+        ]
       },
       {
         "label": "Uncommon",
         "count": 3,
-        "outcomes": [{ "weight": 1, "set": "DMU", "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DMU",
+            "rarity": "uncommon"
+          }
+        ]
       },
       {
         "label": "Rare / Mythic",
         "outcomes": [
-          { "weight": 72.3, "set": "DMU", "rarity": "rare" },
-          { "weight": 13.5, "set": "DMU", "rarity": "mythic" },
-          { "weight": 11.0, "set": "DMU", "rarity": "rare",   "filter": "showcase", "label": "Showcase Stained-Glass" },
-          { "weight": 2.7,  "set": "DMU", "rarity": "mythic", "filter": "showcase", "label": "Showcase Stained-Glass" },
-          { "weight": 0.5,  "set": "DMU", "rarity": "mythic", "filter": "borderless", "label": "Borderless Planeswalker" }
+          {
+            "weight": 72.3,
+            "set": "DMU",
+            "rarity": "rare"
+          },
+          {
+            "weight": 13.5,
+            "set": "DMU",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 11,
+            "set": "DMU",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Showcase Stained-Glass"
+          },
+          {
+            "weight": 2.7,
+            "set": "DMU",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Showcase Stained-Glass"
+          },
+          {
+            "weight": 0.5,
+            "set": "DMU",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Planeswalker"
+          }
         ]
       },
       {
         "label": "Land",
         "basicLand": true,
         "outcomes": [
-          { "weight": 80, "set": "DMU", "filter": "basic_land" },
-          { "weight": 20, "set": "DMU", "filter": "basic_land", "label": "Stained-Glass Basic" }
+          {
+            "weight": 80,
+            "set": "DMU",
+            "filter": "basic_land"
+          },
+          {
+            "weight": 20,
+            "set": "DMU",
+            "filter": "basic_land",
+            "label": "Stained-Glass Basic"
+          }
         ]
       },
       {
         "label": "Foil / Common (33% foil)",
         "outcomes": [
-          { "weight": 67,   "set": "DMU", "rarity": "common" },
-          { "weight": 18,   "set": "DMU", "rarity": "common",   "foil": true },
-          { "weight": 8,    "set": "DMU", "rarity": "uncommon", "foil": true },
-          { "weight": 4.5,  "set": "DMU", "rarity": "rare",     "foil": true },
-          { "weight": 2,    "set": "DMU", "rarity": "mythic",   "foil": true },
-          { "weight": 0.5,  "set": "DMU", "rarity": "mythic",   "foil": true, "filter": "borderless", "label": "Foil Borderless Planeswalker" }
+          {
+            "weight": 67,
+            "set": "DMU",
+            "rarity": "common"
+          },
+          {
+            "weight": 18,
+            "set": "DMU",
+            "rarity": "common",
+            "foil": true
+          },
+          {
+            "weight": 8,
+            "set": "DMU",
+            "rarity": "uncommon",
+            "foil": true
+          },
+          {
+            "weight": 4.5,
+            "set": "DMU",
+            "rarity": "rare",
+            "foil": true
+          },
+          {
+            "weight": 2,
+            "set": "DMU",
+            "rarity": "mythic",
+            "foil": true
+          },
+          {
+            "weight": 0.5,
+            "set": "DMU",
+            "rarity": "mythic",
+            "foil": true,
+            "filter": "borderless",
+            "label": "Foil Borderless Planeswalker"
+          }
         ]
       }
     ]
   },
-
   "collector": {
     "cardCount": 14,
     "tagline": "14 premium cards · Legends Retold foil-etched · textured-foil slot · showcase stained-glass legends",
@@ -62,74 +142,220 @@
         "label": "Art Card / Token",
         "token": true,
         "outcomes": [
-          { "weight": 70, "set": "TDMU",                          "label": "Foil Token" },
-          { "weight": 30, "set": "ADMU",                          "label": "Art Card" }
+          {
+            "weight": 70,
+            "set": "TDMU",
+            "label": "Foil Token"
+          },
+          {
+            "weight": 30,
+            "set": "ADMU",
+            "label": "Art Card"
+          }
         ]
       },
       {
         "label": "Foil Common",
         "count": 4,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "DMU", "rarity": "common" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DMU",
+            "rarity": "common"
+          }
+        ]
       },
       {
         "label": "Foil Uncommon",
         "count": 2,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "DMU", "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DMU",
+            "rarity": "uncommon"
+          }
+        ]
       },
       {
         "label": "Foil Showcase Stained-Glass Uncommon Legendary",
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "DMU", "rarity": "uncommon", "filter": "showcase", "label": "Showcase Stained-Glass Legend" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DMU",
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Showcase Stained-Glass Legend"
+          }
+        ]
       },
       {
         "label": "Textured Foil",
         "foil": true,
         "outcomes": [
-          { "weight": 63.1, "set": "DMU", "rarity": "uncommon", "filter": "textured_foil", "label": "Textured Foil" },
-          { "weight": 29.5, "set": "DMU", "rarity": "rare",     "filter": "textured_foil", "label": "Textured Foil" },
-          { "weight": 7.4,  "set": "DMU", "rarity": "mythic",   "filter": "textured_foil", "label": "Textured Foil" }
+          {
+            "weight": 63.1,
+            "set": "DMU",
+            "rarity": "uncommon",
+            "filter": "textured_foil",
+            "label": "Textured Foil"
+          },
+          {
+            "weight": 29.5,
+            "set": "DMU",
+            "rarity": "rare",
+            "filter": "textured_foil",
+            "label": "Textured Foil"
+          },
+          {
+            "weight": 7.4,
+            "set": "DMU",
+            "rarity": "mythic",
+            "filter": "textured_foil",
+            "label": "Textured Foil"
+          }
         ]
       },
       {
         "label": "Legends Retold Uncommon",
         "outcomes": [
-          { "weight": 50, "set": "DMU", "rarity": "uncommon", "filter": "etched_foil", "label": "Legends Retold (non-foil)" },
-          { "weight": 50, "set": "DMU", "rarity": "uncommon", "filter": "etched_foil", "foil": true, "label": "Foil-Etched Legends Retold" }
+          {
+            "weight": 50,
+            "set": "DMU",
+            "rarity": "uncommon",
+            "filter": "dmu_legends_retold",
+            "label": "Legends Retold (non-foil)"
+          },
+          {
+            "weight": 50,
+            "set": "DMU",
+            "rarity": "uncommon",
+            "filter": "dmu_legends_retold",
+            "foil": true,
+            "label": "Foil-Etched Legends Retold"
+          }
         ]
       },
       {
         "label": "Legends Retold / Booster Fun Rare or Mythic",
         "count": 2,
         "outcomes": [
-          { "weight": 30, "set": "DMU", "rarity": "rare",   "filter": "etched_foil", "label": "Legends Retold" },
-          { "weight": 8,  "set": "DMU", "rarity": "mythic", "filter": "etched_foil", "label": "Legends Retold" },
-          { "weight": 18, "set": "DMU", "rarity": "rare",   "filter": "etched_foil", "foil": true, "label": "Foil-Etched Legends Retold" },
-          { "weight": 5,  "set": "DMU", "rarity": "mythic", "filter": "etched_foil", "foil": true, "label": "Foil-Etched Legends Retold" },
-          { "weight": 24, "set": "DMU", "rarity": "rare",   "filter": "showcase", "label": "Showcase Stained-Glass" },
-          { "weight": 6,  "set": "DMU", "rarity": "mythic", "filter": "showcase", "label": "Showcase Stained-Glass" },
-          { "weight": 7,  "set": "DMU", "rarity": "rare",   "filter": "borderless" },
-          { "weight": 2,  "set": "DMU", "rarity": "mythic", "filter": "borderless" }
+          {
+            "weight": 30,
+            "set": "DMU",
+            "rarity": "rare",
+            "filter": "dmu_legends_retold",
+            "label": "Legends Retold"
+          },
+          {
+            "weight": 8,
+            "set": "DMU",
+            "rarity": "mythic",
+            "filter": "dmu_legends_retold",
+            "label": "Legends Retold"
+          },
+          {
+            "weight": 18,
+            "set": "DMU",
+            "rarity": "rare",
+            "filter": "dmu_legends_retold",
+            "foil": true,
+            "label": "Foil-Etched Legends Retold"
+          },
+          {
+            "weight": 5,
+            "set": "DMU",
+            "rarity": "mythic",
+            "filter": "dmu_legends_retold",
+            "foil": true,
+            "label": "Foil-Etched Legends Retold"
+          },
+          {
+            "weight": 24,
+            "set": "DMU",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Showcase Stained-Glass"
+          },
+          {
+            "weight": 6,
+            "set": "DMU",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Showcase Stained-Glass"
+          },
+          {
+            "weight": 7,
+            "set": "DMU",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 2,
+            "set": "DMU",
+            "rarity": "mythic",
+            "filter": "borderless"
+          }
         ]
       },
       {
         "label": "Foil Borderless / Showcase Rare or Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 40,  "set": "DMU", "rarity": "rare",   "filter": "showcase", "label": "Foil Showcase Stained-Glass" },
-          { "weight": 10,  "set": "DMU", "rarity": "mythic", "filter": "showcase", "label": "Foil Showcase Stained-Glass" },
-          { "weight": 36,  "set": "DMU", "rarity": "rare",   "filter": "borderless" },
-          { "weight": 10.5, "set": "DMU", "rarity": "mythic", "filter": "borderless" },
-          { "weight": 3,   "set": "PDMU", "filter": "special_guest", "label": "Lost Legends" },
-          { "weight": 0.5, "set": "DMU", "rarity": "mythic", "filter": "borderless", "label": "Foil Borderless Planeswalker" }
+          {
+            "weight": 40,
+            "set": "DMU",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Foil Showcase Stained-Glass"
+          },
+          {
+            "weight": 10,
+            "set": "DMU",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Foil Showcase Stained-Glass"
+          },
+          {
+            "weight": 36,
+            "set": "DMU",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 10.5,
+            "set": "DMU",
+            "rarity": "mythic",
+            "filter": "borderless"
+          },
+          {
+            "weight": 3,
+            "set": "PDMU",
+            "label": "Lost Legends"
+          },
+          {
+            "weight": 0.5,
+            "set": "DMU",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Foil Borderless Planeswalker"
+          }
         ]
       },
       {
         "label": "Foil Basic Land",
         "basicLand": true,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "DMU", "filter": "basic_land", "label": "Stained-Glass Basic" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "DMU",
+            "filter": "basic_land",
+            "label": "Stained-Glass Basic"
+          }
+        ]
       }
     ]
   }

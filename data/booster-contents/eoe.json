@@ -1,5 +1,5 @@
 {
-  "_doc": "Edge of Eternities (EOE) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-edge-of-eternities . Lineup is authoritative: EOE had Play Boosters + Collector Boosters and NO Draft Boosters. Sub-set codes: EOE = main set, EOS = Stellar Sights bonus sheet (45 lands), SPG = Special Guests, EOC = EOE Commander, TEOE = tokens. Percentages match Wizards' verbatim odds (entries the article gave as '<1%' are modeled as 0.1). Re-pointing: the Stellar Sights 'Galaxy Foil' and 'Poster Galaxy Foil' outcomes now carry the galaxy_foil filter, and the 'Japan Showcase Fracture Foil' outcome now uses the fracture_foil filter (article confirms galaxy foil on Stellar Sights lands and a 1% fracture-foil Japan Showcase). Remaining approximations: the 'Viewport', 'Triumphant', and 'Surreal' booster-fun treatments all collapse to the borderless filter (engine can't distinguish them) and 'extended-art' booster-fun -> extended_art; 'Celestial' basics -> basic_land (kept in their land slot, so their galaxy-foil variant stays on basic_land rather than galaxy_foil); plain (non-fracture) Japan Showcase -> japanese filter; 'Viewport Galaxy Foil' stays on the borderless filter (can't express borderless + galaxy_foil together) and 'poster' / 'singularity' finishes have no dedicated filter. Textless singularity-foil Sothera modeled with a plain outcome. Stellar Sights cards reference the EOS set. AUDIT 2026-06: SPG rate was per common sub-pull (×6 overpull); articles state it per PLAY BOOSTER — now 0.3 per slot (1.8/6).",
+  "_doc": "Edge of Eternities (EOE) Play + Collector recipes. Source: https://magic.wizards.com/en/news/feature/collecting-edge-of-eternities . Lineup is authoritative: EOE had Play Boosters + Collector Boosters and NO Draft Boosters. Sub-set codes: EOE = main set, EOS = Stellar Sights bonus sheet (45 lands), SPG = Special Guests, EOC = EOE Commander, TEOE = tokens. Percentages match Wizards' verbatim odds (entries the article gave as '<1%' are modeled as 0.1). Re-pointing: the Stellar Sights 'Galaxy Foil' and 'Poster Galaxy Foil' outcomes now carry the galaxy_foil filter, and the 'Japan Showcase Fracture Foil' outcome now uses the fracture_foil filter (article confirms galaxy foil on Stellar Sights lands and a 1% fracture-foil Japan Showcase). Remaining approximations: the 'Viewport', 'Triumphant', and 'Surreal' booster-fun treatments all collapse to the borderless filter (engine can't distinguish them) and 'extended-art' booster-fun -> extended_art; 'Celestial' basics -> basic_land (kept in their land slot, so their galaxy-foil variant stays on basic_land rather than galaxy_foil); plain (non-fracture) Japan Showcase -> japanese filter; 'Viewport Galaxy Foil' stays on the borderless filter (can't express borderless + galaxy_foil together) and 'poster' / 'singularity' finishes have no dedicated filter. Textless singularity-foil Sothera modeled with a plain outcome. Stellar Sights cards reference the EOS set. AUDIT 2026-06: SPG rate was per common sub-pull (×6 overpull); articles state it per PLAY BOOSTER — now 0.3 per slot (1.8/6). AUDIT 2026-06: Special Guests outcomes re-pointed to set SPG + spg_eoe (collector range — sheets verified by release date). The previous special_guest promo filter matched zero prints, and unranged SPG pulls would leak other sets’ guests. AUDIT 2026-06: special-finish outcome rarities corrected to match the actual printed sheets (pool-verified): fracture_foil->mythic. AUDIT 2026-06 (article re-verification): the Collector default rare/mythic slot and celestial-land outcomes gained their missing foil flags (article: traditional foil). All other slots verified verbatim.",
   "authoritative": true,
   "play": {
     "cardCount": 14,
@@ -27,7 +27,7 @@
           {
             "weight": 0.3,
             "set": "SPG",
-            "filter": "special_guest",
+            "filter": "spg_eoe",
             "label": "Special Guest"
           }
         ]
@@ -288,18 +288,20 @@
             "weight": 66.6,
             "set": "EOE",
             "filter": "basic_land",
-            "label": "Celestial Foil"
+            "label": "Celestial Foil",
+            "foil": true
           },
           {
             "weight": 33.3,
             "set": "EOE",
             "filter": "basic_land",
-            "label": "Celestial Galaxy Foil"
+            "label": "Celestial Galaxy Foil",
+            "foil": true
           }
         ]
       },
       {
-        "label": "Rare / Mythic",
+        "label": "Foil Rare / Mythic",
         "outcomes": [
           {
             "weight": 86,
@@ -311,7 +313,8 @@
             "set": "EOE",
             "rarity": "mythic"
           }
-        ]
+        ],
+        "foil": true
       },
       {
         "label": "Commander Card",
@@ -540,7 +543,7 @@
           {
             "weight": 6,
             "set": "SPG",
-            "filter": "special_guest",
+            "filter": "spg_eoe",
             "label": "Special Guest"
           },
           {
@@ -553,7 +556,7 @@
           {
             "weight": 1,
             "set": "EOE",
-            "rarity": "rare",
+            "rarity": "mythic",
             "filter": "fracture_foil",
             "label": "Japan Showcase Fracture Foil"
           },

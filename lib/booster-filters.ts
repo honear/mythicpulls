@@ -53,6 +53,11 @@ export interface FilterPredicate {
   frame?: string | string[];
   /** card.full_art boolean — full-art lands / cards. */
   full_art?: boolean;
+  /** card.variation boolean — alternate printings of a card already in
+   *  the set (DSK Lurking Evil, DMU etched Legends Retold, J25 anime).
+   *  regular_print excludes these so base outcomes only roll the
+   *  canonical printing; variation_print targets them exactly. */
+  variation?: boolean;
   collector_number_in?: string[];
   collector_number_range?: [number, number];
   not?: FilterPredicate;
@@ -120,6 +125,9 @@ export function matchesFilter(card: ScryfallCard, p: FilterPredicate): boolean {
   }
   if (p.full_art !== undefined) {
     if (Boolean(card.full_art) !== p.full_art) return false;
+  }
+  if (p.variation !== undefined) {
+    if (Boolean(card.variation) !== p.variation) return false;
   }
 
   if (p.collector_number_in) {

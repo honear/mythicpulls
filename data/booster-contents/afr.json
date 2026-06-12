@@ -1,8 +1,6 @@
 {
-  "_doc": "Adventures in the Forgotten Realms (AFR) Draft + Collector recipes. The `draft` block is the original collation-derived recipe from data/_collation-facts/afr.json (The Collation Project) and is kept verbatim. The `collector` block was added from Wizards' official 'Collecting Adventures in the Forgotten Realms' article (https://magic.wizards.com/en/news/feature/collecting-adventures-forgotten-realms-2021-06-29) plus its product-overview Collector Booster graphic. AFR (Jul 2021) is pre-Play-Booster, so there is intentionally NO play booster; Set Boosters are skipped per assignment. authoritative=true. Set composition: 101C / 80U / 60R / 20M, no double-faced cards. Sub-set codes: AFR = main set, AFC = AFR Commander (the extended-art Commander slot), TAFR = tokens. Collector Booster = 16 (15 cards + 1 foil double-sided token): 4 foil commons, 1 foil showcase/borderless common-or-uncommon, 2 foil showcase/borderless commons-or-uncommons (total 3 foil booster-fun low-rarity), 2 foil uncommons, 1 foil basic land, 1 extended-art rare/mythic (main set), 1 extended-art Commander rare/mythic, 1 foil rare/mythic, 1 non-foil showcase/borderless rare/mythic, 1 foil showcase/borderless/extended-art rare/mythic, 1 foil token. Article pool sizes used to DERIVE weights (exact percentages were not published): AFR extended-art '30 rares / 7 mythic rares' -> by count 30:7 = 81.1% rare / 18.9% mythic; AFR Commander extended-art '48 rares / 8 mythic rares' -> 48:8 = 85.7% rare / 14.3% mythic. Booster-fun rare/mythic treatments: 51 rulebook (monster-manual) rares, 5 borderless planeswalkers, 11 borderless Dragons, 9 module (borderless) lands. The article states a Foil Mythic Borderless Planeswalker appears in 4% of Collector Boosters; that 4% is placed in the final foil alt-frame slot. Approximations: rulebook / monster-manual frame and module-land treatments have no dedicated filter, so rulebook cards use showcase and module lands use borderless (+ non_basic_land where they are the chase land); borderless planeswalkers/Dragons use borderless; extended-art uses extended_art; full-art basic lands use basic_land.",
-
+  "_doc": "Adventures in the Forgotten Realms (AFR) Draft + Collector recipes. The `draft` block is the original collation-derived recipe from data/_collation-facts/afr.json (The Collation Project) and is kept verbatim. The `collector` block was added from Wizards' official 'Collecting Adventures in the Forgotten Realms' article (https://magic.wizards.com/en/news/feature/collecting-adventures-forgotten-realms-2021-06-29) plus its product-overview Collector Booster graphic. AFR (Jul 2021) is pre-Play-Booster, so there is intentionally NO play booster; Set Boosters are skipped per assignment. authoritative=true. Set composition: 101C / 80U / 60R / 20M, no double-faced cards. Sub-set codes: AFR = main set, AFC = AFR Commander (the extended-art Commander slot), TAFR = tokens. Collector Booster = 16 (15 cards + 1 foil double-sided token): 4 foil commons, 1 foil showcase/borderless common-or-uncommon, 2 foil showcase/borderless commons-or-uncommons (total 3 foil booster-fun low-rarity), 2 foil uncommons, 1 foil basic land, 1 extended-art rare/mythic (main set), 1 extended-art Commander rare/mythic, 1 foil rare/mythic, 1 non-foil showcase/borderless rare/mythic, 1 foil showcase/borderless/extended-art rare/mythic, 1 foil token. Article pool sizes used to DERIVE weights (exact percentages were not published): AFR extended-art '30 rares / 7 mythic rares' -> by count 30:7 = 81.1% rare / 18.9% mythic; AFR Commander extended-art '48 rares / 8 mythic rares' -> 48:8 = 85.7% rare / 14.3% mythic. Booster-fun rare/mythic treatments: 51 rulebook (monster-manual) rares, 5 borderless planeswalkers, 11 borderless Dragons, 9 module (borderless) lands. The article states a Foil Mythic Borderless Planeswalker appears in 4% of Collector Boosters; that 4% is placed in the final foil alt-frame slot. Approximations: rulebook / monster-manual frame and module-land treatments have no dedicated filter, so rulebook cards use showcase and module lands use borderless (+ non_basic_land where they are the chase land); borderless planeswalkers/Dragons use borderless; extended-art uses extended_art; full-art basic lands use basic_land. AUDIT 2026-06: borderless common outcome re-raritied to uncommon (AFR borderless C/U prints are 5 uncommons, zero commons — pool-verified).",
   "authoritative": true,
-
   "draft": {
     "cardCount": 15,
     "tagline": "10 commons · 3 uncommons · 1× rare/mythic · 1 basic land · foil 33% of boosters",
@@ -81,7 +79,6 @@
       }
     ]
   },
-
   "collector": {
     "cardCount": 16,
     "tagline": "15 premium cards + foil token · D&D rulebook & module-land booster fun · extended-art chase",
@@ -89,87 +86,216 @@
       {
         "label": "Foil Token",
         "token": true,
-        "outcomes": [{ "weight": 1, "set": "TAFR", "label": "Foil Double-Sided Token" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TAFR",
+            "label": "Foil Double-Sided Token"
+          }
+        ]
       },
-
       {
         "label": "Foil Common",
         "count": 4,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "AFR", "rarity": "common" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "AFR",
+            "rarity": "common"
+          }
+        ]
       },
-
       {
         "label": "Foil Showcase / Borderless Common or Uncommon",
         "count": 3,
         "foil": true,
         "outcomes": [
-          { "weight": 35, "set": "AFR", "rarity": "common",   "filter": "showcase",   "label": "Rulebook Common" },
-          { "weight": 35, "set": "AFR", "rarity": "uncommon", "filter": "showcase",   "label": "Rulebook Uncommon" },
-          { "weight": 15, "set": "AFR", "rarity": "common",   "filter": "borderless", "label": "Module Land / Borderless" },
-          { "weight": 15, "set": "AFR", "rarity": "uncommon", "filter": "borderless", "label": "Borderless" }
+          {
+            "weight": 35,
+            "set": "AFR",
+            "rarity": "common",
+            "filter": "showcase",
+            "label": "Rulebook Common"
+          },
+          {
+            "weight": 35,
+            "set": "AFR",
+            "rarity": "uncommon",
+            "filter": "showcase",
+            "label": "Rulebook Uncommon"
+          },
+          {
+            "weight": 15,
+            "set": "AFR",
+            "rarity": "uncommon",
+            "filter": "borderless",
+            "label": "Module Land / Borderless"
+          },
+          {
+            "weight": 15,
+            "set": "AFR",
+            "rarity": "uncommon",
+            "filter": "borderless",
+            "label": "Borderless"
+          }
         ]
       },
-
       {
         "label": "Foil Uncommon",
         "count": 2,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "AFR", "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "AFR",
+            "rarity": "uncommon"
+          }
+        ]
       },
-
       {
         "label": "Foil Basic Land",
         "basicLand": true,
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "AFR", "filter": "basic_land" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "AFR",
+            "filter": "basic_land"
+          }
+        ]
       },
-
       {
         "label": "Extended-Art Rare / Mythic",
         "outcomes": [
-          { "weight": 81.1, "set": "AFR", "rarity": "rare",   "filter": "extended_art" },
-          { "weight": 18.9, "set": "AFR", "rarity": "mythic", "filter": "extended_art" }
+          {
+            "weight": 81.1,
+            "set": "AFR",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 18.9,
+            "set": "AFR",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          }
         ]
       },
-
       {
         "label": "Extended-Art Commander Rare / Mythic",
         "outcomes": [
-          { "weight": 85.7, "set": "AFC", "rarity": "rare",   "filter": "extended_art", "label": "Forgotten Realms Commander Rare" },
-          { "weight": 14.3, "set": "AFC", "rarity": "mythic", "filter": "extended_art", "label": "Forgotten Realms Commander Mythic" }
+          {
+            "weight": 85.7,
+            "set": "AFC",
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "Forgotten Realms Commander Rare"
+          },
+          {
+            "weight": 14.3,
+            "set": "AFC",
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "Forgotten Realms Commander Mythic"
+          }
         ]
       },
-
       {
         "label": "Foil Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 86, "set": "AFR", "rarity": "rare" },
-          { "weight": 14, "set": "AFR", "rarity": "mythic" }
+          {
+            "weight": 86,
+            "set": "AFR",
+            "rarity": "rare"
+          },
+          {
+            "weight": 14,
+            "set": "AFR",
+            "rarity": "mythic"
+          }
         ]
       },
-
       {
         "label": "Non-Foil Showcase / Borderless Rare / Mythic",
         "outcomes": [
-          { "weight": 55, "set": "AFR", "rarity": "rare",   "filter": "showcase",   "label": "Rulebook Rare" },
-          { "weight": 12, "set": "AFR", "rarity": "mythic", "filter": "showcase",   "label": "Rulebook Mythic" },
-          { "weight": 23, "set": "AFR", "rarity": "rare",   "filter": "borderless", "label": "Borderless Dragon / Module Land" },
-          { "weight": 10, "set": "AFR", "rarity": "mythic", "filter": "borderless", "label": "Borderless Planeswalker / Dragon" }
+          {
+            "weight": 55,
+            "set": "AFR",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Rulebook Rare"
+          },
+          {
+            "weight": 12,
+            "set": "AFR",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Rulebook Mythic"
+          },
+          {
+            "weight": 23,
+            "set": "AFR",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Borderless Dragon / Module Land"
+          },
+          {
+            "weight": 10,
+            "set": "AFR",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Borderless Planeswalker / Dragon"
+          }
         ]
       },
-
       {
         "label": "Foil Showcase / Borderless / Extended-Art Rare / Mythic",
         "foil": true,
         "outcomes": [
-          { "weight": 40, "set": "AFR", "rarity": "rare",   "filter": "extended_art", "label": "Foil Extended-Art" },
-          { "weight": 9,  "set": "AFR", "rarity": "mythic", "filter": "extended_art", "label": "Foil Extended-Art" },
-          { "weight": 28, "set": "AFR", "rarity": "rare",   "filter": "showcase",     "label": "Foil Rulebook" },
-          { "weight": 6,  "set": "AFR", "rarity": "mythic", "filter": "showcase",     "label": "Foil Rulebook" },
-          { "weight": 9,  "set": "AFR", "rarity": "rare",   "filter": "borderless",   "label": "Foil Borderless Dragon / Module Land" },
-          { "weight": 4,  "set": "AFR", "rarity": "mythic", "filter": "borderless",   "label": "Foil Borderless Planeswalker" }
+          {
+            "weight": 40,
+            "set": "AFR",
+            "rarity": "rare",
+            "filter": "extended_art",
+            "label": "Foil Extended-Art"
+          },
+          {
+            "weight": 9,
+            "set": "AFR",
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "Foil Extended-Art"
+          },
+          {
+            "weight": 28,
+            "set": "AFR",
+            "rarity": "rare",
+            "filter": "showcase",
+            "label": "Foil Rulebook"
+          },
+          {
+            "weight": 6,
+            "set": "AFR",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Foil Rulebook"
+          },
+          {
+            "weight": 9,
+            "set": "AFR",
+            "rarity": "rare",
+            "filter": "borderless",
+            "label": "Foil Borderless Dragon / Module Land"
+          },
+          {
+            "weight": 4,
+            "set": "AFR",
+            "rarity": "mythic",
+            "filter": "borderless",
+            "label": "Foil Borderless Planeswalker"
+          }
         ]
       }
     ]

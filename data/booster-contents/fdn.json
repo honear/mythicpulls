@@ -1,7 +1,6 @@
 {
-  "_doc": "Magic: The Gathering Foundations (FDN) Play + Collector recipes. Source: Wizards 'Collecting Foundations' article (https://magic.wizards.com/en/news/feature/collecting-foundations). authoritative=true: FDN shipped Play Boosters + Collector Boosters only (no Draft Boosters). Foundations Jumpstart is a separate product (code j25) and is intentionally NOT modeled here. Percentages quoted verbatim from the article. Treatments: the Collector premium chase 'Mana Foil' rare/mythic outcomes use the mana_foil filter; the Japan Showcase fracture-foil mythic uses the fracture_foil filter; the traditional-foil Japan Showcase mythic uses the showcase filter. Per the article the chase slot is one of: traditional-foil borderless, extended-art, mana foil, Special Guests traditional foil, or Japan Showcase (traditional or fracture foil). Approximations that remain: character lands are approximated with the borderless/non_basic_land treatments; Special Guests reference set PFDN with the special_guest filter.",
+  "_doc": "Magic: The Gathering Foundations (FDN) Play + Collector recipes. Source: Wizards 'Collecting Foundations' article (https://magic.wizards.com/en/news/feature/collecting-foundations). authoritative=true: FDN shipped Play Boosters + Collector Boosters only (no Draft Boosters). Foundations Jumpstart is a separate product (code j25) and is intentionally NOT modeled here. Percentages quoted verbatim from the article. Treatments: the Collector premium chase 'Mana Foil' rare/mythic outcomes use the mana_foil filter; the Japan Showcase fracture-foil mythic uses the fracture_foil filter; the traditional-foil Japan Showcase mythic uses the showcase filter. Per the article the chase slot is one of: traditional-foil borderless, extended-art, mana foil, Special Guests traditional foil, or Japan Showcase (traditional or fracture foil). Approximations that remain: character lands are approximated with the borderless/non_basic_land treatments; Special Guests reference set PFDN with the special_guest filter. AUDIT 2026-06: Special Guests outcomes re-pointed to set SPG + spg_fdn (collector range — sheets verified by release date). The previous special_guest promo filter matched zero prints, and unranged SPG pulls would leak other sets’ guests. AUDIT 2026-06 (article re-verification): Special Guests moved from the foil wildcard to the commons slot (article: replaces a COMMON, non-foil, in 1.5% of boosters → 0.21% per common sub-pull) ; land slot gained its published 20% traditional-foil share. All other slots verified verbatim against the article.",
   "authoritative": true,
-
   "play": {
     "cardCount": 15,
     "tagline": "15 cards · 7 commons · non-foil + traditional-foil wildcards · borderless & Special Guest rates faithful to Wizards' spec",
@@ -9,69 +8,186 @@
       {
         "label": "Token / Art Card",
         "token": true,
-        "outcomes": [{ "weight": 1, "set": "TFDN" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TFDN"
+          }
+        ]
       },
-
       {
         "label": "Common",
         "count": 7,
-        "outcomes": [{ "weight": 1, "set": "FDN", "rarity": "common" }]
+        "outcomes": [
+          {
+            "weight": 99.79,
+            "set": "FDN",
+            "rarity": "common"
+          },
+          {
+            "weight": 0.21,
+            "set": "SPG",
+            "filter": "spg_fdn",
+            "label": "Special Guest"
+          }
+        ]
       },
-
       {
         "label": "Uncommon",
         "count": 3,
-        "outcomes": [{ "weight": 1, "set": "FDN", "rarity": "uncommon" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "FDN",
+            "rarity": "uncommon"
+          }
+        ]
       },
-
       {
         "label": "Rare / Mythic",
         "outcomes": [
-          { "weight": 78,   "set": "FDN", "rarity": "rare" },
-          { "weight": 12.8, "set": "FDN", "rarity": "mythic" },
-          { "weight": 7.7,  "set": "FDN", "rarity": "rare",   "filter": "borderless" },
-          { "weight": 1.5,  "set": "FDN", "rarity": "mythic", "filter": "borderless" }
+          {
+            "weight": 78,
+            "set": "FDN",
+            "rarity": "rare"
+          },
+          {
+            "weight": 12.8,
+            "set": "FDN",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 7.7,
+            "set": "FDN",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 1.5,
+            "set": "FDN",
+            "rarity": "mythic",
+            "filter": "borderless"
+          }
         ]
       },
-
       {
         "label": "Non-foil Wildcard",
         "outcomes": [
-          { "weight": 16.7, "set": "FDN", "rarity": "common" },
-          { "weight": 58.3, "set": "FDN", "rarity": "uncommon" },
-          { "weight": 16.3, "set": "FDN", "rarity": "rare" },
-          { "weight": 2.6,  "set": "FDN", "rarity": "mythic" },
-          { "weight": 1.8,  "set": "FDN", "rarity": "common",   "filter": "borderless" },
-          { "weight": 2.4,  "set": "FDN", "rarity": "uncommon", "filter": "borderless" },
-          { "weight": 1.6,  "set": "FDN", "rarity": "rare",     "filter": "borderless" },
-          { "weight": 0.3,  "set": "FDN", "rarity": "mythic",   "filter": "borderless" }
+          {
+            "weight": 16.7,
+            "set": "FDN",
+            "rarity": "common"
+          },
+          {
+            "weight": 58.3,
+            "set": "FDN",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 16.3,
+            "set": "FDN",
+            "rarity": "rare"
+          },
+          {
+            "weight": 2.6,
+            "set": "FDN",
+            "rarity": "mythic"
+          },
+          {
+            "weight": 1.8,
+            "set": "FDN",
+            "rarity": "common",
+            "filter": "borderless"
+          },
+          {
+            "weight": 2.4,
+            "set": "FDN",
+            "rarity": "uncommon",
+            "filter": "borderless"
+          },
+          {
+            "weight": 1.6,
+            "set": "FDN",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 0.3,
+            "set": "FDN",
+            "rarity": "mythic",
+            "filter": "borderless"
+          }
         ]
       },
-
       {
         "label": "Traditional Foil Wildcard",
         "foil": true,
         "outcomes": [
-          { "weight": 16.7, "set": "FDN", "rarity": "common" },
-          { "weight": 58.3, "set": "FDN", "rarity": "uncommon" },
-          { "weight": 16.3, "set": "FDN", "rarity": "rare" },
-          { "weight": 2.6,  "set": "FDN", "rarity": "mythic" },
-          { "weight": 1.5,  "set": "PFDN", "filter": "special_guest", "label": "Special Guest" }
+          {
+            "weight": 16.7,
+            "set": "FDN",
+            "rarity": "common"
+          },
+          {
+            "weight": 58.3,
+            "set": "FDN",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 16.3,
+            "set": "FDN",
+            "rarity": "rare"
+          },
+          {
+            "weight": 2.6,
+            "set": "FDN",
+            "rarity": "mythic"
+          }
         ]
       },
-
       {
         "label": "Land",
         "basicLand": true,
         "outcomes": [
-          { "weight": 25, "set": "FDN", "filter": "basic_land" },
-          { "weight": 50, "set": "FDN", "filter": "dual_land_common" },
-          { "weight": 25, "set": "FDN", "filter": "non_basic_land", "label": "Character Land" }
+          {
+            "weight": 20,
+            "set": "FDN",
+            "filter": "basic_land"
+          },
+          {
+            "weight": 5,
+            "set": "FDN",
+            "filter": "basic_land",
+            "foil": true
+          },
+          {
+            "weight": 40,
+            "set": "FDN",
+            "filter": "dual_land_common"
+          },
+          {
+            "weight": 10,
+            "set": "FDN",
+            "filter": "dual_land_common",
+            "foil": true
+          },
+          {
+            "weight": 20,
+            "set": "FDN",
+            "filter": "non_basic_land",
+            "label": "Character Land"
+          },
+          {
+            "weight": 5,
+            "set": "FDN",
+            "filter": "non_basic_land",
+            "label": "Character Land",
+            "foil": true
+          }
         ]
       }
     ]
   },
-
   "collector": {
     "cardCount": 16,
     "tagline": "16 cards · all-foil commons/uncommons · borderless & extended-art rares · mana-foil & Special Guest chase slot",
@@ -79,70 +195,175 @@
       {
         "label": "Double-sided Token",
         "token": true,
-        "outcomes": [{ "weight": 1, "set": "TFDN" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "TFDN"
+          }
+        ]
       },
-
       {
         "label": "Traditional Foil Common",
         "count": 5,
         "foil": true,
         "outcomes": [
-          { "weight": 87,   "set": "FDN", "rarity": "common" },
-          { "weight": 10.9, "set": "FDN", "filter": "dual_land_common" },
-          { "weight": 2.1,  "set": "FDN", "rarity": "common", "filter": "borderless" }
+          {
+            "weight": 87,
+            "set": "FDN",
+            "rarity": "common"
+          },
+          {
+            "weight": 10.9,
+            "set": "FDN",
+            "filter": "dual_land_common"
+          },
+          {
+            "weight": 2.1,
+            "set": "FDN",
+            "rarity": "common",
+            "filter": "borderless"
+          }
         ]
       },
-
       {
         "label": "Traditional Foil Uncommon",
         "count": 4,
         "foil": true,
         "outcomes": [
-          { "weight": 92.7, "set": "FDN", "rarity": "uncommon" },
-          { "weight": 7.3,  "set": "FDN", "rarity": "uncommon", "filter": "borderless" }
+          {
+            "weight": 92.7,
+            "set": "FDN",
+            "rarity": "uncommon"
+          },
+          {
+            "weight": 7.3,
+            "set": "FDN",
+            "rarity": "uncommon",
+            "filter": "borderless"
+          }
         ]
       },
-
       {
         "label": "Traditional Foil Character Land",
         "foil": true,
-        "outcomes": [{ "weight": 1, "set": "FDN", "filter": "non_basic_land", "label": "Character Land" }]
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "FDN",
+            "filter": "non_basic_land",
+            "label": "Character Land"
+          }
+        ]
       },
-
       {
         "label": "Traditional Foil Rare / Mythic",
         "count": 2,
         "foil": true,
         "outcomes": [
-          { "weight": 85.7, "set": "FDN", "rarity": "rare" },
-          { "weight": 14.3, "set": "FDN", "rarity": "mythic" }
+          {
+            "weight": 85.7,
+            "set": "FDN",
+            "rarity": "rare"
+          },
+          {
+            "weight": 14.3,
+            "set": "FDN",
+            "rarity": "mythic"
+          }
         ]
       },
-
       {
         "label": "Non-foil Borderless / Extended-art Rare / Mythic",
         "count": 2,
         "outcomes": [
-          { "weight": 46.2, "set": "FDN", "rarity": "rare",   "filter": "borderless" },
-          { "weight": 9.2,  "set": "FDN", "rarity": "mythic", "filter": "borderless" },
-          { "weight": 39.8, "set": "FDN", "rarity": "rare",   "filter": "extended_art" },
-          { "weight": 4.8,  "set": "FDN", "rarity": "mythic", "filter": "extended_art" }
+          {
+            "weight": 46.2,
+            "set": "FDN",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 9.2,
+            "set": "FDN",
+            "rarity": "mythic",
+            "filter": "borderless"
+          },
+          {
+            "weight": 39.8,
+            "set": "FDN",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 4.8,
+            "set": "FDN",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          }
         ]
       },
-
       {
         "label": "Premium Foil Chase",
         "foil": true,
         "outcomes": [
-          { "weight": 34.5, "set": "FDN", "rarity": "rare",   "filter": "borderless" },
-          { "weight": 6.8,  "set": "FDN", "rarity": "mythic", "filter": "borderless" },
-          { "weight": 29.6, "set": "FDN", "rarity": "rare",   "filter": "extended_art" },
-          { "weight": 3.6,  "set": "FDN", "rarity": "mythic", "filter": "extended_art" },
-          { "weight": 8.4,  "set": "FDN", "rarity": "rare",   "filter": "mana_foil", "label": "Mana Foil" },
-          { "weight": 1.6,  "set": "FDN", "rarity": "mythic", "filter": "mana_foil", "label": "Mana Foil" },
-          { "weight": 5.5,  "set": "PFDN", "filter": "special_guest", "label": "Special Guest" },
-          { "weight": 9,    "set": "FDN", "rarity": "mythic", "filter": "showcase", "label": "Japan Showcase" },
-          { "weight": 1,    "set": "FDN", "rarity": "mythic", "filter": "fracture_foil", "label": "Japan Showcase Fracture Foil" }
+          {
+            "weight": 34.5,
+            "set": "FDN",
+            "rarity": "rare",
+            "filter": "borderless"
+          },
+          {
+            "weight": 6.8,
+            "set": "FDN",
+            "rarity": "mythic",
+            "filter": "borderless"
+          },
+          {
+            "weight": 29.6,
+            "set": "FDN",
+            "rarity": "rare",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 3.6,
+            "set": "FDN",
+            "rarity": "mythic",
+            "filter": "extended_art"
+          },
+          {
+            "weight": 8.4,
+            "set": "FDN",
+            "rarity": "rare",
+            "filter": "mana_foil",
+            "label": "Mana Foil"
+          },
+          {
+            "weight": 1.6,
+            "set": "FDN",
+            "rarity": "mythic",
+            "filter": "mana_foil",
+            "label": "Mana Foil"
+          },
+          {
+            "weight": 5.5,
+            "set": "SPG",
+            "filter": "spg_fdn",
+            "label": "Special Guest"
+          },
+          {
+            "weight": 9,
+            "set": "FDN",
+            "rarity": "mythic",
+            "filter": "showcase",
+            "label": "Japan Showcase"
+          },
+          {
+            "weight": 1,
+            "set": "FDN",
+            "rarity": "mythic",
+            "filter": "fracture_foil",
+            "label": "Japan Showcase Fracture Foil"
+          }
         ]
       }
     ]

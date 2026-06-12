@@ -106,7 +106,10 @@ export function SiteHeader() {
             }}
           >
             <PackageOpen className="w-4 h-4" />
-            Open packs
+            {/* Short label below lg so the four nav pills never wrap to
+                two lines on narrow viewports (640-1024px). */}
+            <span className="hidden lg:inline whitespace-nowrap">Open packs</span>
+            <span className="lg:hidden">Packs</span>
           </Link>
           <Link
             href="/draft"
@@ -121,7 +124,8 @@ export function SiteHeader() {
             }}
           >
             <Users className="w-4 h-4" />
-            Practice Draft
+            <span className="hidden lg:inline whitespace-nowrap">Practice Draft</span>
+            <span className="lg:hidden">Draft</span>
           </Link>
           <Link
             href="/sealed"
@@ -136,7 +140,8 @@ export function SiteHeader() {
             }}
           >
             <Swords className="w-4 h-4" />
-            Build Sealed
+            <span className="hidden lg:inline whitespace-nowrap">Build Sealed</span>
+            <span className="lg:hidden">Sealed</span>
           </Link>
           <Link
             href="/collection"
@@ -144,7 +149,8 @@ export function SiteHeader() {
             className="hero-pill"
             style={{ paddingLeft: 14 }}
           >
-            My binder
+            <span className="hidden lg:inline whitespace-nowrap">My binder</span>
+            <span className="lg:hidden">Binder</span>
           </Link>
         </div>
 
