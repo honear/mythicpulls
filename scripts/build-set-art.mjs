@@ -72,13 +72,16 @@ async function listOpenableSets() {
     "remastered",
   ]);
   const today = new Date().toISOString().slice(0, 10);
+  const horizonDate = new Date();
+  horizonDate.setDate(horizonDate.getDate() + 21);
+  const horizon = horizonDate.toISOString().slice(0, 10);
   return list.data
     .filter(
       (s) =>
         !s.digital &&
         s.card_count >= MIN_CARDS_FOR_PACK &&
         allowed.has(s.set_type) &&
-        (!s.released_at || s.released_at <= today),
+        (!s.released_at || s.released_at <= horizon), // 21-day preview lookahead — keep in sync with lib/scryfall.ts getOpenableSets
     )
     .sort((a, b) => (b.released_at ?? "").localeCompare(a.released_at ?? ""));
 }

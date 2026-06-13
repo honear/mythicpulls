@@ -201,9 +201,11 @@ export async function getSets(): Promise<ScryfallSet[]> {
 const MIN_CARDS_FOR_PACK = 100;
 
 /** Sets that have boosters, non-digital, with enough cards to feel
- *  like a real booster pool, and have actually been released
- *  (Scryfall lists upcoming sets with future release dates — we
- *  filter those out so "Recent" stays current). */
+ *  like a real booster pool, and are released OR within the 21-day
+ *  preview lookahead (Scryfall lists far-future announced sets too —
+ *  the horizon keeps those out so "Recent" stays meaningful while
+ *  letting imminent releases like Marvel Super Heroes appear during
+ *  preview season). */
 export async function getOpenableSets(): Promise<ScryfallSet[]> {
   const sets = await getSets();
   const allowed = new Set([
@@ -214,14 +216,23 @@ export async function getOpenableSets(): Promise<ScryfallSet[]> {
     "starter",
     "remastered",
   ]);
-  const today = new Date().toISOString().slice(0, 10);
+  const horizonDate = new Date();
+  horizonDate.setDate(horizonDate.getDate() + 21);
+  const horizon = horizonDate.toISOString().slice(0, 10);
   return sets
     .filter(
       (s) =>
         !s.digital &&
         s.card_count >= MIN_CARDS_FOR_PACK &&
         allowed.has(s.set_type) &&
-        (!s.released_at || s.released_at <= today),
+        // Release lookahead: sets within 21 days of release are shown in
+        // the catalog during preview season (e.g. Marvel Super Heroes in
+        // the run-up to 2026-06-26). By that point Scryfall has the bulk
+        // of the set catalogued and the recipes' graceful fallbacks cover
+        // any not-yet-indexed chase variants. The ≥100-card floor still
+        // applies, so a just-announced set with a handful of previews
+        // stays hidden.
+        (!s.released_at || s.released_at <= horizon),
     )
     .sort((a, b) =>
       (b.released_at ?? "").localeCompare(a.released_at ?? ""),
