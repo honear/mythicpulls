@@ -54,6 +54,21 @@ import { gzipSync } from "node:zlib";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const OUT_DIR = join(ROOT, "data", "set-cards");
+
+// Windows reserved device names (CON, PRN, AUX, NUL, COM1-9, LPT1-9)
+// can't be used as a file's base name — git on Windows refuses to stage
+// `con.json.gz` (Conflux's set code IS "con"), so the pool silently never
+// commits or deploys. Map any colliding code to a `_`-prefixed filename.
+// MUST stay in sync with poolFileBase() in lib/scryfall.ts.
+const WIN_RESERVED = new Set([
+  "con", "prn", "aux", "nul",
+  ...Array.from({ length: 9 }, (_, i) => `com${i + 1}`),
+  ...Array.from({ length: 9 }, (_, i) => `lpt${i + 1}`),
+]);
+function poolFileBase(code) {
+  const lower = code.toLowerCase();
+  return WIN_RESERVED.has(lower) ? `_${lower}` : lower;
+}
 const SET_ART_PATH = join(ROOT, "data", "set-art.json");
 const BOOSTER_CONTENTS_DIR = join(ROOT, "data", "booster-contents");
 
@@ -522,7 +537,7 @@ async function runBulk(codes, tokenCodes) {
   for (const [code, cards] of [...buckets.entries()].sort()) {
     if (cards.length === 0) { stats.empty++; continue; }
     const gz = gzipSync(JSON.stringify(cards), { level: 9 });
-    await writeFile(join(OUT_DIR, `${code}.json.gz`), gz);
+    await writeFile(join(OUT_DIR, `${poolFileBase(code)}.json.gz`), gz);
     stats.ok++;
     stats.totalCards += cards.length;
     stats.totalBytes += gz.length;
@@ -611,7 +626,7 @@ async function main() {
     const before = codes.length;
     const filtered = [];
     for (const c of codes) {
-      const exists = await fileExists(join(OUT_DIR, `${c}.json.gz`));
+      const exists = await fileExists(join(OUT_DIR, `${poolFileBase(c)}.json.gz`));
       if (!exists) filtered.push(c);
     }
     codes = filtered;
@@ -660,7 +675,7 @@ async function main() {
         // — 371MB of raw JSON blew that. Runtime reads via `gunzipSync`,
         // which costs ~5ms for a 1MB payload, lost in the noise.
         const gz = gzipSync(json, { level: 9 });
-        await writeFile(join(OUT_DIR, `${code}.json.gz`), gz);
+        await writeFile(join(OUT_DIR, `${poolFileBase(code)}.json.gz`), gz);
         stats.ok++;
         stats.totalCards += trimmed.length;
         stats.totalBytes += gz.length;

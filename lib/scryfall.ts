@@ -247,6 +247,22 @@ export async function getSet(code: string): Promise<ScryfallSet | undefined> {
 /* ---------------- Cards by set ---------------- */
 
 /**
+ * Windows reserved device names (CON, PRN, AUX, NUL, COM1-9, LPT1-9)
+ * can't be a file's base name — git on Windows won't stage `con.json.gz`
+ * (Conflux's set code IS "con"). The bake writes those pools `_`-prefixed
+ * instead; this MUST match poolFileBase() in scripts/build-set-cards.mjs.
+ */
+const WIN_RESERVED = new Set<string>([
+  "con", "prn", "aux", "nul",
+  ...Array.from({ length: 9 }, (_, i) => `com${i + 1}`),
+  ...Array.from({ length: 9 }, (_, i) => `lpt${i + 1}`),
+]);
+function poolFileBase(code: string): string {
+  const lower = code.toLowerCase();
+  return WIN_RESERVED.has(lower) ? `_${lower}` : lower;
+}
+
+/**
  * Read a pre-baked set's card pool from `data/set-cards/<code>.json.gz`
  * if the file exists. Written by scripts/build-set-cards.mjs and
  * updated periodically (monthly cadence is fine for an evergreen set,
@@ -280,7 +296,7 @@ async function readPreBakedSetCards(code: string): Promise<ScryfallCard[] | null
       import("node:path"),
       import("node:zlib"),
     ]);
-    const filePath = join(process.cwd(), "data", "set-cards", `${code.toLowerCase()}.json.gz`);
+    const filePath = join(process.cwd(), "data", "set-cards", `${poolFileBase(code)}.json.gz`);
     const gz = await readFile(filePath);
     const json = gunzipSync(gz).toString("utf8");
     const parsed = JSON.parse(json);
