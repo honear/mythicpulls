@@ -491,5 +491,9 @@
   "_doc_variation": "Variation prints — Scryfall card.variation=true marks alternate printings of cards already in the set (DSK Lurking Evil, DMU foil-etched Legends Retold variants, J25 anime alt-arts). The bake keeps them; regular_print excludes them from base outcomes; variation_print targets them.",
   "variation_print": {
     "variation": true
+  },
+  "_doc_cosmic_foil": "MSH cosmic-foil headliner (The Mind Stone #385) — a unique textless premium finish, promo_types:cosmicfoil. Distinct from galaxy_foil.",
+  "cosmic_foil": {
+    "promo_types": "cosmicfoil"
   }
 }
