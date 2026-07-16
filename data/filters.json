@@ -245,7 +245,7 @@
       }
     ]
   },
-  "_doc_marvel": "Marvel Universes Beyond treatments. 'scene_card' matches the multi-card mural scenes — Scryfall tags them promo_types:'poster' (verified on SPM's fully-catalogued pool; MSH previews carry the same tag). 'full_art_basic' = the full-art basic-land cycles (SPM spiderweb, MSH city calm/chaos) excluding borderless variants; 'non_full_art_basic' is its complement for the regular-basic share of land slots. 'msh_source_material' selects the MSH-era Source Material sheet: Marvel Universe (MAR) collector numbers 41-100, released alongside MSH — numbers 1-40 are the SPM-era sheet. 'borderless_land' = borderless-frame lands for the wildcard/foil borderless-land outcomes, with the standard ultra-finish exclusion.",
+  "_doc_marvel": "Marvel Universes Beyond treatments. 'scene_card' matches SPM's multi-card mural scenes — Scryfall tags SPM's promo_types:'poster'. WARNING: do NOT use scene_card for MSH — Scryfall only stamped 'poster' on 3 of MSH's 453 prints (all classic-comic chase mythics), so it silently narrows to the 3 most expensive cards in the set. MSH's Booster Fun sheets are instead identified by collector-number block (verified against the released pool: each block's rarity census matches the Wizards article exactly): panel 297-313 (11R/6M, frame showcase), scene 314-351 (3C/12U/8R/15M, frame inverted, 5 modal_dfc = the double-sided dinner scene), logo 352-379 (15R/13M, frame inverted, 5 modal_dfc), borderless dual lands 380-384 (5R), Gauntlet Mind Stone 386, classic comic 387-401 (15 cards, 4 modal_dfc; Scryfall lists 4 as rare but the article says all mythic, so msh_classic_comic carries no rarity leaf), extended art 402-429 (24R/4M — excludes the 431/432 bundle promos the bare 'extended_art' filter would leak in). Each msh_* filter pairs the CN range with the block's frame_effects so predicateIsAltArtIntent sees a treatment field and skips the implicit regular_print baseline. 'full_art_basic' = the full-art basic-land cycles (SPM spiderweb, MSH city calm/chaos) excluding borderless variants; 'non_full_art_basic' is its complement for the regular-basic share of land slots. 'msh_source_material' selects the MSH-era Source Material sheet: Marvel Universe (MAR) collector numbers 41-100, released alongside MSH — numbers 1-40 are the SPM-era sheet. 'borderless_land' = borderless-frame lands for the wildcard/foil borderless-land outcomes, with the standard ultra-finish exclusion.",
   "scene_card": {
     "promo_types": "poster"
   },
@@ -260,6 +260,14 @@
       {
         "not": {
           "border_color": "borderless"
+        }
+      },
+      {
+        "not": {
+          "promo_types": [
+            "surgefoil",
+            "bundle"
+          ]
         }
       }
     ]
@@ -278,6 +286,131 @@
     "collector_number_range": [
       41,
       100
+    ]
+  },
+  "msh_scene": {
+    "all": [
+      {
+        "collector_number_range": [
+          314,
+          351
+        ]
+      },
+      {
+        "frame_effects": "inverted"
+      }
+    ]
+  },
+  "msh_scene_dfc": {
+    "all": [
+      {
+        "collector_number_range": [
+          314,
+          351
+        ]
+      },
+      {
+        "frame_effects": "inverted"
+      },
+      {
+        "layout": "modal_dfc"
+      }
+    ]
+  },
+  "msh_logo": {
+    "all": [
+      {
+        "collector_number_range": [
+          352,
+          379
+        ]
+      },
+      {
+        "frame_effects": "inverted"
+      }
+    ]
+  },
+  "msh_logo_dfc": {
+    "all": [
+      {
+        "collector_number_range": [
+          352,
+          379
+        ]
+      },
+      {
+        "frame_effects": "inverted"
+      },
+      {
+        "layout": "modal_dfc"
+      }
+    ]
+  },
+  "msh_panel": {
+    "all": [
+      {
+        "collector_number_range": [
+          297,
+          313
+        ]
+      },
+      {
+        "frame_effects": "showcase"
+      }
+    ]
+  },
+  "msh_classic_comic": {
+    "all": [
+      {
+        "collector_number_range": [
+          387,
+          401
+        ]
+      },
+      {
+        "frame_effects": "legendary"
+      }
+    ]
+  },
+  "msh_extended_art": {
+    "all": [
+      {
+        "collector_number_range": [
+          402,
+          429
+        ]
+      },
+      {
+        "frame_effects": "extendedart"
+      }
+    ]
+  },
+  "msh_borderless_dual": {
+    "all": [
+      {
+        "type_line_includes": "Land"
+      },
+      {
+        "collector_number_range": [
+          380,
+          384
+        ]
+      },
+      {
+        "frame_effects": "inverted"
+      }
+    ]
+  },
+  "msh_gauntlet_mind_stone": {
+    "all": [
+      {
+        "collector_number_in": [
+          "386"
+        ]
+      },
+      {
+        "frame_effects": "legendary"
+      }
     ]
   },
   "spm_source_material": {
@@ -388,7 +521,9 @@
             "neonink",
             "oilslick",
             "stepandcompleat",
-            "surgefoil"
+            "surgefoil",
+            "bundle",
+            "cosmicfoil"
           ]
         }
       },

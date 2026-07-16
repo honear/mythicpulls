@@ -1,5 +1,5 @@
 {
-  "_doc": "Magic: The Gathering | Marvel Super Heroes (code MSH) — Universes Beyond set, released 2026-06-26. Source: https://magic.wizards.com/en/news/feature/collecting-marvel-super-heroes . Lineup is Play Boosters + Collector Boosters (plus Jumpstart/Commander products we don't model as packs) — no Draft Boosters, hence authoritative:true. Percentages are taken verbatim from the article's odds tables, which give per-slot shares; the two per-PACK phrasings are converted to per-slot weights: scene commons '8.6% of boosters' -> 8.6/7 = 1.2 per common slot, source material '1 out of 24 Play Boosters' -> (100/24)/7 = 0.6 per common slot, scene uncommons '12%' -> 12/3 = 4 per uncommon slot. Filter mappings: scene cards -> 'scene_card' (promo_types:poster, the verified Scryfall tag on SPM's fully-catalogued scene murals; MSH previews already carry it); logo / panel / classic-comic frames -> 'showcase' stand-in until Scryfall finishes cataloguing the Booster Fun sheets at release (only ~10 of the variant prints are indexed during previews — re-bake msh after street date and the chase outcomes fill in automatically); Source Material -> exact: set MAR (Marvel Universe) + 'msh_source_material' (collector 41-100, the 60-card MSH-era sheet; 1-40 belong to SPM); city calm & chaos full-art basics -> 'full_art_basic' merged into one pool because Scryfall doesn't distinguish calm from chaos and both appear at identical rates, so aggregate odds are unchanged (their article rates are summed: 10+10 nonfoil, 2.5+2.5 foil in the Play land slot); regular basics -> 'non_full_art_basic' so the land slot's basic share can never pull a city land; MSC reprint vs new-to-Magic Jumpstart sub-splits are merged into single MSC outcomes at the combined rate (both halves live in the same Scryfall set, indistinguishable by filter); 'Welcome Deck mythic' folded into the MSC mythic share. Sub-percentages reported as 'less than 1%' are entered as 0.5; the 'extremely low quantity' textless cosmic-foil Mind Stone is 0.1, mirroring spm.json's Soul Stone convention. AUDIT 2026-07 (post-release re-bake): reconciled scene + serialized outcomes against the RELEASED set. MSH has exactly 3 scene cards, all MYTHIC (promo_types:poster — Doctor Doom, Namor, Captain America); the article lists scene PERCENTAGES in common/uncommon/rare slots because a scene card REPLACES a common/uncommon, but the card itself is a mythic insert. All scene_card outcomes therefore drop their rarity constraint (the poster filter targets the 3 real scenes). The Textless Cosmic Foil Mind Stone (#385) is tagged promo_types:cosmicfoil (not serialized) → new cosmic_foil filter. Extended-art mythic outcomes now resolve (4 EA mythics printed).",
+  "_doc": "Magic: The Gathering | Marvel Super Heroes (code MSH) — Universes Beyond set, released 2026-06-26. Source: https://magic.wizards.com/en/news/feature/collecting-marvel-super-heroes . Lineup is Play Boosters + Collector Boosters (plus Jumpstart/Commander products we don't model as packs) — no Draft Boosters, hence authoritative:true. Percentages are taken verbatim from the article's odds tables, which give per-slot shares; the two per-PACK phrasings are converted to per-slot weights: scene commons '8.6% of boosters' -> 8.6/7 = 1.2 per common slot, source material '1 out of 24 Play Boosters' -> (100/24)/7 = 0.6 per common slot, scene uncommons '12%' -> 12/3 = 4 per uncommon slot. Sub-percentages reported as 'less than 1%' are entered as 0.5; the 'extremely low quantity' textless cosmic-foil Mind Stone is 0.1, mirroring spm.json's Soul Stone convention. MSC reprint vs new-to-Magic Jumpstart sub-splits are merged into single MSC outcomes at the combined rate (both halves live in the same Scryfall set, indistinguishable by filter); 'Welcome Deck mythic' folded into the MSC mythic share. City calm & chaos full-art basics -> 'full_art_basic' merged into one pool because Scryfall doesn't distinguish calm from chaos and both appear at identical rates (article rates summed: 10+10 nonfoil, 2.5+2.5 foil in the Play land slot); regular basics -> 'non_full_art_basic'. Source Material -> exact: set MAR (Marvel Universe) + 'msh_source_material' (collector 41-100, the 60-card MSH-era sheet; 1-40 belong to SPM). AUDIT 2026-07 #2 (the big one): the preview-era filter mappings were WRONG against the released pool and made Collector packs shower chase mythics. Scryfall did NOT tag MSH's scenes promo_types:'poster' the way it tagged SPM's — only 3 prints carry 'poster', and they are CLASSIC COMIC chase mythics (Doctor Doom #394, Namor #391, Captain America #387), so every 'scene_card' outcome (including the GUARANTEED foil scene slot in Collector) pulled one of the set's 3 most expensive cards, and 'showcase' only matched the 17 panel cards so Logo/Panel/Classic-Comic outcomes all pulled panels. The released pool identifies every Booster Fun sheet by collector-number block instead, with rarity censuses matching the article exactly: panel 297-313 (11R/6M), SCENE 314-351 (3C/12U/8R/15M — the real 38 scenes; the 5 modal_dfc are the double-sided dinner scene), logo 352-379 (15R/13M, 5 modal_dfc), borderless dual lands 380-384 (5R), cosmic-foil Mind Stone 385 (promo_types:cosmicfoil -> 'cosmic_foil'), Gauntlet Mind Stone 386, classic comic 387-401 (15, 4 modal_dfc; article says all mythic though Scryfall lists 4 as rare — msh_classic_comic therefore carries no rarity leaf), extended art 402-429 (24R/4M, excluding the 431/432 bundle promos). All outcomes now use the msh_* CN-block filters from data/filters.json, and the aggregate scene/logo/panel weights are split into the article's exact per-rarity shares (wildcard, rare/mythic, foil, and both Collector booster-fun slots). The Collector guaranteed foil scene slot is the article's 20% common / 80% uncommon — a cheap mural piece, not a chase mythic. 'Scene Box borderless card' (13.9% non-foil booster fun) has no distinct Scryfall prints — the two Scene Box products' 12 cards are drawn from the same 38-card borderless scene sheet — so that outcome pulls msh_scene at any rarity; closest faithful mapping, revisit if Scryfall ever catalogues the box cards separately.",
   "authoritative": true,
   "play": {
     "cardCount": 15,
@@ -27,7 +27,8 @@
           {
             "weight": 1.2,
             "set": "MSH",
-            "filter": "scene_card",
+            "rarity": "common",
+            "filter": "msh_scene",
             "label": "Scene Card"
           },
           {
@@ -50,7 +51,8 @@
           {
             "weight": 4,
             "set": "MSH",
-            "filter": "scene_card",
+            "rarity": "uncommon",
+            "filter": "msh_scene",
             "label": "Scene Card"
           }
         ]
@@ -79,44 +81,66 @@
             "rarity": "mythic"
           },
           {
-            "weight": 4.2,
+            "weight": 0.5,
             "set": "MSH",
-            "filter": "scene_card",
+            "rarity": "common",
+            "filter": "msh_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 2.7,
+            "set": "MSH",
+            "rarity": "uncommon",
+            "filter": "msh_scene",
             "label": "Scene"
           },
           {
             "weight": 0.5,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "msh_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 0.5,
+            "set": "MSH",
+            "rarity": "mythic",
+            "filter": "msh_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 0.5,
+            "set": "MSH",
+            "rarity": "rare",
+            "filter": "msh_logo",
             "label": "Logo"
           },
           {
             "weight": 0.5,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_logo",
             "label": "Logo"
           },
           {
             "weight": 0.5,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "msh_panel",
             "label": "Panel"
           },
           {
             "weight": 0.5,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_panel",
             "label": "Panel"
           },
           {
             "weight": 1,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "borderless_land",
+            "filter": "msh_borderless_dual",
             "label": "Borderless Land"
           }
         ]
@@ -135,37 +159,45 @@
             "rarity": "mythic"
           },
           {
-            "weight": 1.8,
+            "weight": 1,
             "set": "MSH",
-            "filter": "scene_card",
+            "rarity": "rare",
+            "filter": "msh_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 0.8,
+            "set": "MSH",
+            "rarity": "mythic",
+            "filter": "msh_scene",
             "label": "Scene"
           },
           {
             "weight": 2.4,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "msh_logo",
             "label": "Logo"
           },
           {
             "weight": 0.7,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_logo",
             "label": "Logo"
           },
           {
             "weight": 1.9,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "msh_panel",
             "label": "Panel"
           },
           {
             "weight": 0.5,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_panel",
             "label": "Panel"
           }
         ]
@@ -195,44 +227,66 @@
             "rarity": "mythic"
           },
           {
-            "weight": 2.7,
+            "weight": 0.5,
             "set": "MSH",
-            "filter": "scene_card",
+            "rarity": "common",
+            "filter": "msh_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 1.2,
+            "set": "MSH",
+            "rarity": "uncommon",
+            "filter": "msh_scene",
             "label": "Scene"
           },
           {
             "weight": 0.5,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "msh_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 0.5,
+            "set": "MSH",
+            "rarity": "mythic",
+            "filter": "msh_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 0.5,
+            "set": "MSH",
+            "rarity": "rare",
+            "filter": "msh_logo",
             "label": "Logo"
           },
           {
             "weight": 0.5,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_logo",
             "label": "Logo"
           },
           {
             "weight": 0.5,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "msh_panel",
             "label": "Panel"
           },
           {
             "weight": 0.5,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_panel",
             "label": "Panel"
           },
           {
             "weight": 0.5,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "borderless_land",
+            "filter": "msh_borderless_dual",
             "label": "Borderless Land"
           }
         ]
@@ -367,9 +421,17 @@
         "foil": true,
         "outcomes": [
           {
-            "weight": 100,
+            "weight": 20,
             "set": "MSH",
-            "filter": "scene_card",
+            "rarity": "common",
+            "filter": "msh_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 80,
+            "set": "MSH",
+            "rarity": "uncommon",
+            "filter": "msh_scene",
             "label": "Scene"
           }
         ]
@@ -404,14 +466,13 @@
           {
             "weight": 1.4,
             "set": "MSH",
-            "filter": "scene_card",
+            "filter": "msh_scene_dfc",
             "label": "Double-Faced Scene"
           },
           {
             "weight": 1.4,
             "set": "MSH",
-            "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_logo_dfc",
             "label": "Double-Faced Logo"
           },
           {
@@ -460,59 +521,69 @@
             "weight": 27.8,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "extended_art"
+            "filter": "msh_extended_art",
+            "label": "Extended Art"
           },
           {
             "weight": 2.3,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "extended_art"
+            "filter": "msh_extended_art",
+            "label": "Extended Art"
           },
           {
-            "weight": 11.3,
+            "weight": 6.4,
             "set": "MSH",
-            "filter": "scene_card",
+            "rarity": "rare",
+            "filter": "msh_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 4.9,
+            "set": "MSH",
+            "rarity": "mythic",
+            "filter": "msh_scene",
             "label": "Scene"
           },
           {
             "weight": 15.1,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "msh_logo",
             "label": "Logo"
           },
           {
             "weight": 4.6,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_logo",
             "label": "Logo"
           },
           {
             "weight": 12.1,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "msh_panel",
             "label": "Panel"
           },
           {
             "weight": 2.6,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_panel",
             "label": "Panel"
           },
           {
             "weight": 13.9,
             "set": "MSH",
-            "rarity": "rare",
-            "filter": "borderless",
-            "label": "Scene Box Borderless"
+            "filter": "msh_scene",
+            "label": "Scene Box"
           },
           {
             "weight": 5.8,
             "set": "MSH",
-            "filter": "borderless_land",
+            "rarity": "rare",
+            "filter": "msh_borderless_dual",
             "label": "Borderless Land"
           },
           {
@@ -549,66 +620,75 @@
             "weight": 31.8,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "extended_art"
+            "filter": "msh_extended_art",
+            "label": "Extended Art"
           },
           {
             "weight": 2.7,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "extended_art"
+            "filter": "msh_extended_art",
+            "label": "Extended Art"
           },
           {
-            "weight": 11.3,
+            "weight": 7.3,
             "set": "MSH",
-            "filter": "scene_card",
+            "rarity": "rare",
+            "filter": "msh_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 4,
+            "set": "MSH",
+            "rarity": "mythic",
+            "filter": "msh_scene",
             "label": "Scene"
           },
           {
             "weight": 17.2,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "msh_logo",
             "label": "Logo"
           },
           {
             "weight": 3.6,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_logo",
             "label": "Logo"
           },
           {
             "weight": 13.9,
             "set": "MSH",
             "rarity": "rare",
-            "filter": "showcase",
+            "filter": "msh_panel",
             "label": "Panel"
           },
           {
             "weight": 3,
             "set": "MSH",
             "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_panel",
             "label": "Panel"
           },
           {
             "weight": 6.6,
             "set": "MSH",
-            "filter": "borderless_land",
+            "rarity": "rare",
+            "filter": "msh_borderless_dual",
             "label": "Borderless Land"
           },
           {
             "weight": 9.9,
             "set": "MSH",
-            "rarity": "mythic",
-            "filter": "showcase",
+            "filter": "msh_classic_comic",
             "label": "Classic Comic"
           },
           {
             "weight": 0.5,
             "set": "MSH",
-            "rarity": "mythic",
-            "filter": "borderless",
+            "filter": "msh_gauntlet_mind_stone",
             "label": "Gauntlet Mind Stone"
           },
           {

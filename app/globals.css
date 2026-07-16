@@ -41,10 +41,12 @@
   --mythic-deep:    #4f17d4;
   --mythic-glow:    rgba(123, 57, 252, 0.55);
 
-  /* Display serif used for the hero headline (Instrument Serif). */
-  --font-brand: "Instrument Serif", "Cormorant Garamond", "Times New Roman", serif;
-  --font-ui:    "Manrope", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-btn:   "Cabin", "Manrope", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* Display serif used for the hero headline (Instrument Serif).
+     Family names come from the next/font CSS variables set on <html>
+     in app/layout.tsx (self-hosted; no external font CSS). */
+  --font-brand: var(--font-instrument-serif), "Cormorant Garamond", "Times New Roman", serif;
+  --font-ui:    var(--font-manrope), "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-btn:   var(--font-cabin), "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   /* Rarity accents — tuned for dark backgrounds */
   --color-rarity-common: hsl(40 6% 70%);
@@ -54,7 +56,7 @@
   --color-rarity-bonus: #B7A0E4;
 
   /* Typography */
-  --font-display: "General Sans", "Geist", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: var(--font-general-sans), "Geist", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-sans: "Geist", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "Geist", ui-monospace, SFMono-Regular, Menlo, monospace;
 

@@ -1,16 +1,67 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Cabin, Geist, Instrument_Serif, Manrope } from "next/font/google";
+import localFont from "next/font/local";
 import Link from "next/link";
 import "./globals.css";
 import { SiteHeader } from "./_components/SiteHeader";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
+/* All families load through next/font so they're self-hosted from
+   /_next/static and inlined as @font-face at build time — no
+   render-blocking requests to fonts.googleapis.com / api.fontshare.com
+   (those two stylesheets alone delayed the hero LCP by ~2s on mobile).
+   Each exposes a CSS variable consumed by the font stacks in
+   globals.css. */
 const geist = Geist({
   variable: "--font-sans",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
 });
+
+// Display serif for the hero headline (italic for connector words).
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+});
+
+// Nav / UI chrome.
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+// Buttons & pill badge.
+const cabin = Cabin({
+  variable: "--font-cabin",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+/* General Sans (display) — Fontshare has no next/font provider, so the
+   woff2 weights are vendored in app/fonts/ (Fontshare's free license
+   permits self-hosting). */
+const generalSans = localFont({
+  src: [
+    { path: "./fonts/GeneralSans-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/GeneralSans-Medium.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/GeneralSans-Semibold.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/GeneralSans-Bold.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-general-sans",
+  display: "swap",
+});
+
+const fontVariables = [
+  geist.variable,
+  instrumentSerif.variable,
+  manrope.variable,
+  cabin.variable,
+  generalSans.variable,
+].join(" ");
 
 /**
  * Resolve the absolute site URL used to make relative image references
@@ -76,26 +127,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} h-full antialiased`}>
-      <head>
-        {/* General Sans (display) from Fontshare */}
-        <link rel="preconnect" href="https://api.fontshare.com" />
-        <link
-          href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap"
-          rel="stylesheet"
-        />
-        {/* Datacore-derived typography stack:
-            - Instrument Serif for the hero headline (italic for connector words)
-            - Manrope for nav / UI chrome
-            - Cabin for buttons & pill badge
-            All loaded with display=swap so they don't block first paint. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Manrope:wght@400;500;600;700&family=Cabin:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={`${fontVariables} h-full antialiased`}>
       {/* Browser extensions (VPN/ad-blockers/proxies) commonly inject
           attributes on <body> before React hydrates — e.g. the user's
           `inject_newvt_svd="true"`. React's mismatch warning isn't

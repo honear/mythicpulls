@@ -505,7 +505,7 @@
             "weight": 0.1,
             "set": "SPM",
             "rarity": "mythic",
-            "filter": "serialized",
+            "filter": "cosmic_foil",
             "label": "Textless Cosmic Foil Soul Stone"
           }
         ]
