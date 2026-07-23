@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSet, getSetCards, getSetTokens, trimCardPool, trimPoolLanguages } from "@/lib/scryfall";
+import { getSet, getSetCards, getSetTokens, isComingSoonSet, trimCardPool, trimPoolLanguages } from "@/lib/scryfall";
+import { ComingSoonSetPage } from "@/app/_components/ComingSoonSetPage";
 import type { ScryfallCard } from "@/lib/scryfall";
 import { recommendedPackType, type PackType } from "@/lib/pack-rules";
 import { collectRecipeLanguages, collectReferencedSets } from "@/lib/booster-config";
@@ -53,6 +54,12 @@ export default async function DraftSetPage({ params }: Props) {
   if (!code) notFound();
   const set = await getSet(code);
   if (!set) notFound();
+
+  // Unreleased sets can't be drafted — a preview-season pool is too
+  // thin for 8 seats × 3 rounds. Teaser until street date.
+  if (isComingSoonSet(set)) {
+    return <ComingSoonSetPage set={set} backHref="/draft" backLabel="All draft sets" />;
+  }
 
   const available = await packsAvailableForSet(set.code, set.released_at);
   const recommended = recommendedPackType(set);

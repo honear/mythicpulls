@@ -95,8 +95,12 @@ const missingOnly = args.includes("--missing-only");
 // re-fetching what already completed (codes process alphabetically).
 const resumeIdx = args.indexOf("--resume-after");
 const resumeAfter = resumeIdx >= 0 ? (args[resumeIdx + 1] ?? "").toLowerCase() : null;
+// resumeIdx is -1 when --resume-after is absent; without the >= 0 guard
+// the `i !== resumeIdx + 1` exclusion would silently drop argv index 0
+// (the FIRST explicit code) on every plain `node build-set-cards.mjs a b c`
+// invocation.
 const explicitCodes = args
-  .filter((a, i) => !a.startsWith("--") && i !== resumeIdx + 1)
+  .filter((a, i) => !a.startsWith("--") && (resumeIdx < 0 || i !== resumeIdx + 1))
   .map((a) => a.toLowerCase());
 
 /* ============================================================

@@ -24,7 +24,9 @@
             "neonink",
             "oilslick",
             "stepandcompleat",
-            "surgefoil"
+            "surgefoil",
+            "headliner",
+            "boxtopper"
           ]
         }
       }
@@ -49,7 +51,9 @@
             "neonink",
             "oilslick",
             "stepandcompleat",
-            "surgefoil"
+            "surgefoil",
+            "headliner",
+            "boxtopper"
           ]
         }
       }
@@ -74,7 +78,9 @@
             "neonink",
             "oilslick",
             "stepandcompleat",
-            "surgefoil"
+            "surgefoil",
+            "headliner",
+            "boxtopper"
           ]
         }
       }
@@ -441,7 +447,9 @@
             "neonink",
             "oilslick",
             "stepandcompleat",
-            "surgefoil"
+            "surgefoil",
+            "headliner",
+            "boxtopper"
           ]
         }
       }
@@ -523,7 +531,9 @@
             "stepandcompleat",
             "surgefoil",
             "bundle",
-            "cosmicfoil"
+            "cosmicfoil",
+            "headliner",
+            "boxtopper"
           ]
         }
       },
@@ -630,5 +640,144 @@
   "_doc_cosmic_foil": "MSH cosmic-foil headliner (The Mind Stone #385) — a unique textless premium finish, promo_types:cosmicfoil. Distinct from galaxy_foil.",
   "cosmic_foil": {
     "promo_types": "cosmicfoil"
+  },
+  "_doc_headliner": "Scryfall promo_types:headliner — the ~500-copy 'headliner' chase class introduced with HOB's gleaming gold Smaug the Magnificent (#249). Also added to regular_print's and the frame-treatment filters' exclusion lists (with 'boxtopper') so a headliner can never roll as an ordinary mythic — same failure class as the raised-foil Lumra note in _doc_chase_exclusion.",
+  "headliner": {
+    "promo_types": "headliner"
+  },
+  "dwarvish": {
+    "lang": "dw"
+  },
+  "_doc_hob": "The Hobbit (HOB, 2026-08-14) + its eternal-legal companion The Hobbit Commander (HOC). Collector-number blocks derived from the Wizards collecting article's image filenames (0202_MTGHOB_ScnBstr, 0217/0226/0229/0237_MTGHOB_Hoard, 0242/0247_MTGHOB_BkCover, 0249_MTGHOB_Headline, 0290/0312_MTGHOB_ExtRM, 0194-0198_MTGHOB_JrnyLand, 0313-0316_MTGHOB_HbbtLand) and the article's sheet censuses, which tile exactly: main set + 5 common duals 1-188, default-frame basics 189-193, journey basics 194-198, scene 199-213 (2C/4U/9R), Dragon hoard 214-238 (6U/11R/8M), book cover 239-248 (4R/6M), gold Smaug headliner 249, surge-foil hoard 250-274, surge-foil book cover 275-284, extended art 285-312 (26R/2M), seasonal Hobbit lands 313-320 (Bundle/Prerelease only — NOT in boosters, excluded from every recipe outcome). Cross-checked against the 127 prints Scryfall had indexed 2026-07-23: #207/#228/#248/#264/#284/#308 each land in the predicted block; #249 carries promo_types:headliner; #266/#270/#271/#283 carry surgefoil. HOC blocks (61 prints indexed): Scene Box scenes 1-12 (all rare), classic artist 13-52 (40 mythic LTR reprints, non-foil sheet), classic artist surge 53-92 (same 40, surge sheet — #76/#78/#84 confirm), Dwarvish language 93-97 (5 mythic, Scryfall lang:'dw' — the 'dwarvish' filter's lang leaf also opts the client pool into keeping dw prints via collectRecipeLanguages). PREVIEW-ERA CAVEAT (the MSH lesson): treatment tagging is inconsistent mid-preview (e.g. only 4 of 40 classic artists carry borderless yet, scene-box prints carry no treatment tags), so these filters are CN-range-first and avoid frame/promo pairings that could either match nothing or over-concentrate onto the few chase prints tagged so far. Pure CN filters don't declare alt-art intent, so the implicit regular_print pass applies — today the untagged prints survive it, and when Scryfall finishes tagging, the pass would empty the block and the engine's keep-unfiltered guard takes over. Both timelines work. AUDIT after release (~2026-08-14, when scripts/build-set-cards.mjs re-bakes hob/hoc/thob): re-run the rarity census per block against the released pool exactly like MSH's AUDIT 2026-07 #2, and confirm the HOC extended-art mythics' CN block (not yet indexed — hob.json's outcome uses the frame-based extended_art filter scoped to HOC until then).",
+  "hob_main": {
+    "collector_number_range": [
+      1,
+      188
+    ]
+  },
+  "hob_main_common": {
+    "all": [
+      {
+        "collector_number_range": [
+          1,
+          188
+        ]
+      },
+      {
+        "rarity": "common"
+      },
+      {
+        "type_line_excludes": "Land"
+      }
+    ]
+  },
+  "hob_dual_land": {
+    "all": [
+      {
+        "collector_number_range": [
+          1,
+          188
+        ]
+      },
+      {
+        "type_line_includes": "Land"
+      },
+      {
+        "type_line_excludes": "Basic"
+      },
+      {
+        "rarity": "common"
+      }
+    ]
+  },
+  "hob_journey_basic": {
+    "all": [
+      {
+        "type_line_includes": "Basic"
+      },
+      {
+        "collector_number_range": [
+          194,
+          198
+        ]
+      },
+      {
+        "full_art": true
+      }
+    ]
+  },
+  "hob_scene": {
+    "collector_number_range": [
+      199,
+      213
+    ]
+  },
+  "hob_dragon_hoard": {
+    "collector_number_range": [
+      214,
+      238
+    ]
+  },
+  "hob_book_cover": {
+    "collector_number_range": [
+      239,
+      248
+    ]
+  },
+  "hob_surge_dragon_hoard": {
+    "collector_number_range": [
+      250,
+      274
+    ]
+  },
+  "hob_surge_book_cover": {
+    "collector_number_range": [
+      275,
+      284
+    ]
+  },
+  "hob_extended_art": {
+    "all": [
+      {
+        "collector_number_range": [
+          285,
+          312
+        ]
+      },
+      {
+        "frame_effects": "extendedart"
+      }
+    ]
+  },
+  "hoc_scene_box": {
+    "collector_number_range": [
+      1,
+      12
+    ]
+  },
+  "hoc_classic_artist": {
+    "collector_number_range": [
+      13,
+      52
+    ]
+  },
+  "hoc_classic_artist_surge": {
+    "collector_number_range": [
+      53,
+      92
+    ]
+  },
+  "hoc_dwarvish": {
+    "all": [
+      {
+        "collector_number_range": [
+          93,
+          97
+        ]
+      },
+      {
+        "lang": "dw"
+      }
+    ]
   }
 }

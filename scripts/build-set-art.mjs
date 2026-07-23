@@ -73,7 +73,7 @@ async function listOpenableSets() {
   ]);
   const today = new Date().toISOString().slice(0, 10);
   const horizonDate = new Date();
-  horizonDate.setDate(horizonDate.getDate() + 21);
+  horizonDate.setDate(horizonDate.getDate() + 30);
   const horizon = horizonDate.toISOString().slice(0, 10);
   return list.data
     .filter(
@@ -81,7 +81,7 @@ async function listOpenableSets() {
         !s.digital &&
         s.card_count >= MIN_CARDS_FOR_PACK &&
         allowed.has(s.set_type) &&
-        (!s.released_at || s.released_at <= horizon), // 21-day preview lookahead — keep in sync with lib/scryfall.ts getOpenableSets
+        (!s.released_at || s.released_at <= horizon), // 30-day preview lookahead — keep in sync with PREVIEW_LOOKAHEAD_DAYS in lib/scryfall.ts
     )
     .sort((a, b) => (b.released_at ?? "").localeCompare(a.released_at ?? ""));
 }

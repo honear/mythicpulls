@@ -36,6 +36,7 @@ calling the API at SSR/runtime. Established examples:
 | `scripts/build-set-art.mjs` | `data/set-art.json` | `lib/set-art.ts` |
 | `scripts/fetch-17lands.mjs` | `data/draft-stats/<code>.json` | `lib/draft-stats.ts` |
 | `scripts/fetch-manapool-prices.mjs` | `data/manapool-prices.json` | `lib/manapool.ts` |
+| `scripts/build-connections.mjs` | `data/connections/puzzles.json` | `lib/connections.ts` |
 
 Why: cold renders were ~20s when calling Scryfall live for 175 sets.
 Static JSON imports drop that to ~200ms.
@@ -88,6 +89,22 @@ than **`MIN_CARDS_FOR_PACK = 100`** cards. Below that the pack engine
 produces nonsense (foreign reprints, tiny specialty boxes, etc.).
 `scripts/build-set-art.mjs` mirrors the same constant — keep them in
 sync.
+
+## Coming-soon gate (unreleased sets)
+
+Unreleased sets within **`PREVIEW_LOOKAHEAD_DAYS = 30`** of street date
+(also mirrored in `build-set-art.mjs`) appear in the `/sets` catalog as
+**"Coming soon"** teasers: amber `Soon` tile pill, and all three per-set
+routes (`/sets/[code]`, `/sealed/[code]`, `/draft/[code]`) render
+`app/_components/ComingSoonSetPage` — release date, preview card count,
+Mana Pool preorder link — instead of their flows. The draft and sealed
+*pickers* omit unreleased sets entirely. Gate predicate:
+`isComingSoonSet(set, todayIso)` in `lib/scryfall.ts`; pass a
+server-computed `todayIso()` into client components. The gate lifts
+itself on release day — **re-run `scripts/build-set-cards.mjs` for the
+set that week** so day-one packs roll the full pool, and audit any
+preview-era CN-block filters (see `_doc_hob` in `data/filters.json` for
+the HOB example).
 
 ## Booster pricing
 
@@ -221,6 +238,65 @@ quality bump from 17Lands when available. Top-K spice picks
 (85/12/3 split) with `MAX_SPICE_GAP = 1.5` so bots never blunder
 mythics into commons.
 
+## Confluence (daily connections puzzle)
+
+`/connections` — NYT-Connections-style daily: 16 card names, four
+hidden groups of four, unique solution. Branded **Confluence** (an
+actual MTG cycle name; avoids leaning on NYT's trademark).
+
+- **Generator**: `npm run build:connections` →
+  `scripts/build-connections.mjs` reads `data/set-cards/*.json.gz`
+  and writes `data/connections/puzzles.json` (~160-board pool,
+  deterministic under `--seed`). Group archetypes per board: yellow =
+  hidden word theme, green = creature type | card type | exact color
+  identity (guilds/shards/wedges/5c — no mono), blue = cycle or
+  premier-set exclusive, purple = artist or curated lore group. Every
+  group carries a computable predicate and boards are **formally
+  verified to have exactly one valid partition** (exact cover over
+  the 16×4 membership matrix) — red herrings survive only when the
+  solution stays unique. Curated lists live in the script (CYCLES /
+  LORE_CYCLES / WORD_THEMES / COLOR_IDENTITIES): lore groups must be
+  beyond-doubt facts; wordlists have a tight `words` core (choosable)
+  + broad `also` extension (verifier-only) so titles stay honest.
+- **Recent tag**: the script makes ONE call to Scryfall `/sets`
+  (10 req/s class, safe) to find premier expansions from the last 18
+  months, generates an extra recent-only pass (~⅓ of the pool), and
+  tags any board whose 16 cards all exist in that window with
+  `recent: true`. Offline runs skip the call gracefully (no tags —
+  the endless filter then silently serves the full pool). The
+  dynamic set list also future-proofs "printed in <set>" groups for
+  sets newer than the hardcoded PREMIER_SETS fallback.
+- **Daily selection**: `lib/connections.ts::getDailyPuzzle` — UTC
+  date → pool index from the `epoch` field; regenerating the pool
+  RESHUFFLES the schedule (same-day players can see a different
+  board), so regenerate deliberately, not casually.
+  `data/connections/curated.json` (`byDate` keyed YYYY-MM-DD)
+  overrides any date with a hand-authored board.
+- **Answer secrecy**: never import `lib/connections.ts` from a client
+  component (it bundles the full answer pool) — the page passes ONE
+  puzzle as a prop; endless mode fetches one at a time from
+  `/api/connections/puzzle`. `ConnectionsGame.tsx` uses
+  `import type` only.
+- **Client**: `app/connections/ConnectionsGame.tsx`. Art-on-tiles is
+  the default (casual "recognition" mode), Eye toggle → names-only
+  expert mode, persisted under `mythicpulls:connections:art-v1`.
+  Endless mode adds a "New sets" pill (`recent-v1` key) that deals
+  future boards from `recent: true` pool entries via
+  `/api/connections/puzzle?recent=1`; the daily always stays
+  full-catalog so everyone shares one board.
+  Daily progress + streak stats in `mythicpulls:connections:*` keys.
+  Grid reflow is a hand-rolled FLIP (`useFlipTiles`) — transforms go
+  on the button; hop/shake/selected-scale live on the inner span so
+  they don't fight the FLIP's inline transforms. Tile-order shuffle
+  is seeded by puzzle id so SSR html matches the client's first
+  render (no spoiler flash, no hydration mismatch).
+- **Hints**: `HintsPanel` sits BELOW the board (never a side rail —
+  it would steal tile-grid width, i.e. art size). Three escalating
+  reveals per unsolved group: archetype nudge → exact thread → one
+  card (ringed on the board in the group color). Levels persist in
+  the daily save blob and the total is appended to the share text
+  ("· N hints") so hinted results stay honest.
+
 ## Useful entry points
 
 - `app/_components/SiteHeader.tsx` — nav, mobile drawer, Support button
@@ -229,6 +305,7 @@ mythics into commons.
 - `app/sealed/[code]/SealedDeckBuilder.tsx` — deck builder, shared by
   Sealed AND Draft (`mode: "sealed" | "draft"` prop changes labels)
 - `app/draft/[code]/DraftRun.tsx` — 8-seat draft state machine
+- `app/connections/ConnectionsGame.tsx` — Confluence board (see above)
 - `lib/scryfall.ts` — Scryfall client + `getOpenableSets`
 - `lib/booster-loader.ts` — server-only recipe resolution
 - `lib/draft-bot.ts` — bot pick logic

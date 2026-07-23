@@ -3,7 +3,7 @@
 import Link, { useLinkStatus } from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
-import type { ScryfallSet } from "@/lib/scryfall";
+import { isComingSoonSet, type ScryfallSet } from "@/lib/scryfall";
 import { setHasDraftStats } from "@/lib/draft-stats-meta";
 import type { SetArtEntry } from "@/lib/set-art";
 
@@ -22,6 +22,7 @@ export function SetGrid({
   linkBase = "/sets",
   tileLabel = "Open",
   showDraftStatsBadge = false,
+  todayIso,
 }: {
   sets: ScryfallSet[];
   /** Per-set art credits keyed by lowercased set code. Each entry is
@@ -40,6 +41,13 @@ export function SetGrid({
    *  pack-opening flow ignore 17Lands data, so we hide the badge there
    *  to avoid implying the data is influencing those experiences. */
   showDraftStatsBadge?: boolean;
+  /** Server-computed YYYY-MM-DD used to mark unreleased sets as
+   *  "Coming soon" tiles (amber Soon pill; the tile still links to the
+   *  set's teaser page). Omitted by pickers that pre-filter unreleased
+   *  sets away (draft / sealed) — then no tile ever qualifies. Passing
+   *  the server's date (rather than reading the client clock) keeps
+   *  SSR and hydration in agreement across midnight. */
+  todayIso?: string;
 }) {
   const [filter, setFilter] = useState<Filter>("recent");
   const [query, setQuery] = useState("");
@@ -167,6 +175,7 @@ export function SetGrid({
                 linkBase={linkBase}
                 tileLabel={tileLabel}
                 showDraftStatsBadge={showDraftStatsBadge}
+                comingSoon={!!todayIso && isComingSoonSet(s, todayIso)}
               />
             ))}
           </ul>
@@ -177,7 +186,7 @@ export function SetGrid({
 }
 
 function SetTile({
-  set, index, artEntry, linkBase, tileLabel, showDraftStatsBadge,
+  set, index, artEntry, linkBase, tileLabel, showDraftStatsBadge, comingSoon,
 }: {
   set: ScryfallSet;
   index: number;
@@ -185,6 +194,7 @@ function SetTile({
   linkBase: string;
   tileLabel: string;
   showDraftStatsBadge: boolean;
+  comingSoon: boolean;
 }) {
   const year = set.released_at?.slice(0, 4) ?? "—";
   // Show a small "17L" badge on tiles whose set has a corresponding
@@ -200,9 +210,14 @@ function SetTile({
   // browser tooltip on hover without cluttering the tile. The art is
   // the same image used as the tile background, so the tooltip text
   // honestly describes what the user is looking at.
-  const tooltip = artEntry?.artist
-    ? `${set.name} · ${year}\nArt: ${artEntry.cardName ?? "—"} by ${artEntry.artist}`
-    : `${set.name} · ${year}`;
+  const tooltip = [
+    artEntry?.artist
+      ? `${set.name} · ${year}\nArt: ${artEntry.cardName ?? "—"} by ${artEntry.artist}`
+      : `${set.name} · ${year}`,
+    comingSoon && set.released_at ? `Releases ${set.released_at}` : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   return (
     <li
@@ -288,16 +303,33 @@ function SetTile({
           >
             {set.name}
           </p>
-          <span
-            className="text-[9px] tracking-[0.18em] uppercase font-semibold shrink-0 px-1.5 py-0.5 rounded-md transition-colors group-hover:bg-[var(--accent-purple)] group-hover:text-white"
-            style={{
-              fontFamily: "var(--font-btn)",
-              color: "var(--accent-purple-light)",
-              background: "rgba(123,57,252,0.18)",
-            }}
-          >
-            {tileLabel}
-          </span>
+          {comingSoon ? (
+            // Unreleased set inside the preview window — the tile links
+            // to the set's teaser page rather than an opener, and the
+            // amber pill telegraphs that before the click.
+            <span
+              className="text-[9px] tracking-[0.18em] uppercase font-semibold shrink-0 px-1.5 py-0.5 rounded-md"
+              style={{
+                fontFamily: "var(--font-btn)",
+                color: "#fbbf24",
+                background: "rgba(245,158,11,0.18)",
+                border: "1px solid rgba(245,158,11,0.35)",
+              }}
+            >
+              Soon
+            </span>
+          ) : (
+            <span
+              className="text-[9px] tracking-[0.18em] uppercase font-semibold shrink-0 px-1.5 py-0.5 rounded-md transition-colors group-hover:bg-[var(--accent-purple)] group-hover:text-white"
+              style={{
+                fontFamily: "var(--font-btn)",
+                color: "var(--accent-purple-light)",
+                background: "rgba(123,57,252,0.18)",
+              }}
+            >
+              {tileLabel}
+            </span>
+          )}
         </div>
         <TileLoadingOverlay />
       </Link>

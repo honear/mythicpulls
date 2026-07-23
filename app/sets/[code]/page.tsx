@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSet, getSetCards, getSetTokens, trimCardPool, trimPoolLanguages } from "@/lib/scryfall";
+import { getSet, getSetCards, getSetTokens, isComingSoonSet, trimCardPool, trimPoolLanguages } from "@/lib/scryfall";
+import { ComingSoonSetPage } from "@/app/_components/ComingSoonSetPage";
 import type { ScryfallCard } from "@/lib/scryfall";
 import { recommendedPackType, type PackType } from "@/lib/pack-rules";
 import { collectRecipeLanguages, collectReferencedSets, type PackContent } from "@/lib/booster-config";
@@ -59,6 +60,13 @@ export default async function SetPage({ params, searchParams }: Props) {
   const sp = await searchParams;
   const set = await getSet(code);
   if (!set) notFound();
+
+  // Unreleased sets in the preview window render a teaser instead of
+  // the opener — no pool fetch, no recipes, packs unlock on street
+  // date. See isComingSoonSet in lib/scryfall.ts.
+  if (isComingSoonSet(set)) {
+    return <ComingSoonSetPage set={set} backHref="/" backLabel="All sets" />;
+  }
 
   // What pack types are valid for this set + which is the recommended
   // landing one. packsAvailableForSet combines a date-based heuristic

@@ -1,32 +1,32 @@
 {
   "meta": {
-    "as_of": "2026-05-23T13:35:23.412Z",
-    "fetched_at": "2026-05-23T13:35:23.781Z",
+    "as_of": "2026-07-23T16:03:44.028Z",
+    "fetched_at": "2026-07-23T16:03:44.360Z",
     "source": "https://manapool.com/api/v1/prices/sealed",
-    "total_listings": 1753,
-    "indexed_sets": 159,
-    "indexed_packs": 220
+    "total_listings": 1936,
+    "indexed_sets": 165,
+    "indexed_packs": 226
   },
   "sets": {
     "10e": {
       "booster": {
-        "lowCents": 2040,
+        "lowCents": 1836,
         "marketCents": null,
-        "available": 11,
+        "available": 9,
         "name": "Tenth Edition Booster Pack",
         "url": "https://manapool.com/sealed/10e/booster-pack"
       }
     },
     "2x2": {
       "collector": {
-        "lowCents": 17497,
-        "marketCents": null,
-        "available": 3,
+        "lowCents": 14000,
+        "marketCents": 14000,
+        "available": 13,
         "name": "Double Masters 2022 Collector Booster Pack",
         "url": "https://manapool.com/sealed/2x2/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 2350,
+        "lowCents": 2850,
         "marketCents": 2300,
         "available": 30,
         "name": "Double Masters 2022 Draft Booster Pack",
@@ -35,11 +35,20 @@
     },
     "2xm": {
       "draft": {
-        "lowCents": 3700,
-        "marketCents": null,
-        "available": 46,
+        "lowCents": 3900,
+        "marketCents": 3774,
+        "available": 25,
         "name": "Double Masters Draft Booster Pack",
         "url": "https://manapool.com/sealed/2xm/draft-booster-pack"
+      }
+    },
+    "30a": {
+      "booster": {
+        "lowCents": 39999,
+        "marketCents": null,
+        "available": 1,
+        "name": "Magic 30th Anniversary Edition Booster Pack",
+        "url": "https://manapool.com/sealed/30a/booster-pack"
       }
     },
     "3ed": {
@@ -49,6 +58,15 @@
         "available": 5,
         "name": "Revised Edition Booster Pack",
         "url": "https://manapool.com/sealed/3ed/booster-pack"
+      }
+    },
+    "4ed": {
+      "booster": {
+        "lowCents": 4000,
+        "marketCents": null,
+        "available": 5,
+        "name": "Fourth Edition Booster Pack",
+        "url": "https://manapool.com/sealed/4ed/booster-pack"
       }
     },
     "5dn": {
@@ -62,7 +80,7 @@
     },
     "5ed": {
       "booster": {
-        "lowCents": 8496,
+        "lowCents": 8559,
         "marketCents": null,
         "available": 6,
         "name": "Fifth Edition Booster Pack",
@@ -71,7 +89,7 @@
     },
     "6ed": {
       "booster": {
-        "lowCents": 7434,
+        "lowCents": 7439,
         "marketCents": null,
         "available": 5,
         "name": "Classic Sixth Edition Booster Pack",
@@ -80,45 +98,45 @@
     },
     "7ed": {
       "booster": {
-        "lowCents": 17498,
-        "marketCents": null,
-        "available": 3,
+        "lowCents": 19519,
+        "marketCents": 17498,
+        "available": 2,
         "name": "Seventh Edition Booster Pack",
         "url": "https://manapool.com/sealed/7ed/booster-pack"
       }
     },
+    "8ed": {
+      "booster": {
+        "lowCents": 3162,
+        "marketCents": null,
+        "available": 14,
+        "name": "Eighth Edition Booster Pack",
+        "url": "https://manapool.com/sealed/8ed/booster-pack"
+      }
+    },
     "9ed": {
       "booster": {
-        "lowCents": 5938,
+        "lowCents": 2754,
         "marketCents": null,
-        "available": 31,
+        "available": 25,
         "name": "Ninth Edition Booster Pack",
         "url": "https://manapool.com/sealed/9ed/booster-pack"
       }
     },
     "a25": {
       "booster": {
-        "lowCents": 1122,
-        "marketCents": 1918,
-        "available": 31,
+        "lowCents": 1285,
+        "marketCents": 1020,
+        "available": 94,
         "name": "Masters 25 Booster Pack",
         "url": "https://manapool.com/sealed/a25/booster-pack"
       }
     },
-    "acr": {
-      "collector": {
-        "lowCents": 4174,
-        "marketCents": 2799,
-        "available": 14,
-        "name": "Assassins Creed Collector Booster Pack",
-        "url": "https://manapool.com/sealed/acr/collector-booster-pack"
-      }
-    },
     "aer": {
       "booster": {
-        "lowCents": 727,
-        "marketCents": null,
-        "available": 60,
+        "lowCents": 695,
+        "marketCents": 727,
+        "available": 54,
         "name": "Aether Revolt Booster Pack",
         "url": "https://manapool.com/sealed/aer/booster-pack"
       }
@@ -127,66 +145,66 @@
       "collector": {
         "lowCents": 3600,
         "marketCents": 3600,
-        "available": 15,
+        "available": 26,
         "name": "Adventures in the Forgotten Realms Collector Booster Pack",
         "url": "https://manapool.com/sealed/afr/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 650,
+        "lowCents": 747,
         "marketCents": 650,
-        "available": 44,
+        "available": 82,
         "name": "Adventures in the Forgotten Realms Draft Booster Pack",
         "url": "https://manapool.com/sealed/afr/draft-booster-pack"
       },
       "set": {
-        "lowCents": 1356,
-        "marketCents": 699,
-        "available": 12,
+        "lowCents": 1145,
+        "marketCents": 1357,
+        "available": 21,
         "name": "Adventures in the Forgotten Realms Set Booster Pack",
         "url": "https://manapool.com/sealed/afr/set-booster-pack"
       }
     },
     "akh": {
       "booster": {
-        "lowCents": 1122,
+        "lowCents": 1199,
         "marketCents": 1122,
-        "available": 54,
+        "available": 63,
         "name": "Amonkhet Booster Pack",
         "url": "https://manapool.com/sealed/akh/booster-pack"
       }
     },
     "ala": {
       "booster": {
-        "lowCents": 2832,
+        "lowCents": 2142,
         "marketCents": 2163,
-        "available": 3,
+        "available": 35,
         "name": "Shards of Alara Booster Pack",
         "url": "https://manapool.com/sealed/ala/booster-pack"
       }
     },
     "all": {
       "booster": {
-        "lowCents": 8498,
+        "lowCents": 10619,
         "marketCents": null,
-        "available": 4,
+        "available": 3,
         "name": "Alliances Booster Pack",
         "url": "https://manapool.com/sealed/all/booster-pack"
       }
     },
     "apc": {
       "booster": {
-        "lowCents": 5998,
+        "lowCents": 3876,
         "marketCents": 3296,
-        "available": 13,
+        "available": 29,
         "name": "Apocalypse Booster Pack",
         "url": "https://manapool.com/sealed/apc/booster-pack"
       }
     },
     "arb": {
       "booster": {
-        "lowCents": 1989,
+        "lowCents": 1836,
         "marketCents": 2499,
-        "available": 15,
+        "available": 39,
         "name": "Alara Reborn Booster Pack",
         "url": "https://manapool.com/sealed/arb/booster-pack"
       }
@@ -195,41 +213,41 @@
       "booster": {
         "lowCents": 1632,
         "marketCents": 1632,
-        "available": 22,
+        "available": 90,
         "name": "Avacyn Restored Booster Pack",
         "url": "https://manapool.com/sealed/avr/booster-pack"
       }
     },
     "bbd": {
       "booster": {
-        "lowCents": 1269,
+        "lowCents": 1270,
         "marketCents": null,
-        "available": 72,
+        "available": 82,
         "name": "Battlebond Booster Pack",
         "url": "https://manapool.com/sealed/bbd/booster-pack"
       }
     },
     "bfz": {
       "booster": {
-        "lowCents": 618,
-        "marketCents": 875,
-        "available": 54,
+        "lowCents": 710,
+        "marketCents": 618,
+        "available": 68,
         "name": "Battle for Zendikar Booster Pack",
         "url": "https://manapool.com/sealed/bfz/booster-pack"
       }
     },
     "blb": {
       "collector": {
-        "lowCents": 11999,
-        "marketCents": 7499,
-        "available": 10,
+        "lowCents": 10500,
+        "marketCents": 11498,
+        "available": 30,
         "name": "Bloomburrow Collector Booster Pack",
         "url": "https://manapool.com/sealed/blb/collector-booster-pack"
       },
       "play": {
-        "lowCents": 499,
-        "marketCents": 578,
-        "available": 1277,
+        "lowCents": 543,
+        "marketCents": 550,
+        "available": 1039,
         "name": "Bloomburrow Play Booster Pack",
         "url": "https://manapool.com/sealed/blb/play-booster-pack"
       }
@@ -238,7 +256,7 @@
       "booster": {
         "lowCents": 719,
         "marketCents": 502,
-        "available": 37,
+        "available": 77,
         "name": "Born of the Gods Booster Pack",
         "url": "https://manapool.com/sealed/bng/booster-pack"
       }
@@ -254,23 +272,23 @@
     },
     "bro": {
       "collector": {
-        "lowCents": 5843,
+        "lowCents": 5775,
         "marketCents": 5843,
-        "available": 16,
+        "available": 6,
         "name": "The Brothers' War Collector Booster Pack",
         "url": "https://manapool.com/sealed/bro/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 513,
+        "lowCents": 601,
         "marketCents": 550,
-        "available": 39,
+        "available": 120,
         "name": "The Brothers' War Draft Booster Pack",
         "url": "https://manapool.com/sealed/bro/draft-booster-pack"
       },
       "set": {
-        "lowCents": 958,
-        "marketCents": 799,
-        "available": 11,
+        "lowCents": 1100,
+        "marketCents": 958,
+        "available": 43,
         "name": "The Brothers' War Set Booster Pack",
         "url": "https://manapool.com/sealed/bro/set-booster-pack"
       }
@@ -278,63 +296,72 @@
     "chk": {
       "booster": {
         "lowCents": 5309,
-        "marketCents": null,
-        "available": 5,
+        "marketCents": 5309,
+        "available": 2,
         "name": "Champions of Kamigawa Booster Pack",
         "url": "https://manapool.com/sealed/chk/booster-pack"
       }
     },
     "chr": {
       "booster": {
-        "lowCents": 2713,
+        "lowCents": 2723,
         "marketCents": null,
-        "available": 25,
+        "available": 17,
         "name": "Chronicles Booster Pack",
         "url": "https://manapool.com/sealed/chr/booster-pack"
       }
     },
     "clb": {
       "collector": {
-        "lowCents": 5100,
+        "lowCents": 6855,
         "marketCents": 4600,
-        "available": 2,
+        "available": 21,
         "name": "Commander Legends Battle for Baldurs Gate Collector Booster Pack",
         "url": "https://manapool.com/sealed/clb/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 1800,
-        "marketCents": 1123,
-        "available": 28,
+        "lowCents": 1500,
+        "marketCents": 1836,
+        "available": 30,
         "name": "Commander Legends Battle for Baldurs Gate Draft Booster Pack",
         "url": "https://manapool.com/sealed/clb/draft-booster-pack"
       },
       "set": {
-        "lowCents": 2997,
+        "lowCents": 3198,
         "marketCents": 1398,
-        "available": 12,
+        "available": 7,
         "name": "Commander Legends Battle for Baldurs Gate Set Booster Pack",
         "url": "https://manapool.com/sealed/clb/set-booster-pack"
       }
     },
+    "clu": {
+      "booster": {
+        "lowCents": 897,
+        "marketCents": null,
+        "available": 21,
+        "name": "Ravnica Clue Edition Booster Pack",
+        "url": "https://manapool.com/sealed/clu/booster-pack"
+      }
+    },
     "cmm": {
       "collector": {
-        "lowCents": 10250,
-        "marketCents": 8999,
-        "available": 9,
+        "lowCents": 12624,
+        "marketCents": 11500,
+        "available": 5,
         "name": "Commander Masters Collector Booster Pack",
         "url": "https://manapool.com/sealed/cmm/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 2599,
+        "lowCents": 2700,
         "marketCents": 2600,
-        "available": 28,
+        "available": 39,
         "name": "Commander Masters Draft Booster Pack",
         "url": "https://manapool.com/sealed/cmm/draft-booster-pack"
       },
       "set": {
-        "lowCents": 3391,
-        "marketCents": 2800,
-        "available": 49,
+        "lowCents": 3310,
+        "marketCents": 3391,
+        "available": 102,
         "name": "Commander Masters Set Booster Pack",
         "url": "https://manapool.com/sealed/cmm/set-booster-pack"
       }
@@ -348,9 +375,9 @@
         "url": "https://manapool.com/sealed/cmr/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 1250,
+        "lowCents": 1326,
         "marketCents": 1250,
-        "available": 66,
+        "available": 63,
         "name": "Commander Legends Draft Booster Pack",
         "url": "https://manapool.com/sealed/cmr/draft-booster-pack"
       }
@@ -358,51 +385,60 @@
     "cn2": {
       "booster": {
         "lowCents": 1044,
-        "marketCents": null,
-        "available": 43,
+        "marketCents": 1208,
+        "available": 36,
         "name": "Conspiracy Take the Crown Booster Pack",
         "url": "https://manapool.com/sealed/cn2/booster-pack"
       }
     },
     "cns": {
       "booster": {
-        "lowCents": 959,
+        "lowCents": 900,
         "marketCents": null,
-        "available": 39,
+        "available": 32,
         "name": "Conspiracy Booster Pack",
         "url": "https://manapool.com/sealed/cns/booster-pack"
       }
     },
+    "con": {
+      "booster": {
+        "lowCents": 2040,
+        "marketCents": 2060,
+        "available": 26,
+        "name": "Conflux Booster Pack",
+        "url": "https://manapool.com/sealed/con/booster-pack"
+      }
+    },
     "csp": {
       "booster": {
-        "lowCents": 2760,
+        "lowCents": 2999,
         "marketCents": 2369,
-        "available": 18,
+        "available": 54,
         "name": "Coldsnap Booster Pack",
         "url": "https://manapool.com/sealed/csp/booster-pack"
       }
     },
     "dbl": {
       "draft": {
-        "lowCents": 1200,
-        "marketCents": null,
-        "available": 35,
+        "lowCents": 1199,
+        "marketCents": 1303,
+        "available": 21,
         "name": "Innistrad Double Feature Draft Booster Pack",
         "url": "https://manapool.com/sealed/dbl/draft-booster-pack"
       }
     },
     "dft": {
       "collector": {
-        "lowCents": 2481,
-        "marketCents": 2496,
-        "available": 157,
+        "lowCents": 2620,
+        "marketCents": 2698,
+        "available": 120,
         "name": "Aetherdrift Collector Booster Pack",
         "url": "https://manapool.com/sealed/dft/collector-booster-pack"
       },
       "play": {
-        "lowCents": 438,
+        "lowCents": 446,
         "marketCents": 450,
-        "available": 773,
+        "available": 669,
         "name": "Aetherdrift Play Booster Pack",
         "url": "https://manapool.com/sealed/dft/play-booster-pack"
       }
@@ -410,17 +446,17 @@
     "dgm": {
       "booster": {
         "lowCents": 440,
-        "marketCents": 520,
-        "available": 33,
+        "marketCents": 440,
+        "available": 91,
         "name": "Dragons Maze Booster Pack",
         "url": "https://manapool.com/sealed/dgm/booster-pack"
       }
     },
     "dis": {
       "booster": {
-        "lowCents": 1734,
-        "marketCents": 2266,
-        "available": 38,
+        "lowCents": 2407,
+        "marketCents": 1734,
+        "available": 37,
         "name": "Dissension Booster Pack",
         "url": "https://manapool.com/sealed/dis/booster-pack"
       }
@@ -429,139 +465,139 @@
       "booster": {
         "lowCents": 1132,
         "marketCents": 1122,
-        "available": 4,
+        "available": 70,
         "name": "Dark Ascension Booster Pack",
         "url": "https://manapool.com/sealed/dka/booster-pack"
       }
     },
     "dmr": {
       "collector": {
-        "lowCents": 5400,
+        "lowCents": 5442,
         "marketCents": 7498,
-        "available": 18,
+        "available": 12,
         "name": "Dominaria Remastered Collector Booster Pack",
         "url": "https://manapool.com/sealed/dmr/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 700,
+        "lowCents": 650,
         "marketCents": 750,
-        "available": 145,
+        "available": 80,
         "name": "Dominaria Remastered Draft Booster Pack",
         "url": "https://manapool.com/sealed/dmr/draft-booster-pack"
       }
     },
     "dmu": {
       "collector": {
-        "lowCents": 2400,
-        "marketCents": 2999,
-        "available": 7,
+        "lowCents": 3464,
+        "marketCents": 2400,
+        "available": 27,
         "name": "Dominaria United Collector Booster Pack",
         "url": "https://manapool.com/sealed/dmu/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 515,
-        "marketCents": 515,
-        "available": 138,
+        "lowCents": 566,
+        "marketCents": 550,
+        "available": 53,
         "name": "Dominaria United Draft Booster Pack",
         "url": "https://manapool.com/sealed/dmu/draft-booster-pack"
       },
       "set": {
-        "lowCents": 708,
-        "marketCents": 873,
-        "available": 35,
+        "lowCents": 900,
+        "marketCents": 950,
+        "available": 31,
         "name": "Dominaria United Set Booster Pack",
         "url": "https://manapool.com/sealed/dmu/set-booster-pack"
       }
     },
     "dom": {
       "booster": {
-        "lowCents": 522,
+        "lowCents": 899,
         "marketCents": 618,
-        "available": 87,
+        "available": 69,
         "name": "Dominaria Booster Pack",
         "url": "https://manapool.com/sealed/dom/booster-pack"
       }
     },
     "drk": {
       "booster": {
-        "lowCents": 13740,
+        "lowCents": 13999,
         "marketCents": null,
-        "available": 7,
+        "available": 8,
         "name": "The Dark Booster Pack",
         "url": "https://manapool.com/sealed/drk/booster-pack"
       }
     },
     "dsk": {
       "collector": {
-        "lowCents": 6347,
+        "lowCents": 6478,
         "marketCents": 5498,
-        "available": 23,
+        "available": 21,
         "name": "Duskmourn House of Horror Collector Booster Pack",
         "url": "https://manapool.com/sealed/dsk/collector-booster-pack"
       },
       "play": {
-        "lowCents": 499,
-        "marketCents": 500,
-        "available": 290,
+        "lowCents": 500,
+        "marketCents": 545,
+        "available": 230,
         "name": "Duskmourn House of Horror Play Booster Pack",
         "url": "https://manapool.com/sealed/dsk/play-booster-pack"
       }
     },
     "dst": {
       "booster": {
-        "lowCents": 2540,
+        "lowCents": 2652,
         "marketCents": null,
-        "available": 58,
+        "available": 17,
         "name": "Darksteel Booster Pack",
         "url": "https://manapool.com/sealed/dst/booster-pack"
       }
     },
     "dtk": {
       "booster": {
-        "lowCents": 799,
+        "lowCents": 991,
         "marketCents": null,
-        "available": 40,
+        "available": 60,
         "name": "Dragons of Tarkir Booster Pack",
         "url": "https://manapool.com/sealed/dtk/booster-pack"
       }
     },
     "ecl": {
       "collector": {
-        "lowCents": 3465,
-        "marketCents": 3299,
-        "available": 119,
+        "lowCents": 3794,
+        "marketCents": 3999,
+        "available": 109,
         "name": "Lorwyn Eclipsed Collector Booster Pack",
         "url": "https://manapool.com/sealed/ecl/collector-booster-pack"
       },
       "play": {
-        "lowCents": 424,
+        "lowCents": 437,
         "marketCents": 496,
-        "available": 2587,
+        "available": 2200,
         "name": "Lorwyn Eclipsed Play Booster Pack",
         "url": "https://manapool.com/sealed/ecl/play-booster-pack"
       }
     },
     "eld": {
       "collector": {
-        "lowCents": 5101,
+        "lowCents": 4599,
         "marketCents": null,
-        "available": 26,
+        "available": 33,
         "name": "Throne of Eldraine Collector Booster Pack",
         "url": "https://manapool.com/sealed/eld/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 650,
-        "marketCents": 618,
-        "available": 27,
+        "lowCents": 700,
+        "marketCents": 650,
+        "available": 123,
         "name": "Throne of Eldraine Draft Booster Pack",
         "url": "https://manapool.com/sealed/eld/draft-booster-pack"
       }
     },
     "ema": {
       "draft": {
-        "lowCents": 2200,
+        "lowCents": 2700,
         "marketCents": null,
-        "available": 27,
+        "available": 40,
         "name": "Eternal Masters Draft Booster Pack",
         "url": "https://manapool.com/sealed/ema/draft-booster-pack"
       }
@@ -570,39 +606,39 @@
       "booster": {
         "lowCents": 900,
         "marketCents": 900,
-        "available": 35,
+        "available": 29,
         "name": "Eldritch Moon Booster Pack",
         "url": "https://manapool.com/sealed/emn/booster-pack"
       }
     },
     "eoe": {
       "collector": {
-        "lowCents": 5996,
-        "marketCents": 4995,
-        "available": 21,
+        "lowCents": 6945,
+        "marketCents": 6399,
+        "available": 23,
         "name": "Edge of Eternities Collector Booster Pack",
         "url": "https://manapool.com/sealed/eoe/collector-booster-pack"
       },
       "play": {
-        "lowCents": 565,
-        "marketCents": 688,
-        "available": 1138,
+        "lowCents": 595,
+        "marketCents": 532,
+        "available": 1185,
         "name": "Edge of Eternities Play Booster Pack",
         "url": "https://manapool.com/sealed/eoe/play-booster-pack"
       }
     },
     "eve": {
       "booster": {
-        "lowCents": 2500,
+        "lowCents": 2832,
         "marketCents": 2471,
-        "available": 10,
+        "available": 14,
         "name": "Eventide Booster Pack",
         "url": "https://manapool.com/sealed/eve/booster-pack"
       }
     },
     "exo": {
       "booster": {
-        "lowCents": 11385,
+        "lowCents": 11985,
         "marketCents": null,
         "available": 5,
         "name": "Exodus Booster Pack",
@@ -611,50 +647,50 @@
     },
     "fdn": {
       "collector": {
-        "lowCents": 7375,
+        "lowCents": 7500,
         "marketCents": 5000,
-        "available": 20,
+        "available": 21,
         "name": "Foundations Collector Booster Pack",
         "url": "https://manapool.com/sealed/fdn/collector-booster-pack"
       },
       "play": {
-        "lowCents": 499,
-        "marketCents": 650,
-        "available": 524,
+        "lowCents": 485,
+        "marketCents": 559,
+        "available": 439,
         "name": "Foundations Play Booster Pack",
         "url": "https://manapool.com/sealed/fdn/play-booster-pack"
       }
     },
     "fem": {
       "booster": {
-        "lowCents": 1148,
-        "marketCents": 1150,
-        "available": 191,
+        "lowCents": 1099,
+        "marketCents": 1200,
+        "available": 202,
         "name": "Fallen Empires Booster Pack",
         "url": "https://manapool.com/sealed/fem/booster-pack"
       }
     },
     "fin": {
       "collector": {
-        "lowCents": 12999,
-        "marketCents": 10950,
-        "available": 22,
+        "lowCents": 18498,
+        "marketCents": 13200,
+        "available": 12,
         "name": "Final Fantasy Collector Booster Pack",
         "url": "https://manapool.com/sealed/fin/collector-booster-pack"
       },
       "play": {
-        "lowCents": 550,
-        "marketCents": 550,
-        "available": 311,
+        "lowCents": 608,
+        "marketCents": 575,
+        "available": 445,
         "name": "Final Fantasy Play Booster Pack",
         "url": "https://manapool.com/sealed/fin/play-booster-pack"
       }
     },
     "frf": {
       "booster": {
-        "lowCents": 618,
+        "lowCents": 719,
         "marketCents": 618,
-        "available": 51,
+        "available": 136,
         "name": "Fate Reforged Booster Pack",
         "url": "https://manapool.com/sealed/frf/booster-pack"
       }
@@ -663,25 +699,25 @@
       "booster": {
         "lowCents": 4999,
         "marketCents": null,
-        "available": 35,
+        "available": 4,
         "name": "Future Sight Booster Pack",
         "url": "https://manapool.com/sealed/fut/booster-pack"
       }
     },
     "gpt": {
       "booster": {
-        "lowCents": 2142,
-        "marketCents": null,
-        "available": 10,
+        "lowCents": 2832,
+        "marketCents": 2832,
+        "available": 11,
         "name": "Guildpact Booster Pack",
         "url": "https://manapool.com/sealed/gpt/booster-pack"
       }
     },
     "grn": {
       "booster": {
-        "lowCents": 514,
+        "lowCents": 486,
         "marketCents": 515,
-        "available": 181,
+        "available": 235,
         "name": "Guilds of Ravnica Booster Pack",
         "url": "https://manapool.com/sealed/grn/booster-pack"
       }
@@ -690,7 +726,7 @@
       "booster": {
         "lowCents": 500,
         "marketCents": 618,
-        "available": 56,
+        "available": 121,
         "name": "Gatecrash Booster Pack",
         "url": "https://manapool.com/sealed/gtc/booster-pack"
       }
@@ -704,61 +740,70 @@
         "url": "https://manapool.com/sealed/hml/booster-pack"
       }
     },
+    "hob": {
+      "collector": {
+        "lowCents": 7950,
+        "marketCents": 7669,
+        "available": 69,
+        "name": "The Hobbit Collector Booster Pack",
+        "url": "https://manapool.com/sealed/hob/collector-booster-pack"
+      },
+      "play": {
+        "lowCents": 994,
+        "marketCents": null,
+        "available": 483,
+        "name": "The Hobbit Play Booster Pack",
+        "url": "https://manapool.com/sealed/hob/play-booster-pack"
+      }
+    },
     "hou": {
       "booster": {
-        "lowCents": 927,
-        "marketCents": 824,
-        "available": 66,
+        "lowCents": 1020,
+        "marketCents": 832,
+        "available": 51,
         "name": "Hour of Devastation Booster Pack",
         "url": "https://manapool.com/sealed/hou/booster-pack"
       }
     },
     "ice": {
       "booster": {
-        "lowCents": 4000,
+        "lowCents": 6382,
         "marketCents": 4194,
-        "available": 2,
+        "available": 24,
         "name": "Ice Age Booster Pack",
         "url": "https://manapool.com/sealed/ice/booster-pack"
       }
     },
     "iko": {
-      "collector": {
-        "lowCents": 6802,
-        "marketCents": 6802,
-        "available": 6,
-        "name": "Ikoria Lair of Behemoths Collector Booster Pack",
-        "url": "https://manapool.com/sealed/iko/collector-booster-pack"
-      },
       "draft": {
-        "lowCents": 598,
+        "lowCents": 745,
         "marketCents": 700,
-        "available": 80,
+        "available": 146,
         "name": "Ikoria Lair of Behemoths Draft Booster Pack",
         "url": "https://manapool.com/sealed/iko/draft-booster-pack"
       }
     },
     "ima": {
       "draft": {
-        "lowCents": 1628,
-        "marketCents": 1798,
-        "available": 14,
+        "lowCents": 1900,
+        "marketCents": 1911,
+        "available": 34,
         "name": "Iconic Masters Draft Booster Pack",
         "url": "https://manapool.com/sealed/ima/draft-booster-pack"
       }
     },
     "inr": {
       "collector": {
-        "lowCents": 3622,
-        "marketCents": 3450,
-        "available": 16,
+        "lowCents": 3945,
+        "marketCents": 3622,
+        "available": 33,
         "name": "Innistrad Remastered Collector Booster Pack",
         "url": "https://manapool.com/sealed/inr/collector-booster-pack"
       },
       "play": {
         "lowCents": 722,
-        "marketCents": 722,
-        "available": 49,
+        "marketCents": 750,
+        "available": 61,
         "name": "Innistrad Remastered Play Booster Pack",
         "url": "https://manapool.com/sealed/inr/play-booster-pack"
       }
@@ -767,52 +812,52 @@
       "booster": {
         "lowCents": 5309,
         "marketCents": null,
-        "available": 33,
+        "available": 25,
         "name": "Invasion Booster Pack",
         "url": "https://manapool.com/sealed/inv/booster-pack"
       }
     },
     "isd": {
       "booster": {
-        "lowCents": 1938,
-        "marketCents": 2758,
-        "available": 50,
+        "lowCents": 2040,
+        "marketCents": 1938,
+        "available": 54,
         "name": "Innistrad Booster Pack",
         "url": "https://manapool.com/sealed/isd/booster-pack"
       }
     },
     "j22": {
       "booster": {
-        "lowCents": 760,
+        "lowCents": 1039,
         "marketCents": 988,
-        "available": 51,
+        "available": 47,
         "name": "Jumpstart 2022 Booster Pack",
         "url": "https://manapool.com/sealed/j22/booster-pack"
       }
     },
     "j25": {
       "booster": {
-        "lowCents": 495,
-        "marketCents": 470,
-        "available": 156,
+        "lowCents": 538,
+        "marketCents": 618,
+        "available": 240,
         "name": "Foundations Jumpstart Booster Pack",
         "url": "https://manapool.com/sealed/j25/booster-pack"
       }
     },
     "jmp": {
       "booster": {
-        "lowCents": 522,
-        "marketCents": 688,
-        "available": 83,
+        "lowCents": 523,
+        "marketCents": 750,
+        "available": 74,
         "name": "Jumpstart Booster Pack",
         "url": "https://manapool.com/sealed/jmp/booster-pack"
       }
     },
     "jou": {
       "booster": {
-        "lowCents": 719,
+        "lowCents": 721,
         "marketCents": 721,
-        "available": 51,
+        "available": 121,
         "name": "Journey Into Nyx Booster Pack",
         "url": "https://manapool.com/sealed/jou/booster-pack"
       }
@@ -821,112 +866,121 @@
       "booster": {
         "lowCents": 3772,
         "marketCents": null,
-        "available": 11,
+        "available": 7,
         "name": "Judgment Booster Pack",
         "url": "https://manapool.com/sealed/jud/booster-pack"
       }
     },
     "khm": {
       "collector": {
-        "lowCents": 3500,
+        "lowCents": 3600,
         "marketCents": 3500,
-        "available": 25,
+        "available": 35,
         "name": "Kaldheim Collector Booster Pack",
         "url": "https://manapool.com/sealed/khm/collector-booster-pack"
       },
       "draft": {
         "lowCents": 636,
-        "marketCents": 600,
-        "available": 137,
+        "marketCents": 650,
+        "available": 95,
         "name": "Kaldheim Draft Booster Pack",
         "url": "https://manapool.com/sealed/khm/draft-booster-pack"
       },
       "set": {
-        "lowCents": 845,
-        "marketCents": 1062,
-        "available": 27,
+        "lowCents": 1000,
+        "marketCents": 850,
+        "available": 36,
         "name": "Kaldheim Set Booster Pack",
         "url": "https://manapool.com/sealed/khm/set-booster-pack"
       }
     },
     "kld": {
       "booster": {
-        "lowCents": 1632,
-        "marketCents": 1488,
-        "available": 26,
+        "lowCents": 1734,
+        "marketCents": 1798,
+        "available": 51,
         "name": "Kaladesh Booster Pack",
         "url": "https://manapool.com/sealed/kld/booster-pack"
       }
     },
     "ktk": {
       "booster": {
-        "lowCents": 693,
+        "lowCents": 700,
         "marketCents": 721,
-        "available": 262,
+        "available": 215,
         "name": "Khans of Tarkir Booster Pack",
         "url": "https://manapool.com/sealed/ktk/booster-pack"
       }
     },
     "lci": {
       "collector": {
-        "lowCents": 9042,
-        "marketCents": null,
-        "available": 27,
+        "lowCents": 9186,
+        "marketCents": 9042,
+        "available": 30,
         "name": "The Lost Caverns of Ixalan Collector Booster Pack",
         "url": "https://manapool.com/sealed/lci/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 428,
+        "lowCents": 560,
         "marketCents": 545,
-        "available": 59,
+        "available": 55,
         "name": "The Lost Caverns of Ixalan Draft Booster Pack",
         "url": "https://manapool.com/sealed/lci/draft-booster-pack"
       },
       "set": {
-        "lowCents": 899,
-        "marketCents": 832,
-        "available": 50,
+        "lowCents": 961,
+        "marketCents": 850,
+        "available": 65,
         "name": "The Lost Caverns of Ixalan Set Booster Pack",
         "url": "https://manapool.com/sealed/lci/set-booster-pack"
+      }
+    },
+    "leg": {
+      "booster": {
+        "lowCents": 74894,
+        "marketCents": null,
+        "available": 4,
+        "name": "Legends Booster Pack",
+        "url": "https://manapool.com/sealed/leg/booster-pack"
       }
     },
     "lgn": {
       "booster": {
         "lowCents": 3772,
         "marketCents": null,
-        "available": 13,
+        "available": 9,
         "name": "Legions Booster Pack",
         "url": "https://manapool.com/sealed/lgn/booster-pack"
       }
     },
     "lrw": {
       "booster": {
-        "lowCents": 4386,
-        "marketCents": 4950,
-        "available": 34,
+        "lowCents": 5204,
+        "marketCents": 4386,
+        "available": 5,
         "name": "Lorwyn Booster Pack",
         "url": "https://manapool.com/sealed/lrw/booster-pack"
       }
     },
     "ltr": {
       "collector": {
-        "lowCents": 18500,
-        "marketCents": 18498,
-        "available": 34,
+        "lowCents": 24399,
+        "marketCents": 18000,
+        "available": 28,
         "name": "The Lord of the Rings Tales of Middle earth Collector Booster Pack",
         "url": "https://manapool.com/sealed/ltr/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 1100,
+        "lowCents": 1250,
         "marketCents": 1326,
-        "available": 46,
+        "available": 114,
         "name": "The Lord of the Rings Tales of Middle earth Draft Booster Pack",
         "url": "https://manapool.com/sealed/ltr/draft-booster-pack"
       },
       "set": {
-        "lowCents": 982,
-        "marketCents": 989,
-        "available": 114,
+        "lowCents": 1700,
+        "marketCents": 1445,
+        "available": 41,
         "name": "The Lord of the Rings Tales of Middle earth Set Booster Pack",
         "url": "https://manapool.com/sealed/ltr/set-booster-pack"
       }
@@ -935,25 +989,25 @@
       "booster": {
         "lowCents": 2040,
         "marketCents": 2298,
-        "available": 71,
+        "available": 74,
         "name": "2010 Core Set Booster Pack",
         "url": "https://manapool.com/sealed/m10/booster-pack"
       }
     },
     "m11": {
       "booster": {
-        "lowCents": 1326,
+        "lowCents": 1530,
         "marketCents": 1545,
-        "available": 29,
+        "available": 32,
         "name": "2011 Core Set Booster Pack",
         "url": "https://manapool.com/sealed/m11/booster-pack"
       }
     },
     "m12": {
       "booster": {
-        "lowCents": 927,
+        "lowCents": 995,
         "marketCents": null,
-        "available": 34,
+        "available": 22,
         "name": "2012 Core Set Booster Pack",
         "url": "https://manapool.com/sealed/m12/booster-pack"
       }
@@ -962,7 +1016,7 @@
       "booster": {
         "lowCents": 991,
         "marketCents": 761,
-        "available": 29,
+        "available": 63,
         "name": "2013 Core Set Booster Pack",
         "url": "https://manapool.com/sealed/m13/booster-pack"
       }
@@ -971,7 +1025,7 @@
       "booster": {
         "lowCents": 956,
         "marketCents": null,
-        "available": 32,
+        "available": 45,
         "name": "2014 Core Set Booster Pack",
         "url": "https://manapool.com/sealed/m14/booster-pack"
       }
@@ -980,59 +1034,59 @@
       "booster": {
         "lowCents": 920,
         "marketCents": null,
-        "available": 22,
+        "available": 4,
         "name": "2015 Core Set Booster Pack",
         "url": "https://manapool.com/sealed/m15/booster-pack"
       }
     },
     "m19": {
       "booster": {
-        "lowCents": 618,
-        "marketCents": 624,
-        "available": 23,
+        "lowCents": 708,
+        "marketCents": 702,
+        "available": 7,
         "name": "Core Set 2019 Booster Pack",
         "url": "https://manapool.com/sealed/m19/booster-pack"
       }
     },
     "m20": {
       "booster": {
-        "lowCents": 550,
+        "lowCents": 648,
         "marketCents": 550,
-        "available": 148,
+        "available": 93,
         "name": "Core Set 2020 Booster Pack",
         "url": "https://manapool.com/sealed/m20/booster-pack"
       }
     },
     "m21": {
       "collector": {
-        "lowCents": 6882,
+        "lowCents": 7498,
         "marketCents": null,
-        "available": 19,
+        "available": 8,
         "name": "Core Set 2021 Collector Booster Pack",
         "url": "https://manapool.com/sealed/m21/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 600,
-        "marketCents": 618,
-        "available": 78,
+        "lowCents": 599,
+        "marketCents": 624,
+        "available": 197,
         "name": "Core Set 2021 Draft Booster Pack",
         "url": "https://manapool.com/sealed/m21/draft-booster-pack"
       }
     },
     "mat": {
       "collector": {
-        "lowCents": 2599,
-        "marketCents": 2158,
-        "available": 47,
+        "lowCents": 2774,
+        "marketCents": null,
+        "available": 26,
         "name": "March of the Machine The Aftermath Collector Booster Pack",
         "url": "https://manapool.com/sealed/mat/collector-booster-pack"
       }
     },
     "mb2": {
       "booster": {
-        "lowCents": 1342,
-        "marketCents": 1592,
-        "available": 246,
+        "lowCents": 1305,
+        "marketCents": 1295,
+        "available": 201,
         "name": "Mystery Booster 2 Booster Pack",
         "url": "https://manapool.com/sealed/mb2/booster-pack"
       }
@@ -1040,79 +1094,72 @@
     "mbs": {
       "booster": {
         "lowCents": 1800,
-        "marketCents": 1800,
-        "available": 21,
+        "marketCents": 1836,
+        "available": 45,
         "name": "Mirrodin Besieged Booster Pack",
         "url": "https://manapool.com/sealed/mbs/booster-pack"
       }
     },
     "mh1": {
       "booster": {
-        "lowCents": 927,
-        "marketCents": null,
-        "available": 95,
+        "lowCents": 1050,
+        "marketCents": 1020,
+        "available": 82,
         "name": "Modern Horizons Booster Pack",
         "url": "https://manapool.com/sealed/mh1/booster-pack"
       }
     },
     "mh2": {
-      "collector": {
-        "lowCents": 7998,
-        "marketCents": null,
-        "available": 8,
-        "name": "Modern Horizons 2 Collector Booster Pack",
-        "url": "https://manapool.com/sealed/mh2/collector-booster-pack"
-      },
       "draft": {
-        "lowCents": 700,
-        "marketCents": 799,
-        "available": 113,
+        "lowCents": 950,
+        "marketCents": 950,
+        "available": 150,
         "name": "Modern Horizons 2 Draft Booster Pack",
         "url": "https://manapool.com/sealed/mh2/draft-booster-pack"
       },
       "set": {
-        "lowCents": 1300,
-        "marketCents": 1250,
-        "available": 40,
+        "lowCents": 1383,
+        "marketCents": 1300,
+        "available": 14,
         "name": "Modern Horizons 2 Set Booster Pack",
         "url": "https://manapool.com/sealed/mh2/set-booster-pack"
       }
     },
     "mh3": {
       "collector": {
-        "lowCents": 8497,
-        "marketCents": 4999,
-        "available": 23,
+        "lowCents": 10498,
+        "marketCents": 8497,
+        "available": 5,
         "name": "Modern Horizons 3 Collector Booster Pack",
         "url": "https://manapool.com/sealed/mh3/collector-booster-pack"
       },
       "play": {
-        "lowCents": 809,
-        "marketCents": 871,
-        "available": 298,
+        "lowCents": 869,
+        "marketCents": 809,
+        "available": 389,
         "name": "Modern Horizons 3 Play Booster Pack",
         "url": "https://manapool.com/sealed/mh3/play-booster-pack"
       }
     },
     "mid": {
       "collector": {
-        "lowCents": 2886,
+        "lowCents": 2445,
         "marketCents": 2100,
-        "available": 15,
+        "available": 30,
         "name": "Innistrad Midnight Hunt Collector Booster Pack",
         "url": "https://manapool.com/sealed/mid/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 513,
-        "marketCents": 515,
-        "available": 124,
+        "lowCents": 495,
+        "marketCents": 523,
+        "available": 186,
         "name": "Innistrad Midnight Hunt Draft Booster Pack",
         "url": "https://manapool.com/sealed/mid/draft-booster-pack"
       },
       "set": {
-        "lowCents": 566,
-        "marketCents": 700,
-        "available": 21,
+        "lowCents": 645,
+        "marketCents": 566,
+        "available": 44,
         "name": "Innistrad Midnight Hunt Set Booster Pack",
         "url": "https://manapool.com/sealed/mid/set-booster-pack"
       }
@@ -1128,134 +1175,141 @@
     },
     "mkm": {
       "collector": {
-        "lowCents": 2833,
-        "marketCents": 2698,
+        "lowCents": 3562,
+        "marketCents": 3247,
         "available": 30,
         "name": "Murders at Karlov Manor Collector Booster Pack",
         "url": "https://manapool.com/sealed/mkm/collector-booster-pack"
       },
       "play": {
-        "lowCents": 403,
-        "marketCents": 515,
-        "available": 575,
+        "lowCents": 493,
+        "marketCents": 402,
+        "available": 545,
         "name": "Murders at Karlov Manor Play Booster Pack",
         "url": "https://manapool.com/sealed/mkm/play-booster-pack"
       }
     },
     "mm2": {
       "booster": {
-        "lowCents": 1734,
-        "marketCents": 3498,
-        "available": 17,
+        "lowCents": 2142,
+        "marketCents": null,
+        "available": 15,
         "name": "Modern Masters 2015 Booster Pack",
         "url": "https://manapool.com/sealed/mm2/booster-pack"
       }
     },
     "mm3": {
       "booster": {
-        "lowCents": 1427,
+        "lowCents": 1938,
         "marketCents": null,
-        "available": 19,
+        "available": 31,
         "name": "Modern Masters 2017 Booster Pack",
         "url": "https://manapool.com/sealed/mm3/booster-pack"
       }
     },
     "mma": {
       "draft": {
-        "lowCents": 2298,
+        "lowCents": 2142,
         "marketCents": 2488,
-        "available": 39,
+        "available": 52,
         "name": "Modern Masters Draft Booster Pack",
         "url": "https://manapool.com/sealed/mma/draft-booster-pack"
       }
     },
     "mmq": {
       "booster": {
-        "lowCents": 7787,
-        "marketCents": null,
-        "available": 4,
+        "lowCents": 6610,
+        "marketCents": 6610,
+        "available": 10,
         "name": "Mercadian Masques Booster Pack",
         "url": "https://manapool.com/sealed/mmq/booster-pack"
       }
     },
     "mom": {
+      "collector": {
+        "lowCents": 7924,
+        "marketCents": 4999,
+        "available": 5,
+        "name": "March of the Machine Collector Booster Pack",
+        "url": "https://manapool.com/sealed/mom/collector-booster-pack"
+      },
       "draft": {
-        "lowCents": 499,
+        "lowCents": 595,
         "marketCents": 550,
-        "available": 155,
+        "available": 170,
         "name": "March of the Machine Draft Booster Pack",
         "url": "https://manapool.com/sealed/mom/draft-booster-pack"
       },
       "set": {
-        "lowCents": 750,
-        "marketCents": 700,
-        "available": 27,
+        "lowCents": 814,
+        "marketCents": 750,
+        "available": 47,
         "name": "March of the Machine Set Booster Pack",
         "url": "https://manapool.com/sealed/mom/set-booster-pack"
       }
     },
     "mor": {
       "booster": {
-        "lowCents": 2448,
+        "lowCents": 2652,
         "marketCents": 2678,
-        "available": 23,
+        "available": 19,
         "name": "Morningtide Booster Pack",
         "url": "https://manapool.com/sealed/mor/booster-pack"
       }
     },
     "mrd": {
       "booster": {
-        "lowCents": 3264,
+        "lowCents": 4743,
         "marketCents": 3264,
-        "available": 22,
+        "available": 5,
         "name": "Mirrodin Booster Pack",
         "url": "https://manapool.com/sealed/mrd/booster-pack"
       }
     },
     "msh": {
       "collector": {
-        "lowCents": 6499,
-        "marketCents": null,
-        "available": 12,
+        "lowCents": 4280,
+        "marketCents": 4314,
+        "available": 359,
         "name": "Marvel Super Heroes Collector Booster Pack",
         "url": "https://manapool.com/sealed/msh/collector-booster-pack"
       },
       "play": {
-        "lowCents": 965,
-        "marketCents": null,
-        "available": 760,
+        "lowCents": 493,
+        "marketCents": 575,
+        "available": 3985,
         "name": "Marvel Super Heroes Play Booster Pack",
         "url": "https://manapool.com/sealed/msh/play-booster-pack"
       }
     },
     "nem": {
       "booster": {
-        "lowCents": 3000,
+        "lowCents": 8497,
         "marketCents": 3000,
-        "available": 34,
+        "available": 2,
         "name": "Nemesis Booster Pack",
         "url": "https://manapool.com/sealed/nem/booster-pack"
       }
     },
     "neo": {
       "collector": {
-        "lowCents": 4200,
+        "lowCents": 4199,
         "marketCents": 4080,
-        "available": 8,
+        "available": 7,
         "name": "Kamigawa Neon Dynasty Collector Booster Pack",
         "url": "https://manapool.com/sealed/neo/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 548,
-        "marketCents": 675,
-        "available": 165,
+        "lowCents": 850,
+        "marketCents": 549,
+        "available": 114,
         "name": "Kamigawa Neon Dynasty Draft Booster Pack",
         "url": "https://manapool.com/sealed/neo/draft-booster-pack"
       },
       "set": {
-        "lowCents": 1036,
+        "lowCents": 1150,
         "marketCents": 1050,
-        "available": 24,
+        "available": 16,
         "name": "Kamigawa Neon Dynasty Set Booster Pack",
         "url": "https://manapool.com/sealed/neo/set-booster-pack"
       }
@@ -1263,58 +1317,58 @@
     "nph": {
       "booster": {
         "lowCents": 3876,
-        "marketCents": null,
-        "available": 20,
+        "marketCents": 3468,
+        "available": 33,
         "name": "New Phyrexia Booster Pack",
         "url": "https://manapool.com/sealed/nph/booster-pack"
       }
     },
     "ody": {
       "booster": {
-        "lowCents": 3162,
+        "lowCents": 5026,
         "marketCents": null,
-        "available": 11,
+        "available": 34,
         "name": "Odyssey Booster Pack",
         "url": "https://manapool.com/sealed/ody/booster-pack"
       }
     },
     "ogw": {
       "booster": {
-        "lowCents": 700,
-        "marketCents": 618,
-        "available": 83,
+        "lowCents": 778,
+        "marketCents": 688,
+        "available": 70,
         "name": "Oath of the Gatewatch Booster Pack",
         "url": "https://manapool.com/sealed/ogw/booster-pack"
       }
     },
     "one": {
       "collector": {
-        "lowCents": 9599,
+        "lowCents": 11944,
         "marketCents": 8638,
-        "available": 9,
+        "available": 17,
         "name": "Phyrexia All Will Be One Collector Booster Pack",
         "url": "https://manapool.com/sealed/one/collector-booster-pack"
       },
       "draft": {
         "lowCents": 639,
-        "marketCents": 573,
+        "marketCents": 650,
         "available": 54,
         "name": "Phyrexia All Will Be One Draft Booster Pack",
         "url": "https://manapool.com/sealed/one/draft-booster-pack"
       },
       "set": {
-        "lowCents": 725,
-        "marketCents": 750,
-        "available": 61,
+        "lowCents": 879,
+        "marketCents": 725,
+        "available": 39,
         "name": "Phyrexia All Will Be One Set Booster Pack",
         "url": "https://manapool.com/sealed/one/set-booster-pack"
       }
     },
     "ons": {
       "booster": {
-        "lowCents": 6725,
-        "marketCents": 8487,
-        "available": 6,
+        "lowCents": 6700,
+        "marketCents": 7987,
+        "available": 23,
         "name": "Onslaught Booster Pack",
         "url": "https://manapool.com/sealed/ons/booster-pack"
       }
@@ -1323,50 +1377,50 @@
       "booster": {
         "lowCents": 708,
         "marketCents": 750,
-        "available": 53,
+        "available": 102,
         "name": "Magic Origins Booster Pack",
         "url": "https://manapool.com/sealed/ori/booster-pack"
       }
     },
     "otj": {
       "collector": {
-        "lowCents": 3300,
-        "marketCents": 2698,
-        "available": 33,
+        "lowCents": 4778,
+        "marketCents": 3300,
+        "available": 16,
         "name": "Outlaws of Thunder Junction Collector Booster Pack",
         "url": "https://manapool.com/sealed/otj/collector-booster-pack"
       },
       "play": {
-        "lowCents": 498,
-        "marketCents": 499,
-        "available": 215,
+        "lowCents": 522,
+        "marketCents": 532,
+        "available": 191,
         "name": "Outlaws of Thunder Junction Play Booster Pack",
         "url": "https://manapool.com/sealed/otj/play-booster-pack"
       }
     },
     "pcy": {
       "booster": {
-        "lowCents": 7417,
+        "lowCents": 7998,
         "marketCents": null,
-        "available": 12,
+        "available": 6,
         "name": "Prophecy Booster Pack",
         "url": "https://manapool.com/sealed/pcy/booster-pack"
       }
     },
     "pip": {
       "collector": {
-        "lowCents": 14907,
+        "lowCents": 19945,
         "marketCents": null,
-        "available": 29,
+        "available": 22,
         "name": "Fallout Collector Booster Pack",
         "url": "https://manapool.com/sealed/pip/collector-booster-pack"
       }
     },
     "pls": {
       "booster": {
-        "lowCents": 3500,
+        "lowCents": 3264,
         "marketCents": null,
-        "available": 38,
+        "available": 48,
         "name": "Planeshift Booster Pack",
         "url": "https://manapool.com/sealed/pls/booster-pack"
       }
@@ -1374,17 +1428,17 @@
     "rix": {
       "booster": {
         "lowCents": 675,
-        "marketCents": 700,
-        "available": 104,
+        "marketCents": 778,
+        "available": 153,
         "name": "Rivals of Ixalan Booster Pack",
         "url": "https://manapool.com/sealed/rix/booster-pack"
       }
     },
     "rna": {
       "booster": {
-        "lowCents": 514,
-        "marketCents": 520,
-        "available": 237,
+        "lowCents": 539,
+        "marketCents": 550,
+        "available": 274,
         "name": "Ravnica Allegiance Booster Pack",
         "url": "https://manapool.com/sealed/rna/booster-pack"
       }
@@ -1393,32 +1447,32 @@
       "booster": {
         "lowCents": 4275,
         "marketCents": 4488,
-        "available": 50,
+        "available": 65,
         "name": "Rise of the Eldrazi Booster Pack",
         "url": "https://manapool.com/sealed/roe/booster-pack"
       }
     },
     "rtr": {
       "booster": {
-        "lowCents": 618,
-        "marketCents": 876,
-        "available": 127,
+        "lowCents": 620,
+        "marketCents": 721,
+        "available": 92,
         "name": "Return to Ravnica Booster Pack",
         "url": "https://manapool.com/sealed/rtr/booster-pack"
       }
     },
     "rvr": {
       "collector": {
-        "lowCents": 9499,
+        "lowCents": 13363,
         "marketCents": null,
-        "available": 8,
+        "available": 4,
         "name": "Ravnica Remastered Collector Booster Pack",
         "url": "https://manapool.com/sealed/rvr/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 707,
+        "lowCents": 800,
         "marketCents": 880,
-        "available": 81,
+        "available": 87,
         "name": "Ravnica Remastered Draft Booster Pack",
         "url": "https://manapool.com/sealed/rvr/draft-booster-pack"
       }
@@ -1427,7 +1481,7 @@
       "booster": {
         "lowCents": 3600,
         "marketCents": null,
-        "available": 46,
+        "available": 43,
         "name": "Scourge Booster Pack",
         "url": "https://manapool.com/sealed/scg/booster-pack"
       }
@@ -1436,39 +1490,39 @@
       "booster": {
         "lowCents": 4375,
         "marketCents": null,
-        "available": 36,
+        "available": 35,
         "name": "Shadowmoor Booster Pack",
         "url": "https://manapool.com/sealed/shm/booster-pack"
       }
     },
     "snc": {
       "collector": {
-        "lowCents": 3100,
-        "marketCents": null,
-        "available": 21,
+        "lowCents": 2245,
+        "marketCents": 2880,
+        "available": 55,
         "name": "Streets of New Capenna Collector Booster Pack",
         "url": "https://manapool.com/sealed/snc/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 391,
-        "marketCents": 450,
-        "available": 298,
+        "lowCents": 458,
+        "marketCents": 515,
+        "available": 242,
         "name": "Streets of New Capenna Draft Booster Pack",
         "url": "https://manapool.com/sealed/snc/draft-booster-pack"
       },
       "set": {
-        "lowCents": 735,
-        "marketCents": 700,
-        "available": 49,
+        "lowCents": 725,
+        "marketCents": 750,
+        "available": 135,
         "name": "Streets of New Capenna Set Booster Pack",
         "url": "https://manapool.com/sealed/snc/set-booster-pack"
       }
     },
     "soi": {
       "booster": {
-        "lowCents": 618,
+        "lowCents": 672,
         "marketCents": 618,
-        "available": 36,
+        "available": 35,
         "name": "Shadows over Innistrad Booster Pack",
         "url": "https://manapool.com/sealed/soi/booster-pack"
       }
@@ -1484,41 +1538,41 @@
     },
     "som": {
       "booster": {
-        "lowCents": 1836,
-        "marketCents": 1632,
-        "available": 24,
+        "lowCents": 2245,
+        "marketCents": 1836,
+        "available": 36,
         "name": "Scars of Mirrodin Booster Pack",
         "url": "https://manapool.com/sealed/som/booster-pack"
       }
     },
     "sos": {
       "collector": {
-        "lowCents": 3998,
-        "marketCents": 4094,
-        "available": 289,
+        "lowCents": 4443,
+        "marketCents": 4064,
+        "available": 230,
         "name": "Secrets of Strixhaven Collector Booster Pack",
         "url": "https://manapool.com/sealed/sos/collector-booster-pack"
       },
       "play": {
-        "lowCents": 461,
-        "marketCents": 500,
-        "available": 1301,
+        "lowCents": 399,
+        "marketCents": 397,
+        "available": 1059,
         "name": "Secrets of Strixhaven Play Booster Pack",
         "url": "https://manapool.com/sealed/sos/play-booster-pack"
       }
     },
     "spm": {
       "collector": {
-        "lowCents": 2995,
-        "marketCents": 3000,
-        "available": 193,
+        "lowCents": 3094,
+        "marketCents": 2999,
+        "available": 158,
         "name": "Marvels Spider Man Collector Booster Pack",
         "url": "https://manapool.com/sealed/spm/collector-booster-pack"
       },
       "play": {
-        "lowCents": 424,
-        "marketCents": 437,
-        "available": 1603,
+        "lowCents": 415,
+        "marketCents": 424,
+        "available": 1413,
         "name": "Marvels Spider Man Play Booster Pack",
         "url": "https://manapool.com/sealed/spm/play-booster-pack"
       }
@@ -1534,55 +1588,55 @@
     },
     "stx": {
       "collector": {
-        "lowCents": 7952,
-        "marketCents": 7498,
-        "available": 8,
+        "lowCents": 11497,
+        "marketCents": 10497,
+        "available": 5,
         "name": "Strixhaven School of Mages Collector Booster Pack",
         "url": "https://manapool.com/sealed/stx/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 599,
+        "lowCents": 625,
         "marketCents": 649,
-        "available": 85,
+        "available": 141,
         "name": "Strixhaven School of Mages Draft Booster Pack",
         "url": "https://manapool.com/sealed/stx/draft-booster-pack"
       },
       "set": {
-        "lowCents": 639,
+        "lowCents": 950,
         "marketCents": 750,
-        "available": 95,
+        "available": 46,
         "name": "Strixhaven School of Mages Set Booster Pack",
         "url": "https://manapool.com/sealed/stx/set-booster-pack"
       }
     },
     "tdm": {
       "collector": {
-        "lowCents": 3500,
-        "marketCents": 3400,
-        "available": 15,
+        "lowCents": 3799,
+        "marketCents": 3500,
+        "available": 39,
         "name": "Tarkir Dragonstorm Collector Booster Pack",
         "url": "https://manapool.com/sealed/tdm/collector-booster-pack"
       },
       "play": {
-        "lowCents": 449,
-        "marketCents": 544,
-        "available": 656,
+        "lowCents": 455,
+        "marketCents": 475,
+        "available": 636,
         "name": "Tarkir Dragonstorm Play Booster Pack",
         "url": "https://manapool.com/sealed/tdm/play-booster-pack"
       }
     },
     "thb": {
       "collector": {
-        "lowCents": 4048,
+        "lowCents": 4640,
         "marketCents": 4048,
-        "available": 3,
+        "available": 25,
         "name": "Theros Beyond Death Collector Booster Pack",
         "url": "https://manapool.com/sealed/thb/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 460,
-        "marketCents": 510,
-        "available": 98,
+        "lowCents": 554,
+        "marketCents": 600,
+        "available": 158,
         "name": "Theros Beyond Death Draft Booster Pack",
         "url": "https://manapool.com/sealed/thb/draft-booster-pack"
       }
@@ -1591,23 +1645,23 @@
       "booster": {
         "lowCents": 719,
         "marketCents": 927,
-        "available": 53,
+        "available": 49,
         "name": "Theros Booster Pack",
         "url": "https://manapool.com/sealed/ths/booster-pack"
       }
     },
     "tla": {
       "collector": {
-        "lowCents": 3598,
-        "marketCents": 3499,
-        "available": 82,
+        "lowCents": 3945,
+        "marketCents": 3769,
+        "available": 44,
         "name": "Avatar The Last Airbender Collector Booster Pack",
         "url": "https://manapool.com/sealed/tla/collector-booster-pack"
       },
       "play": {
-        "lowCents": 515,
-        "marketCents": 618,
-        "available": 1631,
+        "lowCents": 385,
+        "marketCents": 515,
+        "available": 1754,
         "name": "Avatar The Last Airbender Play Booster Pack",
         "url": "https://manapool.com/sealed/tla/play-booster-pack"
       }
@@ -1623,34 +1677,34 @@
     },
     "tmt": {
       "collector": {
-        "lowCents": 4297,
+        "lowCents": 4242,
         "marketCents": 4297,
-        "available": 46,
+        "available": 42,
         "name": "Teenage Mutant Ninja Turtles Collector Booster Pack",
         "url": "https://manapool.com/sealed/tmt/collector-booster-pack"
       },
       "play": {
-        "lowCents": 429,
-        "marketCents": 599,
-        "available": 1545,
+        "lowCents": 299,
+        "marketCents": 361,
+        "available": 1749,
         "name": "Teenage Mutant Ninja Turtles Play Booster Pack",
         "url": "https://manapool.com/sealed/tmt/play-booster-pack"
       }
     },
     "tor": {
       "booster": {
-        "lowCents": 4601,
+        "lowCents": 3734,
         "marketCents": null,
-        "available": 17,
+        "available": 19,
         "name": "Torment Booster Pack",
         "url": "https://manapool.com/sealed/tor/booster-pack"
       }
     },
     "tsp": {
       "booster": {
-        "lowCents": 3800,
+        "lowCents": 7100,
         "marketCents": 2575,
-        "available": 31,
+        "available": 11,
         "name": "Time Spiral Booster Pack",
         "url": "https://manapool.com/sealed/tsp/booster-pack"
       }
@@ -1658,15 +1712,15 @@
     "tsr": {
       "draft": {
         "lowCents": 1119,
-        "marketCents": 1096,
-        "available": 95,
+        "marketCents": 1300,
+        "available": 18,
         "name": "Time Spiral Remastered Draft Booster Pack",
         "url": "https://manapool.com/sealed/tsr/draft-booster-pack"
       }
     },
     "uds": {
       "booster": {
-        "lowCents": 12650,
+        "lowCents": 13200,
         "marketCents": null,
         "available": 4,
         "name": "Urzas Destiny Booster Pack",
@@ -1684,9 +1738,9 @@
     },
     "ulg": {
       "booster": {
-        "lowCents": 12500,
+        "lowCents": 14898,
         "marketCents": null,
-        "available": 11,
+        "available": 6,
         "name": "Urzas Legacy Booster Pack",
         "url": "https://manapool.com/sealed/ulg/booster-pack"
       }
@@ -1694,24 +1748,24 @@
     "uma": {
       "draft": {
         "lowCents": 1950,
-        "marketCents": null,
-        "available": 50,
+        "marketCents": 1950,
+        "available": 101,
         "name": "Ultimate Masters Draft Booster Pack",
         "url": "https://manapool.com/sealed/uma/draft-booster-pack"
       }
     },
     "unf": {
       "collector": {
-        "lowCents": 3772,
+        "lowCents": 3682,
         "marketCents": null,
-        "available": 6,
+        "available": 12,
         "name": "Unfinity Collector Booster Pack",
         "url": "https://manapool.com/sealed/unf/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 495,
+        "lowCents": 525,
         "marketCents": 600,
-        "available": 35,
+        "available": 53,
         "name": "Unfinity Draft Booster Pack",
         "url": "https://manapool.com/sealed/unf/draft-booster-pack"
       }
@@ -1728,15 +1782,15 @@
     "ust": {
       "booster": {
         "lowCents": 814,
-        "marketCents": null,
-        "available": 10,
+        "marketCents": 800,
+        "available": 21,
         "name": "Unstable Booster Pack",
         "url": "https://manapool.com/sealed/ust/booster-pack"
       }
     },
     "vis": {
       "booster": {
-        "lowCents": 6864,
+        "lowCents": 7464,
         "marketCents": null,
         "available": 3,
         "name": "Visions Booster Pack",
@@ -1745,41 +1799,41 @@
     },
     "vow": {
       "collector": {
-        "lowCents": 3100,
+        "lowCents": 2945,
         "marketCents": 3643,
-        "available": 12,
+        "available": 36,
         "name": "Innistrad Crimson Vow Collector Booster Pack",
         "url": "https://manapool.com/sealed/vow/collector-booster-pack"
       },
       "draft": {
         "lowCents": 350,
-        "marketCents": 515,
-        "available": 143,
+        "marketCents": 530,
+        "available": 123,
         "name": "Innistrad Crimson Vow Draft Booster Pack",
         "url": "https://manapool.com/sealed/vow/draft-booster-pack"
       },
       "set": {
-        "lowCents": 750,
-        "marketCents": 750,
-        "available": 54,
+        "lowCents": 795,
+        "marketCents": 850,
+        "available": 37,
         "name": "Innistrad Crimson Vow Set Booster Pack",
         "url": "https://manapool.com/sealed/vow/set-booster-pack"
       }
     },
     "war": {
       "booster": {
-        "lowCents": 618,
+        "lowCents": 650,
         "marketCents": 650,
-        "available": 86,
+        "available": 192,
         "name": "War of the Spark Booster Pack",
         "url": "https://manapool.com/sealed/war/booster-pack"
       }
     },
     "who": {
       "collector": {
-        "lowCents": 5395,
+        "lowCents": 5842,
         "marketCents": 5499,
-        "available": 6,
+        "available": 21,
         "name": "Doctor Who Collector Booster Pack",
         "url": "https://manapool.com/sealed/who/collector-booster-pack"
       }
@@ -1788,28 +1842,28 @@
       "collector": {
         "lowCents": 8500,
         "marketCents": 8710,
-        "available": 27,
+        "available": 33,
         "name": "Wilds of Eldraine Collector Booster Pack",
         "url": "https://manapool.com/sealed/woe/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 849,
-        "marketCents": 700,
-        "available": 35,
+        "lowCents": 1050,
+        "marketCents": 750,
+        "available": 69,
         "name": "Wilds of Eldraine Draft Booster Pack",
         "url": "https://manapool.com/sealed/woe/draft-booster-pack"
       },
       "set": {
-        "lowCents": 2798,
-        "marketCents": 1100,
-        "available": 30,
+        "lowCents": 2499,
+        "marketCents": 1250,
+        "available": 16,
         "name": "Wilds of Eldraine Set Booster Pack",
         "url": "https://manapool.com/sealed/woe/set-booster-pack"
       }
     },
     "wth": {
       "booster": {
-        "lowCents": 3600,
+        "lowCents": 3999,
         "marketCents": null,
         "available": 4,
         "name": "Weatherlight Booster Pack",
@@ -1820,7 +1874,7 @@
       "booster": {
         "lowCents": 3060,
         "marketCents": null,
-        "available": 36,
+        "available": 52,
         "name": "Worldwake Booster Pack",
         "url": "https://manapool.com/sealed/wwk/booster-pack"
       }
@@ -1829,39 +1883,39 @@
       "booster": {
         "lowCents": 600,
         "marketCents": 618,
-        "available": 108,
+        "available": 148,
         "name": "Ixalan Booster Pack",
         "url": "https://manapool.com/sealed/xln/booster-pack"
       }
     },
     "zen": {
       "booster": {
-        "lowCents": 2958,
+        "lowCents": 2856,
         "marketCents": 2883,
-        "available": 36,
+        "available": 49,
         "name": "Zendikar Booster Pack",
         "url": "https://manapool.com/sealed/zen/booster-pack"
       }
     },
     "znr": {
       "collector": {
-        "lowCents": 3600,
-        "marketCents": 4498,
-        "available": 44,
+        "lowCents": 3900,
+        "marketCents": null,
+        "available": 53,
         "name": "Zendikar Rising Collector Booster Pack",
         "url": "https://manapool.com/sealed/znr/collector-booster-pack"
       },
       "draft": {
-        "lowCents": 443,
-        "marketCents": 600,
-        "available": 72,
+        "lowCents": 495,
+        "marketCents": 550,
+        "available": 173,
         "name": "Zendikar Rising Draft Booster Pack",
         "url": "https://manapool.com/sealed/znr/draft-booster-pack"
       },
       "set": {
-        "lowCents": 600,
+        "lowCents": 650,
         "marketCents": 600,
-        "available": 51,
+        "available": 30,
         "name": "Zendikar Rising Set Booster Pack",
         "url": "https://manapool.com/sealed/znr/set-booster-pack"
       }

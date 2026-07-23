@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSet, getSetCards, getSetTokens, trimCardPool, trimPoolLanguages } from "@/lib/scryfall";
+import { getSet, getSetCards, getSetTokens, isComingSoonSet, trimCardPool, trimPoolLanguages } from "@/lib/scryfall";
+import { ComingSoonSetPage } from "@/app/_components/ComingSoonSetPage";
 import type { ScryfallCard } from "@/lib/scryfall";
 import { recommendedPackType, type PackType } from "@/lib/pack-rules";
 import { collectRecipeLanguages, collectReferencedSets } from "@/lib/booster-config";
@@ -53,6 +54,12 @@ export default async function SealedSetPage({ params }: Props) {
   if (!code) notFound();
   const set = await getSet(code);
   if (!set) notFound();
+
+  // Unreleased sets can't build a sealed pool yet — teaser until
+  // street date.
+  if (isComingSoonSet(set)) {
+    return <ComingSoonSetPage set={set} backHref="/sealed" backLabel="All sealed sets" />;
+  }
 
   // Pick the canonical pack type for sealed: play if supported, else draft,
   // else whatever else this set offers. We don't expose a chooser on this

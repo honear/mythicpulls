@@ -200,11 +200,41 @@ export async function getSets(): Promise<ScryfallSet[]> {
  *  this floor easily (typical: 250+ cards). */
 const MIN_CARDS_FOR_PACK = 100;
 
+/** How many days before street date a set may enter the catalog.
+ *  Sets inside this window but not yet released render as "Coming
+ *  soon" (see isComingSoonSet) — a teaser tile + set page, with pack
+ *  opening / draft / sealed gated until release day. 30 days ≈ when
+ *  preview season starts and a set first clears the ≥100-card floor,
+ *  so in practice the window opens itself as soon as a teaser is
+ *  meaningful. Mirrored in scripts/build-set-art.mjs — keep in sync. */
+const PREVIEW_LOOKAHEAD_DAYS = 30;
+
+/** Today as a Scryfall-style YYYY-MM-DD string (UTC). Server pages
+ *  compute this once and thread it down to client components so
+ *  server and client agree on "today" within a render. */
+export function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/** True when the set is listed in the catalog but hasn't reached its
+ *  street date — i.e. inside the PREVIEW_LOOKAHEAD_DAYS teaser window.
+ *  Pure string compare; pass a server-computed todayIso() through
+ *  props when calling from client components to avoid hydration
+ *  drift across midnight. Flips false (set goes live) automatically
+ *  on release day — remember the release-week pool re-bake
+ *  (scripts/build-set-cards.mjs) so day-one packs roll a full pool. */
+export function isComingSoonSet(
+  set: Pick<ScryfallSet, "released_at">,
+  today: string = todayIso(),
+): boolean {
+  return !!set.released_at && set.released_at > today;
+}
+
 /** Sets that have boosters, non-digital, with enough cards to feel
- *  like a real booster pool, and are released OR within the 21-day
- *  preview lookahead (Scryfall lists far-future announced sets too —
- *  the horizon keeps those out so "Recent" stays meaningful while
- *  letting imminent releases like Marvel Super Heroes appear during
+ *  like a real booster pool, and are released OR within the preview
+ *  lookahead (Scryfall lists far-future announced sets too — the
+ *  horizon keeps those out so "Recent" stays meaningful while letting
+ *  imminent releases like The Hobbit appear as "Coming soon" during
  *  preview season). */
 export async function getOpenableSets(): Promise<ScryfallSet[]> {
   const sets = await getSets();
@@ -217,7 +247,7 @@ export async function getOpenableSets(): Promise<ScryfallSet[]> {
     "remastered",
   ]);
   const horizonDate = new Date();
-  horizonDate.setDate(horizonDate.getDate() + 21);
+  horizonDate.setDate(horizonDate.getDate() + PREVIEW_LOOKAHEAD_DAYS);
   const horizon = horizonDate.toISOString().slice(0, 10);
   return sets
     .filter(
@@ -225,13 +255,11 @@ export async function getOpenableSets(): Promise<ScryfallSet[]> {
         !s.digital &&
         s.card_count >= MIN_CARDS_FOR_PACK &&
         allowed.has(s.set_type) &&
-        // Release lookahead: sets within 21 days of release are shown in
-        // the catalog during preview season (e.g. Marvel Super Heroes in
-        // the run-up to 2026-06-26). By that point Scryfall has the bulk
-        // of the set catalogued and the recipes' graceful fallbacks cover
-        // any not-yet-indexed chase variants. The ≥100-card floor still
-        // applies, so a just-announced set with a handful of previews
-        // stays hidden.
+        // Release lookahead: unreleased sets inside the window appear in
+        // the catalog as "Coming soon" teasers (isComingSoonSet) rather
+        // than openable sets — pack opening unlocks on street date. The
+        // ≥100-card floor still applies, so a just-announced set with a
+        // handful of previews stays hidden entirely.
         (!s.released_at || s.released_at <= horizon),
     )
     .sort((a, b) =>

@@ -8,7 +8,8 @@
     "start": "next start",
     "refresh:manapool": "node scripts/fetch-manapool-prices.mjs",
     "warm-cache": "node scripts/warm-cache.mjs",
-    "refresh:set-cards": "node scripts/build-set-cards.mjs"
+    "refresh:set-cards": "node scripts/build-set-cards.mjs",
+    "build:connections": "node scripts/build-connections.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

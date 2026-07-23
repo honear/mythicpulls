@@ -1,0 +1,4 @@
+{
+ "_doc": "Hand-authored daily overrides for Confluence. Keys are UTC dates (YYYY-MM-DD); values use the same puzzle shape as puzzles.json (id + groups[4] each with title/difficulty/cards[4]). A date present here replaces the generated rotation for that day. Keys starting with _ are ignored.",
+ "byDate": {}
+}

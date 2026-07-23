@@ -1,0 +1,637 @@
+{
+  "_doc": "Magic: The Gathering | The Hobbit (code HOB) — Universes Beyond expansion, releases 2026-08-14. Source: https://magic.wizards.com/en/news/feature/collecting-the-hobbit (odds extracted verbatim from the article text 2026-07-23, mid-preview — ~127 of the set's prints indexed on Scryfall). Lineup is Play Boosters + Collector Boosters only (Draft Night is a Play Booster event box; Scene Boxes / Bundles / Box Toppers are not modeled as packs), hence authoritative:true. MSRPs from the article: Play $6.99, Collector $37.99. Per-slot weight conversions follow msh.json's conventions: the three per-BOOSTER phrasings are divided across their slot group — common-slot scenes '7.8%' -> 7.8/7 = 1.1 per common slot, uncommon-slot scenes '5.5%' -> 5.5/3 = 1.8 and Dragon hoard '10.9%' -> 10.9/3 = 3.6 per uncommon slot, Collector uncommon-slot surge Dragon hoard 'In 1 of 10 Collector Boosters' -> (100/10)/4 = 2.5 per slot; sub-percentages reported as 'less than 1%' are entered as 0.5; the ~500-copy gleaming gold Smaug headliner is 0.1, mirroring spm.json's Soul Stone / msh.json's cosmic Mind Stone convention. Art-card slot: 'Art card (35%) or traditional foil double-sided token (65%)', '1 in 7 art cards gold stamped' -> 30 art / 5 stamped / 65 token. All hob_*/hoc_* filters are collector-number blocks derived from the article's image filenames + sheet censuses and cross-checked against the indexed pool — see _doc_hob in data/filters.json for the full CN map, the preview-era tagging caveats, and the REQUIRED post-release audit (~2026-08-14): re-census every block against the released pool exactly like msh.json's AUDIT 2026-07 #2 before trusting chase rates. The 'Middle-earth classic artist', 'Scene Box scene', and 'Dwarvish language' sheets live in the eternal-legal companion set HOC (Scryfall: The Hobbit Commander), not HOB — those outcomes reference set HOC directly. The Collector non-foil Booster Fun slot's 'mythic rare extended-art HOC card (5.3%)' block is not yet indexed, so that outcome uses the generic frame-based extended_art filter scoped to HOC — it matches nothing until Scryfall catalogues those prints, then self-corrects; pin its CN block during the audit. Seasonal Hobbit basics (#313-320, Bundle/Prerelease/Gift Bundle only) are deliberately reachable by NO outcome. Dwarvish outcomes' filter carries lang:'dw' so collectRecipeLanguages keeps Dwarvish prints in the client pool.",
+  "authoritative": true,
+  "costUsd": {
+    "play": 6.99,
+    "collector": 37.99
+  },
+  "play": {
+    "cardCount": 15,
+    "tagline": "14 cards + token · 1 rare/mythic · 1 foil · scene, Dragon hoard & book cover odds per Wizards' spec",
+    "slots": [
+      {
+        "label": "Token",
+        "token": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "$tokens"
+          }
+        ]
+      },
+      {
+        "label": "Common",
+        "count": 7,
+        "outcomes": [
+          {
+            "weight": 98.9,
+            "set": "HOB",
+            "rarity": "common",
+            "filter": "hob_main_common"
+          },
+          {
+            "weight": 1.1,
+            "set": "HOB",
+            "rarity": "common",
+            "filter": "hob_scene",
+            "label": "Scene Card"
+          }
+        ]
+      },
+      {
+        "label": "Uncommon",
+        "count": 3,
+        "outcomes": [
+          {
+            "weight": 94.5,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_main"
+          },
+          {
+            "weight": 1.8,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_scene",
+            "label": "Scene Card"
+          },
+          {
+            "weight": 3.6,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          }
+        ]
+      },
+      {
+        "label": "Wildcard",
+        "outcomes": [
+          {
+            "weight": 74.17,
+            "set": "HOB",
+            "rarity": "common",
+            "filter": "hob_main_common"
+          },
+          {
+            "weight": 3.9,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_main"
+          },
+          {
+            "weight": 17.3,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_main"
+          },
+          {
+            "weight": 2.3,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_main"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "common",
+            "filter": "hob_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_book_cover",
+            "label": "Book Cover"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_book_cover",
+            "label": "Book Cover"
+          }
+        ]
+      },
+      {
+        "label": "Rare / Mythic",
+        "outcomes": [
+          {
+            "weight": 82.9,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_main"
+          },
+          {
+            "weight": 11.1,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_main"
+          },
+          {
+            "weight": 1.8,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 2.3,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_book_cover",
+            "label": "Book Cover"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_book_cover",
+            "label": "Book Cover"
+          }
+        ]
+      },
+      {
+        "label": "Foil",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 59.8,
+            "set": "HOB",
+            "rarity": "common",
+            "filter": "hob_main_common"
+          },
+          {
+            "weight": 29.3,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_main"
+          },
+          {
+            "weight": 7.1,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_main"
+          },
+          {
+            "weight": 1,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_main"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "common",
+            "filter": "hob_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_book_cover",
+            "label": "Book Cover"
+          },
+          {
+            "weight": 0.5,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_book_cover",
+            "label": "Book Cover"
+          }
+        ]
+      },
+      {
+        "label": "Land",
+        "basicLand": true,
+        "outcomes": [
+          {
+            "weight": 26.7,
+            "set": "HOB",
+            "filter": "non_full_art_basic"
+          },
+          {
+            "weight": 6.7,
+            "set": "HOB",
+            "filter": "non_full_art_basic",
+            "foil": true
+          },
+          {
+            "weight": 13.3,
+            "set": "HOB",
+            "filter": "hob_journey_basic",
+            "label": "Journey Land"
+          },
+          {
+            "weight": 3.3,
+            "set": "HOB",
+            "filter": "hob_journey_basic",
+            "foil": true,
+            "label": "Journey Land"
+          },
+          {
+            "weight": 40,
+            "set": "HOB",
+            "filter": "hob_dual_land",
+            "label": "Dual Land"
+          },
+          {
+            "weight": 10,
+            "set": "HOB",
+            "filter": "hob_dual_land",
+            "foil": true,
+            "label": "Dual Land"
+          }
+        ]
+      }
+    ]
+  },
+  "collector": {
+    "cardCount": 16,
+    "tagline": "15 premium cards · all-foil core · scenes, Dwarvish, surge hoards & the gold Smaug chase",
+    "slots": [
+      {
+        "label": "Art Card / Token",
+        "token": true,
+        "outcomes": [
+          {
+            "weight": 65,
+            "set": "$tokens",
+            "foil": true,
+            "label": "Foil Double-Sided Token"
+          },
+          {
+            "weight": 30,
+            "set": "$tokens",
+            "label": "Art Card"
+          },
+          {
+            "weight": 5,
+            "set": "$tokens",
+            "filter": "gold_stamped",
+            "label": "Gold-Stamped Art Card"
+          }
+        ]
+      },
+      {
+        "label": "Foil Common",
+        "count": 5,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 89.6,
+            "set": "HOB",
+            "rarity": "common",
+            "filter": "hob_main_common"
+          },
+          {
+            "weight": 7.5,
+            "set": "HOB",
+            "filter": "hob_dual_land",
+            "label": "Dual Land"
+          },
+          {
+            "weight": 3,
+            "set": "HOB",
+            "rarity": "common",
+            "filter": "hob_scene",
+            "label": "Scene"
+          }
+        ]
+      },
+      {
+        "label": "Foil Uncommon",
+        "count": 4,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 84.6,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_main"
+          },
+          {
+            "weight": 6.2,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 9.2,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 2.5,
+            "set": "HOB",
+            "rarity": "uncommon",
+            "filter": "hob_surge_dragon_hoard",
+            "label": "Surge Foil Dragon Hoard"
+          }
+        ]
+      },
+      {
+        "label": "Foil Journey Land",
+        "basicLand": true,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 1,
+            "set": "HOB",
+            "filter": "hob_journey_basic",
+            "label": "Journey Land"
+          }
+        ]
+      },
+      {
+        "label": "Foil Rare / Mythic",
+        "count": 2,
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 87.6,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_main"
+          },
+          {
+            "weight": 12.4,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_main"
+          }
+        ]
+      },
+      {
+        "label": "Non-Foil Booster Fun",
+        "count": 2,
+        "outcomes": [
+          {
+            "weight": 10.1,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 14.2,
+            "set": "HOC",
+            "filter": "hoc_scene_box",
+            "label": "Scene Box Scene"
+          },
+          {
+            "weight": 13.1,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 4.5,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 4.2,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_book_cover",
+            "label": "Book Cover"
+          },
+          {
+            "weight": 3.3,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_book_cover",
+            "label": "Book Cover"
+          },
+          {
+            "weight": 11.9,
+            "set": "HOC",
+            "filter": "hoc_classic_artist",
+            "label": "Middle-earth Classic Artist"
+          },
+          {
+            "weight": 1.5,
+            "set": "HOC",
+            "filter": "hoc_dwarvish",
+            "label": "Dwarvish Language"
+          },
+          {
+            "weight": 30.9,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_extended_art",
+            "label": "Extended Art"
+          },
+          {
+            "weight": 1.2,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_extended_art",
+            "label": "Extended Art"
+          },
+          {
+            "weight": 5.3,
+            "set": "HOC",
+            "rarity": "mythic",
+            "filter": "extended_art",
+            "label": "Extended Art Commander"
+          }
+        ]
+      },
+      {
+        "label": "Foil Booster Fun",
+        "foil": true,
+        "outcomes": [
+          {
+            "weight": 11,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_scene",
+            "label": "Scene"
+          },
+          {
+            "weight": 14.3,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 4.9,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_dragon_hoard",
+            "label": "Dragon Hoard"
+          },
+          {
+            "weight": 6.5,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_surge_dragon_hoard",
+            "label": "Surge Foil Dragon Hoard"
+          },
+          {
+            "weight": 2.4,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_surge_dragon_hoard",
+            "label": "Surge Foil Dragon Hoard"
+          },
+          {
+            "weight": 4.6,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_book_cover",
+            "label": "Book Cover"
+          },
+          {
+            "weight": 3.6,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_book_cover",
+            "label": "Book Cover"
+          },
+          {
+            "weight": 2.4,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_surge_book_cover",
+            "label": "Surge Foil Book Cover"
+          },
+          {
+            "weight": 1.8,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_surge_book_cover",
+            "label": "Surge Foil Book Cover"
+          },
+          {
+            "weight": 11.9,
+            "set": "HOC",
+            "filter": "hoc_classic_artist_surge",
+            "label": "Surge Foil Classic Artist"
+          },
+          {
+            "weight": 1.6,
+            "set": "HOC",
+            "filter": "hoc_dwarvish",
+            "label": "Dwarvish Language"
+          },
+          {
+            "weight": 33.8,
+            "set": "HOB",
+            "rarity": "rare",
+            "filter": "hob_extended_art",
+            "label": "Extended Art"
+          },
+          {
+            "weight": 1.3,
+            "set": "HOB",
+            "rarity": "mythic",
+            "filter": "hob_extended_art",
+            "label": "Extended Art"
+          },
+          {
+            "weight": 0.1,
+            "set": "HOB",
+            "filter": "headliner",
+            "label": "Gleaming Gold Smaug"
+          }
+        ]
+      }
+    ]
+  }
+}

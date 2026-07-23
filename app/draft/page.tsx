@@ -1,5 +1,5 @@
 import { Users } from "lucide-react";
-import { getOpenableSets, getSetSampleArt } from "@/lib/scryfall";
+import { getOpenableSets, getSetSampleArt, isComingSoonSet } from "@/lib/scryfall";
 import { mapWithConcurrency } from "@/lib/concurrency";
 import { getSetArtMap, type SetArtEntry } from "@/lib/set-art";
 import { SetGrid } from "../_components/SetGrid";
@@ -14,7 +14,10 @@ const FALLBACK_CONCURRENCY = 4;
  * jump in and the curious know the shape of the game before clicking.
  */
 export default async function DraftSetPickerPage() {
-  const sets = await getOpenableSets();
+  // Coming-soon sets are omitted here entirely (vs. the /sets catalog's
+  // teaser tiles) — a preview-season pool can't seat a draft, and a
+  // tile that can't start one would just dead-end.
+  const sets = (await getOpenableSets()).filter((s) => !isComingSoonSet(s));
 
   const sampleArt: Record<string, SetArtEntry> = { ...getSetArtMap() };
   const missing = sets.filter((s) => !sampleArt[s.code.toLowerCase()]);

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { getOpenableSets, getSetSampleArt } from "@/lib/scryfall";
+import { getOpenableSets, getSetSampleArt, todayIso } from "@/lib/scryfall";
 import { mapWithConcurrency } from "@/lib/concurrency";
 import { getSetArtMap, type SetArtEntry } from "@/lib/set-art";
 import { SetGrid } from "../_components/SetGrid";
@@ -79,7 +79,10 @@ export default async function SetsPage() {
           buy only the cards you actually want.
         </p>
       </header>
-      <SetGrid sets={sets} sampleArt={sampleArt} />
+      {/* todayIso threads the server's "today" into the client grid so
+          unreleased sets inside the preview window render as Coming
+          Soon tiles (isComingSoonSet) without hydration drift. */}
+      <SetGrid sets={sets} sampleArt={sampleArt} todayIso={todayIso()} />
     </div>
   );
 }

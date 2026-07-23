@@ -1,5 +1,5 @@
 import { Swords } from "lucide-react";
-import { getOpenableSets, getSetSampleArt } from "@/lib/scryfall";
+import { getOpenableSets, getSetSampleArt, isComingSoonSet } from "@/lib/scryfall";
 import { mapWithConcurrency } from "@/lib/concurrency";
 import { getSetArtMap, type SetArtEntry } from "@/lib/set-art";
 import { SetGrid } from "../_components/SetGrid";
@@ -16,7 +16,9 @@ const FALLBACK_CONCURRENCY = 4;
  * for before picking a set.
  */
 export default async function SealedSetPickerPage() {
-  const sets = await getOpenableSets();
+  // Coming-soon sets are omitted here entirely (vs. the /sets catalog's
+  // teaser tiles) — no sealed pool exists before street date.
+  const sets = (await getOpenableSets()).filter((s) => !isComingSoonSet(s));
 
   const sampleArt: Record<string, SetArtEntry> = { ...getSetArtMap() };
   const missing = sets.filter((s) => !sampleArt[s.code.toLowerCase()]);

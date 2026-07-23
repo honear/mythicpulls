@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Menu, PackageOpen, Swords, Users, X } from "lucide-react";
+import { Grid3x3, Menu, PackageOpen, Swords, Users, X } from "lucide-react";
 import { SupportButton } from "./SupportButton";
 // HoloToggle moved out of the site nav into the PackOpener's MoneyStrip.
 // Reasoning: the holo style only affects revealed cards, so it lives best
@@ -38,6 +38,7 @@ export function SiteHeader() {
   // the homepage redesign moved off the catalog grid. Highlight on any
   // /sets/* path (the picker itself and any /sets/<code> child).
   const onOpenPacks = pathname.startsWith("/sets");
+  const onPuzzle = pathname.startsWith("/connections");
 
   // Auto-close the mobile menu on route change so navigating from inside
   // it doesn't leave the panel parked open over the next page.
@@ -142,6 +143,22 @@ export function SiteHeader() {
             <Swords className="w-4 h-4" />
             <span className="hidden lg:inline whitespace-nowrap">Build Sealed</span>
             <span className="lg:hidden">Sealed</span>
+          </Link>
+          <Link
+            href="/connections"
+            aria-current={onPuzzle ? "page" : undefined}
+            className="inline-flex items-center gap-2 h-[38px] pl-3 pr-4 rounded-[10px] text-[14px] font-medium transition-all"
+            style={{
+              background: "var(--accent-purple)",
+              color: "white",
+              fontFamily: "var(--font-btn)",
+              boxShadow:
+                "0 8px 20px -8px var(--accent-purple-glow), inset 0 1px 0 rgba(255,255,255,0.18)",
+            }}
+          >
+            <Grid3x3 className="w-4 h-4" />
+            <span className="hidden lg:inline whitespace-nowrap">Daily Puzzle</span>
+            <span className="lg:hidden">Puzzle</span>
           </Link>
           <Link
             href="/collection"
@@ -274,6 +291,22 @@ export function SiteHeader() {
             >
               <Swords className="w-4 h-4" />
               Practice Sealed
+            </Link>
+            <Link
+              href="/connections"
+              role="menuitem"
+              aria-current={onPuzzle ? "page" : undefined}
+              className="inline-flex items-center gap-2 h-11 px-4 rounded-[10px] text-[15px] font-medium"
+              style={{
+                background: "var(--accent-purple)",
+                color: "white",
+                fontFamily: "var(--font-btn)",
+                boxShadow:
+                  "0 8px 20px -8px var(--accent-purple-glow), inset 0 1px 0 rgba(255,255,255,0.18)",
+              }}
+            >
+              <Grid3x3 className="w-4 h-4" />
+              Daily Puzzle
             </Link>
             <Link
               href="/collection"
