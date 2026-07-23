@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { CalendarDays, Eye, EyeOff, Infinity as InfinityIcon, Share2, Shuffle, Sparkles } from "lucide-react";
 // Type-only import — MUST stay `import type`. lib/connections.ts pulls
 // in the full puzzle pool (every answer, ~600KB); a value import here
@@ -18,7 +19,7 @@ import type { ConnectionsPuzzle } from "@/lib/connections";
  *             persisted per-date so a refresh mid-solve resumes, and
  *             finishing feeds the streak stats.
  *   endless — random boards fetched one at a time from
- *             /api/connections/puzzle. No persistence, no stats.
+ *             /api/confluence/puzzle. No persistence, no stats.
  *
  * Art toggle: tiles show the card's art crop by default ("recognition
  * mode" — approachable for casual players, and makes artist groups
@@ -33,10 +34,13 @@ import type { ConnectionsPuzzle } from "@/lib/connections";
  * repo-wide rule (renaming the prefix would orphan every user's data).
  */
 
-const STATE_KEY = "mythicpulls:connections:daily-v1";
-const STATS_KEY = "mythicpulls:connections:stats-v1";
-const ART_KEY = "mythicpulls:connections:art-v1";
-const RECENT_KEY = "mythicpulls:connections:recent-v1";
+// Keys were renamed connections→confluence pre-launch (nothing shipped,
+// so no user data existed to orphan). From here on they're immutable
+// identifiers like every other mythicpulls: key.
+const STATE_KEY = "mythicpulls:confluence:daily-v1";
+const STATS_KEY = "mythicpulls:confluence:stats-v1";
+const ART_KEY = "mythicpulls:confluence:art-v1";
+const RECENT_KEY = "mythicpulls:confluence:recent-v1";
 
 /** Difficulty → tile/row colors + share emoji. Hues follow the NYT
  *  convention (players' muscle memory) but tuned for the dark theme. */
@@ -70,6 +74,12 @@ function nudgeFor(key: string | undefined): string {
 
 /** How long the win-hop plays before the tiles collapse into the row. */
 const SOLVE_COMMIT_MS = 720;
+
+/** Press-and-hold delay before the art peek opens, and the movement
+ *  slop (px) that cancels it — a finger that moves that far before
+ *  the timer fires is scrolling, not peeking. */
+const PEEK_HOLD_MS = 350;
+const PEEK_SLOP_PX = 8;
 
 /* Seeded shuffle (fnv1a → mulberry32) so the server-rendered tile
  * order matches the client's first render exactly — no hydration
@@ -192,16 +202,29 @@ export function ConnectionsGame({
   /** Names of a just-correct guess playing their hop before the state
    *  commit collapses them into a row. Input is locked meanwhile. */
   const [pendingSolve, setPendingSolve] = useState<string[] | null>(null);
+  /** Enlarged art-crop overlay from press-and-holding a tile (the
+   *  phone tiles are small — this is the "let me actually look at it"
+   *  affordance). Open while the finger is down; release closes. */
+  const [peek, setPeek] = useState<{ name: string; art: string } | null>(null);
   const [artMode, setArtMode] = useState(true);
   /** Endless-only: deal boards built entirely from recent premier
-   *  sets. Applies to the NEXT deal, never yanks the current board. */
+   *  sets. Toggling re-deals immediately when nothing is at stake;
+   *  mid-board it asks first (see confirmRedeal). */
   const [recentOnly, setRecentOnly] = useState(false);
+  /** Set while the "re-deal with the new filter?" prompt is showing —
+   *  only reached by toggling New-sets with a board in progress. */
+  const [confirmRedeal, setConfirmRedeal] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [shaking, setShaking] = useState(false);
   const [copied, setCopied] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const solveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const peekTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  /** True when a peek opened during the current press — the click that
+   *  fires on release must NOT toggle selection. */
+  const peekShownRef = useRef(false);
+  const pressOrigin = useRef<{ x: number; y: number } | null>(null);
 
   /* ---- derived game state (everything flows from `guesses`) ---- */
 
@@ -294,6 +317,7 @@ export function ConnectionsGame({
     () => () => {
       clearTimeout(toastTimer.current);
       clearTimeout(solveTimer.current);
+      clearTimeout(peekTimer.current);
     },
     [],
   );
@@ -339,6 +363,46 @@ export function ConnectionsGame({
     );
   }
 
+  /* Press-and-hold art peek. Pointer events with capture: capture
+   * keeps pointerup routed to the tile even when the finger drifts,
+   * and the browser fires pointercancel if it claims the gesture for
+   * scrolling. Movement past the slop BEFORE the timer fires means
+   * scroll intent — cancel quietly. */
+
+  function startPeek(name: string, e: React.PointerEvent<HTMLButtonElement>) {
+    if (!artMode || locked) return;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      /* synthetic events in tests carry uncapturable pointerIds */
+    }
+    pressOrigin.current = { x: e.clientX, y: e.clientY };
+    clearTimeout(peekTimer.current);
+    peekTimer.current = setTimeout(() => {
+      const card = cardByName.get(name);
+      if (card) {
+        peekShownRef.current = true;
+        setPeek({ name, art: card.art });
+      }
+    }, PEEK_HOLD_MS);
+  }
+
+  function movePeek(e: React.PointerEvent) {
+    if (!pressOrigin.current || peek) return;
+    const dx = e.clientX - pressOrigin.current.x;
+    const dy = e.clientY - pressOrigin.current.y;
+    if (Math.hypot(dx, dy) > PEEK_SLOP_PX) {
+      clearTimeout(peekTimer.current);
+      pressOrigin.current = null;
+    }
+  }
+
+  function endPeek() {
+    clearTimeout(peekTimer.current);
+    pressOrigin.current = null;
+    setPeek(null);
+  }
+
   function toggleArt() {
     setArtMode((v) => {
       try {
@@ -351,14 +415,23 @@ export function ConnectionsGame({
   }
 
   function toggleRecent() {
-    setRecentOnly((v) => {
-      try {
-        localStorage.setItem(RECENT_KEY, v ? "off" : "on");
-      } catch {
-        /* ignore */
-      }
-      return !v;
-    });
+    const next = !recentOnly;
+    setRecentOnly(next);
+    try {
+      localStorage.setItem(RECENT_KEY, next ? "on" : "off");
+    } catch {
+      /* ignore */
+    }
+    if (mode !== "endless") return;
+    // The filter only affects which boards get DEALT — so make the
+    // toggle feel real: re-deal on the spot unless that would throw
+    // away a board mid-solve, in which case ask.
+    if (status === "playing" && guesses.length > 0) {
+      setConfirmRedeal(true);
+    } else {
+      setConfirmRedeal(false);
+      void loadEndless(next);
+    }
   }
 
   function submit() {
@@ -405,18 +478,23 @@ export function ConnectionsGame({
     });
   }
 
-  async function loadEndless() {
+  /** `recentOverride` lets toggleRecent deal with the JUST-set filter
+   *  value — the state update hasn't flushed into this closure yet. */
+  async function loadEndless(recentOverride?: boolean) {
     if (fetching) return;
     setFetching(true);
+    setConfirmRedeal(false);
     try {
       const exclude = puzzle?.id ?? initialPuzzle.id;
+      const wantRecent = recentOverride ?? recentOnly;
       const res = await fetch(
-        `/api/connections/puzzle?exclude=${encodeURIComponent(exclude)}${recentOnly ? "&recent=1" : ""}`,
+        `/api/confluence/puzzle?exclude=${encodeURIComponent(exclude)}${wantRecent ? "&recent=1" : ""}`,
       );
       if (!res.ok) throw new Error(String(res.status));
       const next = (await res.json()) as ConnectionsPuzzle;
       clearTimeout(solveTimer.current);
       setPendingSolve(null);
+      endPeek();
       setEndlessPuzzle(next);
       setMode("endless");
       setGuesses([]);
@@ -433,6 +511,8 @@ export function ConnectionsGame({
   function backToDaily() {
     clearTimeout(solveTimer.current);
     setPendingSolve(null);
+    setConfirmRedeal(false);
+    endPeek();
     setMode("daily");
     setSelected([]);
     setOrder(
@@ -637,6 +717,35 @@ export function ConnectionsGame({
         </div>
       </div>
 
+      {/* re-deal confirmation — shown only when the New-sets filter was
+          toggled with a board mid-solve (see toggleRecent). */}
+      {confirmRedeal && (
+        <div className="flex items-center justify-between gap-2 flex-wrap mb-3 rounded-xl border border-[var(--color-line)] px-3 py-2 anim-conn-rise">
+          <p className="text-[12.5px] text-white/80">
+            Deal a fresh board from {recentOnly ? "the newest sets" : "the full catalog"}? This
+            board will be discarded.
+          </p>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => loadEndless()}
+              className="h-8 px-3 rounded-[8px] text-[12px] font-semibold"
+              style={{ background: "var(--accent-purple)", color: "white", fontFamily: "var(--font-btn)" }}
+            >
+              Deal it
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmRedeal(false)}
+              className="h-8 px-3 rounded-[8px] text-[12px] font-medium border border-[var(--color-line)] hover:bg-white/10 transition-colors"
+              style={{ color: "var(--color-fg)", fontFamily: "var(--font-btn)" }}
+            >
+              Keep playing
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* solved / revealed group rows */}
       {revealRows.length > 0 && (
         <div className="flex flex-col gap-2 mb-2">
@@ -712,9 +821,25 @@ export function ConnectionsGame({
                 ref={flipRef(name)}
                 type="button"
                 aria-pressed={isSel}
-                onClick={() => toggleTile(name)}
+                onClick={() => {
+                  // A release that just closed a peek must not toggle.
+                  if (peekShownRef.current) {
+                    peekShownRef.current = false;
+                    return;
+                  }
+                  toggleTile(name);
+                }}
+                onPointerDown={(e) => startPeek(name, e)}
+                onPointerMove={movePeek}
+                onPointerUp={endPeek}
+                onPointerCancel={endPeek}
+                onContextMenu={(e) => e.preventDefault()}
                 className="anim-conn-deal rounded-xl text-center font-semibold leading-tight select-none"
-                style={{ animationDelay: `${i * 22}ms` }}
+                style={{
+                  animationDelay: `${i * 22}ms`,
+                  // No iOS save-image callout mid-hold — the hold is ours.
+                  WebkitTouchCallout: "none",
+                }}
               >
                 <span
                   className={`flex flex-col items-stretch justify-center rounded-xl h-full w-full overflow-hidden transition-[background,box-shadow,transform] duration-150 ${
@@ -875,7 +1000,9 @@ export function ConnectionsGame({
             </button>
             <button
               type="button"
-              onClick={loadEndless}
+              // NOT a bare handler ref — the click event would land in
+              // loadEndless's recentOverride param and read as truthy.
+              onClick={() => loadEndless()}
               disabled={fetching}
               className="h-9 px-4 rounded-[10px] text-[13px] font-medium border border-[var(--color-line)] hover:bg-white/10 transition-colors disabled:opacity-50"
               style={{ color: "var(--color-fg)", fontFamily: "var(--font-btn)" }}
@@ -909,6 +1036,39 @@ export function ConnectionsGame({
         onHint={bumpHint}
       />
     )}
+
+    {/* Press-and-hold art peek. Portalled to <body> (ancestor panels
+        use backdrop-filter, which would trap position:fixed) and
+        pointer-events-none throughout so the held finger's pointerup
+        still lands on the tile and closes it. Art crop ONLY — the
+        full card image would leak artist / type line / set symbol,
+        i.e. three of the four group answers. */}
+    {peek &&
+      createPortal(
+        <div className="fixed inset-0 z-[1200] grid place-items-center p-6 pointer-events-none" aria-hidden>
+          <div
+            className="absolute inset-0 bg-black/70"
+            style={{ backdropFilter: "blur(3px)", WebkitBackdropFilter: "blur(3px)" }}
+          />
+          <figure className="relative w-full max-w-[420px] m-0 anim-conn-peek">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={peek.art}
+              alt={peek.name}
+              draggable={false}
+              className="w-full h-auto rounded-xl"
+              style={{ boxShadow: "0 24px 60px -12px rgba(0,0,0,0.8)" }}
+            />
+            <figcaption
+              className="mt-2.5 text-center text-[14px] font-semibold"
+              style={{ color: "var(--color-fg)", fontFamily: "var(--font-ui)" }}
+            >
+              {peek.name}
+            </figcaption>
+          </figure>
+        </div>,
+        document.body,
+      )}
     </div>
   );
 }

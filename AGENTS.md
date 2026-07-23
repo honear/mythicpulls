@@ -240,9 +240,15 @@ mythics into commons.
 
 ## Confluence (daily connections puzzle)
 
-`/connections` — NYT-Connections-style daily: 16 card names, four
+`/confluence` — NYT-Connections-style daily: 16 card names, four
 hidden groups of four, unique solution. Branded **Confluence** (an
-actual MTG cycle name; avoids leaning on NYT's trademark).
+actual MTG cycle name) everywhere user-visible — route, nav pill,
+API path (`/api/confluence/puzzle`), localStorage keys — deliberate
+distance from NYT's "Connections" mark. INTERNAL names (lib/
+connections.ts, scripts/build-connections.mjs, data/connections/,
+`Connections*` types) keep the descriptive genre name on purpose;
+don't churn them, and don't let new user-visible surfaces say
+"Connections".
 
 - **Generator**: `npm run build:connections` →
   `scripts/build-connections.mjs` reads `data/set-cards/*.json.gz`
@@ -254,7 +260,13 @@ actual MTG cycle name; avoids leaning on NYT's trademark).
   group carries a computable predicate and boards are **formally
   verified to have exactly one valid partition** (exact cover over
   the 16×4 membership matrix) — red herrings survive only when the
-  solution stays unique. Curated lists live in the script (CYCLES /
+  solution stays unique. A second **phantom scan** then rejects any
+  board where ≥4 cards share a connection from the game's own
+  category library (another artist, tribe, word theme, identity, …)
+  that isn't one of the four intended groups — unsubmittable but
+  confusing. Beyond-library associations (all legendary, all Human)
+  are deliberately allowed: those are ordinary red herrings.
+  Curated lists live in the script (CYCLES /
   LORE_CYCLES / WORD_THEMES / COLOR_IDENTITIES): lore groups must be
   beyond-doubt facts; wordlists have a tight `words` core (choosable)
   + broad `also` extension (verifier-only) so titles stay honest.
@@ -277,14 +289,23 @@ actual MTG cycle name; avoids leaning on NYT's trademark).
   puzzle as a prop; endless mode fetches one at a time from
   `/api/connections/puzzle`. `ConnectionsGame.tsx` uses
   `import type` only.
-- **Client**: `app/connections/ConnectionsGame.tsx`. Art-on-tiles is
+- **Client**: `app/confluence/ConnectionsGame.tsx`. Art-on-tiles is
   the default (casual "recognition" mode), Eye toggle → names-only
-  expert mode, persisted under `mythicpulls:connections:art-v1`.
+  expert mode, persisted under `mythicpulls:confluence:art-v1`.
   Endless mode adds a "New sets" pill (`recent-v1` key) that deals
-  future boards from `recent: true` pool entries via
-  `/api/connections/puzzle?recent=1`; the daily always stays
-  full-catalog so everyone shares one board.
-  Daily progress + streak stats in `mythicpulls:connections:*` keys.
+  boards from `recent: true` pool entries via
+  `/api/confluence/puzzle?recent=1`. Toggling it re-deals on the
+  spot when the board is pristine or finished, and shows an inline
+  "Deal it / Keep playing" confirm when a board is mid-solve — the
+  filter must never feel like it silently does nothing. The daily
+  always stays full-catalog so everyone shares one board.
+  Daily progress + streak stats in `mythicpulls:confluence:*` keys
+  (renamed from `:connections:` pre-launch, before any user data
+  existed — immutable from now on).
+  Press-and-hold on a tile opens an enlarged **art-crop** peek
+  (pointer events + capture, portal overlay). Art crop ONLY — the
+  full card image would leak artist, type line, and set symbol,
+  i.e. three of the four group answers.
   Grid reflow is a hand-rolled FLIP (`useFlipTiles`) — transforms go
   on the button; hop/shake/selected-scale live on the inner span so
   they don't fight the FLIP's inline transforms. Tile-order shuffle
@@ -305,7 +326,7 @@ actual MTG cycle name; avoids leaning on NYT's trademark).
 - `app/sealed/[code]/SealedDeckBuilder.tsx` — deck builder, shared by
   Sealed AND Draft (`mode: "sealed" | "draft"` prop changes labels)
 - `app/draft/[code]/DraftRun.tsx` — 8-seat draft state machine
-- `app/connections/ConnectionsGame.tsx` — Confluence board (see above)
+- `app/confluence/ConnectionsGame.tsx` — Confluence board (see above)
 - `lib/scryfall.ts` — Scryfall client + `getOpenableSets`
 - `lib/booster-loader.ts` — server-only recipe resolution
 - `lib/draft-bot.ts` — bot pick logic

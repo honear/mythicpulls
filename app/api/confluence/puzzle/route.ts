@@ -1,6 +1,6 @@
 /**
  * Serves one random Confluence board for endless mode. The daily board
- * arrives as a server-rendered prop on /connections; this route only
+ * arrives as a server-rendered prop on /confluence; this route only
  * backs the "another board" button, so the client never bundles the
  * full answer pool (~600KB, and every solution in plaintext).
  *

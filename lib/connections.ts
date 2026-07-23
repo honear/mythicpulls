@@ -10,7 +10,7 @@
  * IMPORTANT: never import this module from a client component — the
  * puzzles file carries every answer (and ~600KB of them). The daily
  * page passes a single puzzle down as a prop, and endless mode pulls
- * one at a time through /api/connections/puzzle.
+ * one at a time through /api/confluence/puzzle.
  */
 
 import puzzlesJson from "../data/connections/puzzles.json";

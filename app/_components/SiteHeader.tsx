@@ -38,7 +38,7 @@ export function SiteHeader() {
   // the homepage redesign moved off the catalog grid. Highlight on any
   // /sets/* path (the picker itself and any /sets/<code> child).
   const onOpenPacks = pathname.startsWith("/sets");
-  const onPuzzle = pathname.startsWith("/connections");
+  const onPuzzle = pathname.startsWith("/confluence");
 
   // Auto-close the mobile menu on route change so navigating from inside
   // it doesn't leave the panel parked open over the next page.
@@ -145,7 +145,7 @@ export function SiteHeader() {
             <span className="lg:hidden">Sealed</span>
           </Link>
           <Link
-            href="/connections"
+            href="/confluence"
             aria-current={onPuzzle ? "page" : undefined}
             className="inline-flex items-center gap-2 h-[38px] pl-3 pr-4 rounded-[10px] text-[14px] font-medium transition-all"
             style={{
@@ -157,7 +157,10 @@ export function SiteHeader() {
             }}
           >
             <Grid3x3 className="w-4 h-4" />
-            <span className="hidden lg:inline whitespace-nowrap">Daily Puzzle</span>
+            {/* Branded "Confluence" (a real MTG cycle name), NOT
+                "Connections" — deliberate distance from NYT's mark.
+                The short label stays the generic "Puzzle". */}
+            <span className="hidden lg:inline whitespace-nowrap">Confluence</span>
             <span className="lg:hidden">Puzzle</span>
           </Link>
           <Link
@@ -293,7 +296,7 @@ export function SiteHeader() {
               Practice Sealed
             </Link>
             <Link
-              href="/connections"
+              href="/confluence"
               role="menuitem"
               aria-current={onPuzzle ? "page" : undefined}
               className="inline-flex items-center gap-2 h-11 px-4 rounded-[10px] text-[15px] font-medium"
@@ -306,7 +309,7 @@ export function SiteHeader() {
               }}
             >
               <Grid3x3 className="w-4 h-4" />
-              Daily Puzzle
+              Confluence
             </Link>
             <Link
               href="/collection"

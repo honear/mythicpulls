@@ -571,6 +571,79 @@ function buildInstances(byName, nameSets, opts = {}) {
   return instances;
 }
 
+/* ---------------- Phantom-connection scanner ----------------
+ * The uniqueness verifier proves there is exactly one valid PARTITION
+ * — but four cards spread across different groups could still share a
+ * connection from the game's own vocabulary (a fifth artist, a stray
+ * tribe, a second word theme). A player can't submit it as correct,
+ * but it reads as a trap with no answer. This scanner rejects any
+ * board where ≥4 cards match a library instance that isn't one of the
+ * four intended groups.
+ *
+ * Scope is deliberately the game's OWN category space (curated
+ * subtypes, the 21 identities, the 9 word themes, all artists, card
+ * types, cycles, lore). Beyond-library associations — all legendary,
+ * all Human, all mono-red — stay possible; those are ordinary red
+ * herrings, not phantoms the game itself taught players to look for.
+ * Pool-set overlap is also skipped: reprint sets (2XM etc.) put
+ * random quartets in the same set constantly, and set membership
+ * isn't readable off a tile anyway.
+ */
+
+function makePhantomScanner() {
+  const themeSets = WORD_THEMES.map((t) => ({
+    key: `word:${t.key}`,
+    words: new Set([...t.words, ...t.also]),
+  }));
+  const identitySet = new Map(
+    COLOR_IDENTITIES.map((ci) => [[...ci.colors].sort().join(""), `color:${ci.key}`]),
+  );
+  const memberLists = [...CYCLES.map((c) => ({ key: `cycle:${c.key}`, set: new Set(c.members) })),
+    ...LORE_CYCLES.map((l) => ({ key: `lore:${l.key}`, set: new Set(l.members) }))];
+  const subtypeSet = new Set(SUBTYPES);
+
+  /** cards16: resolved card objects; boardKeys: the 4 instance keys. */
+  return function phantomFree(cards16, boardKeys) {
+    const exclude = new Set(boardKeys);
+    const counts = new Map(); // instance-key → matching cards
+
+    const bump = (key) => counts.set(key, (counts.get(key) ?? 0) + 1);
+
+    for (const c of cards16) {
+      if (c.artist && !c.artist.includes("&")) bump(`artist:${c.artist}`);
+
+      const tl = c.type_line || "";
+      if (tl.includes("Creature")) {
+        const subs = (tl.split("—")[1] || "").split(/[\s/]+/).filter(Boolean);
+        for (const s of new Set(subs)) if (subtypeSet.has(s)) bump(`type:${s}`);
+      }
+      for (const ct of CARD_TYPES) if (ct.match(tl)) bump(`cardtype:${ct.key}`);
+
+      if (Array.isArray(c.color_identity)) {
+        const idKey = identitySet.get([...c.color_identity].sort().join(""));
+        if (idKey) bump(idKey);
+      }
+
+      const tokens = new Set(nameTokens(c.name));
+      for (const t of themeSets) {
+        for (const tok of tokens) {
+          if (t.words.has(tok)) {
+            bump(t.key);
+            break;
+          }
+        }
+      }
+
+      for (const m of memberLists) if (m.set.has(c.name)) bump(m.key);
+    }
+
+    for (const [key, n] of counts) {
+      if (n >= 4 && !exclude.has(key)) return false;
+    }
+    return true;
+  };
+}
+
 /* ---------------- Uniqueness verifier ----------------
  * Count perfect partitions of the 16 cards into the 4 labeled groups
  * (4 each) where every card satisfies its group's predicate. The board
@@ -607,6 +680,9 @@ function countPartitions(matrix) {
 }
 
 /* ---------------- Board assembly ---------------- */
+
+const phantomFree = makePhantomScanner();
+let phantomRejects = 0;
 
 const FNV_OFFSET = 0x811c9dc5;
 function fnv1a(str) {
@@ -648,6 +724,12 @@ function tryBuildBoard(byName, chosenInstances) {
   const cards16 = picked.flat().map((name) => byName.get(name));
   const matrix = cards16.map((card) => groups.map((g) => g.test(card)));
   if (countPartitions(matrix) !== 1) return null;
+
+  // No phantom quartets from the game's own category library.
+  if (!phantomFree(cards16, groups.map((g) => g.key))) {
+    phantomRejects++;
+    return null;
+  }
 
   // Spice score = red-herring count (cards matching 2+ predicates).
   const spice = matrix.filter((row) => row.filter(Boolean).length >= 2).length;
@@ -845,6 +927,8 @@ async function main() {
     }
     console.log(`  boards tagged recent: ${puzzles.filter((p) => p.recent).length}/${puzzles.length}`);
   }
+
+  console.log(`  boards rejected by phantom scan: ${phantomRejects}`);
 
   shuffle(puzzles); // schedule order ≠ generation order
 
