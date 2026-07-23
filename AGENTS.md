@@ -259,14 +259,23 @@ don't churn them, and don't let new user-visible surfaces say
   premier-set exclusive, purple = artist or curated lore group. Every
   group carries a computable predicate and boards are **formally
   verified to have exactly one valid partition** (exact cover over
-  the 16×4 membership matrix) — red herrings survive only when the
-  solution stays unique. A second **phantom scan** then rejects any
-  board where ≥4 cards share a connection from the game's own
-  category library (another artist, tribe, word theme, identity, …)
-  that isn't one of the four intended groups — unsubmittable but
-  confusing. Beyond-library associations (all legendary, all Human)
-  are deliberately allowed: those are ordinary red herrings.
-  Curated lists live in the script (CYCLES /
+  the 16×4 membership matrix). On top of uniqueness, a **clean-
+  partition** rule requires every one of the 16 cards to satisfy
+  EXACTLY ONE group's predicate — a card matching two groups (e.g.
+  "Sheoldred, Whispering One" is a praetor AND contains the number
+  word "one") is rejected even though the exact-cover solution stays
+  unique, because a human just sees 5-6 tiles fitting one category
+  and can't isolate the four. This is the headline fairness rule and
+  it supersedes the old "spice = reward red herrings" idea: with
+  mechanical text/type categories, a second matching predicate is a
+  broken clue, not a fun trap. (Word themes lean on a broad `also`
+  list — threefold, once, pair, … — so semantic near-reads trip the
+  clean-partition check even though they can't be chosen as answers.)
+  A third **phantom scan** then rejects any board where ≥4 cards
+  share a connection from the game's own category library that isn't
+  one of the four groups. Beyond-library associations (all legendary,
+  all Human) are deliberately allowed: those are ordinary red
+  herrings. Curated lists live in the script (CYCLES /
   LORE_CYCLES / WORD_THEMES / COLOR_IDENTITIES): lore groups must be
   beyond-doubt facts; wordlists have a tight `words` core (choosable)
   + broad `also` extension (verifier-only) so titles stay honest.
