@@ -108,8 +108,13 @@ const WORD_THEMES = [
   {
     key: "numbers",
     title: "Number in the name",
-    words: ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "hundred", "thousand", "dozen", "twin", "triple"],
-    also: ["zero", "eleven", "twelve", "thirteen", "twenty", "forty", "fifty", "million", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "single", "double"],
+    words: ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "hundred", "thousand", "dozen", "twin", "triple", "zero", "eleven", "twelve", "thirteen", "twenty", "forty", "fifty", "million", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"],
+    also: ["single", "double", "fifteen", "thirty", "sixty", "billion"],
+    // Literal digits count too ("Spider-Man 2099", "Borrowing
+    // 100,000 Arrows") — the tokenizer strips non-letters, so this
+    // needs its own predicate arm; see the `digits` handling in
+    // buildInstances and the phantom scanner.
+    digits: true,
   },
   {
     key: "weather",
@@ -329,9 +334,18 @@ const PREMIER_SETS = [
 
 /** Word-boundary token list for a card name: lowercase, split on
  *  anything that isn't a letter (hyphens, commas, apostrophes all
- *  break words — "Two-Headed" yields "two","headed"). */
+ *  break words — "Two-Headed" yields "two","headed"). Digits are
+ *  stripped here; the numbers theme detects them separately. */
 function nameTokens(name) {
   return name.toLowerCase().split(/[^a-z]+/).filter(Boolean);
+}
+
+/** First run of digits (with grouping commas) in a name, or null —
+ *  "Spider-Man 2099" → "2099", "Borrowing 100,000 Arrows" →
+ *  "100,000". Used only by the digit-aware numbers theme. */
+function digitRun(name) {
+  const m = name.match(/\d[\d,]*/);
+  return m ? m[0] : null;
 }
 
 // Sets we never want puzzle cards from: Un-sets (joke names with
@@ -414,10 +428,19 @@ function buildInstances(byName, nameSets, opts = {}) {
   for (const theme of WORD_THEMES) {
     const coreSet = new Set(theme.words);
     const fullSet = new Set([...theme.words, ...theme.also]);
+    const digits = !!theme.digits;
     const cands = [];
     for (const c of all) {
       const hit = nameTokens(c.name).find((t) => coreSet.has(t));
-      if (hit) cands.push({ name: c.name, word: hit });
+      if (hit) {
+        cands.push({ name: c.name, word: hit });
+      } else if (digits) {
+        // Digit-only match ("2099") — bucket by the digit string so a
+        // board can still hold two distinct digit cards but not four
+        // copies of the same one (the seenWords dedup uses `word`).
+        const d = digitRun(c.name);
+        if (d) cands.push({ name: c.name, word: d });
+      }
     }
     if (cands.length < 8) continue;
     instances.hiddenWord.push({
@@ -426,7 +449,9 @@ function buildInstances(byName, nameSets, opts = {}) {
       title: theme.title,
       difficulty: 0,
       candidates: cands,
-      test: (card) => nameTokens(card.name).some((t) => fullSet.has(t)),
+      test: (card) =>
+        (digits && digitRun(card.name) !== null) ||
+        nameTokens(card.name).some((t) => fullSet.has(t)),
     });
   }
 
@@ -594,6 +619,7 @@ function makePhantomScanner() {
   const themeSets = WORD_THEMES.map((t) => ({
     key: `word:${t.key}`,
     words: new Set([...t.words, ...t.also]),
+    digits: !!t.digits,
   }));
   const identitySet = new Map(
     COLOR_IDENTITIES.map((ci) => [[...ci.colors].sort().join(""), `color:${ci.key}`]),
@@ -625,7 +651,12 @@ function makePhantomScanner() {
       }
 
       const tokens = new Set(nameTokens(c.name));
+      const hasDigit = digitRun(c.name) !== null;
       for (const t of themeSets) {
+        if (t.digits && hasDigit) {
+          bump(t.key);
+          continue;
+        }
         for (const tok of tokens) {
           if (t.words.has(tok)) {
             bump(t.key);
