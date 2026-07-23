@@ -99,17 +99,34 @@ function pick(arr) {
  *           ("A body of water" never claims "Tidal Wave" is one).
  *   also  — predicate-only extensions. The verifier's test() matches
  *           core ∪ also, so a card in another group whose name merely
- *           *reads* on-theme ("The Watcher in the Water") is a tracked
- *           red herring, not an invisible ambiguity. False positives
- *           here are safe: they can only reject a board or add spice,
- *           never mislabel a chosen card. */
+ *           *reads* on-theme ("The Watcher in the Water", "Threefold
+ *           Master") is caught by the clean-partition check and the
+ *           board is rejected — never shipped as an invisible
+ *           ambiguity. False positives here are safe: a too-broad
+ *           `also` only rejects boards, it never mislabels a chosen
+ *           card (choices come from `words` alone). */
 
 const WORD_THEMES = [
   {
     key: "numbers",
     title: "Number in the name",
     words: ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "hundred", "thousand", "dozen", "twin", "triple", "zero", "eleven", "twelve", "thirteen", "twenty", "forty", "fifty", "million", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"],
-    also: ["single", "double", "fifteen", "thirty", "sixty", "billion"],
+    // `also` is verifier-only: these can't be CHOSEN (the title says
+    // "number in the name", and "threefold" as an answer would read
+    // oddly) but they DO count a card as number-ish for the
+    // exclusivity check — so a board can't pair a numbers group with a
+    // "Threefold Master" or "Twice-Told Tale" sitting in another
+    // group. Err broad here; over-inclusion only rejects boards, it
+    // never mislabels. This list is the direct fix for the reported
+    // "Elsha, Threefold Master + Sheoldred, Whispering One" board.
+    also: [
+      "single", "double", "triple", "quadruple", "quintuple",
+      "fifteen", "thirty", "sixty", "billion", "trillion",
+      "once", "twice", "thrice",
+      "twofold", "threefold", "fourfold", "fivefold", "sixfold", "tenfold", "hundredfold", "thousandfold", "manifold",
+      "pair", "couple", "duo", "trio", "quartet", "quintet", "sextet",
+      "solo", "lone", "sole", "twins", "myriad", "score",
+    ],
     // Literal digits count too ("Spider-Man 2099", "Borrowing
     // 100,000 Arrows") — the tokenizer strips non-letters, so this
     // needs its own predicate arm; see the `digits` handling in
@@ -714,6 +731,7 @@ function countPartitions(matrix) {
 
 const phantomFree = makePhantomScanner();
 let phantomRejects = 0;
+let cleanRejects = 0;
 
 const FNV_OFFSET = 0x811c9dc5;
 function fnv1a(str) {
@@ -754,6 +772,25 @@ function tryBuildBoard(byName, chosenInstances) {
   // Verify: build the 16×4 membership matrix from the full predicates.
   const cards16 = picked.flat().map((name) => byName.get(name));
   const matrix = cards16.map((card) => groups.map((g) => g.test(card)));
+
+  // CLEAN PARTITION — the headline fairness rule. Every card must
+  // satisfy EXACTLY ONE group's predicate. A card that matches two
+  // (e.g. "Sheoldred, Whispering One" is a praetor AND contains the
+  // number word "one") makes the board unsolvable by a human: they see
+  // 5-6 tiles fitting one category and can't tell which four are the
+  // group, even though the exact-cover MATH stays unique. This check
+  // supersedes the old "spice = reward red herrings" idea — in a game
+  // whose categories are mechanical text/type facts, a second true
+  // predicate isn't a fun trap, it's a broken clue. Chosen cards
+  // always match their own group, so the test is simply "no row with
+  // two or more trues".
+  if (matrix.some((row) => row.reduce((n, b) => n + (b ? 1 : 0), 0) !== 1)) {
+    cleanRejects++;
+    return null;
+  }
+
+  // Redundant given a clean partition (the solution is now forced),
+  // but kept as a cheap assertion that the logic holds.
   if (countPartitions(matrix) !== 1) return null;
 
   // No phantom quartets from the game's own category library.
@@ -762,12 +799,8 @@ function tryBuildBoard(byName, chosenInstances) {
     return null;
   }
 
-  // Spice score = red-herring count (cards matching 2+ predicates).
-  const spice = matrix.filter((row) => row.filter(Boolean).length >= 2).length;
-
   return {
     id: fnv1a(picked.flat().sort().join("|")),
-    spice,
     groups: groups.map((inst, gi) => ({
       key: inst.key,
       title: inst.title,
@@ -864,24 +897,26 @@ function generateBoards(byName, instances, target, state, passTag) {
     const comboKey = `${passTag}:` + combo.map((i) => i.key).sort().join("+");
     if (seenCombos.has(comboKey)) continue;
 
-    // Generate a handful of candidates for this combo, keep the
-    // spiciest legal one (most red herrings, capped implicitly by the
-    // uniqueness check).
-    let best = null;
-    for (let k = 0; k < 6; k++) {
+    // Try a handful of card selections for this combo and take the
+    // first that survives every gate (clean partition, uniqueness,
+    // phantom scan, freshness cap). Boards no longer carry a "spice"
+    // score — every legal board is overlap-free by construction, so
+    // there's nothing to rank; we just want one that passes.
+    let chosen = null;
+    for (let k = 0; k < 8; k++) {
       const board = tryBuildBoard(byName, combo);
       if (!board) continue;
       if (seenIds.has(board.id)) continue;
       if (board.groups.some((g) => g.cards.some((c) => (cardUse.get(c.name) ?? 0) >= 3))) continue;
-      if (!best || board.spice > best.spice) best = board;
+      chosen = board;
+      break;
     }
-    if (!best) continue;
+    if (!chosen) continue;
 
     seenCombos.add(comboKey);
-    seenIds.add(best.id);
-    for (const g of best.groups) for (const c of g.cards) cardUse.set(c.name, (cardUse.get(c.name) ?? 0) + 1);
-    const { spice, ...out } = best;
-    puzzles.push(out);
+    seenIds.add(chosen.id);
+    for (const g of chosen.groups) for (const c of g.cards) cardUse.set(c.name, (cardUse.get(c.name) ?? 0) + 1);
+    puzzles.push(chosen);
   }
 
   if (puzzles.length < target) {
@@ -959,7 +994,7 @@ async function main() {
     console.log(`  boards tagged recent: ${puzzles.filter((p) => p.recent).length}/${puzzles.length}`);
   }
 
-  console.log(`  boards rejected by phantom scan: ${phantomRejects}`);
+  console.log(`  boards rejected — cross-group overlap: ${cleanRejects}, phantom scan: ${phantomRejects}`);
 
   shuffle(puzzles); // schedule order ≠ generation order
 
